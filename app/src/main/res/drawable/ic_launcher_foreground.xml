@@ -19,8 +19,7 @@
     <!-- steam -->
     <path
         android:fillColor="#FFFFFF"
-        android:strokeWidth="2"
-        android:strokeColor="#FFFFFF"
         android:pathData="M42,38 Q45,28 42,18 M54,38 Q57,28 54,18 M66,38 Q69,28 66,18"
-        android:fillColor="#00000000" />
+        android:strokeWidth="2"
+        android:strokeColor="#FFFFFF" />
 </vector>
