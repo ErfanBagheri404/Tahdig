@@ -87,7 +87,7 @@ fun ShoppingListScreen(
                 items(items, key = { it.id }) { item ->
                     ShoppingRow(
                         item = item,
-                        onToggle = { viewModel.setChecked(item.id, !item.isChecked) },
+                        onToggle = { checked -> viewModel.setChecked(item.id, checked) },
                         onDelete = { viewModel.remove(item.id) },
                     )
                 }
@@ -99,7 +99,7 @@ fun ShoppingListScreen(
 @Composable
 private fun ShoppingRow(
     item: ShoppingItemEntity,
-    onToggle: () -> Unit,
+    onToggle: (Boolean) -> Unit,
     onDelete: () -> Unit,
 ) {
     Surface(
@@ -113,7 +113,7 @@ private fun ShoppingRow(
         ) {
             Checkbox(
                 checked = item.isChecked,
-                onCheckedChange = { onToggle() },
+                onCheckedChange = { checked -> onToggle(checked) },
             )
             Text(
                 text = item.item,
@@ -126,7 +126,7 @@ private fun ShoppingRow(
                 textDecoration = if (item.isChecked) TextDecoration.LineThrough else null,
                 modifier = Modifier
                     .weight(1f)
-                    .clickable(onClick = onToggle),
+                    .clickable { onToggle(!item.isChecked) },
             )
             Spacer(Modifier.width(4.dp))
             IconButton(onClick = onDelete) {
