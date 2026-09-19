@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.erfanbagheri.tahdig.data.local.dao.CategoryDao
+import com.erfanbagheri.tahdig.data.local.dao.FavoriteDao
 import com.erfanbagheri.tahdig.data.local.dao.FoodDao
 import com.erfanbagheri.tahdig.data.local.dao.HistoryDao
 import com.erfanbagheri.tahdig.data.local.entity.CategoryEntity
@@ -28,6 +29,7 @@ abstract class TahdigDatabase : RoomDatabase() {
     abstract fun foodDao(): FoodDao
     abstract fun categoryDao(): CategoryDao
     abstract fun historyDao(): HistoryDao
+    abstract fun favoriteDao(): FavoriteDao
 
     companion object {
         private const val DB_NAME = "tahdig.db"
