@@ -44,6 +44,7 @@ fun HomeScreen(
     val suggestion by viewModel.suggestion.collectAsState()
     val mealLabel by viewModel.mealLabel.collectAsState()
     val isFavorite by viewModel.isFavorite.collectAsState()
+    val dishOfDay by viewModel.dishOfDay.collectAsState()
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -71,6 +72,33 @@ fun HomeScreen(
             )
 
             Spacer(Modifier.height(40.dp))
+
+            // Dish of the day (deterministic by date)
+            dishOfDay?.let { dod ->
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(14.dp),
+                    color = MaterialTheme.colorScheme.secondaryContainer,
+                ) {
+                    Column(modifier = Modifier.padding(14.dp)) {
+                        Text(
+                            text = "🌟 غذای امروز",
+                            style = MaterialTheme.typography.labelLarge,
+                            fontFamily = YekanBakh,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        )
+                        Spacer(Modifier.height(4.dp))
+                        Text(
+                            text = dod.name,
+                            style = MaterialTheme.typography.titleLarge,
+                            fontFamily = YekanBakh,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        )
+                    }
+                }
+                Spacer(Modifier.height(20.dp))
+            }
 
             // Suggestion card
             if (suggestion != null) {
