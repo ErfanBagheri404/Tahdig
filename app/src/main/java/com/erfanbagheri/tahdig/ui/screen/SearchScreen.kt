@@ -38,6 +38,7 @@ import com.erfanbagheri.tahdig.ui.viewmodel.SearchViewModel
 @Composable
 fun SearchScreen(
     viewModel: SearchViewModel,
+    onFoodClick: (Long) -> Unit = {},
 ) {
     val query by viewModel.query.collectAsState()
     val selectedCategoryId by viewModel.selectedCategoryId.collectAsState()
@@ -144,7 +145,10 @@ fun SearchScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     items(results, key = { it.id }) { food ->
-                        SearchResultItem(food = food)
+                        SearchResultItem(
+                            food = food,
+                            onClick = { onFoodClick(food.id) },
+                        )
                     }
                 }
             }
@@ -182,9 +186,12 @@ private fun CategoryChip(
 @Composable
 private fun SearchResultItem(
     food: com.erfanbagheri.tahdig.data.local.entity.FoodEntity,
+    onClick: () -> Unit = {},
 ) {
     Surface(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
         shape = RoundedCornerShape(12.dp),
         color = MaterialTheme.colorScheme.surface,
     ) {
