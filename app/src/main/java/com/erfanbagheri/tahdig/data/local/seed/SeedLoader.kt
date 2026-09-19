@@ -12,7 +12,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
 /**
- * Loads the bundled seed dataset from assets/seed/*.json into Room.
+ * Loads the bundled seed dataset from the assets/seed JSON files into Room.
  *
  * Files are shipped as JSON (not a pre-built .db) so the dataset is diffable in git,
  * editable without Android tooling, and validated by the unit tests on every build.

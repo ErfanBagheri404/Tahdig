@@ -49,7 +49,7 @@ class MainActivity : ComponentActivity() {
         }
 
         lifecycleScope.launch {
-            // First run — populate from assets/seed/foods.json
+            // First run — populate from the bundled seed assets
             TahdigDatabase.populateIfEmpty(this@MainActivity)
         }
     }

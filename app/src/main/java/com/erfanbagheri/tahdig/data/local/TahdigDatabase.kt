@@ -46,7 +46,7 @@ abstract class TahdigDatabase : RoomDatabase() {
                 .build()
 
         /**
-         * Loads assets/seed/*.json on first creation only.
+         * Loads assets/seed JSON files on first creation only.
          * Room calls onCreate exactly once per database file lifetime.
          */
         suspend fun populateIfEmpty(context: Context) {
