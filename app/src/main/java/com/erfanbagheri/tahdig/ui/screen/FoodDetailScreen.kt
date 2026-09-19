@@ -14,6 +14,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,6 +26,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,12 +41,14 @@ import androidx.compose.ui.unit.sp
 import com.erfanbagheri.tahdig.data.local.TahdigDatabase
 import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
+import com.erfanbagheri.tahdig.ui.viewmodel.RatingViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FoodDetailScreen(
     foodId: Long,
     onBack: () -> Unit,
+    ratingViewModel: RatingViewModel? = null,
 ) {
     val context = LocalContext.current.applicationContext
     var food by remember { mutableStateOf<FoodEntity?>(null) }
@@ -97,6 +102,16 @@ fun FoodDetailScreen(
                     }
 
                     Spacer(Modifier.height(20.dp))
+
+                    // Star rating
+                    if (ratingViewModel != null) {
+                        val stars by ratingViewModel.stars(f.id).collectAsState()
+                        StarRating(
+                            stars = stars,
+                            onRate = { ratingViewModel.setStars(f.id, it) },
+                        )
+                        Spacer(Modifier.height(20.dp))
+                    }
 
                     Text(
                         text = f.name,
@@ -184,6 +199,22 @@ fun FoodDetailScreen(
 
                     Spacer(Modifier.height(48.dp))
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun StarRating(stars: Int, onRate: (Int) -> Unit) {
+    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+        (1..5).forEach { i ->
+            IconButton(onClick = { onRate(if (stars == i) 0 else i) }) {
+                Icon(
+                    imageVector = if (i <= stars) Icons.Filled.Star else Icons.Filled.StarBorder,
+                    contentDescription = "$i ستاره",
+                    tint = if (i <= stars) MaterialTheme.colorScheme.primary
+                    else MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
         }
     }

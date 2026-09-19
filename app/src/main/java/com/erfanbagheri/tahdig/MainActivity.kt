@@ -37,6 +37,7 @@ import com.erfanbagheri.tahdig.ui.theme.TahdigTheme
 import com.erfanbagheri.tahdig.ui.viewmodel.FavoritesViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.HistoryViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.HomeViewModel
+import com.erfanbagheri.tahdig.ui.viewmodel.RatingViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.SearchViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.SettingsViewModel
 import kotlinx.coroutines.launch
@@ -106,9 +107,11 @@ private fun TahdigApp() {
         ) {
             when {
                 detailFoodId >= 0 -> {
+                    val rvm: RatingViewModel = viewModel()
                     FoodDetailScreen(
                         foodId = detailFoodId,
                         onBack = { detailFoodId = -1L },
+                        ratingViewModel = rvm,
                     )
                 }
                 selectedTab == 0 -> {

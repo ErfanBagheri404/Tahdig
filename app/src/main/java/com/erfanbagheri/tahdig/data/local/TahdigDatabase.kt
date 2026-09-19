@@ -8,10 +8,12 @@ import com.erfanbagheri.tahdig.data.local.dao.CategoryDao
 import com.erfanbagheri.tahdig.data.local.dao.FavoriteDao
 import com.erfanbagheri.tahdig.data.local.dao.FoodDao
 import com.erfanbagheri.tahdig.data.local.dao.HistoryDao
+import com.erfanbagheri.tahdig.data.local.dao.RatingDao
 import com.erfanbagheri.tahdig.data.local.entity.CategoryEntity
 import com.erfanbagheri.tahdig.data.local.entity.FavoriteEntity
 import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
 import com.erfanbagheri.tahdig.data.local.entity.HistoryEntity
+import com.erfanbagheri.tahdig.data.local.entity.RatingEntity
 import com.erfanbagheri.tahdig.data.local.seed.SeedLoader
 
 @Database(
@@ -20,8 +22,9 @@ import com.erfanbagheri.tahdig.data.local.seed.SeedLoader
         CategoryEntity::class,
         FavoriteEntity::class,
         HistoryEntity::class,
+        RatingEntity::class,
     ],
-    version = 1,
+    version = 2,
     exportSchema = true,
 )
 abstract class TahdigDatabase : RoomDatabase() {
@@ -30,6 +33,7 @@ abstract class TahdigDatabase : RoomDatabase() {
     abstract fun categoryDao(): CategoryDao
     abstract fun historyDao(): HistoryDao
     abstract fun favoriteDao(): FavoriteDao
+    abstract fun ratingDao(): RatingDao
 
     companion object {
         private const val DB_NAME = "tahdig.db"
@@ -45,6 +49,8 @@ abstract class TahdigDatabase : RoomDatabase() {
         private fun build(context: Context): TahdigDatabase =
             Room.databaseBuilder(context, TahdigDatabase::class.java, DB_NAME)
                 .addCallback(SeedCallback(context))
+                // ponytail: pre-release only — no shipped users yet. Add real Migrations before first release.
+                .fallbackToDestructiveMigration()
                 .build()
 
         /**
