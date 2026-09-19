@@ -8,16 +8,14 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.unit.LayoutDirection
+import com.erfanbagheri.tahdig.data.prefs.SettingsStore
 
-// Warm food-inspired palette — dark
 private val DarkColors = darkColorScheme(
-    primary       = Color(0xFFFFB74D),  // warm amber
+    primary       = Color(0xFFFFB74D),
     onPrimary     = Color(0xFF211A00),
     primaryContainer = Color(0xFF3E2B00),
     onPrimaryContainer = Color(0xFFFFDEA1),
@@ -38,7 +36,6 @@ private val DarkColors = darkColorScheme(
     outline       = Color(0xFF9A8E79),
 )
 
-// Warm food-inspired palette — light
 private val LightColors = lightColorScheme(
     primary       = Color(0xFF8B5A00),
     onPrimary     = Color(0xFFFFFFFF),
@@ -62,27 +59,28 @@ private val LightColors = lightColorScheme(
 )
 
 @Composable
-fun TahdigTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
-    content: @Composable () -> Unit,
-) {
-    // Force RTL globally — this app is Farsi-only.
-    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+fun TahdigTheme(content: @Composable () -> Unit) {
+    val themeMode by SettingsStore.themeMode.collectAsState()
+    val systemDark = isSystemInDarkTheme()
 
-        val colorScheme = when {
-            dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-                val context = LocalContext.current
-                if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-            }
-            darkTheme -> DarkColors
-            else      -> LightColors
-        }
-
-        MaterialTheme(
-            colorScheme = colorScheme,
-            typography = TahdigTypography,
-            content = content,
-        )
+    val darkTheme = when (themeMode) {
+        1 -> false  // light
+        2 -> true   // dark
+        else -> systemDark // system
     }
+
+    val colorScheme = when {
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+            val context = LocalContext.current
+            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+        }
+        darkTheme -> DarkColors
+        else      -> LightColors
+    }
+
+    MaterialTheme(
+        colorScheme = colorScheme,
+        typography = TahdigTypography,
+        content = content,
+    )
 }

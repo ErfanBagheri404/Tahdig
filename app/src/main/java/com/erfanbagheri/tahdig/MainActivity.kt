@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -31,11 +32,13 @@ import com.erfanbagheri.tahdig.ui.screen.FavoritesScreen
 import com.erfanbagheri.tahdig.ui.screen.FoodDetailScreen
 import com.erfanbagheri.tahdig.ui.screen.HomeScreen
 import com.erfanbagheri.tahdig.ui.screen.SearchScreen
+import com.erfanbagheri.tahdig.ui.screen.SettingsScreen
 import com.erfanbagheri.tahdig.ui.theme.TahdigTheme
 import com.erfanbagheri.tahdig.ui.viewmodel.FavoritesViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.HistoryViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.HomeViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.SearchViewModel
+import com.erfanbagheri.tahdig.ui.viewmodel.SettingsViewModel
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -85,6 +88,12 @@ private fun TahdigApp() {
                         icon = { Icon(Icons.Default.Favorite, contentDescription = null) },
                         label = { Text("علاقه‌مندی‌ها") },
                     )
+                    NavigationBarItem(
+                        selected = selectedTab == 3,
+                        onClick = { selectedTab = 3 },
+                        icon = { Icon(Icons.Default.Settings, contentDescription = null) },
+                        label = { Text("تنظیمات") },
+                    )
                 }
             }
         },
@@ -95,33 +104,36 @@ private fun TahdigApp() {
                 .padding(padding),
             color = MaterialTheme.colorScheme.background,
         ) {
-            if (detailFoodId >= 0) {
-                FoodDetailScreen(
-                    foodId = detailFoodId,
-                    onBack = { detailFoodId = -1L },
-                )
-            } else {
-                when (selectedTab) {
-                    0 -> {
-                        val vm: HomeViewModel = viewModel()
-                        HomeScreen(viewModel = vm)
-                    }
-                    1 -> {
-                        val vm: SearchViewModel = viewModel()
-                        SearchScreen(
-                            viewModel = vm,
-                            onFoodClick = { detailFoodId = it },
-                        )
-                    }
-                    2 -> {
-                        val fvm: FavoritesViewModel = viewModel()
-                        val hvm: HistoryViewModel = viewModel()
-                        FavoritesScreen(
-                            favoritesViewModel = fvm,
-                            historyViewModel = hvm,
-                            onFoodClick = { detailFoodId = it },
-                        )
-                    }
+            when {
+                detailFoodId >= 0 -> {
+                    FoodDetailScreen(
+                        foodId = detailFoodId,
+                        onBack = { detailFoodId = -1L },
+                    )
+                }
+                selectedTab == 0 -> {
+                    val vm: HomeViewModel = viewModel()
+                    HomeScreen(viewModel = vm)
+                }
+                selectedTab == 1 -> {
+                    val vm: SearchViewModel = viewModel()
+                    SearchScreen(
+                        viewModel = vm,
+                        onFoodClick = { detailFoodId = it },
+                    )
+                }
+                selectedTab == 2 -> {
+                    val fvm: FavoritesViewModel = viewModel()
+                    val hvm: HistoryViewModel = viewModel()
+                    FavoritesScreen(
+                        favoritesViewModel = fvm,
+                        historyViewModel = hvm,
+                        onFoodClick = { detailFoodId = it },
+                    )
+                }
+                selectedTab == 3 -> {
+                    val vm: SettingsViewModel = viewModel()
+                    SettingsScreen(viewModel = vm)
                 }
             }
         }
