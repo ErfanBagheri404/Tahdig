@@ -187,12 +187,23 @@ fun FoodDetailScreen(
                         Spacer(Modifier.height(20.dp))
                         Button(
                             onClick = {
-                                remainingSec = f.prepTimeMin * 60L
-                                running = true
+                                // Toggle: start if idle, else pause/resume — never reset while running.
+                                if (running) {
+                                    running = false
+                                } else {
+                                    if (remainingSec == 0L) remainingSec = f.prepTimeMin * 60L
+                                    running = true
+                                }
                             },
                         ) {
-                            Text(if (running) "زمان باقی: ${mmss(remainingSec)}" else "شروع تایمر آشپزی",
-                                fontFamily = YekanBakh)
+                            Text(
+                                when {
+                                    running -> "زمان باقی: ${mmss(remainingSec)}"
+                                    remainingSec > 0L -> "ادامه تایمر"
+                                    else -> "شروع تایمر آشپزی"
+                                },
+                                fontFamily = YekanBakh,
+                            )
                         }
                     }
 
