@@ -147,15 +147,37 @@ fun SuggestionCard(
     food: com.erfanbagheri.tahdig.data.local.entity.FoodEntity,
     modifier: Modifier = Modifier,
 ) {
+    val accent = com.erfanbagheri.tahdig.util.FoodVisuals.accent(food.categoryId)
+    val emoji = com.erfanbagheri.tahdig.util.FoodVisuals.emoji(food.categoryId)
+
     Column(
         modifier = modifier
             .background(
                 color = MaterialTheme.colorScheme.surface,
                 shape = RoundedCornerShape(20.dp),
-            )
-            .padding(24.dp),
+            ),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        // Hero emoji on accent background
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            color = accent.copy(alpha = 0.15f),
+            shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
+        ) {
+            Text(
+                text = emoji,
+                fontSize = 56.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 24.dp),
+            )
+        }
+
+        Column(
+            modifier = Modifier.padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
         // Food name — big, centered
         Text(
             text = food.name,
@@ -212,6 +234,7 @@ fun SuggestionCard(
                 fontFamily = YekanBakh,
                 modifier = Modifier.fillMaxWidth(),
             )
+        }
         }
     }
 }

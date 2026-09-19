@@ -32,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
 import com.erfanbagheri.tahdig.ui.viewmodel.SearchViewModel
 
@@ -201,6 +202,11 @@ private fun SearchResultItem(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
+                Text(
+                    text = com.erfanbagheri.tahdig.util.FoodVisuals.emoji(food.categoryId),
+                    fontSize = 22.sp,
+                )
+                Spacer(Modifier.width(10.dp))
                 Text(
                     text = food.name,
                     style = MaterialTheme.typography.titleMedium,

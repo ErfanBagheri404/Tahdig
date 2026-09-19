@@ -19,6 +19,7 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
     private val foodDao = db.foodDao()
     private val historyDao = db.historyDao()
     private val favoriteDao = db.favoriteDao()
+    private val categoryDao = db.categoryDao()
 
     // ── current suggestion ──────────────────────────────────────────
     private val _suggestion = MutableStateFlow<FoodEntity?>(null)

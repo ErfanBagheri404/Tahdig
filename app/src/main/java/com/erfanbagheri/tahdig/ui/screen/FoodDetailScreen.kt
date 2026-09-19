@@ -78,6 +78,26 @@ fun FoodDetailScreen(
                         .padding(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
+                    // Hero emoji
+                    val emoji = com.erfanbagheri.tahdig.util.FoodVisuals.emoji(f.categoryId)
+                    val accent = com.erfanbagheri.tahdig.util.FoodVisuals.accent(f.categoryId)
+                    Surface(
+                        modifier = Modifier.fillMaxWidth(),
+                        color = accent.copy(alpha = 0.12f),
+                        shape = RoundedCornerShape(20.dp),
+                    ) {
+                        Text(
+                            text = emoji,
+                            fontSize = 64.sp,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 28.dp),
+                        )
+                    }
+
+                    Spacer(Modifier.height(20.dp))
+
                     Text(
                         text = f.name,
                         style = MaterialTheme.typography.headlineLarge,
