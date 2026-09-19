@@ -110,15 +110,27 @@ fun FavoritesScreen(
 
 @Composable
 private fun EmptyMessage(text: String) {
-    Text(
-        text = text,
-        style = MaterialTheme.typography.bodyLarge,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 48.dp),
-        textAlign = TextAlign.Center,
-    )
+            .padding(top = 64.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Icon(
+            imageVector = Icons.Filled.FavoriteBorder,
+            contentDescription = null,
+            modifier = Modifier.size(48.dp),
+            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
+        )
+        Spacer(Modifier.height(12.dp))
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodyLarge,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+        )
+    }
 }
 
 @Composable
