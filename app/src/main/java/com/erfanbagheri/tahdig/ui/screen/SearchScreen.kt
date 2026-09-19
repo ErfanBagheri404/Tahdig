@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.erfanbagheri.tahdig.util.DietFilter
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
 import com.erfanbagheri.tahdig.ui.viewmodel.SearchViewModel
 
@@ -43,6 +44,7 @@ fun SearchScreen(
 ) {
     val query by viewModel.query.collectAsState()
     val selectedCategoryId by viewModel.selectedCategoryId.collectAsState()
+    val diet by viewModel.diet.collectAsState()
     val categories by viewModel.categories.collectAsState()
     val results by viewModel.results.collectAsState()
 
@@ -123,6 +125,29 @@ fun SearchScreen(
                         label = "${cat.emoji} ${cat.name}",
                         selected = selectedCategoryId == cat.id,
                         onClick = { viewModel.onCategorySelect(cat.id) },
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(8.dp))
+
+            // Dietary filter chips
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                item {
+                    CategoryChip(
+                        label = "رژیمی",
+                        selected = diet == null,
+                        onClick = { viewModel.onDietSelect(null) },
+                    )
+                }
+                items(DietFilter.values().toList()) { d ->
+                    CategoryChip(
+                        label = d.label,
+                        selected = diet == d,
+                        onClick = { viewModel.onDietSelect(d) },
                     )
                 }
             }
