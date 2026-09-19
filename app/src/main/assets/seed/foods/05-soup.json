@@ -1,0 +1,10 @@
+[
+{"id":122,"name":"سوپ سبزیجات","name_en":"Sabzijat Soup","category_id":5,"meal_time":"LUNCH,DINNER,SNACK","cuisine":"IRANI","difficulty":"EASY","prep_time_min":40,"ingredients":"هویج، سیب‌زمینی، کرفس، پیاز","tags":"گیاهی,سوپ","description":"سوپ سبزیجات ساده"},
+{"id":123,"name":"سوپ جو","name_en":"Jo Soup","category_id":5,"meal_time":"LUNCH,DINNER,SNACK","cuisine":"IRANI","difficulty":"EASY","prep_time_min":45,"ingredients":"جو، هویج، کرفس، خامه","tags":"گیاهی,سوپ","description":"سوپ جو خامه‌ای"},
+{"id":124,"name":"سوپ شیر","name_en":"Shir Soup","category_id":5,"meal_time":"LUNCH,DINNER,SNACK","cuisine":"IRANI","difficulty":"EASY","prep_time_min":40,"ingredients":"شیر، آرد، کره، هویج","tags":"گیاهی,سوپ","description":"سوپ شیری هویج"},
+{"id":125,"name":"سوپ مرغ","name_en":"Morgh Soup","category_id":5,"meal_time":"LUNCH,DINNER","cuisine":"IRANI","difficulty":"EASY","prep_time_min":50,"ingredients":"مرغ، رشته، هویج، کرفس","tags":"گوشتی,سوپ","description":"سوپ مرغ با رشته"},
+{"id":126,"name":"سوپ قارچ","name_en":"Garch Soup","category_id":5,"meal_time":"LUNCH,DINNER,SNACK","cuisine":"IRANI","difficulty":"EASY","prep_time_min":35,"ingredients":"قارچ، خامه، پیاز","tags":"گیاهی,سوپ","description":"سوپ قارچ خامه‌ای"},
+{"id":127,"name":"سوپ کدو حلوایی","name_en":"Kadu Halvaei Soup","category_id":5,"meal_time":"LUNCH,DINNER","cuisine":"IRANI","difficulty":"EASY","prep_time_min":40,"ingredients":"کدو حلوایی، پیاز، زنجبیل","tags":"گیاهی,سوپ","description":"سوپ کدو حلوایی پاییزی"},
+{"id":128,"name":"سوپ عدس","name_en":"Adas Soup","category_id":5,"meal_time":"LUNCH,DINNER","cuisine":"IRANI","difficulty":"EASY","prep_time_min":40,"ingredients":"عدس، هویج، پیاز، زردچوبه","tags":"گیاهی,سوپ","description":"سوپ عدس قرمز"},
+{"id":129,"name":"سوپ خیار","name_en":"Khiar Soup","category_id":5,"meal_time":"LUNCH,SNACK","cuisine":"IRANI","difficulty":"EASY","prep_time_min":20,"ingredients":"خیار، ماست، سیر، نعنا","tags":"گیاهی,سوپ,تابستانی","description":"سوپ خیار سرد"}
+]

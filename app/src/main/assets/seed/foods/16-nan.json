@@ -1,0 +1,12 @@
+[
+{"id":270,"name":"نان سنگک","name_en":"Nan Sangak","category_id":16,"meal_time":"BREAKFAST,LUNCH,DINNER","cuisine":"IRANI","difficulty":"HARD","prep_time_min":120,"ingredients":"آرد، خمیرمایه، نمک","tags":"گیاهی,نان,سنتی","description":"نان سنگک پرچم ایران"},
+{"id":271,"name":"نان بربری","name_en":"Nan Barbari","category_id":16,"meal_time":"BREAKFAST,LUNCH,DINNER","cuisine":"IRANI","difficulty":"MEDIUM","prep_time_min":90,"ingredients":"آرد، خمیرمایه، زعفران، نمک","tags":"گیاهی,نان","description":"نان بربری ترد"},
+{"id":272,"name":"نان تافتون","name_en":"Nan Taftoon","category_id":16,"meal_time":"BREAKFAST,LUNCH,DINNER","cuisine":"IRANI","difficulty":"EASY","prep_time_min":60,"ingredients":"آرد، خمیرمایه، نمک","tags":"گیاهی,نان","description":"نان تافتون نرم"},
+{"id":273,"name":"نان لواش","name_en":"Nan Lavash","category_id":16,"meal_time":"BREAKFAST,LUNCH,DINNER","cuisine":"IRANI","difficulty":"EASY","prep_time_min":45,"ingredients":"آرد، آب، نمک","tags":"گیاهی,نان,سریع","description":"نان لواش نازک"},
+{"id":274,"name":"نان بربری زعفرانی","name_en":"Nan Barbari Zaferani","category_id":16,"meal_time":"BREAKFAST,LUNCH,DINNER","cuisine":"IRANI","difficulty":"MEDIUM","prep_time_min":95,"ingredients":"آرد، خمیرمایه، زعفران، کنجد","tags":"گیاهی,نان","description":"نان بربری زعفرانی"},
+{"id":275,"name":"نان باگت","name_en":"Nan Baguette","category_id":16,"meal_time":"BREAKFAST,LUNCH,DINNER","cuisine":"FRENCH","difficulty":"MEDIUM","prep_time_min":120,"ingredients":"آرد، خمیرمایه، نمک","tags":"گیاهی,نان","description":"نان باگت فرانسوی"},
+{"id":276,"name":"نان تست","name_en":"Nan Toast","category_id":16,"meal_time":"BREAKFAST","cuisine":"INTERNATIONAL","difficulty":"EASY","prep_time_min":5,"ingredients":"نان تست","tags":"گیاهی,نان,سریع","description":"نان تست"},
+{"id":277,"name":"نان جو","name_en":"Nan Jo","category_id":16,"meal_time":"BREAKFAST,LUNCH,DINNER","cuisine":"IRANI","difficulty":"EASY","prep_time_min":60,"ingredients":"آرد جو، خمیرمایه","tags":"گیاهی,نان,سالم","description":"نان جو سالم"},
+{"id":278,"name":"سمنو","name_en":"Samanoo","category_id":16,"meal_time":"BREAKFAST,SNACK","cuisine":"IRANI","difficulty":"HARD","prep_time_min":120,"ingredients":"گندم جوانه‌زده","tags":"گیاهی,نان,نوروزی","description":"سمنوی نوروزی"},
+{"id":279,"name":"نان چاپاتی","name_en":"Nan Chapati","category_id":16,"meal_time":"BREAKFAST,LUNCH,DINNER","cuisine":"INDIAN","difficulty":"EASY","prep_time_min":30,"ingredients":"آرد، آب، نمک","tags":"گیاهی,نان","description":"نان چاپاتی هندی"}
+]

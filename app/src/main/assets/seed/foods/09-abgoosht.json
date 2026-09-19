@@ -1,0 +1,9 @@
+[
+{"id":168,"name":"آبگوشت","name_en":"Abgoosht","category_id":9,"meal_time":"LUNCH,DINNER","cuisine":"IRANI","difficulty":"MEDIUM","prep_time_min":150,"ingredients":"گوشت گوسفند، نخود، لوبیا، سیب‌زمینی، گوجه، چغندر","tags":"گوشتی,سنتی","description":"آبگوشت با گوشت و حبوبات"},
+{"id":169,"name":"دیزی","name_en":"Dizi","category_id":9,"meal_time":"LUNCH,DINNER","cuisine":"IRANI","difficulty":"HARD","prep_time_min":180,"ingredients":"گوشت با استخوان، نخود، سیب‌زمینی، گوجه، پیاز","tags":"گوشتی,سنتی","description":"دیزی سنتی سر سنگی"},
+{"id":170,"name":"آبگوشت لوبیا","name_en":"Abgoosht Lubia","category_id":9,"meal_time":"LUNCH,DINNER","cuisine":"IRANI","difficulty":"MEDIUM","prep_time_min":140,"ingredients":"گوشت، لوبیا قرمز، سیب‌زمینی، گوجه","tags":"گوشتی","description":"آبگوشت لوبیا قرمز"},
+{"id":171,"name":"آبگوشت کشک","name_en":"Abgoosht Kashk","category_id":9,"meal_time":"LUNCH,DINNER","cuisine":"IRANI","difficulty":"MEDIUM","prep_time_min":150,"ingredients":"گوشت، نخود، کشک، پیاز","tags":"گوشتی","description":"آبگوشت کشک"},
+{"id":172,"name":"دیزی طعم","name_en":"Dizi Chubak","category_id":9,"meal_time":"LUNCH,DINNER","cuisine":"IRANI","difficulty":"MEDIUM","prep_time_min":150,"ingredients":"گوشت، نخود، لوبیا، سبزی","tags":"گوشتی","description":"دیزی با سبزی"},
+{"id":173,"name":"آبگوشت مرغ","name_en":"Abgoosht Morgh","category_id":9,"meal_time":"LUNCH,DINNER","cuisine":"IRANI","difficulty":"EASY","prep_time_min":100,"ingredients":"مرغ، نخود، سیب‌زمینی، گوجه","tags":"گوشتی","description":"آبگوشت مرغ ساده"},
+{"id":174,"name":"آبگوشت بلغور","name_en":"Abgoosht Balghor","category_id":9,"meal_time":"LUNCH,DINNER","cuisine":"IRANI","difficulty":"EASY","prep_time_min":100,"ingredients":"گوشت، بلغور، نخود، گوجه","tags":"گوشتی","description":"آبگوشت بلغور"}
+]
