@@ -106,6 +106,23 @@ fun SearchScreen(
 
             Spacer(Modifier.height(12.dp))
 
+            // Have-on-hand ingredient search: "what can I cook with X?"
+            val ingredients by viewModel.ingredients.collectAsState()
+            val excluded by viewModel.excluded.collectAsState()
+            IngredientField(
+                value = ingredients,
+                onValueChange = viewModel::onIngredientsChange,
+                label = "مواد در دسترس (با کاما جدا کن)",
+            )
+            Spacer(Modifier.height(8.dp))
+            IngredientField(
+                value = excluded,
+                onValueChange = viewModel::onExcludedChange,
+                label = "مواد نامطلوب (حذف شود)",
+            )
+
+            Spacer(Modifier.height(12.dp))
+
             // Category filter chips
             LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -130,7 +147,7 @@ fun SearchScreen(
             Spacer(Modifier.height(16.dp))
 
             // Results
-            if (results.isEmpty() && query.isNotBlank()) {
+            if (results.isEmpty() && (query.isNotBlank() || ingredients.isNotBlank() || excluded.isNotBlank())) {
                 Text(
                     text = "نتیجه‌ای یافت نشد",
                     style = MaterialTheme.typography.bodyLarge,
@@ -242,4 +259,28 @@ private fun SearchResultItem(
             }
         }
     }
+}
+
+@Composable
+private fun IngredientField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = Modifier.fillMaxWidth(),
+        placeholder = {
+            Text(label, fontFamily = YekanBakh)
+        },
+        singleLine = true,
+        shape = RoundedCornerShape(12.dp),
+        colors = OutlinedTextFieldDefaults.colors(
+            unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+            focusedContainerColor = MaterialTheme.colorScheme.surface,
+        ),
+    )
 }
