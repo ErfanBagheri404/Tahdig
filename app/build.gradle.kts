@@ -16,12 +16,13 @@ val keystoreProps = Properties().apply {
 
 android {
     namespace = "com.erfanbagheri.tahdig"
-    compileSdk = 35
+    compileSdk = 36
+    buildToolsVersion = "36.0.0"
 
     defaultConfig {
         applicationId = "com.erfanbagheri.tahdig"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "0.1.0"
 
