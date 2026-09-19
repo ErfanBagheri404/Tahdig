@@ -1,5 +1,6 @@
 package com.erfanbagheri.tahdig
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -25,8 +26,10 @@ import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.lifecycleScope
+import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
 import com.erfanbagheri.tahdig.data.local.TahdigDatabase
 import com.erfanbagheri.tahdig.ui.screen.FavoritesScreen
 import com.erfanbagheri.tahdig.ui.screen.FoodDetailScreen
@@ -62,6 +65,7 @@ class MainActivity : ComponentActivity() {
 private fun TahdigApp() {
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
     var detailFoodId by rememberSaveable { mutableLongStateOf(-1L) }
+    val context = LocalContext.current
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -109,6 +113,16 @@ private fun TahdigApp() {
                     FoodDetailScreen(
                         foodId = detailFoodId,
                         onBack = { detailFoodId = -1L },
+                        onShare = { food ->
+                            val send = Intent(Intent.ACTION_SEND).apply {
+                                type = "text/plain"
+                                putExtra(Intent.EXTRA_SUBJECT, food.name)
+                                putExtra(Intent.EXTRA_TEXT, shareText(food))
+                            }
+                            context.startActivity(
+                                Intent.createChooser(send, "اشتراک‌گذاری غذا"),
+                            )
+                        },
                     )
                 }
                 selectedTab == 0 -> {
@@ -138,4 +152,20 @@ private fun TahdigApp() {
             }
         }
     }
+}
+
+private fun shareText(food: FoodEntity): String = buildString {
+    appendLine("🍽 ${food.name}")
+    if (food.nameEn.isNotBlank()) appendLine("(${food.nameEn})")
+    appendLine()
+    if (food.ingredients.isNotBlank()) {
+        appendLine("مواد لازم:")
+        appendLine(food.ingredients)
+        appendLine()
+    }
+    if (food.description.isNotBlank()) {
+        appendLine(food.description)
+        appendLine()
+    }
+    append("پیشنهاد از اپلیکیشن ته‌دیگ 🍚")
 }

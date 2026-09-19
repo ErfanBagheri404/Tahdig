@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -44,6 +45,7 @@ import com.erfanbagheri.tahdig.ui.theme.YekanBakh
 fun FoodDetailScreen(
     foodId: Long,
     onBack: () -> Unit,
+    onShare: (FoodEntity) -> Unit = {},
 ) {
     val context = LocalContext.current.applicationContext
     var food by remember { mutableStateOf<FoodEntity?>(null) }
@@ -63,6 +65,16 @@ fun FoodDetailScreen(
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "بازگشت")
+                    }
+                },
+                actions = {
+                    if (food != null) {
+                        IconButton(onClick = { onShare(food!!) }) {
+                            Icon(
+                                imageVector = Icons.Default.Share,
+                                contentDescription = "اشتراک‌گذاری",
+                            )
+                        }
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
