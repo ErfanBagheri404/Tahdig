@@ -4,12 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -39,6 +33,7 @@ import com.erfanbagheri.tahdig.ui.screen.HomeScreen
 import com.erfanbagheri.tahdig.ui.screen.SearchScreen
 import com.erfanbagheri.tahdig.ui.theme.TahdigTheme
 import com.erfanbagheri.tahdig.ui.viewmodel.FavoritesViewModel
+import com.erfanbagheri.tahdig.ui.viewmodel.HistoryViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.HomeViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.SearchViewModel
 import kotlinx.coroutines.launch
@@ -119,9 +114,11 @@ private fun TahdigApp() {
                         )
                     }
                     2 -> {
-                        val vm: FavoritesViewModel = viewModel()
+                        val fvm: FavoritesViewModel = viewModel()
+                        val hvm: HistoryViewModel = viewModel()
                         FavoritesScreen(
-                            viewModel = vm,
+                            favoritesViewModel = fvm,
+                            historyViewModel = hvm,
                             onFoodClick = { detailFoodId = it },
                         )
                     }

@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Block
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -33,28 +32,31 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
 import com.erfanbagheri.tahdig.ui.viewmodel.FavoritesViewModel
+import com.erfanbagheri.tahdig.ui.viewmodel.HistoryViewModel
 
 @Composable
 fun FavoritesScreen(
-    viewModel: FavoritesViewModel,
+    favoritesViewModel: FavoritesViewModel,
+    historyViewModel: HistoryViewModel,
     onFoodClick: (Long) -> Unit = {},
 ) {
-    val favoritedFoods by viewModel.favoritedFoods.collectAsState()
-    val blockedFoods by viewModel.blockedFoods.collectAsState()
+    val favoritedFoods by favoritesViewModel.favoritedFoods.collectAsState()
+    val blockedFoods by favoritesViewModel.blockedFoods.collectAsState()
+    val historyItems by historyViewModel.historyItems.collectAsState()
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
 
-    val tabs = listOf("علاقه‌مندی‌ها", "مسدود شده‌ها")
-    val items = if (selectedTab == 0) favoritedFoods else blockedFoods
+    val tabs = listOf("علاقه‌مندی‌ها", "مسدود شده‌ها", "تاریخچه")
 
     Column(modifier = Modifier.fillMaxSize()) {
         Spacer(Modifier.height(48.dp))
 
         Text(
-            text = "علاقه‌مندی‌ها",
+            text = tabs[selectedTab],
             style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.padding(horizontal = 20.dp),
@@ -76,30 +78,95 @@ fun FavoritesScreen(
             }
         }
 
-        if (items.isEmpty()) {
-            Text(
-                text = if (selectedTab == 0) "غذای مورد علاقه‌ای ثبت نشده" else "غذای مسدود شده‌ای نیست",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+        when (selectedTab) {
+            0 -> {
+                if (favoritedFoods.isEmpty()) EmptyMessage("غذای مورد علاقه‌ای ثبت نشده")
+                else FavoriteList(
+                    foods = favoritedFoods,
+                    isBlocked = false,
+                    onRemove = { favoritesViewModel.removeFavorite(it) },
+                    onClick = onFoodClick,
+                )
+            }
+            1 -> {
+                if (blockedFoods.isEmpty()) EmptyMessage("غذای مسدود شده‌ای نیست")
+                else FavoriteList(
+                    foods = blockedFoods,
+                    isBlocked = true,
+                    onRemove = { favoritesViewModel.unblock(it) },
+                    onClick = onFoodClick,
+                )
+            }
+            2 -> {
+                if (historyItems.isEmpty()) EmptyMessage("تاریخچه‌ای ثبت نشده")
+                else HistoryList(
+                    items = historyItems,
+                    onClick = onFoodClick,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun EmptyMessage(text: String) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.bodyLarge,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 48.dp),
+        textAlign = TextAlign.Center,
+    )
+}
+
+@Composable
+private fun HistoryList(
+    items: List<com.erfanbagheri.tahdig.data.local.entity.HistoryWithFood>,
+    onClick: (Long) -> Unit,
+) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
+        items(items, key = { it.history.id }) { item ->
+            Surface(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 48.dp),
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-            )
-        } else {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                    .clickable { onClick(item.food.id) },
+                shape = RoundedCornerShape(10.dp),
+                color = MaterialTheme.colorScheme.surface,
             ) {
-                items(items, key = { it.id }) { food ->
-                    FavoriteItem(
-                        food = food,
-                        isBlocked = selectedTab == 1,
-                        onRemove = {
-                            if (selectedTab == 0) viewModel.removeFavorite(food.id)
-                            else viewModel.unblock(food.id)
-                        },
-                        onClick = { onFoodClick(food.id) },
+                Row(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = item.food.name,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontFamily = YekanBakh,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                        if (item.food.description.isNotBlank()) {
+                            Spacer(Modifier.height(2.dp))
+                            Text(
+                                text = item.food.description,
+                                style = MaterialTheme.typography.bodySmall,
+                                fontFamily = YekanBakh,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                maxLines = 1,
+                            )
+                        }
+                    }
+                    Spacer(Modifier.width(8.dp))
+                    Text(
+                        text = formatRelativeTime(item.history.timestamp),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
             }
@@ -107,50 +174,69 @@ fun FavoritesScreen(
     }
 }
 
+private fun formatRelativeTime(ts: Long): String {
+    val diff = System.currentTimeMillis() - ts
+    return when {
+        diff < 60_000L -> "اکنون"
+        diff < 3_600_000L -> "${diff / 60_000} دقیقه پیش"
+        diff < 86_400_000L -> "${diff / 3_600_000} ساعت پیش"
+        else -> "${diff / 86_400_000} روز پیش"
+    }
+}
+
 @Composable
-private fun FavoriteItem(
-    food: FoodEntity,
+private fun FavoriteList(
+    foods: List<FoodEntity>,
     isBlocked: Boolean,
-    onRemove: () -> Unit,
-    onClick: () -> Unit,
+    onRemove: (Long) -> Unit,
+    onClick: (Long) -> Unit,
 ) {
-    Surface(
+    LazyColumn(
         modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick),
-        shape = RoundedCornerShape(12.dp),
-        color = MaterialTheme.colorScheme.surface,
+            .fillMaxSize()
+            .padding(horizontal = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = food.name,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontFamily = YekanBakh,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-                if (food.description.isNotBlank()) {
-                    Spacer(Modifier.height(2.dp))
-                    Text(
-                        text = food.description,
-                        style = MaterialTheme.typography.bodySmall,
-                        fontFamily = YekanBakh,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 1,
-                    )
+        items(foods, key = { it.id }) { food ->
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onClick(food.id) },
+                shape = RoundedCornerShape(12.dp),
+                color = MaterialTheme.colorScheme.surface,
+            ) {
+                Row(
+                    modifier = Modifier.padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = food.name,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontFamily = YekanBakh,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                        if (food.description.isNotBlank()) {
+                            Spacer(Modifier.height(2.dp))
+                            Text(
+                                text = food.description,
+                                style = MaterialTheme.typography.bodySmall,
+                                fontFamily = YekanBakh,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                maxLines = 1,
+                            )
+                        }
+                    }
+                    Spacer(Modifier.width(8.dp))
+                    IconButton(onClick = { onRemove(food.id) }) {
+                        Icon(
+                            imageVector = if (isBlocked) Icons.Default.Block else Icons.Default.FavoriteBorder,
+                            contentDescription = if (isBlocked) "رفع مسدود" else "حذف از علاقه‌مندی‌ها",
+                            tint = if (isBlocked) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.size(24.dp),
+                        )
+                    }
                 }
-            }
-            Spacer(Modifier.width(8.dp))
-            IconButton(onClick = onRemove) {
-                Icon(
-                    imageVector = if (isBlocked) Icons.Default.Block else Icons.Default.FavoriteBorder,
-                    contentDescription = if (isBlocked) "رفع مسدود" else "حذف از علاقه‌مندی‌ها",
-                    tint = if (isBlocked) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(24.dp),
-                )
             }
         }
     }
