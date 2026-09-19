@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -33,12 +34,14 @@ import com.erfanbagheri.tahdig.ui.screen.FoodDetailScreen
 import com.erfanbagheri.tahdig.ui.screen.HomeScreen
 import com.erfanbagheri.tahdig.ui.screen.SearchScreen
 import com.erfanbagheri.tahdig.ui.screen.SettingsScreen
+import com.erfanbagheri.tahdig.ui.screen.ShoppingListScreen
 import com.erfanbagheri.tahdig.ui.theme.TahdigTheme
 import com.erfanbagheri.tahdig.ui.viewmodel.FavoritesViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.HistoryViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.HomeViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.SearchViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.SettingsViewModel
+import com.erfanbagheri.tahdig.ui.viewmodel.ShoppingViewModel
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -91,6 +94,12 @@ private fun TahdigApp() {
                     NavigationBarItem(
                         selected = selectedTab == 3,
                         onClick = { selectedTab = 3 },
+                        icon = { Icon(Icons.Default.ShoppingCart, contentDescription = null) },
+                        label = { Text("لیست خرید") },
+                    )
+                    NavigationBarItem(
+                        selected = selectedTab == 4,
+                        onClick = { selectedTab = 4 },
                         icon = { Icon(Icons.Default.Settings, contentDescription = null) },
                         label = { Text("تنظیمات") },
                     )
@@ -106,9 +115,14 @@ private fun TahdigApp() {
         ) {
             when {
                 detailFoodId >= 0 -> {
+                    val svm: ShoppingViewModel = viewModel()
                     FoodDetailScreen(
                         foodId = detailFoodId,
                         onBack = { detailFoodId = -1L },
+                        onAddToShoppingList = { id, ingredients ->
+                            svm.addIngredients(id, ingredients)
+                            detailFoodId = -1L
+                        },
                     )
                 }
                 selectedTab == 0 -> {
@@ -132,6 +146,10 @@ private fun TahdigApp() {
                     )
                 }
                 selectedTab == 3 -> {
+                    val vm: ShoppingViewModel = viewModel()
+                    ShoppingListScreen(viewModel = vm)
+                }
+                selectedTab == 4 -> {
                     val vm: SettingsViewModel = viewModel()
                     SettingsScreen(viewModel = vm)
                 }

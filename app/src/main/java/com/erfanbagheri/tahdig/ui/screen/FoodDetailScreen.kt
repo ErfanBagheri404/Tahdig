@@ -9,11 +9,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -44,6 +48,7 @@ import com.erfanbagheri.tahdig.ui.theme.YekanBakh
 fun FoodDetailScreen(
     foodId: Long,
     onBack: () -> Unit,
+    onAddToShoppingList: (Long, String) -> Unit = { _, _ -> },
 ) {
     val context = LocalContext.current.applicationContext
     var food by remember { mutableStateOf<FoodEntity?>(null) }
@@ -161,6 +166,19 @@ fun FoodDetailScreen(
                             color = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.fillMaxWidth(),
                         )
+                        Spacer(Modifier.height(12.dp))
+                        Button(
+                            onClick = { onAddToShoppingList(f.id, f.ingredients) },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.ShoppingCart,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp),
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            Text("افزودن به لیست خرید", fontFamily = YekanBakh)
+                        }
                     }
 
                     if (f.tags.isNotBlank()) {
