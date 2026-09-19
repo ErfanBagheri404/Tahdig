@@ -53,9 +53,11 @@ fun FoodDetailScreen(
     val context = LocalContext.current.applicationContext
     var food by remember { mutableStateOf<FoodEntity?>(null) }
 
+    val recentViewDao = TahdigDatabase.getInstance(context).recentViewDao()
     LaunchedEffect(foodId) {
         val db = TahdigDatabase.getInstance(context)
         food = db.foodDao().getById(foodId)
+        food?.let { recentViewDao.recordView(it.id) }
     }
 
     Surface(

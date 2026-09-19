@@ -9,11 +9,13 @@ import com.erfanbagheri.tahdig.data.local.dao.FavoriteDao
 import com.erfanbagheri.tahdig.data.local.dao.FoodDao
 import com.erfanbagheri.tahdig.data.local.dao.HistoryDao
 import com.erfanbagheri.tahdig.data.local.dao.RatingDao
+import com.erfanbagheri.tahdig.data.local.dao.RecentViewDao
 import com.erfanbagheri.tahdig.data.local.entity.CategoryEntity
 import com.erfanbagheri.tahdig.data.local.entity.FavoriteEntity
 import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
 import com.erfanbagheri.tahdig.data.local.entity.HistoryEntity
 import com.erfanbagheri.tahdig.data.local.entity.RatingEntity
+import com.erfanbagheri.tahdig.data.local.entity.RecentViewEntity
 import com.erfanbagheri.tahdig.data.local.seed.SeedLoader
 
 @Database(
@@ -23,8 +25,9 @@ import com.erfanbagheri.tahdig.data.local.seed.SeedLoader
         FavoriteEntity::class,
         HistoryEntity::class,
         RatingEntity::class,
+        RecentViewEntity::class,
     ],
-    version = 2,
+    version = 3,
     exportSchema = true,
 )
 abstract class TahdigDatabase : RoomDatabase() {
@@ -34,6 +37,7 @@ abstract class TahdigDatabase : RoomDatabase() {
     abstract fun historyDao(): HistoryDao
     abstract fun favoriteDao(): FavoriteDao
     abstract fun ratingDao(): RatingDao
+    abstract fun recentViewDao(): RecentViewDao
 
     companion object {
         private const val DB_NAME = "tahdig.db"
