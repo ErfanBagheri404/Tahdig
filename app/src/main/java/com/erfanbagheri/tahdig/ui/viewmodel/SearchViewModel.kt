@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.erfanbagheri.tahdig.data.local.TahdigDatabase
 import com.erfanbagheri.tahdig.data.local.entity.CategoryEntity
 import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
+import com.erfanbagheri.tahdig.util.PersianText
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -61,15 +62,18 @@ class SearchViewModel(app: Application) : AndroidViewModel(app) {
         _selectedCategoryId.value = if (_selectedCategoryId.value == categoryId) null else categoryId
     }
 
-    /** Keep dishes matching all required ingredients and none of the excluded terms. */
+    /**
+     * Keep dishes matching all required ingredients and none of the excluded terms.
+     * Both sides go through [PersianText.normalize] so ZWNJ / Arabic-Kaf / Yeh variants match.
+     */
     private fun filterByIngredients(foods: List<FoodEntity>, include: String, exclude: String): List<FoodEntity> {
-        val must = include.split(',', '،').map { it.trim() }.filter { it.isNotEmpty() }
-        val mustNot = exclude.split(',', '،').map { it.trim() }.filter { it.isNotEmpty() }
+        fun terms(raw: String) = raw.split(',', '،').map { PersianText.normalize(it) }.filter { it.isNotEmpty() }
+        val must = terms(include)
+        val mustNot = terms(exclude)
         if (must.isEmpty() && mustNot.isEmpty()) return foods
         return foods.filter { food ->
-            val hay = food.ingredients.lowercase()
-            must.all { hay.contains(it.lowercase()) } &&
-                mustNot.none { hay.contains(it.lowercase()) }
+            val hay = PersianText.normalize(food.ingredients)
+            must.all { hay.contains(it) } && mustNot.none { hay.contains(it) }
         }
     }
 }
