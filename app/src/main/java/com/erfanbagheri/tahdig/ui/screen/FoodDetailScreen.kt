@@ -1,5 +1,6 @@
 package com.erfanbagheri.tahdig.ui.screen
 
+import android.speech.tts.TextToSpeech
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,11 +10,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.VolumeUp
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -23,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,6 +44,7 @@ import androidx.compose.ui.unit.sp
 import com.erfanbagheri.tahdig.data.local.TahdigDatabase
 import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,6 +58,18 @@ fun FoodDetailScreen(
     LaunchedEffect(foodId) {
         val db = TahdigDatabase.getInstance(context)
         food = db.foodDao().getById(foodId)
+    }
+
+    val appContext = context.applicationContext
+    var tts: TextToSpeech? = null
+    tts = remember(appContext) {
+        TextToSpeech(appContext) { status ->
+            val engine = tts ?: return@TextToSpeech
+            engine.language = if (status == TextToSpeech.SUCCESS) Locale("fa", "IR") else Locale.US
+        }
+    }
+    DisposableEffect(Unit) {
+        onDispose { tts?.stop(); tts?.shutdown() }
     }
 
     Surface(
@@ -180,6 +199,17 @@ fun FoodDetailScreen(
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.fillMaxWidth(),
                         )
+                    }
+
+                    Spacer(Modifier.height(24.dp))
+                    Button(onClick = { tts?.speak(f.ingredients, TextToSpeech.QUEUE_FLUSH, null, "tahdig") }) {
+                        Icon(
+                            imageVector = Icons.Filled.VolumeUp,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp),
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Text("گوش دادن به مواد", fontFamily = YekanBakh)
                     }
 
                     Spacer(Modifier.height(48.dp))
