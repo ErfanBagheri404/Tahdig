@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FoodDao {
-
     @Query("SELECT * FROM foods WHERE is_blocked = 0 ORDER BY name")
     fun observeAll(): Flow<List<FoodEntity>>
 
@@ -50,4 +49,29 @@ interface FoodDao {
 
     @Query("UPDATE foods SET is_blocked = :blocked WHERE id = :id")
     suspend fun setBlocked(id: Long, blocked: Boolean)
+
+    // ── Search & filter ──────────────────────────────────────────
+
+    /** Search by name (Farsi or English) + optional category filter. */
+    @Query(
+        """
+        SELECT * FROM foods
+        WHERE is_blocked = 0
+          AND (:query = '' OR name LIKE '%' || :query || '%' OR name_en LIKE '%' || :query || '%')
+          AND (:categoryId IS NULL OR category_id = :categoryId)
+        ORDER BY name
+        """
+    )
+    fun search(query: String, categoryId: Long?): Flow<List<FoodEntity>>
+
+    /** Search by name only (no category filter). */
+    @Query(
+        """
+        SELECT * FROM foods
+        WHERE is_blocked = 0
+          AND (:query = '' OR name LIKE '%' || :query || '%' OR name_en LIKE '%' || :query || '%')
+        ORDER BY name
+        """
+    )
+    fun searchByName(query: String): Flow<List<FoodEntity>>
 }
