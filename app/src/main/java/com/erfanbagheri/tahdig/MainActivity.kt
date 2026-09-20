@@ -33,6 +33,7 @@ import com.erfanbagheri.tahdig.ui.screen.FoodDetailScreen
 import com.erfanbagheri.tahdig.ui.screen.HomeScreen
 import com.erfanbagheri.tahdig.ui.screen.SearchScreen
 import com.erfanbagheri.tahdig.ui.screen.SettingsScreen
+import com.erfanbagheri.tahdig.ui.screen.StepModeScreen
 import com.erfanbagheri.tahdig.ui.theme.TahdigTheme
 import com.erfanbagheri.tahdig.ui.viewmodel.FavoritesViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.HistoryViewModel
@@ -62,6 +63,7 @@ class MainActivity : ComponentActivity() {
 private fun TahdigApp() {
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
     var detailFoodId by rememberSaveable { mutableLongStateOf(-1L) }
+    var stepModeFoodId by rememberSaveable { mutableLongStateOf(-1L) }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -105,6 +107,12 @@ private fun TahdigApp() {
             color = MaterialTheme.colorScheme.background,
         ) {
             when {
+                stepModeFoodId >= 0 -> {
+                    StepModeScreen(
+                        foodId = stepModeFoodId,
+                        onBack = { stepModeFoodId = -1L },
+                    )
+                }
                 detailFoodId >= 0 -> {
                     FoodDetailScreen(
                         foodId = detailFoodId,
