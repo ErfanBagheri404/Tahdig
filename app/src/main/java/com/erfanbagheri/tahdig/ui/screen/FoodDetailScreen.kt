@@ -143,6 +143,10 @@ fun FoodDetailScreen(
                             if (f.difficulty.isNotBlank()) {
                                 DetailChip("سختی: ${f.difficulty}")
                             }
+                            val spiceLevel = com.erfanbagheri.tahdig.util.SpiceProfile.level(f.tags, f.ingredients, f.name)
+                            if (spiceLevel > 0) {
+                                DetailChip(com.erfanbagheri.tahdig.util.SpiceProfile.label(spiceLevel))
+                            }
                         }
                     }
 
