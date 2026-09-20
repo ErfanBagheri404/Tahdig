@@ -34,6 +34,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
 import com.erfanbagheri.tahdig.ui.viewmodel.HomeViewModel
 
@@ -152,6 +154,7 @@ fun SuggestionCard(
 
     Column(
         modifier = modifier
+            .semantics { contentDescription = "پیشنهاد غذا: ${food.name}" }
             .background(
                 color = MaterialTheme.colorScheme.surface,
                 shape = RoundedCornerShape(20.dp),

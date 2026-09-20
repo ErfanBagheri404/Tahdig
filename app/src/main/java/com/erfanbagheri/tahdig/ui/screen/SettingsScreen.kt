@@ -159,7 +159,7 @@ private fun ThemeOption(
             if (selected) {
                 Icon(
                     imageVector = Icons.Default.Check,
-                    contentDescription = null,
+                    contentDescription = "انتخاب‌شده",
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(20.dp),
                 )

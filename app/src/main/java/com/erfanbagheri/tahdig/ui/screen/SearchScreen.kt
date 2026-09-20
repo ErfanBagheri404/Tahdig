@@ -89,7 +89,7 @@ fun SearchScreen(
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Default.Search,
-                        contentDescription = null,
+                        contentDescription = "جستجو",
                     )
                 },
                 trailingIcon = {
