@@ -50,13 +50,19 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /** Pick today's dish from the day-of-year index — no DB change, no extra screen. */
-    private fun loadDishOfDay() {
+    fun loadDishOfDay() {
         viewModelScope.launch {
             val all = foodDao.observeAll().first()
             if (all.isNotEmpty()) {
                 _dishOfDay.value = all[LocalDate.now().dayOfYear % all.size]
             }
         }
+    }
+
+    /** Refresh day-dependent state (call on foreground/resume) — midnight-safe. */
+    fun refreshDay() {
+        refreshMealLabel()
+        loadDishOfDay()
     }
 
     /** Re-read meal bucket (call from a timer or recomposition). */
