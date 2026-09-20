@@ -155,7 +155,8 @@ fun SearchScreen(
             Spacer(Modifier.height(16.dp))
 
             // Results
-            if (results.isEmpty() && query.isNotBlank()) {
+            val filtering = query.isNotBlank() || selectedCategoryId != null || diet != null
+            if (results.isEmpty() && filtering) {
                 Text(
                     text = "نتیجه‌ای یافت نشد",
                     style = MaterialTheme.typography.bodyLarge,
