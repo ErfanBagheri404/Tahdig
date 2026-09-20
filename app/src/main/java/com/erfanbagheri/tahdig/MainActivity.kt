@@ -82,10 +82,15 @@ private fun TahdigApp() {
     val restoreLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.OpenDocument(),
     ) { uri -> uri?.let {
-        BackupRestore.restore(context, it)
-        // Restart the process so Room re-opens the restored DB fresh
-        context.startActivity(context.packageManager.getLaunchIntentForPackage(context.packageName))
-        (context as? Activity)?.finish()
+        // Only restart when the restore actually replaced the DB; a bad pick leaves it intact.
+        if (BackupRestore.restore(context, it)) {
+            context.startActivity(context.packageManager.getLaunchIntentForPackage(context.packageName))
+            (context as? Activity)?.finish()
+        } else {
+            android.widget.Toast.makeText(
+                context, "فایل پشتیبان معتبر نیست", android.widget.Toast.LENGTH_LONG,
+            ).show()
+        }
     } }
 
     // Onboarding gate — first launch only
