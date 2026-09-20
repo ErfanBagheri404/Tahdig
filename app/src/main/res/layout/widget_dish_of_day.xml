@@ -6,6 +6,7 @@
     android:orientation="vertical"
     android:gravity="center"
     android:padding="12dp"
+    android:contentDescription="غذای امروز، برای باز کردن برنامه لمس کنید"
     android:background="#1F1B16">
 
     <TextView
@@ -23,6 +24,7 @@
         android:text="طاق دیگ"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:contentDescription="نام غذای امروز" />
 
 </LinearLayout>

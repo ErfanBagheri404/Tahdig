@@ -1,14 +1,18 @@
 package com.erfanbagheri.tahdig.widget
 
+import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
+import android.content.Intent
 import android.widget.RemoteViews
+import com.erfanbagheri.tahdig.MainActivity
 import com.erfanbagheri.tahdig.R
 import com.erfanbagheri.tahdig.data.local.TahdigDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 /** Home-screen widget showing the dish of the day. Tap opens the app. */
 class DishOfDayWidget : AppWidgetProvider() {
@@ -20,16 +24,14 @@ class DishOfDayWidget : AppWidgetProvider() {
         val pendingResult = goAsync()
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val db = TahdigDatabase.getInstance(context)
-                val name = db.foodDao().randomAny(1).firstOrNull()?.name ?: "طاق دیگ"
                 val views = RemoteViews(context.packageName, R.layout.widget_dish_of_day).apply {
-                    setTextViewText(R.id.widget_dish_name, name)
+                    setTextViewText(R.id.widget_dish_name, dishOfTheDay(context))
                     setOnClickPendingIntent(
                         R.id.widget_root,
-                        android.app.PendingIntent.getActivity(
+                        PendingIntent.getActivity(
                             context, 0,
-                            android.content.Intent(context, com.erfanbagheri.tahdig.MainActivity::class.java),
-                            android.app.PendingIntent.FLAG_IMMUTABLE or android.app.PendingIntent.FLAG_UPDATE_CURRENT,
+                            Intent(context, MainActivity::class.java),
+                            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
                         ),
                     )
                 }
@@ -38,5 +40,18 @@ class DishOfDayWidget : AppWidgetProvider() {
                 pendingResult.finish()
             }
         }
+    }
+
+    /**
+     * Same deterministic pick as the home screen: day-of-year modulo the food count.
+     * Must stay in sync with HomeViewModel.loadDishOfDay(), otherwise the widget and the
+     * app disagree about what "today's dish" is.
+     */
+    private suspend fun dishOfTheDay(context: Context): String {
+        val dao = TahdigDatabase.getInstance(context).foodDao()
+        val count = runCatching { dao.count() }.getOrDefault(0)
+        if (count <= 0) return "طاق دیگ"
+        val index = LocalDate.now().dayOfYear % count
+        return runCatching { dao.byIndex(index)?.name }.getOrNull() ?: "طاق دیگ"
     }
 }
