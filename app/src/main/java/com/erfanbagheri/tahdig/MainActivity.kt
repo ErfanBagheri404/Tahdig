@@ -117,6 +117,7 @@ private fun TahdigApp() {
                     FoodDetailScreen(
                         foodId = detailFoodId,
                         onBack = { detailFoodId = -1L },
+                        onStartStepMode = { id -> detailFoodId = -1L; stepModeFoodId = id },
                     )
                 }
                 selectedTab == 0 -> {

@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -45,6 +46,7 @@ import com.erfanbagheri.tahdig.ui.theme.YekanBakh
 fun FoodDetailScreen(
     foodId: Long,
     onBack: () -> Unit,
+    onStartStepMode: (Long) -> Unit = {},
 ) {
     val context = LocalContext.current.applicationContext
     var food by remember { mutableStateOf<FoodEntity?>(null) }
@@ -211,6 +213,11 @@ fun FoodDetailScreen(
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.fillMaxWidth(),
                         )
+                    }
+
+                    Spacer(Modifier.height(16.dp))
+                    Button(onClick = { onStartStepMode(f.id) }) {
+                        Text("حالت پخت مرحله‌به‌مرحله", fontFamily = YekanBakh)
                     }
 
                     Spacer(Modifier.height(48.dp))
