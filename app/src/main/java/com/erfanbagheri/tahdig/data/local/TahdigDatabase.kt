@@ -49,7 +49,17 @@ abstract class TahdigDatabase : RoomDatabase() {
         private fun build(context: Context): TahdigDatabase =
             Room.databaseBuilder(context, TahdigDatabase::class.java, DB_NAME)
                 .addCallback(SeedCallback(context))
+                // ponytail: pre-release only — no shipped users yet.
+                .fallbackToDestructiveMigration()
                 .build()
+
+        /** Close the live DB instance so backup/restore can safely overwrite the file. */
+        fun closeInstance() {
+            synchronized(this) {
+                instance?.close()
+                instance = null
+            }
+        }
 
         /**
          * Loads assets/seed JSON files on first creation only.

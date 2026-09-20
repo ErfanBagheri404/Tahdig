@@ -1,9 +1,12 @@
 package com.erfanbagheri.tahdig
 
 import android.os.Bundle
+import android.app.Activity
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -27,6 +30,7 @@ import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.lifecycleScope
 import com.erfanbagheri.tahdig.data.local.TahdigDatabase
@@ -45,6 +49,7 @@ import com.erfanbagheri.tahdig.ui.viewmodel.HistoryViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.HomeViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.SearchViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.SettingsViewModel
+import com.erfanbagheri.tahdig.util.BackupRestore
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -68,6 +73,20 @@ class MainActivity : ComponentActivity() {
 private fun TahdigApp() {
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
     var detailFoodId by rememberSaveable { mutableLongStateOf(-1L) }
+    val context = LocalContext.current
+
+    // Backup/restore SAF launchers
+    val backupLauncher = androidx.activity.compose.rememberLauncherForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.CreateDocument("application/octet-stream"),
+    ) { uri -> uri?.let { BackupRestore.backup(context, it) } }
+    val restoreLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocument(),
+    ) { uri -> uri?.let {
+        BackupRestore.restore(context, it)
+        // Restart the process so Room re-opens the restored DB fresh
+        context.startActivity(context.packageManager.getLaunchIntentForPackage(context.packageName))
+        (context as? Activity)?.finish()
+    } }
 
     // Onboarding gate — first launch only
     val onboarded by com.erfanbagheri.tahdig.data.prefs.SettingsStore.onboarded.collectAsState()
@@ -152,7 +171,11 @@ private fun TahdigApp() {
                 }
                 selectedTab == 3 -> {
                     val vm: SettingsViewModel = viewModel()
-                    SettingsScreen(viewModel = vm)
+                    SettingsScreen(
+                        viewModel = vm,
+                        onBackup = { backupLauncher.launch("tahdig-backup.db") },
+                        onRestore = { restoreLauncher.launch(arrayOf("*/*")) },
+                    )
                 }
                 selectedTab == 4 -> {
                     val vm: MealPlanViewModel = viewModel()

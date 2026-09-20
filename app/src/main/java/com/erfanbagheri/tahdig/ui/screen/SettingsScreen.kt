@@ -31,6 +31,8 @@ import com.erfanbagheri.tahdig.ui.viewmodel.SettingsViewModel
 @Composable
 fun SettingsScreen(
     viewModel: SettingsViewModel,
+    onBackup: () -> Unit = {},
+    onRestore: () -> Unit = {},
 ) {
     val themeMode by viewModel.themeMode.collectAsState()
 
@@ -93,8 +95,37 @@ fun SettingsScreen(
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
 
+        // Backup / Restore section
+        Spacer(Modifier.height(32.dp))
+
+        Text(
+            text = "پشتیبان‌گیری",
+            style = MaterialTheme.typography.titleMedium,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+
+        Spacer(Modifier.height(8.dp))
+
+        BackupRestoreRow("ذخیره پشتیبان", onBackup)
+        BackupRestoreRow("بازیابی پشتیبان", onRestore)
+
         Spacer(Modifier.height(48.dp))
     }
+}
+
+@Composable
+private fun BackupRestoreRow(label: String, onClick: () -> Unit) {
+    Text(
+        text = label,
+        style = MaterialTheme.typography.bodyLarge,
+        fontFamily = YekanBakh,
+        color = MaterialTheme.colorScheme.primary,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(vertical = 12.dp),
+    )
 }
 
 @Composable
