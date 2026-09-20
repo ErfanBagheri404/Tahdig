@@ -26,6 +26,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -102,6 +105,10 @@ private fun ShoppingRow(
     onToggle: (Boolean) -> Unit,
     onDelete: () -> Unit,
 ) {
+    // Optimistic local check so rapid taps never read a stale Room value.
+    var localChecked by remember(item.id) { mutableStateOf<Boolean?>(null) }
+    val checked = localChecked ?: item.isChecked
+
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(10.dp),
@@ -112,21 +119,27 @@ private fun ShoppingRow(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Checkbox(
-                checked = item.isChecked,
-                onCheckedChange = { checked -> onToggle(checked) },
+                checked = checked,
+                onCheckedChange = { target ->
+                    localChecked = target
+                    onToggle(target)
+                },
             )
             Text(
                 text = item.item,
                 style = MaterialTheme.typography.bodyLarge,
                 fontFamily = YekanBakh,
-                color = if (item.isChecked)
+                color = if (checked)
                     MaterialTheme.colorScheme.onSurfaceVariant
                 else
                     MaterialTheme.colorScheme.onSurface,
-                textDecoration = if (item.isChecked) TextDecoration.LineThrough else null,
+                textDecoration = if (checked) TextDecoration.LineThrough else null,
                 modifier = Modifier
                     .weight(1f)
-                    .clickable { onToggle(!item.isChecked) },
+                    .clickable {
+                        localChecked = !checked
+                        onToggle(!checked)
+                    },
             )
             Spacer(Modifier.width(4.dp))
             IconButton(onClick = onDelete) {
