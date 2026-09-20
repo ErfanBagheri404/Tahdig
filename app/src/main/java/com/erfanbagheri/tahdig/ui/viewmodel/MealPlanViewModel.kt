@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.erfanbagheri.tahdig.data.local.TahdigDatabase
 import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
+import com.erfanbagheri.tahdig.data.local.entity.MealPlanEntity
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -30,6 +31,11 @@ class MealPlanViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch { mealPlanDao.clearSlot(dayIndex, slot) }
     }
 
-    fun observeSlots(dayIndex: Int): StateFlow<List<com.erfanbagheri.tahdig.data.local.entity.MealPlanEntity>> =
-        mealPlanDao.observePlan().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    // One cached flow per day so switching days reuses the same subscription
+    private val slotCache = mutableMapOf<Int, StateFlow<List<MealPlanEntity>>>()
+
+    fun observeSlots(dayIndex: Int): StateFlow<List<MealPlanEntity>> = slotCache.getOrPut(dayIndex) {
+        mealPlanDao.observeSlotsForDay(dayIndex)
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    }
 }

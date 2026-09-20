@@ -19,6 +19,10 @@ interface MealPlanDao {
     @Query("SELECT * FROM meal_plan")
     fun observePlan(): Flow<List<MealPlanEntity>>
 
+    /** Slot rows for one day (avoids pushing the whole-week plan through every day view). */
+    @Query("SELECT * FROM meal_plan WHERE dayIndex = :dayIndex")
+    fun observeSlotsForDay(dayIndex: Int): Flow<List<MealPlanEntity>>
+
     /** Planned dishes for a day, joined with their food rows. */
     @Query("SELECT * FROM foods WHERE id IN (SELECT foodId FROM meal_plan WHERE dayIndex = :dayIndex)")
     fun foodsForDay(dayIndex: Int): Flow<List<FoodEntity>>
