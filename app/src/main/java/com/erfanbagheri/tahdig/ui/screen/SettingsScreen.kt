@@ -67,6 +67,37 @@ fun SettingsScreen(
 
         Spacer(Modifier.height(32.dp))
 
+        // Notifications section
+        Text(
+            text = "اعلان‌ها",
+            style = MaterialTheme.typography.titleMedium,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+
+        Spacer(Modifier.height(8.dp))
+
+        val context = androidx.compose.ui.platform.LocalContext.current
+        val dailyNotify by viewModel.dailyNotify.collectAsState()
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+        ) {
+            Text(
+                text = "پیشنهاد روزانه غذا",
+                style = MaterialTheme.typography.bodyLarge,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.weight(1f),
+            )
+            androidx.compose.material3.Switch(
+                checked = dailyNotify,
+                onCheckedChange = { viewModel.setDailyNotify(context, it) },
+            )
+        }
+
+        Spacer(Modifier.height(32.dp))
+
         // About section
         Text(
             text = "درباره",

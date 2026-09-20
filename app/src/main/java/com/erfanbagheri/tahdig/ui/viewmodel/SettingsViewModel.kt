@@ -11,6 +11,10 @@ class SettingsViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     val themeMode: StateFlow<Int> = SettingsStore.themeMode
+    val dailyNotify: StateFlow<Boolean> = SettingsStore.dailyNotify
 
     fun setThemeMode(mode: Int) = SettingsStore.setThemeMode(mode)
+
+    fun setDailyNotify(context: android.content.Context, enabled: Boolean) =
+        SettingsStore.setDailyNotify(context, enabled)
 }
