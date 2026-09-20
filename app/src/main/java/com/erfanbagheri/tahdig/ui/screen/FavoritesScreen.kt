@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Block
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.History
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -35,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
+import com.erfanbagheri.tahdig.ui.components.EmptyState
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
 import com.erfanbagheri.tahdig.ui.viewmodel.FavoritesViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.HistoryViewModel
@@ -80,7 +82,11 @@ fun FavoritesScreen(
 
         when (selectedTab) {
             0 -> {
-                if (favoritedFoods.isEmpty()) EmptyMessage("غذای مورد علاقه‌ای ثبت نشده")
+                if (favoritedFoods.isEmpty()) EmptyState(
+                    icon = Icons.Filled.FavoriteBorder,
+                    title = "غذای مورد علاقه‌ای ثبت نشده",
+                    subtitle = "روی قلب هر غذا بزن تا اینجا ذخیره بشه",
+                )
                 else FavoriteList(
                     foods = favoritedFoods,
                     isBlocked = false,
@@ -89,7 +95,11 @@ fun FavoritesScreen(
                 )
             }
             1 -> {
-                if (blockedFoods.isEmpty()) EmptyMessage("غذای مسدود شده‌ای نیست")
+                if (blockedFoods.isEmpty()) EmptyState(
+                    icon = Icons.Filled.Block,
+                    title = "غذای مسدود شده‌ای نیست",
+                    subtitle = "غذاها را می‌توانید از پیشنهادها مسدود کنید",
+                )
                 else FavoriteList(
                     foods = blockedFoods,
                     isBlocked = true,
@@ -98,38 +108,17 @@ fun FavoritesScreen(
                 )
             }
             2 -> {
-                if (historyItems.isEmpty()) EmptyMessage("تاریخچه‌ای ثبت نشده")
+                if (historyItems.isEmpty()) EmptyState(
+                    icon = Icons.Filled.History,
+                    title = "تاریخچه‌ای ثبت نشده",
+                    subtitle = "غذاهای پیشنهادی قبلی اینجا می‌آیند",
+                )
                 else HistoryList(
                     items = historyItems,
                     onClick = onFoodClick,
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun EmptyMessage(text: String) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 64.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Icon(
-            imageVector = Icons.Filled.FavoriteBorder,
-            contentDescription = null,
-            modifier = Modifier.size(48.dp),
-            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
-        )
-        Spacer(Modifier.height(12.dp))
-        Text(
-            text = text,
-            style = MaterialTheme.typography.bodyLarge,
-            fontFamily = YekanBakh,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center,
-        )
     }
 }
 
