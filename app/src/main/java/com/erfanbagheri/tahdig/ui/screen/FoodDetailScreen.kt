@@ -62,10 +62,21 @@ fun FoodDetailScreen(
 
     val appContext = context.applicationContext
     var tts: TextToSpeech? = null
+    var ttsReady by remember { mutableStateOf(false) }
+    var ttsHasFa by remember { mutableStateOf(true) }
     tts = remember(appContext) {
         TextToSpeech(appContext) { status ->
             val engine = tts ?: return@TextToSpeech
-            engine.language = if (status == TextToSpeech.SUCCESS) Locale("fa", "IR") else Locale.US
+            if (status != TextToSpeech.SUCCESS) {
+                ttsHasFa = false
+                ttsReady = true
+                return@TextToSpeech
+            }
+            // Language is only set when fa-IR is confirmed available
+            val result = engine.setLanguage(Locale("fa", "IR"))
+            ttsHasFa = result != TextToSpeech.LANG_MISSING_DATA && result != TextToSpeech.LANG_NOT_SUPPORTED
+            if (!ttsHasFa) engine.language = Locale.getDefault()
+            ttsReady = true
         }
     }
     DisposableEffect(Unit) {
@@ -202,10 +213,13 @@ fun FoodDetailScreen(
                     }
 
                     Spacer(Modifier.height(24.dp))
-                    Button(onClick = { tts?.speak(f.ingredients, TextToSpeech.QUEUE_FLUSH, null, "tahdig") }) {
+                    Button(
+                        onClick = { tts?.speak(f.ingredients, TextToSpeech.QUEUE_FLUSH, null, "tahdig") },
+                        enabled = ttsReady,
+                    ) {
                         Icon(
                             imageVector = Icons.Filled.VolumeUp,
-                            contentDescription = null,
+                            contentDescription = "گوش دادن به مواد",
                             modifier = Modifier.size(18.dp),
                         )
                         Spacer(Modifier.width(8.dp))
