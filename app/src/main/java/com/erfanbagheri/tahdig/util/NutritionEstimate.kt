@@ -29,14 +29,10 @@ object NutritionEstimate {
     private val FALLBACK = Macro(250, 0.15, 0.35)
 
     fun estimate(name: String, tags: String): Info {
-        val text = "$name $tags"
-        // Longest keyword first so "فلفل قرمز"-style compounds can't shadow a more specific dish.
-        val macro = MACROS.entries
-            .filter { text.contains(it.key) }
-            .maxByOrNull { it.key.length }
-            ?.value ?: FALLBACK
+        // Name wins over tags: "سالاد شیرازی" tagged سبزیجات is still a 90 kcal salad.
+        val macro = bestMatch(name) ?: bestMatch(tags) ?: FALLBACK
 
-        // 4 kcal/g protein & carbs, 9 kcal/g fat. Ratios always sum to <= 1.
+        // 4 kcal/g protein & carbs, 9 kcal/g fat.
         val protein = macro.cal * macro.protein / 4
         val fat = macro.cal * macro.fat / 9
         val carb = (macro.cal * (1 - macro.protein - macro.fat) / 4).coerceAtLeast(0.0)
@@ -48,4 +44,11 @@ object NutritionEstimate {
             carb = "${carb.toInt()}g",
         )
     }
+
+    /** Longest matching keyword wins, so a specific term can't be shadowed by a generic one. */
+    private fun bestMatch(text: String): Macro? =
+        MACROS.entries
+            .filter { text.contains(it.key) }
+            .maxByOrNull { it.key.length }
+            ?.value
 }
