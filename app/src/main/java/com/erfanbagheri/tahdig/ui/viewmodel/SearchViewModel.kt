@@ -42,6 +42,12 @@ class SearchViewModel(app: Application) : AndroidViewModel(app) {
 
     fun onQueryChange(text: String) { _query.value = text }
 
+    /** Called on IME search action — persists the query to history. */
+    fun onSubmit() {
+        val q = _query.value.trim()
+        if (q.isNotEmpty()) SearchHistory(getApplication()).record(q)
+    }
+
     fun onCategorySelect(categoryId: Long?) {
         _selectedCategoryId.value = if (_selectedCategoryId.value == categoryId) null else categoryId
     }

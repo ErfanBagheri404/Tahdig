@@ -30,10 +30,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
+import com.erfanbagheri.tahdig.ui.viewmodel.SearchHistory
 import com.erfanbagheri.tahdig.ui.viewmodel.SearchViewModel
 
 @Composable
@@ -72,6 +74,12 @@ fun SearchScreen(
                 value = query,
                 onValueChange = viewModel::onQueryChange,
                 modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
+                    imeAction = androidx.compose.ui.text.input.ImeAction.Search,
+                ),
+                keyboardActions = androidx.compose.foundation.text.KeyboardActions(
+                    onSearch = { viewModel.onSubmit() },
+                ),
                 placeholder = {
                     Text(
                         "جستجوی غذا…",
@@ -128,6 +136,17 @@ fun SearchScreen(
             }
 
             Spacer(Modifier.height(16.dp))
+
+            // Search history (shown when query is empty)
+            val history = SearchHistory(viewModel.getApplication())
+            if (query.isBlank()) {
+                SearchHistoryChips(
+                    history = history.queries,
+                    onSelect = { viewModel.onQueryChange(it) },
+                    onClear = { history.clear() },
+                )
+                Spacer(Modifier.height(8.dp))
+            }
 
             // Results
             if (results.isEmpty() && query.isNotBlank()) {
