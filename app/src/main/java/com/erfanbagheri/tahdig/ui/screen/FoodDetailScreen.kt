@@ -147,6 +147,19 @@ fun FoodDetailScreen(
                         }
                     }
 
+                    // Nutrition estimate
+                    val nut = com.erfanbagheri.tahdig.util.NutritionEstimate.estimate(f.name, f.tags)
+                    Spacer(Modifier.height(16.dp))
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        DetailChip("~${nut.calories} کالری")
+                        DetailChip("پروتئین ${nut.protein}")
+                        DetailChip("چربی ${nut.fat}")
+                        DetailChip("کربوهیدرات ${nut.carb}")
+                    }
+
                     if (f.ingredients.isNotBlank()) {
                         Spacer(Modifier.height(28.dp))
                         Text(
