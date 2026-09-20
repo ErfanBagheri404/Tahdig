@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -37,6 +38,8 @@ import com.erfanbagheri.tahdig.ui.screen.OnboardingPager
 import com.erfanbagheri.tahdig.ui.screen.SearchScreen
 import com.erfanbagheri.tahdig.ui.screen.SettingsScreen
 import com.erfanbagheri.tahdig.ui.theme.TahdigTheme
+import com.erfanbagheri.tahdig.ui.screen.MealPlanScreen
+import com.erfanbagheri.tahdig.ui.viewmodel.MealPlanViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.FavoritesViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.HistoryViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.HomeViewModel
@@ -104,6 +107,12 @@ private fun TahdigApp() {
                         icon = { Icon(Icons.Default.Settings, contentDescription = null) },
                         label = { Text("تنظیمات") },
                     )
+                    NavigationBarItem(
+                        selected = selectedTab == 4,
+                        onClick = { selectedTab = 4 },
+                        icon = { Icon(Icons.Default.Star, contentDescription = null) },
+                        label = { Text("برنامه") },
+                    )
                 }
             }
         },
@@ -144,6 +153,13 @@ private fun TahdigApp() {
                 selectedTab == 3 -> {
                     val vm: SettingsViewModel = viewModel()
                     SettingsScreen(viewModel = vm)
+                }
+                selectedTab == 4 -> {
+                    val vm: MealPlanViewModel = viewModel()
+                    MealPlanScreen(
+                        viewModel = vm,
+                        onFoodClick = { detailFoodId = it },
+                    )
                 }
             }
         }
