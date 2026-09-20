@@ -14,12 +14,19 @@ import kotlinx.coroutines.launch
 class RatingViewModel(app: Application) : AndroidViewModel(app) {
     private val ratingDao = TahdigDatabase.getInstance(app).ratingDao()
 
-    /** Current star rating for [foodId], observed as a flow. */
-    fun stars(foodId: Long): StateFlow<Int> = ratingDao.observe(foodId)
-        .map { it?.stars ?: 0 }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
+    // Cache one flow per food so recomposition reuses the same stateIn subscription
+    private val cache = mutableMapOf<Long, StateFlow<Int>>()
 
+    /** Current star rating for [foodId], observed as a flow. */
+    fun stars(foodId: Long): StateFlow<Int> = cache.getOrPut(foodId) {
+        ratingDao.observe(foodId)
+            .map { it?.stars ?: 0 }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
+    }
+
+    /** Accepts 0 (clear) or 1-5; anything else is ignored. */
     fun setStars(foodId: Long, stars: Int) {
+        if (stars !in 0..5) return
         viewModelScope.launch {
             ratingDao.upsert(RatingEntity(foodId = foodId, stars = stars))
         }
