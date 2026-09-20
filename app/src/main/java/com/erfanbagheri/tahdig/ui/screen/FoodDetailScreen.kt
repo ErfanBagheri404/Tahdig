@@ -20,6 +20,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -161,6 +162,36 @@ fun FoodDetailScreen(
                             color = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.fillMaxWidth(),
                         )
+
+                        // Unit converter (cups/grams/tbsp quick reference)
+                        Spacer(Modifier.height(16.dp))
+                        var showConverter by remember { mutableStateOf(false) }
+                        TextButton(onClick = { showConverter = !showConverter }) {
+                            Text(
+                                text = if (showConverter) "بستن تبدیل واحد" else "تبدیل واحد",
+                                fontFamily = YekanBakh,
+                            )
+                        }
+                        if (showConverter) {
+                            val uc = com.erfanbagheri.tahdig.util.UnitConverter
+                            val rows = listOf(
+                                "۱ پیمانه آرد" to "${uc.cupsToGrams(1.0, "آرد").value.toInt()} گرم",
+                                "۱ پیمانه شکر" to "${uc.cupsToGrams(1.0, "شکر").value.toInt()} گرم",
+                                "۱ قاشق غذاخوری" to "${uc.tablespoonsToGrams(1.0).value.toInt()} گرم",
+                                "۱ پیمانه" to "${uc.cupsToTablespoons(1.0).value.toInt()} قاشق غذاخوری",
+                            )
+                            rows.forEach { (from, to) ->
+                                Text(
+                                    text = "$from = $to",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    fontFamily = YekanBakh,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 2.dp),
+                                )
+                            }
+                        }
                     }
 
                     if (f.tags.isNotBlank()) {
