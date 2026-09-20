@@ -13,6 +13,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -154,8 +156,30 @@ fun FoodDetailScreen(
                             modifier = Modifier.fillMaxWidth(),
                         )
                         Spacer(Modifier.height(8.dp))
+
+                        // Serving scale stepper
+                        var servings by remember { mutableStateOf(1) }
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        ) {
+                            IconButton(onClick = { if (servings > 1) servings-- }) {
+                                Icon(Icons.Default.Remove, contentDescription = "کم کردن")
+                            }
+                            Text(
+                                text = "$servings نفر",
+                                style = MaterialTheme.typography.bodyLarge,
+                                fontFamily = YekanBakh,
+                                fontWeight = FontWeight.Bold,
+                            )
+                            IconButton(onClick = { if (servings < 20) servings++ }) {
+                                Icon(Icons.Default.Add, contentDescription = "زیاد کردن")
+                            }
+                        }
+                        Spacer(Modifier.height(8.dp))
                         Text(
-                            text = f.ingredients,
+                            text = if (servings == 1) f.ingredients
+                                   else com.erfanbagheri.tahdig.util.ServingScaler.scale(f.ingredients, servings.toDouble()),
                             style = MaterialTheme.typography.bodyMedium,
                             fontFamily = YekanBakh,
                             color = MaterialTheme.colorScheme.onSurface,
