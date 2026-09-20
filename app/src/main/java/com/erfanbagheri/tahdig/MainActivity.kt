@@ -20,6 +20,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -30,7 +31,9 @@ import androidx.lifecycle.lifecycleScope
 import com.erfanbagheri.tahdig.data.local.TahdigDatabase
 import com.erfanbagheri.tahdig.ui.screen.FavoritesScreen
 import com.erfanbagheri.tahdig.ui.screen.FoodDetailScreen
+import com.erfanbagheri.tahdig.data.prefs.SettingsStore
 import com.erfanbagheri.tahdig.ui.screen.HomeScreen
+import com.erfanbagheri.tahdig.ui.screen.OnboardingPager
 import com.erfanbagheri.tahdig.ui.screen.SearchScreen
 import com.erfanbagheri.tahdig.ui.screen.SettingsScreen
 import com.erfanbagheri.tahdig.ui.theme.TahdigTheme
@@ -62,6 +65,13 @@ class MainActivity : ComponentActivity() {
 private fun TahdigApp() {
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
     var detailFoodId by rememberSaveable { mutableLongStateOf(-1L) }
+
+    // Onboarding gate — first launch only
+    val onboarded by com.erfanbagheri.tahdig.data.prefs.SettingsStore.onboarded.collectAsState()
+    if (!onboarded) {
+        OnboardingPager(onDone = { SettingsStore.setOnboarded() })
+        return
+    }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
