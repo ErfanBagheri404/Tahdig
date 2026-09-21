@@ -261,9 +261,11 @@ private fun TahdigApp() {
                 }
                 selectedTab == 4 -> {
                     val vm: MealPlanViewModel = viewModel()
+                    val svm: ShoppingViewModel = viewModel()
                     MealPlanScreen(
                         viewModel = vm,
                         onFoodClick = { detailFoodId = it },
+                        onAddPlanToShopping = { svm.addPlanIngredients() },
                     )
                 }
                 selectedTab == 5 -> {

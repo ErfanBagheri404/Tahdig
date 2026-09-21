@@ -26,4 +26,8 @@ interface MealPlanDao {
     /** Planned dishes for a day, joined with their food rows. */
     @Query("SELECT * FROM foods WHERE id IN (SELECT foodId FROM meal_plan WHERE dayIndex = :dayIndex)")
     fun foodsForDay(dayIndex: Int): Flow<List<FoodEntity>>
+
+    /** Every distinct dish planned for the week — the source for the shopping list. */
+    @Query("SELECT DISTINCT foodId FROM meal_plan")
+    suspend fun allFoodIds(): List<Long>
 }

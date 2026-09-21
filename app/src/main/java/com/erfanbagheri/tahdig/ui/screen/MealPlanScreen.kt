@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -16,6 +18,7 @@ import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -35,6 +38,7 @@ private val MEALS = listOf("صبحانه", "ناهار", "شام")
 fun MealPlanScreen(
     viewModel: MealPlanViewModel,
     onFoodClick: (Long) -> Unit = {},
+    onAddPlanToShopping: () -> Unit = {},
 ) {
     val currentDay by viewModel.currentDay.collectAsState()
     val allPlan by viewModel.observeSlots(currentDay).collectAsState()
@@ -56,6 +60,22 @@ fun MealPlanScreen(
         )
 
         Spacer(Modifier.height(16.dp))
+
+        // Week-wide action: everything planned, on the shopping list in one tap.
+        TextButton(
+            onClick = onAddPlanToShopping,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Icon(
+                Icons.AutoMirrored.Filled.List,
+                contentDescription = null,
+                modifier = Modifier.size(18.dp),
+            )
+            Spacer(Modifier.width(8.dp))
+            Text("افزودن کل هفته به لیست خرید", fontFamily = YekanBakh)
+        }
+
+        Spacer(Modifier.height(8.dp))
 
         // Day tabs
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {

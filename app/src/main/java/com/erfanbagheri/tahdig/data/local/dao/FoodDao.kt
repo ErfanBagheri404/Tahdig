@@ -19,6 +19,10 @@ interface FoodDao {
     @Query("SELECT * FROM foods WHERE id = :id LIMIT 1")
     suspend fun getById(id: Long): FoodEntity?
 
+    /** Batch fetch, used to pull the ingredients of every dish in the weekly plan. */
+    @Query("SELECT * FROM foods WHERE id IN (:ids)")
+    suspend fun byIds(ids: List<Long>): List<FoodEntity>
+
     @Query("SELECT COUNT(*) FROM foods")
     fun observeCount(): Flow<Int>
 
