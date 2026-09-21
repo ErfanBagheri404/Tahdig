@@ -24,6 +24,16 @@ object SeedLoader {
     /** One JSON array per category, read from seed/foods/. Split so the dataset stays diffable. */
     private const val FOODS_DIR = "seed/foods"
 
+    /**
+     * Dish photos, keyed by food id as a string: {"12": "https://…/thumb.jpg"}.
+     *
+     * Kept in its own file rather than written into the 27 seed files so the
+     * importer can re-run and refresh URLs without rewriting the whole dataset
+     * (keeps the seed diffs readable). Missing / unparsable file = no photos,
+     * and every screen falls back to the category emoji.
+     */
+    private const val IMAGES_FILE = "seed/images.json"
+
     private val json = Json { ignoreUnknownKeys = true }
 
     suspend fun loadInto(db: TahdigDatabase, assets: AssetManager) = withContext(Dispatchers.IO) {
@@ -38,6 +48,7 @@ object SeedLoader {
                     assets.open("$FOODS_DIR/$file").bufferedReader().use { it.readText() }
                 )
             }
+        val images = readImages(assets)
 
         // Insert categories first — foods reference them by slug.
         db.categoryDao().insertAll(
@@ -66,11 +77,23 @@ object SeedLoader {
                     ingredients = it.ingredients,
                     tags = it.tags,
                     description = it.description,
-                    imageUrl = it.imageUrl,
+                    imageUrl = it.imageUrl ?: images[it.id.toString()]?.url,
                     priority = it.priority,
                 )
             }
         )
+    }
+
+    /**
+     * Photos are optional and best-effort: any failure yields an empty map so the
+     * app still seeds and renders emoji-only rather than failing to start.
+     */
+    private fun readImages(assets: AssetManager): Map<String, ImageSeed> = try {
+        json.decodeFromString<Map<String, ImageSeed>>(
+            assets.open(IMAGES_FILE).bufferedReader().use { it.readText() }
+        )
+    } catch (_: Exception) {
+        emptyMap()
     }
 
     /** Normalized search key — kept here so tests and the DAO agree on one definition. */
@@ -84,6 +107,14 @@ private data class CategorySeed(
     @SerialName("name_en") val nameEn: String,
     @SerialName("sort_order") val sortOrder: Int = 0,
     val emoji: String = "",
+)
+
+@Serializable
+private data class ImageSeed(
+    val name: String = "",
+    val url: String = "",
+    val src: String? = null,
+    val page: String? = null,
 )
 
 @Serializable

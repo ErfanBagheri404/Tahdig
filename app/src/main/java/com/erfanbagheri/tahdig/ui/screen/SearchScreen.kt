@@ -290,49 +290,59 @@ private fun SearchResultItem(
         shape = RoundedCornerShape(12.dp),
         color = MaterialTheme.colorScheme.surface,
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
+        // Row: photo thumb on the left, text column on the right
+        Row(
+            modifier = Modifier.padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            com.erfanbagheri.tahdig.ui.components.DishThumb(
+                imageUrl = food.imageUrl,
+                categoryId = food.categoryId,
+                size = 56.dp,
+            )
+            Spacer(Modifier.width(12.dp))
+            Column(
+                modifier = Modifier.weight(1f),
+                horizontalAlignment = Alignment.Start,
             ) {
-                Text(
-                    text = com.erfanbagheri.tahdig.util.FoodVisuals.emoji(food.categoryId),
-                    fontSize = 22.sp,
-                )
-                Spacer(Modifier.width(10.dp))
-                Text(
-                    text = food.name,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontFamily = YekanBakh,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.weight(1f),
-                )
-                if (food.prepTimeMin > 0) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
                     Text(
-                        text = "${food.prepTimeMin} دقیقه",
+                        text = food.name,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontFamily = YekanBakh,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.weight(1f),
+                    )
+                    if (food.prepTimeMin > 0) {
+                        Text(
+                            text = "${food.prepTimeMin} دقیقه",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+                if (food.description.isNotBlank()) {
+                    Spacer(Modifier.height(2.dp))
+                    Text(
+                        text = food.description,
+                        style = MaterialTheme.typography.bodySmall,
+                        fontFamily = YekanBakh,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 2,
+                    )
+                }
+                if (food.difficulty.isNotBlank()) {
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        text = "سختی: ${difficultyLabel(food.difficulty)}",
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
-            }
-            if (food.description.isNotBlank()) {
-                Spacer(Modifier.height(4.dp))
-                Text(
-                    text = food.description,
-                    style = MaterialTheme.typography.bodySmall,
-                    fontFamily = YekanBakh,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 2,
-                )
-            }
-            if (food.difficulty.isNotBlank()) {
-                Spacer(Modifier.height(4.dp))
-                Text(
-                    text = "سختی: ${difficultyLabel(food.difficulty)}",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
             }
         }
     }

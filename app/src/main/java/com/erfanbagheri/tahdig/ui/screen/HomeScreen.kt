@@ -31,6 +31,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -43,6 +44,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
+import com.erfanbagheri.tahdig.ui.components.DishPhoto
 import com.erfanbagheri.tahdig.util.Haptics
 import com.erfanbagheri.tahdig.ui.viewmodel.HomeViewModel
 
@@ -216,21 +218,14 @@ fun SuggestionCard(
             ),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        // Hero emoji on accent background
-        Surface(
-            modifier = Modifier.fillMaxWidth(),
-            color = accent.copy(alpha = 0.15f),
-            shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
-        ) {
-            Text(
-                text = emoji,
-                fontSize = 56.sp,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 24.dp),
-            )
-        }
+        // Hero: real photo when available, category emoji otherwise
+        DishPhoto(
+            imageUrl = food.imageUrl,
+            categoryId = food.categoryId,
+            height = 200.dp,
+            cornerRadius = 0.dp,
+            modifier = Modifier.clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)),
+        )
 
         Column(
             modifier = Modifier.padding(24.dp),

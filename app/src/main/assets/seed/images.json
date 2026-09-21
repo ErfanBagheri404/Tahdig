@@ -1,0 +1,2443 @@
+{
+ "1": {
+  "name": "قورمه‌سبزی",
+  "page": "قرمه‌سبزی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bd/Ghormeh_Sabzi.JPG/330px-Ghormeh_Sabzi.JPG?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "10": {
+  "name": "خورش لوبیا سبز",
+  "page": "لوبیا سبز",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9e/A_green_bean.jpg/330px-A_green_bean.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "لوبیا سبز"
+ },
+ "100": {
+  "name": "کباب مرغ",
+  "page": "مرغ",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/84/Male_and_female_chicken_sitting_together.jpg/330px-Male_and_female_chicken_sitting_together.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "مرغ"
+ },
+ "101": {
+  "name": "کباب دل و قلوه",
+  "page": "دل و قلوه",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d5/Gulai_ampela.JPG/330px-Gulai_ampela.JPG?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "دل و قلوه"
+ },
+ "103": {
+  "name": "کباب تخم‌مرغ",
+  "page": "تخم‌مرغ",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e2/Egg_with_two_yellows.jpg/330px-Egg_with_two_yellows.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "تخم‌مرغ"
+ },
+ "104": {
+  "name": "کباب سبزیجات",
+  "page": "سبزی برگی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fe/Spinach_leaves.jpg/330px-Spinach_leaves.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "سبزیجات"
+ },
+ "105": {
+  "name": "کباب کوبیده مرغ",
+  "page": "مرغ",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/84/Male_and_female_chicken_sitting_together.jpg/330px-Male_and_female_chicken_sitting_together.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "مرغ"
+ },
+ "106": {
+  "name": "کباب شنیسل",
+  "page": "شنیتسل وینی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ae/Wiener-Schnitzel02.jpg/330px-Wiener-Schnitzel02.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "شنیسل"
+ },
+ "107": {
+  "name": "کباب سوسیس",
+  "page": "سوسیس",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8b/Kielbasa7.jpg/330px-Kielbasa7.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "سوسیس"
+ },
+ "108": {
+  "name": "کباب شامپینیون",
+  "page": "Agaricus bisporus",
+  "src": "en",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/01/ChampignonMushroom.jpg/330px-ChampignonMushroom.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "Champignon"
+ },
+ "109": {
+  "name": "آش رشته",
+  "page": "Aush reshteh",
+  "src": "en",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/54/Ash_Reshteh.JPG/330px-Ash_Reshteh.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "11": {
+  "name": "خورش نخود فرنگی",
+  "page": "نخود فرنگی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/11/Peas_in_pods_-_Studio.jpg/330px-Peas_in_pods_-_Studio.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "نخود فرنگی"
+ },
+ "110": {
+  "name": "آش شله‌زرد",
+  "page": "شله زرد",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/31/Sholezard_for_Nowruz.jpg/330px-Sholezard_for_Nowruz.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "شله‌زرد"
+ },
+ "111": {
+  "name": "آش آبلیمو",
+  "page": "آش",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/55/Ash_e_reshte.jpg/330px-Ash_e_reshte.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "112": {
+  "name": "آش انار",
+  "page": "آش",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/55/Ash_e_reshte.jpg/330px-Ash_e_reshte.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "113": {
+  "name": "آش جو",
+  "page": "آش",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/55/Ash_e_reshte.jpg/330px-Ash_e_reshte.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "114": {
+  "name": "آش امیر)",
+  "page": "Emir",
+  "src": "en",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e9/Shuja_Shah_Durrani_and_Men_in_his_decorated_palace_Wellcome_V0050531.jpg/330px-Shuja_Shah_Durrani_and_Men_in_his_decorated_palace_Wellcome_V0050531.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "Emir"
+ },
+ "115": {
+  "name": "آش بلغور",
+  "page": "بلغور",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8a/Bulgur2.jpg/330px-Bulgur2.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "بلغور"
+ },
+ "116": {
+  "name": "آش دوغ",
+  "page": "آش دوغ",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/38/%C4%80sh_e_doogh.JPG/330px-%C4%80sh_e_doogh.JPG?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "117": {
+  "name": "آش سبزی",
+  "page": "آش سبزی",
+  "src": "fa",
+  "url": "https://upload.wikimedia.org/wikipedia/commons/c/cf/%D8%A2%D8%B4_%D8%B3%D8%A8%D8%B2%DB%8C_%D8%B4%DB%8C%D8%B1%D8%A7%D8%B2%DB%8C.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+ },
+ "118": {
+  "name": "آش خربزه",
+  "page": "خربزه ایرانی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/07/Persian_melon_02.jpg/330px-Persian_melon_02.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "خربزه"
+ },
+ "119": {
+  "name": "آش گوجه",
+  "page": "گوجه‌فرنگی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f3/Tomatoes-on-the-bush.jpg/330px-Tomatoes-on-the-bush.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "گوجه"
+ },
+ "12": {
+  "name": "خورش باقلا قاتق",
+  "page": "باقلاقاتوق",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/62/Baqala_qatoq.jpg/330px-Baqala_qatoq.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "باقلا قاتق"
+ },
+ "120": {
+  "name": "آش ماش",
+  "page": "آش",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/55/Ash_e_reshte.jpg/330px-Ash_e_reshte.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "121": {
+  "name": "آش یخ",
+  "page": "یخ",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/71/IceBlockNearJoekullsarlon.jpg/330px-IceBlockNearJoekullsarlon.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "یخ"
+ },
+ "122": {
+  "name": "سوپ سبزیجات",
+  "page": "سوپ سبزیجات",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/78/Vegetable_udon_noodle_soup.jpg/330px-Vegetable_udon_noodle_soup.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "123": {
+  "name": "سوپ جو",
+  "page": "سوپ جو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a8/Vegetable_beef_barley_soup.jpg/330px-Vegetable_beef_barley_soup.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "125": {
+  "name": "سوپ مرغ",
+  "page": "سوپ مرغ",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b3/Chicken_Noodle_Soup.jpg/330px-Chicken_Noodle_Soup.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "126": {
+  "name": "سوپ قارچ",
+  "page": "قارچ",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fc/Fungi_collage.jpg/330px-Fungi_collage.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "قارچ"
+ },
+ "127": {
+  "name": "سوپ کدو حلوایی",
+  "page": "سوپ کدو حلوایی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/60/Cucurbita_maxima_Zapallo_Plomo_semiller%C3%ADa_Costanzi_-_2014_08_01_-_squash_A_soup_4.JPG/330px-Cucurbita_maxima_Zapallo_Plomo_semiller%C3%ADa_Costanzi_-_2014_08_01_-_squash_A_soup_4.JPG?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "128": {
+  "name": "سوپ عدس",
+  "page": "سوپ عدس",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/61/EgFoodLentilSoup.jpg/330px-EgFoodLentilSoup.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "129": {
+  "name": "سوپ خیار",
+  "page": "سوپ خیار",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/40/Cucumber_soup.jpg/330px-Cucumber_soup.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "13": {
+  "name": "خورش ترش تره",
+  "page": "تره",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5c/Allium_Iranicum_flower.jpg/330px-Allium_Iranicum_flower.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "تره"
+ },
+ "130": {
+  "name": "کوکو سبزی",
+  "page": "کوکو سبزی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/ff/Kookoo-sabzi.jpg/330px-Kookoo-sabzi.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "131": {
+  "name": "کوکو سیب‌زمینی",
+  "page": "کوکو سیب‌زمینی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/87/%DA%A9%D9%88%DA%A9%D9%88_%D8%B3%DB%8C%D8%A8_%D8%B2%D9%85%DB%8C%D9%86%DB%8C.jpg/330px-%DA%A9%D9%88%DA%A9%D9%88_%D8%B3%DB%8C%D8%A8_%D8%B2%D9%85%DB%8C%D9%86%DB%8C.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "132": {
+  "name": "کوکو بادمجان",
+  "page": "بادنجان",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1c/Solanum_melongena_ja001.jpg/330px-Solanum_melongena_ja001.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "بادمجان"
+ },
+ "133": {
+  "name": "کوکو لوبیا سبز",
+  "page": "کوکو لوبیا سبز",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8d/T%C9%99briz_ya%C5%9F%C4%B1l_lobya_k%C3%BCk%C3%BCs%C3%BC.jpg/330px-T%C9%99briz_ya%C5%9F%C4%B1l_lobya_k%C3%BCk%C3%BCs%C3%BC.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "134": {
+  "name": "کوکو گل کلم",
+  "page": "گل کلم",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/78/Blumenkohl-1.jpg/330px-Blumenkohl-1.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "گل کلم"
+ },
+ "135": {
+  "name": "کتلت",
+  "page": "کتلت",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4a/Kotlet_%283119520131%29.jpg/330px-Kotlet_%283119520131%29.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "136": {
+  "name": "کتلت مرغ",
+  "page": "مرغ",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/84/Male_and_female_chicken_sitting_together.jpg/330px-Male_and_female_chicken_sitting_together.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "مرغ"
+ },
+ "137": {
+  "name": "کتلت عدس",
+  "page": "عدس",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/da/3_types_of_lentil.jpg/330px-3_types_of_lentil.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "عدس"
+ },
+ "138": {
+  "name": "کتلت سیب‌زمینی",
+  "page": "سیب‌زمینی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/Patates.jpg/330px-Patates.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "سیب‌زمینی"
+ },
+ "139": {
+  "name": "میرزاقاسمی",
+  "page": "میرزاقاسمی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2d/Mirza-Qasemi_dish.jpg/330px-Mirza-Qasemi_dish.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "14": {
+  "name": "خورش سیرابی",
+  "page": "سیرابی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0c/Rumen-motorik.gif/330px-Rumen-motorik.gif?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "سیرابی"
+ },
+ "140": {
+  "name": "کوکو چغندر",
+  "page": "چغندر",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ae/Detroitdarkredbeets.png/330px-Detroitdarkredbeets.png?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "چغندر"
+ },
+ "141": {
+  "name": "کوکو نخود",
+  "page": "نخود",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ea/Sa-whitegreen-chickpea.jpg/330px-Sa-whitegreen-chickpea.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "نخود"
+ },
+ "142": {
+  "name": "کوکو لوبیا",
+  "page": "کوکو لوبیا سبز",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8d/T%C9%99briz_ya%C5%9F%C4%B1l_lobya_k%C3%BCk%C3%BCs%C3%BC.jpg/330px-T%C9%99briz_ya%C5%9F%C4%B1l_lobya_k%C3%BCk%C3%BCs%C3%BC.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "143": {
+  "name": "املت",
+  "page": "املت",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6e/Blond_unbrowned_omelet_with_mushrooms_and_herbs.jpg/330px-Blond_unbrowned_omelet_with_mushrooms_and_herbs.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "144": {
+  "name": "نیمرو",
+  "page": "نیمرو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/dd/Flickr_-_cyclonebill_-_Vagtel-spejl%C3%A6g.jpg/330px-Flickr_-_cyclonebill_-_Vagtel-spejl%C3%A6g.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "145": {
+  "name": "خاگینه",
+  "page": "خاگینه",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ad/%D8%AE%D8%A7%DA%AF%DB%8C%D9%86%D9%87_%D8%A7%D8%B5%D9%81%D9%87%D8%A7%D9%86%DB%8C.jpg/330px-%D8%AE%D8%A7%DA%AF%DB%8C%D9%86%D9%87_%D8%A7%D8%B5%D9%81%D9%87%D8%A7%D9%86%DB%8C.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "146": {
+  "name": "تخم‌مرغ آب‌پز",
+  "page": "تخم‌مرغ آب‌پز",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cc/Soft-boiled-egg.jpg/330px-Soft-boiled-egg.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "147": {
+  "name": "املت قارچ",
+  "page": "قارچ",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fc/Fungi_collage.jpg/330px-Fungi_collage.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "قارچ"
+ },
+ "148": {
+  "name": "املت پنیر",
+  "page": "پنیر",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f2/Hartkaese_HardCheeses.jpg/330px-Hartkaese_HardCheeses.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "پنیر"
+ },
+ "149": {
+  "name": "املت سیب‌زمینی",
+  "page": "سیب‌زمینی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/Patates.jpg/330px-Patates.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "سیب‌زمینی"
+ },
+ "15": {
+  "name": "خورش کلم",
+  "page": "کلم",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6f/Cabbage_and_cross_section_on_white.jpg/330px-Cabbage_and_cross_section_on_white.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "کلم"
+ },
+ "151": {
+  "name": "املت گوجه فرنگی",
+  "page": "املت گوجه‌فرنگی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0c/Iranian_omelet.jpg/330px-Iranian_omelet.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "152": {
+  "name": "املت اسفناج",
+  "page": "اسفناج",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/37/Spinacia_oleracea_Spinazie_bloeiend.jpg/330px-Spinacia_oleracea_Spinazie_bloeiend.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "اسفناج"
+ },
+ "153": {
+  "name": "املت سبزیجات",
+  "page": "سبزی برگی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fe/Spinach_leaves.jpg/330px-Spinach_leaves.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "سبزیجات"
+ },
+ "155": {
+  "name": "کوکو تخم‌مرغ",
+  "page": "تخم‌مرغ",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e2/Egg_with_two_yellows.jpg/330px-Egg_with_two_yellows.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "تخم‌مرغ"
+ },
+ "156": {
+  "name": "دلمه برگ مو",
+  "page": "دلمه برگ مو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b8/Brazilian_dolma.jpg/330px-Brazilian_dolma.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "157": {
+  "name": "دلمه فلفل دلمه",
+  "page": "دلمه",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c8/Speca_te_mbushura_me_mish.JPG/330px-Speca_te_mbushura_me_mish.JPG?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "دلمه"
+ },
+ "158": {
+  "name": "دلمه گوجه",
+  "page": "گوجه‌فرنگی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f3/Tomatoes-on-the-bush.jpg/330px-Tomatoes-on-the-bush.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "گوجه"
+ },
+ "159": {
+  "name": "دلمه کلم",
+  "page": "کلم",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6f/Cabbage_and_cross_section_on_white.jpg/330px-Cabbage_and_cross_section_on_white.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "کلم"
+ },
+ "16": {
+  "name": "خورش هویج",
+  "page": "خورش هویج",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ea/Khoresh_havij.png/330px-Khoresh_havij.png?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "160": {
+  "name": "دلمه بادمجان",
+  "page": "بادنجان",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1c/Solanum_melongena_ja001.jpg/330px-Solanum_melongena_ja001.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "بادمجان"
+ },
+ "161": {
+  "name": "دلمه سیب‌زمینی",
+  "page": "سیب‌زمینی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/Patates.jpg/330px-Patates.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "سیب‌زمینی"
+ },
+ "162": {
+  "name": "دلمه کدو",
+  "page": "کدو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ea/Squashes_at_Kew_Gardens_IncrEdibles_2013.jpg/330px-Squashes_at_Kew_Gardens_IncrEdibles_2013.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "کدو"
+ },
+ "163": {
+  "name": "دلمه مرغ",
+  "page": "مرغ",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/84/Male_and_female_chicken_sitting_together.jpg/330px-Male_and_female_chicken_sitting_together.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "مرغ"
+ },
+ "164": {
+  "name": "کلم پیچ",
+  "page": "کلم",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6f/Cabbage_and_cross_section_on_white.jpg/330px-Cabbage_and_cross_section_on_white.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "165": {
+  "name": "شامی",
+  "page": "کتلت",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4a/Kotlet_%283119520131%29.jpg/330px-Kotlet_%283119520131%29.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "166": {
+  "name": "شامی مرغ",
+  "page": "مرغ",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/84/Male_and_female_chicken_sitting_together.jpg/330px-Male_and_female_chicken_sitting_together.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "مرغ"
+ },
+ "167": {
+  "name": "شامی گیاهی",
+  "page": "گیاه",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/57/Fr%C3%BChling_bl%C3%BChender_Kirschenbaum.jpg/330px-Fr%C3%BChling_bl%C3%BChender_Kirschenbaum.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "گیاهی"
+ },
+ "168": {
+  "name": "آبگوشت",
+  "page": "آبگوشت",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/59/Dizi.jpg/330px-Dizi.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "169": {
+  "name": "دیزی",
+  "page": "آبگوشت",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/59/Dizi.jpg/330px-Dizi.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "17": {
+  "name": "خورش کنگر",
+  "page": "خورش کنگر",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c3/%D8%AE%D9%88%D8%B1%D8%B4_%DA%A9%D9%86%DA%AF%D8%B1_%D8%B4%DB%8C%D8%B1%D8%A7%D8%B2%DB%8C.jpg/330px-%D8%AE%D9%88%D8%B1%D8%B4_%DA%A9%D9%86%DA%AF%D8%B1_%D8%B4%DB%8C%D8%B1%D8%A7%D8%B2%DB%8C.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "170": {
+  "name": "آبگوشت لوبیا",
+  "page": "لوبیا",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b4/Bean-lubia.jpg/330px-Bean-lubia.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "لوبیا"
+ },
+ "171": {
+  "name": "آبگوشت کشک",
+  "page": "آبگوشت کشک",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/fa/thumb/7/7d/%D8%A2%D8%A8%DA%AF%D9%88%D8%B4%D8%AA_%DA%A9%D8%B4%DA%A9.JPG/330px-%D8%A2%D8%A8%DA%AF%D9%88%D8%B4%D8%AA_%DA%A9%D8%B4%DA%A9.JPG?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "172": {
+  "name": "دیزی طعم",
+  "page": "مزه",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0e/Taste_bud.svg/langfa-330px-Taste_bud.svg.png?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "طعم"
+ },
+ "173": {
+  "name": "آبگوشت مرغ",
+  "page": "مرغ",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/84/Male_and_female_chicken_sitting_together.jpg/330px-Male_and_female_chicken_sitting_together.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "مرغ"
+ },
+ "175": {
+  "name": "ماهی سالمون",
+  "page": "ماهی آزاد",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/41/Salmon_01_alt.jpg/330px-Salmon_01_alt.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "176": {
+  "name": "ماهی قزل‌آلا",
+  "page": "قزل‌آلا",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2e/Salmo_trutta.jpg/330px-Salmo_trutta.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "18": {
+  "name": "خورش ریواس",
+  "page": "ریواس",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2b/Rheum_rhabarbarum.2006-04-27.uellue.jpg/330px-Rheum_rhabarbarum.2006-04-27.uellue.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "ریواس"
+ },
+ "183": {
+  "name": "کتلت ماهی",
+  "page": "ماهی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/08/Astronotus_ocellatus.jpg/330px-Astronotus_ocellatus.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "ماهی"
+ },
+ "184": {
+  "name": "سوشی",
+  "page": "سوشی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/60/Sushi_platter.jpg/330px-Sushi_platter.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "185": {
+  "name": "پیتزا ماهی",
+  "page": "ماهی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/08/Astronotus_ocellatus.jpg/330px-Astronotus_ocellatus.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "ماهی"
+ },
+ "187": {
+  "name": "ماکارونی",
+  "page": "ماکارونی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/01/Macaroni2.jpg/330px-Macaroni2.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "189": {
+  "name": "لازانیا",
+  "page": "لازانیا",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/ba/Lasagne_-_stonesoup.jpg/330px-Lasagne_-_stonesoup.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "19": {
+  "name": "خورش غوره",
+  "page": "غوره",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f7/%D8%BA%D9%88%D8%B1%D9%87_-_panoramio.jpg/330px-%D8%BA%D9%88%D8%B1%D9%87_-_panoramio.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "غوره"
+ },
+ "195": {
+  "name": "فتوچینی",
+  "page": "فتوچینی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cf/Fettucine1.JPG/330px-Fettucine1.JPG?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "196": {
+  "name": "ریزوتو",
+  "page": "ریزوتو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/53/Risotto.jpg/330px-Risotto.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "2": {
+  "name": "فسنجان",
+  "page": "فسنجان",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1d/Khoresht-e_fesenjan.jpg/330px-Khoresht-e_fesenjan.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "20": {
+  "name": "خورش زرشک",
+  "page": "زرشک",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5c/Berberis_darwinii_shoot.jpg/330px-Berberis_darwinii_shoot.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "زرشک"
+ },
+ "201": {
+  "name": "پیتزا پپرونی",
+  "page": "پیتزا",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/91/Pizza-3007395.jpg/330px-Pizza-3007395.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "202": {
+  "name": "پیتزا مارگاریتا",
+  "page": "Pizza Margherita",
+  "src": "en",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/57/Neapolitan_pizza_at_Trappica_%2848701940197%29.jpg/330px-Neapolitan_pizza_at_Trappica_%2848701940197%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "203": {
+  "name": "پیتزا مرغ",
+  "page": "مرغ",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/84/Male_and_female_chicken_sitting_together.jpg/330px-Male_and_female_chicken_sitting_together.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "مرغ"
+ },
+ "207": {
+  "name": "کالزونه",
+  "page": "کالزونه",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/37/Calzone_01.jpg/330px-Calzone_01.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "211": {
+  "name": "ساندویچ مرغ",
+  "page": "ساندویچ مرغ",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0a/Chicken_sandwich.jpg/330px-Chicken_sandwich.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "213": {
+  "name": "ساندویچ فلافل",
+  "page": "Falafel",
+  "src": "en",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/57/Falafels_2.jpg/330px-Falafels_2.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "فلافل"
+ },
+ "214": {
+  "name": "ساندویچ ژامبون",
+  "page": "ساندویچ ژامبون",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/14/Ham_sandwich1.jpg/330px-Ham_sandwich1.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "215": {
+  "name": "ساندویچ سوسیس",
+  "page": "ساندویچ سوسیس",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cb/Sausage_Sandwich.jpg/330px-Sausage_Sandwich.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "216": {
+  "name": "همبرگر",
+  "page": "همبرگر",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0b/RedDot_Burger.jpg/330px-RedDot_Burger.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "217": {
+  "name": "چیزبرگر",
+  "page": "چیزبرگر",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4d/Cheeseburger.jpg/330px-Cheeseburger.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "219": {
+  "name": "کلاب ساندویچ",
+  "page": "Club sandwich",
+  "src": "en",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/51/Club_sandwich_at_Caf%C3%A9_Picnic.jpg/330px-Club_sandwich_at_Caf%C3%A9_Picnic.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "22": {
+  "name": "خورش قارچ",
+  "page": "قارچ",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fc/Fungi_collage.jpg/330px-Fungi_collage.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "قارچ"
+ },
+ "222": {
+  "name": "هات‌داگ",
+  "page": "هات‌داگ",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fb/Hotdog_-_Evan_Swigart.jpg/330px-Hotdog_-_Evan_Swigart.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "224": {
+  "name": "شاورما",
+  "page": "شاورما",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/64/Al-Naser_Restaurant.jpg/330px-Al-Naser_Restaurant.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "225": {
+  "name": "دونر کباب",
+  "page": "کباب ترکی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8e/Doner_kebab%2C_Istanbul%2C_Turkey.JPG/330px-Doner_kebab%2C_Istanbul%2C_Turkey.JPG?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "227": {
+  "name": "ساندویچ تخم‌مرغ",
+  "page": "ساندویچ تخم‌مرغ",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/57/Egg_sandwich.jpg/330px-Egg_sandwich.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "229": {
+  "name": "سالاد شیرازی",
+  "page": "سالاد شیرازی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4b/%D8%B3%D8%A7%D9%84%D8%A7%D8%AF_%D8%B4%DB%8C%D8%B1%D8%A7%D8%B2%DB%8C.jpg/330px-%D8%B3%D8%A7%D9%84%D8%A7%D8%AF_%D8%B4%DB%8C%D8%B1%D8%A7%D8%B2%DB%8C.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "23": {
+  "name": "خورش کدو سبز",
+  "page": "کدو سبز",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/08/Courgette_J1.JPG/330px-Courgette_J1.JPG?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "کدو سبز"
+ },
+ "230": {
+  "name": "سالاد فصل",
+  "page": "سالاد",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/94/Salad_platter.jpg/330px-Salad_platter.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "231": {
+  "name": "سالاد الویه",
+  "page": "سالاد الیویه",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/ce/Russian_Olivier_salad.jpg/330px-Russian_Olivier_salad.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "232": {
+  "name": "سالاد سزار",
+  "page": "سالاد سزار",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/23/Caesar_salad_%282%29.jpg/330px-Caesar_salad_%282%29.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "233": {
+  "name": "سالاد یونانی",
+  "page": "سالاد یونانی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f2/Greece_Food_Horiatiki.JPG/330px-Greece_Food_Horiatiki.JPG?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "235": {
+  "name": "سالاد تبوله",
+  "page": "Tabbouleh",
+  "src": "en",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ac/Tabouleh_1.JPG/330px-Tabouleh_1.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "Tabbouleh"
+ },
+ "236": {
+  "name": "سالاد ماکارونی",
+  "page": "سالاد ماکارونی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1d/Macaroni_salad.jpg/330px-Macaroni_salad.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "238": {
+  "name": "سالاد مرغ",
+  "page": "سالاد مرغ",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/42/Flickr_sa_ku_ra_10556400--Chicken_salad.jpg/330px-Flickr_sa_ku_ra_10556400--Chicken_salad.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "239": {
+  "name": "سالاد تخم‌مرغ",
+  "page": "سالاد تخم‌مرغ",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/65/Egg_salad_sandwich.jpg/330px-Egg_salad_sandwich.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "24": {
+  "name": "خورش فسنجان مرغ",
+  "page": "مرغ",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/84/Male_and_female_chicken_sitting_together.jpg/330px-Male_and_female_chicken_sitting_together.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "مرغ"
+ },
+ "240": {
+  "name": "سالاد تن ماهی",
+  "page": "سالاد تن ماهی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/46/Tuna_fish_sandwiches_for_the_National_School_Lunch_Program_%281%29.jpg/330px-Tuna_fish_sandwiches_for_the_National_School_Lunch_Program_%281%29.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "242": {
+  "name": "سالاد اسفناج",
+  "page": "سالاد اسفناج",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5c/Flickr_-_cyclonebill_-_Salat_af_spinat%2C_blommetomater%2C_gedeost_og_valn%C3%B8ddeolie.jpg/330px-Flickr_-_cyclonebill_-_Salat_af_spinat%2C_blommetomater%2C_gedeost_og_valn%C3%B8ddeolie.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "245": {
+  "name": "سالاد نخود",
+  "page": "سالاد نخود",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fe/Hummus_salad.jpg/330px-Hummus_salad.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "249": {
+  "name": "سالاد کلم بروکلی",
+  "page": "Broccoli",
+  "src": "en",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/03/Broccoli_and_cross_section_edit.jpg/330px-Broccoli_and_cross_section_edit.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "Broccoli"
+ },
+ "25": {
+  "name": "خورش نعنا",
+  "page": "نعنا (سرده)",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b9/Mentha_longifolia_2005.08.02_09.53.56.jpg/330px-Mentha_longifolia_2005.08.02_09.53.56.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "نعنا"
+ },
+ "250": {
+  "name": "سالاد ماست و خیار",
+  "page": "خیار",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/96/ARS_cucumber.jpg/330px-ARS_cucumber.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "خیار"
+ },
+ "251": {
+  "name": "بورانی",
+  "page": "بورانی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9a/Bouranee.png/330px-Bouranee.png?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "252": {
+  "name": "کشک بادمجان",
+  "page": "کشک بادنجان",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/10/Kashk_e_Baademjaan.jpg/330px-Kashk_e_Baademjaan.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "253": {
+  "name": "سبزی خوردن",
+  "page": "سبزی خوردن",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f9/%D4%BF%D5%A1%D5%B6%D5%A1%D5%B9%D5%AB_3.JPG/330px-%D4%BF%D5%A1%D5%B6%D5%A1%D5%B9%D5%AB_3.JPG?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "254": {
+  "name": "ماست و خیار",
+  "page": "ماست و خیار",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/95/Mast_khiar.jpg/330px-Mast_khiar.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "255": {
+  "name": "میرزاقاسمی",
+  "page": "میرزاقاسمی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2d/Mirza-Qasemi_dish.jpg/330px-Mirza-Qasemi_dish.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "257": {
+  "name": "ترشی",
+  "page": "ترشی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c6/Pickled_Preserves_for_Sale_-_Beyoglu_District_-_Istanbul_-_Turkey_%285719101647%29.jpg/330px-Pickled_Preserves_for_Sale_-_Beyoglu_District_-_Istanbul_-_Turkey_%285719101647%29.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "258": {
+  "name": "زیتون پرورده",
+  "page": "زیتون پرورده",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/52/Zeytoon-Parvardeh-Zeytoun-Zeitoun-Zeytun-Persian-Olive-_Pomegranate-_Walnutfood-photo-by-persian-dutch-network.jpg/330px-Zeytoon-Parvardeh-Zeytoun-Zeitoun-Zeytun-Persian-Olive-_Pomegranate-_Walnutfood-photo-by-persian-dutch-network.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "26": {
+  "name": "خورش چغندر",
+  "page": "چغندر",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ae/Detroitdarkredbeets.png/330px-Detroitdarkredbeets.png?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "چغندر"
+ },
+ "260": {
+  "name": "پیاز داغ",
+  "page": "پیازداغ",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/36/Fried_onion%28iran%292.jpg/330px-Fried_onion%28iran%292.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "262": {
+  "name": "سوسیس بندری",
+  "page": "Sosis Bandari",
+  "src": "en",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/df/Persian_Port_Sausage_%28Sosis_Bandari%29_with_sliced_tomato_and_kosher_dills.jpg/330px-Persian_Port_Sausage_%28Sosis_Bandari%29_with_sliced_tomato_and_kosher_dills.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "263": {
+  "name": "نودل",
+  "page": "نودل",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/05/Misua_noodle_making_Taiwan.jpg/330px-Misua_noodle_making_Taiwan.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "264": {
+  "name": "پاپ‌کورن",
+  "page": "پف فیل",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d6/Popcorn_-_Studio_-_2011.jpg/330px-Popcorn_-_Studio_-_2011.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "268": {
+  "name": "مرغ سوخاری",
+  "page": "مرغ سوخاری",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2c/Fried-Chicken-Set.jpg/330px-Fried-Chicken-Set.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "27": {
+  "name": "خورش خیار",
+  "page": "خیار",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/96/ARS_cucumber.jpg/330px-ARS_cucumber.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "خیار"
+ },
+ "270": {
+  "name": "نان سنگک",
+  "page": "سنگک",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a3/Sangak_bakery.jpg/330px-Sangak_bakery.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "271": {
+  "name": "نان بربری",
+  "page": "نان بربری",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c6/Barbari_bread.jpg/330px-Barbari_bread.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "272": {
+  "name": "نان تافتون",
+  "page": "تافتون",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ed/Taftan_nan_01.jpg/330px-Taftan_nan_01.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "273": {
+  "name": "نان لواش",
+  "page": "نان لواش",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b9/Pan_armenio_en_el_mercado_de_Yerevan.JPG/330px-Pan_armenio_en_el_mercado_de_Yerevan.JPG?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "275": {
+  "name": "نان باگت",
+  "page": "باگت",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/97/Nl-baguettes2.jpg/330px-Nl-baguettes2.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "276": {
+  "name": "نان تست",
+  "page": "نان تست",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/35/Toast-3.jpg/330px-Toast-3.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "278": {
+  "name": "سمنو",
+  "page": "سمنو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c5/Samanu_for_7_sin.jpg/330px-Samanu_for_7_sin.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "28": {
+  "name": "خورش لپه",
+  "page": "خورش قیمه",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/db/Gheymeh_stew.jpg/330px-Gheymeh_stew.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "280": {
+  "name": "پنیر لیقوان",
+  "page": "پنیر لیقوان",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e7/Lighvan_cheese_1.jpg/330px-Lighvan_cheese_1.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "281": {
+  "name": "پنیر فتا",
+  "page": "پنیر فتا",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c9/Feta_Greece_2.jpg/330px-Feta_Greece_2.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "283": {
+  "name": "ماست چکیده",
+  "page": "ماست چکیده",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2c/Labneh01.jpg/330px-Labneh01.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "284": {
+  "name": "کشک",
+  "page": "کشک",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e8/Kesk-meledi1.jpg/330px-Kesk-meledi1.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "285": {
+  "name": "سرشیر",
+  "page": "سرشیر",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e9/Kaymak_in_Turkey.jpg/330px-Kaymak_in_Turkey.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "286": {
+  "name": "خامه",
+  "page": "خامه",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f7/01_Mmm..._Apple_Crisp_with_Whipped_Cream.jpg/330px-01_Mmm..._Apple_Crisp_with_Whipped_Cream.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "288": {
+  "name": "دوغ",
+  "page": "دوغ",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0f/K%C3%B6p%C3%BCkl%C3%BC_ayran_%28Foamy_ayran%29.jpg/330px-K%C3%B6p%C3%BCkl%C3%BC_ayran_%28Foamy_ayran%29.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "29": {
+  "name": "خورش اسفناج",
+  "page": "اسفناج",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/37/Spinacia_oleracea_Spinazie_bloeiend.jpg/330px-Spinacia_oleracea_Spinazie_bloeiend.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "اسفناج"
+ },
+ "290": {
+  "name": "ماست موسیر",
+  "page": "ماست موسیر",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/af/Mast-o_Mosier.jpg/330px-Mast-o_Mosier.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "291": {
+  "name": "پنیر خامه‌ای",
+  "page": "پنیر خامه‌ای",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a7/Philadelphia_cream_cheese.JPG/330px-Philadelphia_cream_cheese.JPG?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "292": {
+  "name": "تخم‌مرغ و پنیر",
+  "page": "پنیر",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f2/Hartkaese_HardCheeses.jpg/330px-Hartkaese_HardCheeses.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "پنیر"
+ },
+ "293": {
+  "name": "نان پنیر و گردو",
+  "page": "گردو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8f/Juglans_regia_Echte_Walnussfrucht_2.jpg/330px-Juglans_regia_Echte_Walnussfrucht_2.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "گردو"
+ },
+ "294": {
+  "name": "کره و عسل",
+  "page": "عسل",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cc/Runny_hunny.jpg/330px-Runny_hunny.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "عسل"
+ },
+ "295": {
+  "name": "مربا و نان",
+  "page": "نان",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b9/Pan_armenio_en_el_mercado_de_Yerevan.JPG/330px-Pan_armenio_en_el_mercado_de_Yerevan.JPG?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "نان"
+ },
+ "296": {
+  "name": "عدسی",
+  "page": "عدسی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d8/BiconvexLens.jpg/330px-BiconvexLens.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "297": {
+  "name": "حلیم",
+  "page": "هلیم (غذا)",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/31/Haleem_hyderabadi.jpg/330px-Haleem_hyderabadi.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "298": {
+  "name": "کله‌پاچه",
+  "page": "کله‌پاچه",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1c/Khash_1.jpg/330px-Khash_1.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "299": {
+  "name": "سیرابی",
+  "page": "سیرابی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0c/Rumen-motorik.gif/330px-Rumen-motorik.gif?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "3": {
+  "name": "قیمه",
+  "page": "خورش قیمه",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/db/Gheymeh_stew.jpg/330px-Gheymeh_stew.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "30": {
+  "name": "خورش ماست",
+  "page": "خورش ماست",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/59/Khoresht_mast_Isfahan_dessert.jpg/330px-Khoresht_mast_Isfahan_dessert.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "300": {
+  "name": "املت گوجه",
+  "page": "املت",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6e/Blond_unbrowned_omelet_with_mushrooms_and_herbs.jpg/330px-Blond_unbrowned_omelet_with_mushrooms_and_herbs.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "301": {
+  "name": "شیر عسل",
+  "page": "عسل",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cc/Runny_hunny.jpg/330px-Runny_hunny.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "عسل"
+ },
+ "302": {
+  "name": "چای و خرما",
+  "page": "خرما",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/65/%D8%AE%D8%B1%D9%85%D8%A7%DB%8C_%D8%B1%D8%B3%DB%8C%D8%AF%D9%87_%D8%B1%D9%88%DB%8C_%D9%86%D8%AE%D9%84_%D8%AF%D8%B1_%D8%B4%D9%87%D8%B1_%D8%A2%D8%A8%D9%BE%D8%AE%D8%B4.jpg/330px-%D8%AE%D8%B1%D9%85%D8%A7%DB%8C_%D8%B1%D8%B3%DB%8C%D8%AF%D9%87_%D8%B1%D9%88%DB%8C_%D9%86%D8%AE%D9%84_%D8%AF%D8%B1_%D8%B4%D9%87%D8%B1_%D8%A2%D8%A8%D9%BE%D8%AE%D8%B4.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "خرما"
+ },
+ "303": {
+  "name": "خامه و عسل",
+  "page": "عسل",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cc/Runny_hunny.jpg/330px-Runny_hunny.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "عسل"
+ },
+ "304": {
+  "name": "پنکیک",
+  "page": "پنکیک",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d7/Banana_on_pancake.jpg/330px-Banana_on_pancake.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "305": {
+  "name": "وافل",
+  "page": "وافل",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5b/Waffles_with_Strawberries.jpg/330px-Waffles_with_Strawberries.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "307": {
+  "name": "کروسان",
+  "page": "کروسان",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c4/Laugencroissants.JPG/330px-Laugencroissants.JPG?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "308": {
+  "name": "توست آووکادو",
+  "page": "آووکادو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f2/Persea_americana_fruit_2.JPG/330px-Persea_americana_fruit_2.JPG?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "آووکادو"
+ },
+ "309": {
+  "name": "اسموتی",
+  "page": "اسموتی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/37/2011.09_smoothie2.JPG/330px-2011.09_smoothie2.JPG?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "31": {
+  "name": "خورش سیب",
+  "page": "سیب",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ee/Apples.jpg/330px-Apples.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "سیب"
+ },
+ "311": {
+  "name": "حریره بادام",
+  "page": "حریره",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/16/J%C3%A1hlov%C3%A1_ka%C5%A1e.jpg/330px-J%C3%A1hlov%C3%A1_ka%C5%A1e.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "312": {
+  "name": "فرنی",
+  "page": "فرنی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/07/Kheer_Trio.jpg/330px-Kheer_Trio.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "313": {
+  "name": "شیربرنج",
+  "page": "شیربرنج",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/64/Shir_Berenj_in_Duydukh%2C_North_Khorasan.jpeg/330px-Shir_Berenj_in_Duydukh%2C_North_Khorasan.jpeg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "314": {
+  "name": "حلوا",
+  "page": "حلوا",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3e/Persian_halva.jpg/330px-Persian_halva.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "315": {
+  "name": "فرنی",
+  "page": "فرنی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/07/Kheer_Trio.jpg/330px-Kheer_Trio.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "316": {
+  "name": "شیربرنج",
+  "page": "شیربرنج",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/64/Shir_Berenj_in_Duydukh%2C_North_Khorasan.jpeg/330px-Shir_Berenj_in_Duydukh%2C_North_Khorasan.jpeg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "317": {
+  "name": "شله‌زرد",
+  "page": "شله زرد",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/31/Sholezard_for_Nowruz.jpg/330px-Sholezard_for_Nowruz.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "318": {
+  "name": "شیرموز",
+  "page": "شیرموز",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e7/Bananamilk.jpg/330px-Bananamilk.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "319": {
+  "name": "کرم کارامل",
+  "page": "کرم کارامل",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/58/Cremecaramel.jpg/330px-Cremecaramel.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "32": {
+  "name": "خورش بادمجان",
+  "page": "خورش بادمجان",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5d/Eggplant_stew_persian.jpg/330px-Eggplant_stew_persian.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "320": {
+  "name": "بستنی زعفرانی",
+  "page": "بستنی سنتی زعفرانی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1c/Wiki_loves_folklore_2025_in_Hamburg.jpeg/330px-Wiki_loves_folklore_2025_in_Hamburg.jpeg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "321": {
+  "name": "کیک شکلاتی",
+  "page": "کیک شکلاتی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/06/Chocolate_cake_with_chocolate_frosting_topped_with_chocolate.jpg/330px-Chocolate_cake_with_chocolate_frosting_topped_with_chocolate.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "322": {
+  "name": "کیک وانیلی",
+  "page": "وانیلی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/40/Vanilla_planifolia_1.jpg/330px-Vanilla_planifolia_1.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "وانیلی"
+ },
+ "323": {
+  "name": "کیک موزی",
+  "page": "کیک موزی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f3/Banana_bread_078.jpg/330px-Banana_bread_078.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "326": {
+  "name": "پودینگ شکلاتی",
+  "page": "پودینگ شکلاتی",
+  "src": "fa",
+  "url": "https://upload.wikimedia.org/wikipedia/commons/7/79/Chocolate_pudding.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+ },
+ "327": {
+  "name": "ترافل شکلاتی",
+  "page": "شکلاتی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/34/Chocolate02.jpg/330px-Chocolate02.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "شکلاتی"
+ },
+ "33": {
+  "name": "خورش کرفس مرغ",
+  "page": "مرغ",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/84/Male_and_female_chicken_sitting_together.jpg/330px-Male_and_female_chicken_sitting_together.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "مرغ"
+ },
+ "330": {
+  "name": "ژله",
+  "page": "ژله",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c5/%DA%98%D9%84%D9%87.JPG/330px-%DA%98%D9%84%D9%87.JPG?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "331": {
+  "name": "کرم آلو",
+  "page": "آلو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/24/Red-Plums.jpg/330px-Red-Plums.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "آلو"
+ },
+ "333": {
+  "name": "بستنی وانیلی",
+  "page": "بستنی وانیلی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f3/Vanilla_Ice_Cream_Cone_at_Camp_Manitoulin.jpg/330px-Vanilla_Ice_Cream_Cone_at_Camp_Manitoulin.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "334": {
+  "name": "بستنی شکلاتی",
+  "page": "بستنی شکلاتی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ea/Ice_cream_cone_%28cropped%29.jpg/330px-Ice_cream_cone_%28cropped%29.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "335": {
+  "name": "کیک هویج",
+  "page": "کیک هویج",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/87/Rueblitorte.jpg/330px-Rueblitorte.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "336": {
+  "name": "کیک بادام",
+  "page": "بادام",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/89/Prunus_dulcis_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-250.jpg/330px-Prunus_dulcis_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-250.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "بادام"
+ },
+ "337": {
+  "name": "کیک موز شکلاتی",
+  "page": "شکلاتی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/34/Chocolate02.jpg/330px-Chocolate02.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "شکلاتی"
+ },
+ "34": {
+  "name": "خورش آلوچه",
+  "page": "آلوچه",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2d/Wildpflaume_Althof-2.jpg/330px-Wildpflaume_Althof-2.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "آلوچه"
+ },
+ "340": {
+  "name": "کیک لیمویی",
+  "page": "لیمویی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/32/Citrin_cut.jpg/330px-Citrin_cut.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "لیمویی"
+ },
+ "341": {
+  "name": "باقلوا",
+  "page": "باقلوا",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c7/Baklava%281%29.png/330px-Baklava%281%29.png?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "344": {
+  "name": "پشمک",
+  "page": "پشمک",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8c/Suikerspin.png/330px-Suikerspin.png?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "345": {
+  "name": "لواشک",
+  "page": "لواشک",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/eb/Persian_sour_snacks%2C_Farahzad_neighbourhood%2C_Tehran_IMG_0351.JPG/330px-Persian_sour_snacks%2C_Farahzad_neighbourhood%2C_Tehran_IMG_0351.JPG?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "347": {
+  "name": "نون خامه‌ای",
+  "page": "نان خامه‌ای",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/48/Cream_puff_Spivack.jpg/330px-Cream_puff_Spivack.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "348": {
+  "name": "باسلوق",
+  "page": "باسلوق",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/97/Sujuq.jpg/330px-Sujuq.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "35": {
+  "name": "خورش سماق",
+  "page": "سماق",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/aa/SumacFruit.JPG/330px-SumacFruit.JPG?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "سماق"
+ },
+ "352": {
+  "name": "رولت",
+  "page": "رولت",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5d/13-02-27-spielbank-wiesbaden-by-RalfR-094.jpg/330px-13-02-27-spielbank-wiesbaden-by-RalfR-094.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "353": {
+  "name": "کیک رولت",
+  "page": "کیک رولت",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/ce/HK_Sheung_Wan_%E8%81%96%E5%AE%89%E5%A8%9C%E9%A4%85%E5%B1%8B_Sait_Honore_Cake_Shop_fruit_roll_cakes.jpg/330px-HK_Sheung_Wan_%E8%81%96%E5%AE%89%E5%A8%9C%E9%A4%85%E5%B1%8B_Sait_Honore_Cake_Shop_fruit_roll_cakes.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "356": {
+  "name": "پای شکلاتی",
+  "page": "شکلاتی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/34/Chocolate02.jpg/330px-Chocolate02.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "شکلاتی"
+ },
+ "357": {
+  "name": "چیزکیک",
+  "page": "کیک پنیر",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ea/Baked_cheesecake_with_raspberries_and_blueberries.jpg/330px-Baked_cheesecake_with_raspberries_and_blueberries.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "358": {
+  "name": "تارت میوه",
+  "page": "میوه",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/64/Bazar-tajrish-voroodi-gharb.jpg/330px-Bazar-tajrish-voroodi-gharb.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "میوه"
+ },
+ "359": {
+  "name": "کوکی",
+  "page": "کوکی اچ‌تی‌تی‌پی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5b/HTTP_logo.svg/langfa-330px-HTTP_logo.svg.png?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "36": {
+  "name": "خورش نارگیل",
+  "page": "نارگیل",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/32/Cocos_nucifera_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-187.jpg/330px-Cocos_nucifera_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-187.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "نارگیل"
+ },
+ "360": {
+  "name": "مافین",
+  "page": "مافین",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/25/NCI_Visuals_Food_Muffins.jpg/330px-NCI_Visuals_Food_Muffins.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "361": {
+  "name": "بستنی سنتی",
+  "page": "بستنی سنتی زعفرانی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1c/Wiki_loves_folklore_2025_in_Hamburg.jpeg/330px-Wiki_loves_folklore_2025_in_Hamburg.jpeg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "362": {
+  "name": "فالوده",
+  "page": "Faloodeh",
+  "src": "en",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/66/Faloodeh1.jpg/330px-Faloodeh1.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "364": {
+  "name": "بستنی قیفی",
+  "page": "بستنی قیفی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/da/Strawberry_ice_cream_cone_%285076899310%29.jpg/330px-Strawberry_ice_cream_cone_%285076899310%29.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "366": {
+  "name": "شیرینی بستنی",
+  "page": "بستنی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2e/Ice_cream_with_whipped_cream%2C_chocolate_syrup%2C_and_a_wafer_%28cropped%29.jpg/330px-Ice_cream_with_whipped_cream%2C_chocolate_syrup%2C_and_a_wafer_%28cropped%29.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "بستنی"
+ },
+ "367": {
+  "name": "بستنی توت فرنگی",
+  "page": "توت‌فرنگی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/73/Fraises_MIN_Rungis.jpg/330px-Fraises_MIN_Rungis.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "توت فرنگی"
+ },
+ "368": {
+  "name": "بستنی عسل و گردو",
+  "page": "گردو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8f/Juglans_regia_Echte_Walnussfrucht_2.jpg/330px-Juglans_regia_Echte_Walnussfrucht_2.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "گردو"
+ },
+ "369": {
+  "name": "بستنی لیمویی",
+  "page": "لیمویی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/32/Citrin_cut.jpg/330px-Citrin_cut.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "لیمویی"
+ },
+ "37": {
+  "name": "خورش تمر هندی",
+  "page": "تمر هندی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2e/Tamarindus_indica_pods.JPG/330px-Tamarindus_indica_pods.JPG?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "تمر هندی"
+ },
+ "370": {
+  "name": "بستنی پسته‌ای",
+  "page": "بستنی پسته‌ای",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c4/Glace_%C3%A0_la_pistache-Lipari.jpg/330px-Glace_%C3%A0_la_pistache-Lipari.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "371": {
+  "name": "شربت بستنی",
+  "page": "بستنی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2e/Ice_cream_with_whipped_cream%2C_chocolate_syrup%2C_and_a_wafer_%28cropped%29.jpg/330px-Ice_cream_with_whipped_cream%2C_chocolate_syrup%2C_and_a_wafer_%28cropped%29.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "بستنی"
+ },
+ "372": {
+  "name": "بستنی خرما",
+  "page": "خرما",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/65/%D8%AE%D8%B1%D9%85%D8%A7%DB%8C_%D8%B1%D8%B3%DB%8C%D8%AF%D9%87_%D8%B1%D9%88%DB%8C_%D9%86%D8%AE%D9%84_%D8%AF%D8%B1_%D8%B4%D9%87%D8%B1_%D8%A2%D8%A8%D9%BE%D8%AE%D8%B4.jpg/330px-%D8%AE%D8%B1%D9%85%D8%A7%DB%8C_%D8%B1%D8%B3%DB%8C%D8%AF%D9%87_%D8%B1%D9%88%DB%8C_%D9%86%D8%AE%D9%84_%D8%AF%D8%B1_%D8%B4%D9%87%D8%B1_%D8%A2%D8%A8%D9%BE%D8%AE%D8%B4.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "خرما"
+ },
+ "373": {
+  "name": "بستنی نارگیلی",
+  "page": "نارگیلی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/31/Iran_relief_location_map.jpg/330px-Iran_relief_location_map.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "نارگیلی"
+ },
+ "374": {
+  "name": "پسته",
+  "page": "پسته",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a8/Pistacchio_di_Bronte.jpg/330px-Pistacchio_di_Bronte.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "375": {
+  "name": "بادام",
+  "page": "بادام",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/89/Prunus_dulcis_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-250.jpg/330px-Prunus_dulcis_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-250.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "376": {
+  "name": "گردو",
+  "page": "گردو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8f/Juglans_regia_Echte_Walnussfrucht_2.jpg/330px-Juglans_regia_Echte_Walnussfrucht_2.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "377": {
+  "name": "فندق",
+  "page": "فندق",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e4/Hazelnuts_%28Corylus_avellana%29_-_whole_with_kernels.jpg/330px-Hazelnuts_%28Corylus_avellana%29_-_whole_with_kernels.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "378": {
+  "name": "بادام زمینی",
+  "page": "بادام زمینی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a4/Arachis_hypogaea_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-163.jpg/330px-Arachis_hypogaea_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-163.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "379": {
+  "name": "کشمش",
+  "page": "کشمش",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c6/Pasas.JPG/330px-Pasas.JPG?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "کشمش"
+ },
+ "38": {
+  "name": "خورش خرفه",
+  "page": "خرفه",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a8/P_villosa.jpg/330px-P_villosa.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "خرفه"
+ },
+ "380": {
+  "name": "خرما",
+  "page": "خرما",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/65/%D8%AE%D8%B1%D9%85%D8%A7%DB%8C_%D8%B1%D8%B3%DB%8C%D8%AF%D9%87_%D8%B1%D9%88%DB%8C_%D9%86%D8%AE%D9%84_%D8%AF%D8%B1_%D8%B4%D9%87%D8%B1_%D8%A2%D8%A8%D9%BE%D8%AE%D8%B4.jpg/330px-%D8%AE%D8%B1%D9%85%D8%A7%DB%8C_%D8%B1%D8%B3%DB%8C%D8%AF%D9%87_%D8%B1%D9%88%DB%8C_%D9%86%D8%AE%D9%84_%D8%AF%D8%B1_%D8%B4%D9%87%D8%B1_%D8%A2%D8%A8%D9%BE%D8%AE%D8%B4.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "381": {
+  "name": "تخمه آفتابگردان",
+  "page": "تخمه آفتاب‌گردان",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/13/Whole_Sunflower_seed.jpg/330px-Whole_Sunflower_seed.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "382": {
+  "name": "تخمه کدو",
+  "page": "روغن دانه کدو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bb/PumpkinOilFactory-Prekmurje1.JPG/330px-PumpkinOilFactory-Prekmurje1.JPG?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "تخمه کدو"
+ },
+ "383": {
+  "name": "آجیل مخلوط",
+  "page": "آجیل مخلوط",
+  "src": "fa",
+  "url": "https://upload.wikimedia.org/wikipedia/fa/a/aa/Mixednutsposter.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+ },
+ "384": {
+  "name": "انجیر خشک",
+  "page": "خشکی (هوا)",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d3/Wadi_Rum_rock_formations_along_with_Bedouin_camps%2C_Jordan.jpg/330px-Wadi_Rum_rock_formations_along_with_Bedouin_camps%2C_Jordan.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "خشک"
+ },
+ "385": {
+  "name": "زردآلو خشک",
+  "page": "خشکی (هوا)",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d3/Wadi_Rum_rock_formations_along_with_Bedouin_camps%2C_Jordan.jpg/330px-Wadi_Rum_rock_formations_along_with_Bedouin_camps%2C_Jordan.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "خشک"
+ },
+ "386": {
+  "name": "برگه هلو",
+  "page": "هلو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d5/Flameprince_peaches.jpg/330px-Flameprince_peaches.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "هلو"
+ },
+ "387": {
+  "name": "آلو خشک",
+  "page": "خشکی (هوا)",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d3/Wadi_Rum_rock_formations_along_with_Bedouin_camps%2C_Jordan.jpg/330px-Wadi_Rum_rock_formations_along_with_Bedouin_camps%2C_Jordan.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "خشک"
+ },
+ "388": {
+  "name": "چغاله بادام",
+  "page": "چغاله‌بادام",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f9/%DA%86%D8%BA%D8%A7%D9%84%D9%87_%D8%A8%D8%A7%D8%AF%D8%A7%D9%85_%D8%B4%D9%87%D8%B1%D8%B3%D8%AA%D8%A7%D9%86_%D8%AF%D8%A7%D8%B1%D9%8A%D9%88%D9%86-%D8%B4%D9%8A%D8%B1%D8%A7%D8%B2_%D9%85%D9%86%D8%B7%D9%82%D9%87_%D9%83%D8%B4%D8%A7%D9%88%D8%B1%D8%B2%D9%8A_%D8%AF%D8%A7%D8%B1%D9%8A%D9%88%D9%86_2014-03-25_15-22.jpg/330px-%DA%86%D8%BA%D8%A7%D9%84%D9%87_%D8%A8%D8%A7%D8%AF%D8%A7%D9%85_%D8%B4%D9%87%D8%B1%D8%B3%D8%AA%D8%A7%D9%86_%D8%AF%D8%A7%D8%B1%D9%8A%D9%88%D9%86-%D8%B4%D9%8A%D8%B1%D8%A7%D8%B2_%D9%85%D9%86%D8%B7%D9%82%D9%87_%D9%83%D8%B4%D8%A7%D9%88%D8%B1%D8%B2%D9%8A_%D8%AF%D8%A7%D8%B1%D9%8A%D9%88%D9%86_2014-03-25_15-22.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "389": {
+  "name": "گوجه سبز",
+  "page": "گوجه‌سبز",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/88/Owoce_Renkloda.jpg/330px-Owoce_Renkloda.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "39": {
+  "name": "خورش قیسی",
+  "page": "قیسی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a9/Ab_food_04.jpg/330px-Ab_food_04.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "قیسی"
+ },
+ "390": {
+  "name": "شکلات",
+  "page": "شکلات",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fe/Cocoa_Powder_and_Chocolate_on_Marble_Background.jpg/330px-Cocoa_Powder_and_Chocolate_on_Marble_Background.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "391": {
+  "name": "شیرینی خشک",
+  "page": "خشکی (هوا)",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d3/Wadi_Rum_rock_formations_along_with_Bedouin_camps%2C_Jordan.jpg/330px-Wadi_Rum_rock_formations_along_with_Bedouin_camps%2C_Jordan.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "خشک"
+ },
+ "392": {
+  "name": "نان خرمایی",
+  "page": "نان خرمایی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/ce/Nan_khormai.png/330px-Nan_khormai.png?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "393": {
+  "name": "چای",
+  "page": "چای",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8a/Cup_of_black_tea.JPG/330px-Cup_of_black_tea.JPG?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "394": {
+  "name": "چای سبز",
+  "page": "چای سبز",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/36/Green_tea_3_appearances.jpg/330px-Green_tea_3_appearances.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "395": {
+  "name": "دمنوش نعنا",
+  "page": "نعنا (سرده)",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b9/Mentha_longifolia_2005.08.02_09.53.56.jpg/330px-Mentha_longifolia_2005.08.02_09.53.56.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "نعنا"
+ },
+ "396": {
+  "name": "دمنوش بابونه",
+  "page": "بابونه",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/26/Kamomillasaunio_%28Matricaria_recutita%29.JPG/330px-Kamomillasaunio_%28Matricaria_recutita%29.JPG?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "بابونه"
+ },
+ "397": {
+  "name": "قهوه",
+  "page": "قهوه",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e4/Latte_and_dark_coffee.jpg/330px-Latte_and_dark_coffee.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "398": {
+  "name": "نسکافه",
+  "page": "Nescafé",
+  "src": "en",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2f/Nescaf%C3%A8_instant_coffee%2C_2019-%2801%29.jpg/330px-Nescaf%C3%A8_instant_coffee%2C_2019-%2801%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "399": {
+  "name": "آب‌میوه پرتقال",
+  "page": "پرتقال",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b0/OrangeBloss_wb.jpg/330px-OrangeBloss_wb.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "پرتقال"
+ },
+ "4": {
+  "name": "خورش کرفس",
+  "page": "خورش کرفس",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d8/%D8%AE%D9%88%D8%B1%D8%B4_%DA%A9%D8%B1%D9%81%D8%B3_%D8%A8%D8%A7_%D9%85%D8%B1%D8%BA.jpg/330px-%D8%AE%D9%88%D8%B1%D8%B4_%DA%A9%D8%B1%D9%81%D8%B3_%D8%A8%D8%A7_%D9%85%D8%B1%D8%BA.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "40": {
+  "name": "خورش هلو",
+  "page": "هلو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d5/Flameprince_peaches.jpg/330px-Flameprince_peaches.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "هلو"
+ },
+ "400": {
+  "name": "شربت آلبالو",
+  "page": "آلبالو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2a/Prunus_cerasus_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-113.jpg/330px-Prunus_cerasus_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-113.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "آلبالو"
+ },
+ "401": {
+  "name": "شربت سکنجبین",
+  "page": "Sekanjabin",
+  "src": "en",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2b/Sekanjebin_%28drink%29.jpg/330px-Sekanjebin_%28drink%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "402": {
+  "name": "شربت بیدمشک",
+  "page": "بیدمشک",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/Salix_caprea_02.jpg/330px-Salix_caprea_02.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "بیدمشک"
+ },
+ "403": {
+  "name": "شربت زعفران",
+  "page": "زعفران",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/68/Saffron_-_premium_spice.jpg/330px-Saffron_-_premium_spice.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "زعفران"
+ },
+ "404": {
+  "name": "شربت بهارنارنج",
+  "page": "بهار نارنج",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4d/Orange_blossom_Flower.jpg/330px-Orange_blossom_Flower.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "بهارنارنج"
+ },
+ "405": {
+  "name": "لیموناد",
+  "page": "شربت آبلیمو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9f/Limonade_1400.jpg/330px-Limonade_1400.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "406": {
+  "name": "آب انار",
+  "page": "آب انار",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6a/Pomegranate_Juice_%282019%29.jpg/330px-Pomegranate_Juice_%282019%29.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "407": {
+  "name": "شیر موز",
+  "page": "شیرموز",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e7/Bananamilk.jpg/330px-Bananamilk.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "408": {
+  "name": "شیرکاکائو",
+  "page": "شیرکاکائو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/23/Chocolate_milk.JPG/330px-Chocolate_milk.JPG?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "41": {
+  "name": "خورش زردآلو",
+  "page": "زردآلو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f9/Apricots.jpg/330px-Apricots.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "زردآلو"
+ },
+ "410": {
+  "name": "عرق نعنا",
+  "page": "نعنا (سرده)",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b9/Mentha_longifolia_2005.08.02_09.53.56.jpg/330px-Mentha_longifolia_2005.08.02_09.53.56.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "نعنا"
+ },
+ "411": {
+  "name": "دم‌نوش دارچین",
+  "page": "دارچین",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/de/Cinnamomum_verum_spices.jpg/330px-Cinnamomum_verum_spices.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "دارچین"
+ },
+ "412": {
+  "name": "آب هویج",
+  "page": "آب‌هویج",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3c/GlassOfJuice_and_carrots.JPG/330px-GlassOfJuice_and_carrots.JPG?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "آب هویج"
+ },
+ "413": {
+  "name": "شربت خاکشیر",
+  "page": "شربت خاکشیر",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/fa/thumb/1/18/Khakeshir.jpg/330px-Khakeshir.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "شربت خاکشیر"
+ },
+ "414": {
+  "name": "شربت تخم شربتی",
+  "page": "تخم شربتی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/00/Reyhan1.jpg/330px-Reyhan1.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "شربت تخم شربتی"
+ },
+ "415": {
+  "name": "آب لیمو",
+  "page": "آبلیمو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/62/Juicing_the_lemons_%286027988479%29.jpg/330px-Juicing_the_lemons_%286027988479%29.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "آب لیمو"
+ },
+ "416": {
+  "name": "هندوانه",
+  "page": "هندوانه",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/47/Taiwan_2009_Tainan_City_Organic_Farm_Watermelon_FRD_7962.jpg/330px-Taiwan_2009_Tainan_City_Organic_Farm_Watermelon_FRD_7962.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "417": {
+  "name": "خربزه",
+  "page": "خربزه ایرانی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/07/Persian_melon_02.jpg/330px-Persian_melon_02.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "خربزه"
+ },
+ "418": {
+  "name": "طالبی",
+  "page": "طالبی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f5/Honeydew.jpg/330px-Honeydew.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "طالبی"
+ },
+ "42": {
+  "name": "خورش آلبالو",
+  "page": "آلبالو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2a/Prunus_cerasus_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-113.jpg/330px-Prunus_cerasus_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-113.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "آلبالو"
+ },
+ "425": {
+  "name": "خرما",
+  "page": "خرما",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/65/%D8%AE%D8%B1%D9%85%D8%A7%DB%8C_%D8%B1%D8%B3%DB%8C%D8%AF%D9%87_%D8%B1%D9%88%DB%8C_%D9%86%D8%AE%D9%84_%D8%AF%D8%B1_%D8%B4%D9%87%D8%B1_%D8%A2%D8%A8%D9%BE%D8%AE%D8%B4.jpg/330px-%D8%AE%D8%B1%D9%85%D8%A7%DB%8C_%D8%B1%D8%B3%DB%8C%D8%AF%D9%87_%D8%B1%D9%88%DB%8C_%D9%86%D8%AE%D9%84_%D8%AF%D8%B1_%D8%B4%D9%87%D8%B1_%D8%A2%D8%A8%D9%BE%D8%AE%D8%B4.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "خرما"
+ },
+ "427": {
+  "name": "هلو",
+  "page": "هلو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d5/Flameprince_peaches.jpg/330px-Flameprince_peaches.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "428": {
+  "name": "زردآلو",
+  "page": "زردآلو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f9/Apricots.jpg/330px-Apricots.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "429": {
+  "name": "گیلاس",
+  "page": "گیلاس",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6c/Cherry_sweet_cherry_red_fruit_167341.jpg/330px-Cherry_sweet_cherry_red_fruit_167341.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "43": {
+  "name": "خورش آلو",
+  "page": "آلو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/24/Red-Plums.jpg/330px-Red-Plums.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "آلو"
+ },
+ "430": {
+  "name": "آلبالو",
+  "page": "آلبالو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2a/Prunus_cerasus_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-113.jpg/330px-Prunus_cerasus_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-113.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "431": {
+  "name": "توت فرنگی",
+  "page": "توت‌فرنگی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/73/Fraises_MIN_Rungis.jpg/330px-Fraises_MIN_Rungis.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "432": {
+  "name": "کیوی",
+  "page": "کیوی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cf/Actinidia_chinensis_-_Austins_Ferry.jpg/330px-Actinidia_chinensis_-_Austins_Ferry.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "433": {
+  "name": "آناناس",
+  "page": "آناناس",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/17/Pineapple1.JPG/330px-Pineapple1.JPG?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "434": {
+  "name": "گلابی",
+  "page": "گلابی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cf/Pears.jpg/330px-Pears.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "435": {
+  "name": "آلو",
+  "page": "آلو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/24/Red-Plums.jpg/330px-Red-Plums.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "436": {
+  "name": "خرمالو",
+  "page": "خرمالو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/49/Hachiya_persimmons_on_tree_close-up.jpg/330px-Hachiya_persimmons_on_tree_close-up.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "437": {
+  "name": "انبه",
+  "page": "انبه",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/20/Manguier_portant_des_mangues_bien_mures.jpg/330px-Manguier_portant_des_mangues_bien_mures.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "438": {
+  "name": "هلو انجیری",
+  "page": "هلو انجیری",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a2/Prunus-persica-1060223.JPG/330px-Prunus-persica-1060223.JPG?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "439": {
+  "name": "شلیل",
+  "page": "شلیل",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/74/Nectarines_summer_2006.jpg/330px-Nectarines_summer_2006.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "44": {
+  "name": "خورش گل کلم",
+  "page": "گل کلم",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/78/Blumenkohl-1.jpg/330px-Blumenkohl-1.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "گل کلم"
+ },
+ "441": {
+  "name": "سالاد میوه",
+  "page": "سالاد میوه",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/74/Fruktsallad_%28Fruit_salad%29.jpg/330px-Fruktsallad_%28Fruit_salad%29.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "442": {
+  "name": "میوه خشک",
+  "page": "خشکبار",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2f/Oshav.jpg/330px-Oshav.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "448": {
+  "name": "خوراک قارچ و پنیر",
+  "page": "پنیر",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f2/Hartkaese_HardCheeses.jpg/330px-Hartkaese_HardCheeses.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "پنیر"
+ },
+ "45": {
+  "name": "خورش شلغم",
+  "page": "شلغم",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d3/Turnip_2622027.jpg/330px-Turnip_2622027.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "شلغم"
+ },
+ "451": {
+  "name": "خوراک ماهی",
+  "page": "ماهی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/08/Astronotus_ocellatus.jpg/330px-Astronotus_ocellatus.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "ماهی"
+ },
+ "453": {
+  "name": "خوراک سیب‌زمینی",
+  "page": "سیب‌زمینی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/Patates.jpg/330px-Patates.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "سیب‌زمینی"
+ },
+ "454": {
+  "name": "خوراک کدو",
+  "page": "کدو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ea/Squashes_at_Kew_Gardens_IncrEdibles_2013.jpg/330px-Squashes_at_Kew_Gardens_IncrEdibles_2013.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "کدو"
+ },
+ "46": {
+  "name": "خورش لوبیا چشم‌بلبلی",
+  "page": "لوبیا چشم‌بلبلی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/08/Lobia.jpg/330px-Lobia.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "لوبیا چشم‌بلبلی"
+ },
+ "47": {
+  "name": "خورش نخود",
+  "page": "نخود",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ea/Sa-whitegreen-chickpea.jpg/330px-Sa-whitegreen-chickpea.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "نخود"
+ },
+ "470": {
+  "name": "خوراک تخم‌مرغ و گوجه",
+  "page": "گوجه‌فرنگی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f3/Tomatoes-on-the-bush.jpg/330px-Tomatoes-on-the-bush.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "گوجه"
+ },
+ "474": {
+  "name": "خوراک لوبیا و قارچ",
+  "page": "قارچ",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fc/Fungi_collage.jpg/330px-Fungi_collage.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "قارچ"
+ },
+ "48": {
+  "name": "خورش بادمجان کشک",
+  "page": "کشک",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e8/Kesk-meledi1.jpg/330px-Kesk-meledi1.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "کشک"
+ },
+ "480": {
+  "name": "خوراک ماهی و سبزیجات",
+  "page": "سبزی برگی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fe/Spinach_leaves.jpg/330px-Spinach_leaves.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "سبزیجات"
+ },
+ "485": {
+  "name": "خوراک مرغ و اسفناج",
+  "page": "اسفناج",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/37/Spinacia_oleracea_Spinazie_bloeiend.jpg/330px-Spinacia_oleracea_Spinazie_bloeiend.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "اسفناج"
+ },
+ "49": {
+  "name": "زرشک‌پلو با مرغ",
+  "page": "مرغ",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/84/Male_and_female_chicken_sitting_together.jpg/330px-Male_and_female_chicken_sitting_together.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "مرغ"
+ },
+ "493": {
+  "name": "خوراک نخود و کدو",
+  "page": "کدو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ea/Squashes_at_Kew_Gardens_IncrEdibles_2013.jpg/330px-Squashes_at_Kew_Gardens_IncrEdibles_2013.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "کدو"
+ },
+ "495": {
+  "name": "خوراک مرغ و کدو",
+  "page": "کدو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ea/Squashes_at_Kew_Gardens_IncrEdibles_2013.jpg/330px-Squashes_at_Kew_Gardens_IncrEdibles_2013.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "کدو"
+ },
+ "496": {
+  "name": "خوراک تن و پاستا",
+  "page": "پاستا",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3f/%28Pasta%29_by_David_Adam_Kess_%28pic.2%29.jpg/330px-%28Pasta%29_by_David_Adam_Kess_%28pic.2%29.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "پاستا"
+ },
+ "497": {
+  "name": "خوراک لوبیا و اسفناج",
+  "page": "اسفناج",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/37/Spinacia_oleracea_Spinazie_bloeiend.jpg/330px-Spinacia_oleracea_Spinazie_bloeiend.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "اسفناج"
+ },
+ "498": {
+  "name": "خوراک عدس و هویج",
+  "page": "هویج",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9f/Daucus_Carota.jpg/330px-Daucus_Carota.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "هویج"
+ },
+ "499": {
+  "name": "خوراک نخود و گوجه",
+  "page": "گوجه‌فرنگی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f3/Tomatoes-on-the-bush.jpg/330px-Tomatoes-on-the-bush.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "گوجه"
+ },
+ "5": {
+  "name": "خورش بامیه",
+  "page": "خورش بامیه",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/26/Bamia-Ocras_tomate_%28cropped%29.JPG/330px-Bamia-Ocras_tomate_%28cropped%29.JPG?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "501": {
+  "name": "چاو مین",
+  "page": "Chow mein",
+  "src": "en",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a6/Homemade_Chow_mein_with_shrimps_and_meat_with_a_choy_and_Choung.jpg/330px-Homemade_Chow_mein_with_shrimps_and_meat_with_a_choy_and_Choung.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "502": {
+  "name": "بریانی",
+  "page": "بریانی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5a/%22Hyderabadi_Dum_Biryani%22.jpg/330px-%22Hyderabadi_Dum_Biryani%22.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "بریانی"
+ },
+ "503": {
+  "name": "تاکو",
+  "page": "Taco",
+  "src": "en",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/73/001_Tacos_de_carnitas%2C_carne_asada_y_al_pastor.jpg/330px-001_Tacos_de_carnitas%2C_carne_asada_y_al_pastor.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "504": {
+  "name": "بوریتو",
+  "page": "بوریتو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/60/Burrito.JPG/330px-Burrito.JPG?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "بوریتو"
+ },
+ "505": {
+  "name": "کیسدیا",
+  "page": "Quesadilla",
+  "src": "en",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/01/Empanada_flor_de_Calabaza.jpg/330px-Empanada_flor_de_Calabaza.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "506": {
+  "name": "رامن",
+  "page": "رامن",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fc/Soy_ramen.jpg/330px-Soy_ramen.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "رامن"
+ },
+ "507": {
+  "name": "پد تای",
+  "page": "Pad thai",
+  "src": "en",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/39/Phat_Thai_kung_Chang_Khien_street_stall.jpg/330px-Phat_Thai_kung_Chang_Khien_street_stall.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "508": {
+  "name": "کینوا سالاد",
+  "page": "سالاد",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/94/Salad_platter.jpg/330px-Salad_platter.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "سالاد"
+ },
+ "509": {
+  "name": "فلافل",
+  "page": "Falafel",
+  "src": "en",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/57/Falafels_2.jpg/330px-Falafels_2.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "51": {
+  "name": "سبزی‌پلو با ماهی",
+  "page": "ماهی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/08/Astronotus_ocellatus.jpg/330px-Astronotus_ocellatus.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "ماهی"
+ },
+ "510": {
+  "name": "هوموس",
+  "page": "Hummus",
+  "src": "en",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bf/Lebanese_style_hummus.jpg/330px-Lebanese_style_hummus.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "511": {
+  "name": "شاکشوکا",
+  "page": "Shakshouka",
+  "src": "en",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/18/Shakshuka_by_Calliopejen1.jpg/330px-Shakshuka_by_Calliopejen1.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "512": {
+  "name": "گیوزا",
+  "page": "جیائوزی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/94/Jiaozi%21.jpg/330px-Jiaozi%21.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "513": {
+  "name": "پیروگی",
+  "page": "پیروگی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9e/Pierogi_z_cebulk%C4%85.jpg/330px-Pierogi_z_cebulk%C4%85.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "514": {
+  "name": "کاسادیا مرغ",
+  "page": "مرغ",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/84/Male_and_female_chicken_sitting_together.jpg/330px-Male_and_female_chicken_sitting_together.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "مرغ"
+ },
+ "515": {
+  "name": "فیش اند چیپس",
+  "page": "چیپس و ماهی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/76/Fish_and_chips.jpg/330px-Fish_and_chips.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "516": {
+  "name": "پائیا",
+  "page": "پائیا",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d1/Red_paella_with_mussels.jpg/330px-Red_paella_with_mussels.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "517": {
+  "name": "گولاش",
+  "page": "گویاش",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5c/Gulyas080.jpg/330px-Gulyas080.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "518": {
+  "name": "بورش",
+  "page": "بورش",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/36/Boersch_009.JPG/330px-Boersch_009.JPG?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "519": {
+  "name": "کیمچی",
+  "page": "کیمچی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f8/Various_kimchi.jpg/330px-Various_kimchi.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "52": {
+  "name": "عدس‌پلو",
+  "page": "عدس‌پلو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/61/Adas_polo.JPG/330px-Adas_polo.JPG?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "520": {
+  "name": "بیبیم‌باپ",
+  "page": "Bibimbap",
+  "src": "en",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/44/Dolsot-bibimbap.jpg/330px-Dolsot-bibimbap.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "521": {
+  "name": "چیزبورد",
+  "page": "Cheese Board Collective",
+  "src": "en",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/52/Cheeseboard_Pizza_exterior.jpg/330px-Cheeseboard_Pizza_exterior.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "522": {
+  "name": "ساندویچ بان می",
+  "page": "Bánh mì",
+  "src": "en",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0c/B%C3%A1nh_m%C3%AC_th%E1%BB%8Bt_n%C6%B0%E1%BB%9Bng.png/330px-B%C3%A1nh_m%C3%AC_th%E1%BB%8Bt_n%C6%B0%E1%BB%9Bng.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "523": {
+  "name": "کراپ",
+  "page": "کروپ (شرکت)",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/88/Krupp_Logo.svg/langfa-330px-Krupp_Logo.svg.png?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "524": {
+  "name": "تیرامیسو",
+  "page": "تیرامیسو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/58/Tiramisu_-_Raffaele_Diomede.jpg/330px-Tiramisu_-_Raffaele_Diomede.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "525": {
+  "name": "پاناکوتا",
+  "page": "پاناکوتا",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/80/Panna_Cotta_with_cream_and_garnish.jpg/330px-Panna_Cotta_with_cream_and_garnish.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "526": {
+  "name": "براونی",
+  "page": "براونی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/68/Chocolatebrownie.JPG/330px-Chocolatebrownie.JPG?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "527": {
+  "name": "دونات",
+  "page": "دونات",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a5/Glazed-Donut.jpg/330px-Glazed-Donut.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "528": {
+  "name": "پاپایا سالاد",
+  "page": "Green papaya salad",
+  "src": "en",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/34/2013_Tam_Lao.jpg/330px-2013_Tam_Lao.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "529": {
+  "name": "تابوله",
+  "page": "Tabbouleh",
+  "src": "en",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ac/Tabouleh_1.JPG/330px-Tabouleh_1.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "531": {
+  "name": "پوره سیب‌زمینی",
+  "page": "پوره سیب‌زمینی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/39/MashedPotatoes.jpg/330px-MashedPotatoes.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "532": {
+  "name": "پوره سیب",
+  "page": "پوره سیب",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b1/Appelmoes.jpg/330px-Appelmoes.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "535": {
+  "name": "پنکیک موزی",
+  "page": "موزی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a4/%D0%A4%D0%B8%D0%BB%D0%BE%D1%81%D0%BE%D1%84_%D0%9C%D0%BE-%D0%A6%D0%B7%D1%8B.jpg/330px-%D0%A4%D0%B8%D0%BB%D0%BE%D1%81%D0%BE%D1%84_%D0%9C%D0%BE-%D0%A6%D0%B7%D1%8B.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "موزی"
+ },
+ "536": {
+  "name": "تخم‌مرغ نیمرو",
+  "page": "نیمرو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/dd/Flickr_-_cyclonebill_-_Vagtel-spejl%C3%A6g.jpg/330px-Flickr_-_cyclonebill_-_Vagtel-spejl%C3%A6g.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "تخم‌مرغ نیمرو"
+ },
+ "537": {
+  "name": "کوکوی سیب‌زمینی",
+  "page": "سیب‌زمینی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/Patates.jpg/330px-Patates.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "سیب‌زمینی"
+ },
+ "539": {
+  "name": "سوپ جو",
+  "page": "سوپ جو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a8/Vegetable_beef_barley_soup.jpg/330px-Vegetable_beef_barley_soup.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "54": {
+  "name": "کلم‌پلو",
+  "page": "کلم‌پلو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/30/%DA%A9%D9%84%D9%85_._%D9%BE%D9%84%D9%88.jpg/330px-%DA%A9%D9%84%D9%85_._%D9%BE%D9%84%D9%88.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "541": {
+  "name": "شیربرنج",
+  "page": "شیربرنج",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/64/Shir_Berenj_in_Duydukh%2C_North_Khorasan.jpeg/330px-Shir_Berenj_in_Duydukh%2C_North_Khorasan.jpeg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "شیربرنج"
+ },
+ "543": {
+  "name": "سالاد الویه",
+  "page": "سالاد الیویه",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/ce/Russian_Olivier_salad.jpg/330px-Russian_Olivier_salad.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "56": {
+  "name": "هویج‌پلو",
+  "page": "هویج‌پلو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f0/Havij_polo02.jpg/330px-Havij_polo02.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "57": {
+  "name": "ته‌چین مرغ",
+  "page": "مرغ",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/84/Male_and_female_chicken_sitting_together.jpg/330px-Male_and_female_chicken_sitting_together.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "مرغ"
+ },
+ "58": {
+  "name": "ته‌چین گوشت",
+  "page": "گوشت",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ae/FoodMeat.jpg/330px-FoodMeat.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "گوشت"
+ },
+ "6": {
+  "name": "خورش آلو اسفناج",
+  "page": "اسفناج",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/37/Spinacia_oleracea_Spinazie_bloeiend.jpg/330px-Spinacia_oleracea_Spinazie_bloeiend.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "اسفناج"
+ },
+ "60": {
+  "name": "رشته‌پلو",
+  "page": "رشته‌پلو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/87/Reshteh_pelu_3.jpg/330px-Reshteh_pelu_3.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "67": {
+  "name": "چلوکباب کوبیده",
+  "page": "کباب کوبیده",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/26/Kabab_koobideh_bbq_persian_food.jpg/330px-Kabab_koobideh_bbq_persian_food.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "کوبیده"
+ },
+ "69": {
+  "name": "دمی",
+  "page": "دمی (آلبوم)",
+  "src": "fa",
+  "url": "https://upload.wikimedia.org/wikipedia/fa/f/fe/Demi_Lovato_-_Demi.png?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+ },
+ "77": {
+  "name": "شیرین‌پلو",
+  "page": "شیرین‌پلو",
+  "src": "fa",
+  "url": "https://upload.wikimedia.org/wikipedia/commons/2/2a/Stamps_of_Azerbaijan%2C_2005-701.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+ },
+ "78": {
+  "name": "مرصع‌پلو",
+  "page": "مرصع‌پلو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a3/Morasa_Pol%C3%B3_-_Maria_Stile.JPG/330px-Morasa_Pol%C3%B3_-_Maria_Stile.JPG?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "8": {
+  "name": "خورش به",
+  "page": "به",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b5/Pancrace_Bessa00.jpg/330px-Pancrace_Bessa00.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "به"
+ },
+ "84": {
+  "name": "دمی گوجه",
+  "page": "دمی گوجه",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0e/Mexican_rice_144235.jpg/330px-Mexican_rice_144235.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "86": {
+  "name": "چلو",
+  "page": "چلو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4f/Making_Chelow_8.jpg/330px-Making_Chelow_8.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "87": {
+  "name": "پلو مخلوط",
+  "page": "مخلوط",
+  "src": "fa",
+  "url": "https://upload.wikimedia.org/wikipedia/commons/d/dd/WaterAndFlourSuspensionLiquid.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+  "via": "مخلوط"
+ },
+ "89": {
+  "name": "کباب کوبیده",
+  "page": "کباب کوبیده",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/26/Kabab_koobideh_bbq_persian_food.jpg/330px-Kabab_koobideh_bbq_persian_food.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "9": {
+  "name": "خورش کدو",
+  "page": "کدو",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ea/Squashes_at_Kew_Gardens_IncrEdibles_2013.jpg/330px-Squashes_at_Kew_Gardens_IncrEdibles_2013.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "کدو"
+ },
+ "90": {
+  "name": "جوجه‌کباب",
+  "page": "جوجه‌کباب",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4c/Chalus_Road%2C_Iran_%2853774343039%29.jpg/330px-Chalus_Road%2C_Iran_%2853774343039%29.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "91": {
+  "name": "کباب برگ",
+  "page": "کباب برگ",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a1/Kababi_alborz2.jpg/330px-Kababi_alborz2.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "92": {
+  "name": "کباب چنجه",
+  "page": "چنجه",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/31/Iran_relief_location_map.jpg/330px-Iran_relief_location_map.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "چنجه"
+ },
+ "93": {
+  "name": "شیشلیک",
+  "page": "شیشلیک",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9b/5832p40xi.jpg/330px-5832p40xi.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "95": {
+  "name": "کباب بختیاری",
+  "page": "Kebab",
+  "src": "en",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5b/Lula_kebab_2.jpg/330px-Lula_kebab_2.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "96": {
+  "name": "کباب قفقازی",
+  "page": "مردمان قفقاز",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/90/Caucasus-ethnic_fa.svg/langfa-330px-Caucasus-ethnic_fa.svg.png?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "قفقازی"
+ },
+ "98": {
+  "name": "کباب ترش",
+  "page": "کباب ترش",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/74/Kebab_torsh.jpg/330px-Kebab_torsh.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+ },
+ "99": {
+  "name": "کباب ماهی",
+  "page": "ماهی",
+  "src": "fa",
+  "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/08/Astronotus_ocellatus.jpg/330px-Astronotus_ocellatus.jpg?utm_source=fa.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+  "via": "ماهی"
+ }
+}
