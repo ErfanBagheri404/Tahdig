@@ -260,7 +260,8 @@ fun FoodDetailScreen(
                                         .padding(vertical = 2.dp),
                                 )
                             }
-                        Spacer(Modifier.height(12.dp))
+                            Spacer(Modifier.height(12.dp))
+                        }
                         Button(
                             onClick = { onAddToShoppingList(f.id, f.ingredients) },
                             modifier = Modifier.fillMaxWidth(),

@@ -37,13 +37,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-<<<<<<< HEAD
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-=======
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
->>>>>>> origin/feat/dish-of-day
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
 import com.erfanbagheri.tahdig.util.Haptics
 import com.erfanbagheri.tahdig.ui.viewmodel.HomeViewModel
@@ -55,11 +52,8 @@ fun HomeScreen(
     val suggestion by viewModel.suggestion.collectAsState()
     val mealLabel by viewModel.mealLabel.collectAsState()
     val isFavorite by viewModel.isFavorite.collectAsState()
-<<<<<<< HEAD
     val view = LocalView.current
-=======
     val dishOfDay by viewModel.dishOfDay.collectAsState()
-
     // Refresh day-dependent state when app returns to foreground (midnight-safe).
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
@@ -69,7 +63,6 @@ fun HomeScreen(
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
->>>>>>> origin/feat/dish-of-day
 
     Surface(
         modifier = Modifier.fillMaxSize(),
