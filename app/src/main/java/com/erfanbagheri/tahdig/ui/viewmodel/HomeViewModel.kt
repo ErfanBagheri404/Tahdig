@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 class HomeViewModel(app: Application) : AndroidViewModel(app) {
 
@@ -37,10 +38,31 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
     private val _isFavorite = MutableStateFlow(false)
     val isFavorite: StateFlow<Boolean> = _isFavorite.asStateFlow()
 
+    /** Deterministic dish of the day — same dish all day, stable across restarts. */
+    private val _dishOfDay = MutableStateFlow<FoodEntity?>(null)
+    val dishOfDay: StateFlow<FoodEntity?> = _dishOfDay.asStateFlow()
+
     init {
         refreshMealLabel()
         loadHistory()
         roll()
+        loadDishOfDay()
+    }
+
+    /** Pick today's dish from the day-of-year index — no DB change, no extra screen. */
+    fun loadDishOfDay() {
+        viewModelScope.launch {
+            val all = foodDao.observeAll().first()
+            if (all.isNotEmpty()) {
+                _dishOfDay.value = all[LocalDate.now().dayOfYear % all.size]
+            }
+        }
+    }
+
+    /** Refresh day-dependent state (call on foreground/resume) — midnight-safe. */
+    fun refreshDay() {
+        refreshMealLabel()
+        loadDishOfDay()
     }
 
     /** Re-read meal bucket (call from a timer or recomposition). */
