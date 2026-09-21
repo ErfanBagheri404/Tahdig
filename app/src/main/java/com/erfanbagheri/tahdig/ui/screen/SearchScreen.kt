@@ -152,6 +152,8 @@ fun SearchScreen(
                     onClear = { history.clear() },
                 )
                 Spacer(Modifier.height(8.dp))
+            }
+
             // Recently viewed (shown when query is empty)
             val recentVm: RecentlyViewedViewModel = viewModel()
             val recentFoods by recentVm.recent.collectAsState()
