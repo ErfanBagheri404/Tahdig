@@ -8,6 +8,16 @@
          dispatcher throws an uncaught SecurityException and the app crashes. -->
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- Voice input launches the device's speech recogniser. On Android 11+ package
+         visibility hides it from resolveActivity() without this, so the mic button
+         would never appear. The recogniser app owns the mic, so RECORD_AUDIO is not
+         needed here. -->
+    <queries>
+        <intent>
+            <action android:name="android.speech.action.RECOGNIZE_SPEECH" />
+        </intent>
+    </queries>
+
     <application
         android:name=".TahdigApplication"
         android:allowBackup="true"

@@ -1,5 +1,8 @@
 package com.erfanbagheri.tahdig.ui.screen
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +20,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.erfanbagheri.tahdig.util.DietFilter
+import com.erfanbagheri.tahdig.util.VoiceInput
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
 import com.erfanbagheri.tahdig.ui.viewmodel.SearchHistory
 import com.erfanbagheri.tahdig.ui.viewmodel.RecentlyViewedViewModel
@@ -161,12 +166,14 @@ fun SearchScreen(
                 value = ingredients,
                 onValueChange = viewModel::onIngredientsChange,
                 label = "مواد در دسترس (با کاما جدا کن)",
+                onSpoken = { viewModel.onIngredientsChange(VoiceInput.append(ingredients, it)) },
             )
             Spacer(Modifier.height(8.dp))
             IngredientField(
                 value = excluded,
                 onValueChange = viewModel::onExcludedChange,
                 label = "مواد نامطلوب (حذف شود)",
+                onSpoken = { viewModel.onExcludedChange(VoiceInput.append(excluded, it)) },
             )
 
             Spacer(Modifier.height(12.dp))
@@ -387,7 +394,19 @@ private fun IngredientField(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,
+    onSpoken: (String) -> Unit,
 ) {
+    val context = androidx.compose.ui.platform.LocalContext.current
+    // Recogniser presence is fixed for the process, so this is computed once.
+    val micAvailable = remember { !VoiceInput.unavailable(context) }
+    val launcher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult(),
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            VoiceInput.parse(VoiceInput.resultsFrom(result.data))?.let(onSpoken)
+        }
+    }
+
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
@@ -397,6 +416,18 @@ private fun IngredientField(
         },
         singleLine = true,
         shape = RoundedCornerShape(12.dp),
+        // Hidden when the device has no recogniser rather than shown and failing.
+        trailingIcon = if (!micAvailable) null else {
+            {
+                IconButton(onClick = { VoiceInput.intent(context)?.let(launcher::launch) }) {
+                    Icon(
+                        imageVector = Icons.Default.Mic,
+                        contentDescription = "ورودی صوتی",
+                        tint = MaterialTheme.colorScheme.primary,
+                    )
+                }
+            }
+        },
         colors = OutlinedTextFieldDefaults.colors(
             unfocusedBorderColor = MaterialTheme.colorScheme.outline,
             focusedBorderColor = MaterialTheme.colorScheme.primary,
