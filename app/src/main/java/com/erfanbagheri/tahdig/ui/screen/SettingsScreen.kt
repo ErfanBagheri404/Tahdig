@@ -81,6 +81,18 @@ fun SettingsScreen(
 
         val context = androidx.compose.ui.platform.LocalContext.current
         val dailyNotify by viewModel.dailyNotify.collectAsState()
+
+        // API 33+: notifications need runtime permission, so ask when the user enables the toggle.
+        val permissionLauncher = androidx.activity.compose.rememberLauncherForActivityResult(
+            androidx.activity.result.contract.ActivityResultContracts.RequestPermission(),
+        ) { granted ->
+            viewModel.setDailyNotify(context, granted)
+        }
+        val needsPermission = android.os.Build.VERSION.SDK_INT >= 33 &&
+            androidx.core.content.ContextCompat.checkSelfPermission(
+                context, android.Manifest.permission.POST_NOTIFICATIONS,
+            ) != android.content.pm.PackageManager.PERMISSION_GRANTED
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
@@ -94,7 +106,13 @@ fun SettingsScreen(
             )
             androidx.compose.material3.Switch(
                 checked = dailyNotify,
-                onCheckedChange = { viewModel.setDailyNotify(context, it) },
+                onCheckedChange = { enabled ->
+                    if (enabled && needsPermission) {
+                        permissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+                    } else {
+                        viewModel.setDailyNotify(context, enabled)
+                    }
+                },
             )
         }
 
