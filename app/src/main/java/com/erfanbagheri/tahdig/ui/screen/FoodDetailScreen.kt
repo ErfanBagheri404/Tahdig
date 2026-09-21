@@ -1,5 +1,6 @@
 package com.erfanbagheri.tahdig.ui.screen
 
+import android.speech.tts.TextToSpeech
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,6 +22,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -33,6 +35,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -55,6 +58,7 @@ import com.erfanbagheri.tahdig.ui.theme.YekanBakh
 import com.erfanbagheri.tahdig.ui.viewmodel.RatingViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -105,6 +109,29 @@ fun FoodDetailScreen(
                 if (!running) break
             }
         }
+    }
+
+    val appContext = context.applicationContext
+    var tts: TextToSpeech? = null
+    var ttsReady by remember { mutableStateOf(false) }
+    var ttsHasFa by remember { mutableStateOf(true) }
+    tts = remember(appContext) {
+        TextToSpeech(appContext) { status ->
+            val engine = tts ?: return@TextToSpeech
+            if (status != TextToSpeech.SUCCESS) {
+                ttsHasFa = false
+                ttsReady = true
+                return@TextToSpeech
+            }
+            // Language is only set when fa-IR is confirmed available
+            val result = engine.setLanguage(Locale("fa", "IR"))
+            ttsHasFa = result != TextToSpeech.LANG_MISSING_DATA && result != TextToSpeech.LANG_NOT_SUPPORTED
+            if (!ttsHasFa) engine.language = Locale.getDefault()
+            ttsReady = true
+        }
+    }
+    DisposableEffect(Unit) {
+        onDispose { tts?.stop(); tts?.shutdown() }
     }
 
     Surface(
@@ -360,6 +387,20 @@ fun FoodDetailScreen(
                     Spacer(Modifier.height(16.dp))
                     Button(onClick = { onStartStepMode(f.id) }) {
                         Text("حالت پخت مرحله‌به‌مرحله", fontFamily = YekanBakh)
+                    }
+
+                    Spacer(Modifier.height(12.dp))
+                    Button(
+                        onClick = { tts?.speak(f.ingredients, TextToSpeech.QUEUE_FLUSH, null, "tahdig") },
+                        enabled = ttsReady,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.VolumeUp,
+                            contentDescription = "گوش دادن به مواد",
+                            modifier = Modifier.size(18.dp),
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Text("گوش دادن به مواد", fontFamily = YekanBakh)
                     }
 
                     Spacer(Modifier.height(48.dp))
