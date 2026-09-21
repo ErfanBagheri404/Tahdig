@@ -119,6 +119,23 @@ fun SettingsScreen(
 
         Spacer(Modifier.height(32.dp))
 
+        // Haptics section
+        Text(
+            text = "لرزش",
+            style = MaterialTheme.typography.titleMedium,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+
+        Spacer(Modifier.height(8.dp))
+
+        val hapticLevel by viewModel.hapticLevel.collectAsState()
+        ThemeOption("خاموش", selected = hapticLevel == 0) { viewModel.setHapticLevel(0) }
+        ThemeOption("ملایم", selected = hapticLevel == 1) { viewModel.setHapticLevel(1) }
+        ThemeOption("معمولی", selected = hapticLevel == 2) { viewModel.setHapticLevel(2) }
+
+        Spacer(Modifier.height(32.dp))
+
         // About section
         Text(
             text = "درباره",
