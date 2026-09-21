@@ -18,10 +18,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Button
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -36,12 +36,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -50,6 +53,8 @@ import com.erfanbagheri.tahdig.data.local.TahdigDatabase
 import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
 import com.erfanbagheri.tahdig.ui.viewmodel.RatingViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -68,6 +73,38 @@ fun FoodDetailScreen(
         val db = TahdigDatabase.getInstance(context)
         food = db.foodDao().getById(foodId)
         food?.let { recentViewDao.recordView(it.id) }
+    }
+
+    // ── Cooking timer ──────────────────────────────────────────────
+    val haptic = LocalHapticFeedback.current
+    var remainingSec by remember { mutableLongStateOf(0L) }
+    var running by remember { mutableStateOf(false) }
+    var showTimerDialog by remember { mutableStateOf(false) }
+
+    fun onTimerTick() {
+        if (remainingSec <= 1) {
+            running = false
+            showTimerDialog = true
+            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+        } else {
+            remainingSec -= 1
+        }
+    }
+
+    TimerDialog(
+        show = showTimerDialog,
+        onDismiss = { showTimerDialog = false },
+    )
+
+    // ── TimerDialog is hoisted; ticks are driven from the UI coroutine ──
+    LaunchedEffect(running) {
+        if (running) {
+            while (isActive) {
+                delay(1000)
+                onTimerTick()
+                if (!running) break
+            }
+        }
     }
 
     Surface(
@@ -177,6 +214,31 @@ fun FoodDetailScreen(
                             if (spiceLevel > 0) {
                                 DetailChip(com.erfanbagheri.tahdig.util.SpiceProfile.label(spiceLevel))
                             }
+                        }
+                    }
+
+                    // Cooking timer
+                    if (f.prepTimeMin > 0) {
+                        Spacer(Modifier.height(20.dp))
+                        Button(
+                            onClick = {
+                                // Toggle: start if idle, else pause/resume — never reset while running.
+                                if (running) {
+                                    running = false
+                                } else {
+                                    if (remainingSec == 0L) remainingSec = f.prepTimeMin * 60L
+                                    running = true
+                                }
+                            },
+                        ) {
+                            Text(
+                                when {
+                                    running -> "زمان باقی: ${mmss(remainingSec)}"
+                                    remainingSec > 0L -> "ادامه تایمر"
+                                    else -> "شروع تایمر آشپزی"
+                                },
+                                fontFamily = YekanBakh,
+                            )
                         }
                     }
 
@@ -321,6 +383,27 @@ private fun StarRating(stars: Int, onRate: (Int) -> Unit) {
             }
         }
     }
+}
+
+@Composable
+private fun TimerDialog(show: Boolean, onDismiss: () -> Unit) {
+    if (!show) return
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("تایمر تمام شد", fontFamily = YekanBakh) },
+        text = { Text("زمان آماده‌سازی به پایان رسید!", fontFamily = YekanBakh) },
+        confirmButton = {
+            Button(onClick = onDismiss) { Text("باشه", fontFamily = YekanBakh) }
+        },
+    )
+}
+
+private fun mmss(sec: Long): String {
+    val m = sec / 60
+    val s = sec % 60
+    val mm = if (m < 10) "0$m" else "$m"
+    val ss = if (s < 10) "0$s" else "$s"
+    return "$mm:$ss"
 }
 
 @Composable
