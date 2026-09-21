@@ -271,8 +271,12 @@ fun FoodDetailScreen(
                         }
                     }
 
-                    // Nutrition estimate
-                    val nut = com.erfanbagheri.tahdig.util.NutritionEstimate.estimate(f.name, f.tags)
+                    // Nutrition: real OFF data when the ingredients are covered,
+                    // else the per-category heuristic. Badge says which.
+                    val real = com.erfanbagheri.tahdig.util.NutritionEstimate
+                        .estimateFromIngredients(f.ingredients)
+                    val nut = real?.info
+                        ?: com.erfanbagheri.tahdig.util.NutritionEstimate.estimate(f.name, f.tags)
                     Spacer(Modifier.height(16.dp))
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -282,6 +286,8 @@ fun FoodDetailScreen(
                         DetailChip("پروتئین ${nut.protein}")
                         DetailChip("چربی ${nut.fat}")
                         DetailChip("کربوهیدرات ${nut.carb}")
+                        // Honesty badge: the user should know which tier this came from.
+                        DetailChip(if (real != null) "واقعی" else "تخمینی")
                     }
 
                     if (f.ingredients.isNotBlank()) {

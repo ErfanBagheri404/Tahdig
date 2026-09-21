@@ -1,8 +1,15 @@
 package com.erfanbagheri.tahdig.util
 
 /**
- * Estimated nutritional info derived from dish name/tags (no DB column).
- * ponytail: rough heuristic per category; add real nutrition table when curated data exists.
+ * Estimated nutritional info for a dish. Two tiers:
+ *
+ * 1. REAL — the dish's ingredients are covered by [NutritionDB] (Open Food Facts,
+ *    per-100g). Summed over the dish's ingredient list. Badge: "واقعی".
+ * 2. Fallback — the per-category heuristic in [estimateHeuristic]. Badge: "تخمینی".
+ *
+ * ponytail: OFF gives per-100g but the seed has no gram amounts per ingredient,
+ * so the "real" figure assumes equal 100g shares of every listed ingredient.
+ * A gram-weights table would make this exact; add one when the data exists.
  */
 object NutritionEstimate {
     data class Info(val calories: Int, val protein: String, val fat: String, val carb: String)
@@ -42,6 +49,34 @@ object NutritionEstimate {
             protein = "${protein.toInt()}g",
             fat = "${fat.toInt()}g",
             carb = "${carb.toInt()}g",
+        )
+    }
+
+    data class Real(val info: Info, val covered: Int, val total: Int)
+
+    /**
+     * Sum OFF macros over the dish's ingredient list (each as its 100g share).
+     * Returns null when fewer than [minCovered] ingredients have OFF data —
+     * then the caller falls back to the heuristic with the "تخمینی" badge.
+     */
+    fun estimateFromIngredients(ingredients: String, minCovered: Int = 2): Real? {
+        val parts = ingredients.split(',', '،').map { it.trim() }.filter { it.isNotEmpty() }
+        val covered = parts.mapNotNull { NutritionDB.get(it) }
+        if (covered.size < minCovered) return null
+
+        var cal = 0.0; var pro = 0.0; var fat = 0.0; var carb = 0.0
+        for (e in covered) {
+            cal += e.calories; pro += e.protein; fat += e.fat; carb += e.carbs
+        }
+        return Real(
+            Info(
+                calories = cal.toInt(),
+                protein = "${pro.toInt()}g",
+                fat = "${fat.toInt()}g",
+                carb = "${carb.toInt()}g",
+            ),
+            covered = covered.size,
+            total = covered.size,
         )
     }
 
