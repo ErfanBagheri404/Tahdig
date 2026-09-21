@@ -32,4 +32,11 @@ interface ShoppingDao {
 
     @Query("SELECT COUNT(*) FROM shopping_list WHERE food_id = :foodId")
     suspend fun countForFood(foodId: Long): Int
+
+    /** All rows with ids — needed to merge quantities without losing checked state. */
+    @Query("SELECT * FROM shopping_list ORDER BY created_at")
+    suspend fun allRows(): List<ShoppingItemEntity>
+
+    @Query("UPDATE shopping_list SET item = :text WHERE id = :id")
+    suspend fun updateText(id: Long, text: String)
 }

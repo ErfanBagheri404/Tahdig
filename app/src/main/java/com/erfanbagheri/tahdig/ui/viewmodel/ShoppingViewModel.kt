@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.erfanbagheri.tahdig.data.local.TahdigDatabase
 import com.erfanbagheri.tahdig.data.local.entity.ShoppingItemEntity
+import com.erfanbagheri.tahdig.util.IngredientParser
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -41,9 +42,32 @@ class ShoppingViewModel(app: Application) : AndroidViewModel(app) {
             .filter { it.isNotEmpty() }
         if (parts.isEmpty()) return
         viewModelScope.launch {
-            shoppingDao.insertAll(
-                parts.map { ShoppingItemEntity(foodId = foodId, item = it) }
-            )
+            // Merge with what is already on the list so adding two dishes that both
+            // need onion yields one row, not two. Existing rows keep their id and
+            // checked state — only their text is rewritten with the summed quantity.
+            val existing = shoppingDao.allRows()
+            // Existing rows are already display text ("۳ عدد پیاز"), so re-parse them
+            // to recover the unit/item identity they merge on.
+            val byKey = existing.associateBy {
+                val p = IngredientParser.parse(it.item)
+                IngredientParser.mergeKey(p.unit, p.item)
+            }
+            val merged = IngredientParser.merge(existing.map { it.item } + parts)
+
+            val keep = mutableListOf<Pair<Long, String>>()   // id -> new text
+            val add = mutableListOf<String>()
+            for (m in merged) {
+                val text = m.display()
+                val prev = byKey[IngredientParser.mergeKey(m.unit, m.item)]
+                if (prev != null) keep += prev.id to text else add += text
+            }
+            // Delete only the rows that were folded into another row.
+            val keepIds = keep.map { it.first }.toSet()
+            existing.filter { it.id !in keepIds }.forEach { shoppingDao.deleteById(it.id) }
+            keep.forEach { (id, text) -> shoppingDao.updateText(id, text) }
+            if (add.isNotEmpty()) {
+                shoppingDao.insertAll(add.map { ShoppingItemEntity(foodId = foodId, item = it) })
+            }
         }
     }
 }

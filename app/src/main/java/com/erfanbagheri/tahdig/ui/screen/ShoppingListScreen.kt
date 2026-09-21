@@ -81,18 +81,34 @@ fun ShoppingListScreen(
                     .padding(top = 48.dp),
             )
         } else {
+            // Grouped by shopping aisle so the list follows the route through a store.
+            // Grouping the entities directly (not the parsed text) keeps each row's id.
+            val grouped = items.groupBy { com.erfanbagheri.tahdig.util.IngredientParser.categoryOf(it.item) }
+                .toList()
+                .sortedBy { (bucket, _) -> if (bucket == "سایر") 1 else 0 }
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 20.dp),
                 verticalArrangement = Arrangement.spacedBy(6.dp),
             ) {
-                items(items, key = { it.id }) { item ->
-                    ShoppingRow(
-                        item = item,
-                        onToggle = { checked -> viewModel.setChecked(item.id, checked) },
-                        onDelete = { viewModel.remove(item.id) },
-                    )
+                grouped.forEach { (bucket, rows) ->
+                    item(key = "hdr-$bucket") {
+                        Text(
+                            text = bucket,
+                            style = MaterialTheme.typography.labelLarge,
+                            fontFamily = YekanBakh,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.padding(top = 14.dp, bottom = 2.dp),
+                        )
+                    }
+                    items(rows, key = { it.id }) { item ->
+                        ShoppingRow(
+                            item = item,
+                            onToggle = { checked -> viewModel.setChecked(item.id, checked) },
+                            onDelete = { viewModel.remove(item.id) },
+                        )
+                    }
                 }
             }
         }
