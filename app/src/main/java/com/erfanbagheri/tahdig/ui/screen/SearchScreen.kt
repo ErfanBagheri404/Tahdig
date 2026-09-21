@@ -28,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.key.onKeyEvent
@@ -43,6 +44,7 @@ fun SearchScreen(
     viewModel: SearchViewModel,
     onFoodClick: (Long) -> Unit = {},
 ) {
+    val context = androidx.compose.ui.platform.LocalContext.current
     val query by viewModel.query.collectAsState()
     val selectedCategoryId by viewModel.selectedCategoryId.collectAsState()
     val categories by viewModel.categories.collectAsState()
@@ -138,10 +140,12 @@ fun SearchScreen(
             Spacer(Modifier.height(16.dp))
 
             // Search history (shown when query is empty)
-            val history = SearchHistory(viewModel.getApplication())
-            if (query.isBlank()) {
+            // Hoisted so the same instance is reused across recompositions.
+            val history = remember { SearchHistory(context) }
+            val historyQueries by history.queries.collectAsState()
+            if (query.isBlank() && historyQueries.isNotEmpty()) {
                 SearchHistoryChips(
-                    history = history.queries,
+                    history = historyQueries,
                     onSelect = { viewModel.onQueryChange(it) },
                     onClear = { history.clear() },
                 )
