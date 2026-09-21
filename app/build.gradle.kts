@@ -28,6 +28,9 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         resourceConfigurations += listOf("fa")
+
+        // App name in output APK names: Tahdig-<ABI>-<version>.apk instead of app-<ABI>-release.apk.
+        setProperty("archivesBaseName", "Tahdig")
     }
 
     signingConfigs {
