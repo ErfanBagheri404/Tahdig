@@ -41,6 +41,13 @@ interface FoodDao {
     @Query("SELECT * FROM foods WHERE is_blocked = 0 ORDER BY RANDOM() LIMIT :limit")
     suspend fun randomAny(limit: Int): List<FoodEntity>
 
+    /**
+     * Deterministic "dish of the day": the same row for the whole day.
+     * OFFSET makes it stable across widget refreshes and app restarts, unlike RANDOM().
+     */
+    @Query("SELECT * FROM foods WHERE is_blocked = 0 ORDER BY id LIMIT 1 OFFSET :index")
+    suspend fun byIndex(index: Int): FoodEntity?
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(foods: List<FoodEntity>)
 

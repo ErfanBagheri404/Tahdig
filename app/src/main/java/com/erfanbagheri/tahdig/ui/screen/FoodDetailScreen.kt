@@ -16,12 +16,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -46,6 +48,7 @@ import com.erfanbagheri.tahdig.ui.theme.YekanBakh
 fun FoodDetailScreen(
     foodId: Long,
     onBack: () -> Unit,
+    onStartStepMode: (Long) -> Unit = {},
 ) {
     val context = LocalContext.current.applicationContext
     var food by remember { mutableStateOf<FoodEntity?>(null) }
@@ -150,6 +153,19 @@ fun FoodDetailScreen(
                         }
                     }
 
+                    // Nutrition estimate
+                    val nut = com.erfanbagheri.tahdig.util.NutritionEstimate.estimate(f.name, f.tags)
+                    Spacer(Modifier.height(16.dp))
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        DetailChip("~${nut.calories} کالری")
+                        DetailChip("پروتئین ${nut.protein}")
+                        DetailChip("چربی ${nut.fat}")
+                        DetailChip("کربوهیدرات ${nut.carb}")
+                    }
+
                     if (f.ingredients.isNotBlank()) {
                         Spacer(Modifier.height(28.dp))
                         Text(
@@ -189,6 +205,36 @@ fun FoodDetailScreen(
                             color = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.fillMaxWidth(),
                         )
+
+                        // Unit converter (cups/grams/tbsp quick reference)
+                        Spacer(Modifier.height(16.dp))
+                        var showConverter by remember { mutableStateOf(false) }
+                        TextButton(onClick = { showConverter = !showConverter }) {
+                            Text(
+                                text = if (showConverter) "بستن تبدیل واحد" else "تبدیل واحد",
+                                fontFamily = YekanBakh,
+                            )
+                        }
+                        if (showConverter) {
+                            val uc = com.erfanbagheri.tahdig.util.UnitConverter
+                            val rows = listOf(
+                                "۱ پیمانه آرد" to "${uc.cupsToGrams(1.0, "آرد").value.toInt()} گرم",
+                                "۱ پیمانه شکر" to "${uc.cupsToGrams(1.0, "شکر").value.toInt()} گرم",
+                                "۱ قاشق غذاخوری" to "${uc.tablespoonsToGrams(1.0).value.toInt()} گرم",
+                                "۱ پیمانه" to "${uc.cupsToTablespoons(1.0).value.toInt()} قاشق غذاخوری",
+                            )
+                            rows.forEach { (from, to) ->
+                                Text(
+                                    text = "$from = $to",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    fontFamily = YekanBakh,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 2.dp),
+                                )
+                            }
+                        }
                     }
 
                     if (f.tags.isNotBlank()) {
@@ -208,6 +254,11 @@ fun FoodDetailScreen(
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.fillMaxWidth(),
                         )
+                    }
+
+                    Spacer(Modifier.height(16.dp))
+                    Button(onClick = { onStartStepMode(f.id) }) {
+                        Text("حالت پخت مرحله‌به‌مرحله", fontFamily = YekanBakh)
                     }
 
                     Spacer(Modifier.height(48.dp))

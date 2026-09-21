@@ -41,6 +41,7 @@ import com.erfanbagheri.tahdig.ui.screen.HomeScreen
 import com.erfanbagheri.tahdig.ui.screen.OnboardingPager
 import com.erfanbagheri.tahdig.ui.screen.SearchScreen
 import com.erfanbagheri.tahdig.ui.screen.SettingsScreen
+import com.erfanbagheri.tahdig.ui.screen.StepModeScreen
 import com.erfanbagheri.tahdig.ui.theme.TahdigTheme
 import com.erfanbagheri.tahdig.ui.screen.MealPlanScreen
 import com.erfanbagheri.tahdig.ui.viewmodel.MealPlanViewModel
@@ -94,6 +95,7 @@ private fun TahdigApp() {
         OnboardingPager(onDone = { SettingsStore.setOnboarded() })
         return
     }
+    var stepModeFoodId by rememberSaveable { mutableLongStateOf(-1L) }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -143,10 +145,17 @@ private fun TahdigApp() {
             color = MaterialTheme.colorScheme.background,
         ) {
             when {
+                stepModeFoodId >= 0 -> {
+                    StepModeScreen(
+                        foodId = stepModeFoodId,
+                        onBack = { stepModeFoodId = -1L },
+                    )
+                }
                 detailFoodId >= 0 -> {
                     FoodDetailScreen(
                         foodId = detailFoodId,
                         onBack = { detailFoodId = -1L },
+                        onStartStepMode = { id -> detailFoodId = -1L; stepModeFoodId = id },
                     )
                 }
                 selectedTab == 0 -> {

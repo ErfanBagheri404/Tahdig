@@ -11,6 +11,7 @@ import com.erfanbagheri.tahdig.util.MealTimeHelper
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class HomeViewModel(app: Application) : AndroidViewModel(app) {
@@ -68,6 +69,15 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
             // Fallback: random from ANY bucket if current bucket is empty
             if (pick == null) {
                 pick = foodDao.randomAny(1).firstOrNull()
+            }
+
+            // Smart weighting: 30% chance favor a favorited dish (skip if already favorited)
+            if (pick != null && !isFavorited(pick.id) && Math.random() < 0.30) {
+                val favPicks = favoriteDao.observeFavoritedFoods().first()
+                    .filter { it.mealTime.contains(bucket, ignoreCase = true) }
+                if (favPicks.isNotEmpty()) {
+                    pick = favPicks.random()
+                }
             }
 
             _suggestion.value = pick
