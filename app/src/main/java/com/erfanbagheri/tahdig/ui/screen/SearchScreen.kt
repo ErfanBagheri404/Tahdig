@@ -28,12 +28,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.erfanbagheri.tahdig.util.DietFilter
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
+import com.erfanbagheri.tahdig.ui.viewmodel.SearchHistory
+import com.erfanbagheri.tahdig.ui.viewmodel.RecentlyViewedViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.SearchViewModel
 
 @Composable
@@ -41,8 +47,12 @@ fun SearchScreen(
     viewModel: SearchViewModel,
     onFoodClick: (Long) -> Unit = {},
 ) {
+    val context = androidx.compose.ui.platform.LocalContext.current
     val query by viewModel.query.collectAsState()
     val selectedCategoryId by viewModel.selectedCategoryId.collectAsState()
+    val diet by viewModel.diet.collectAsState()
+    val ingredients by viewModel.ingredients.collectAsState()
+    val excluded by viewModel.excluded.collectAsState()
     val categories by viewModel.categories.collectAsState()
     val results by viewModel.results.collectAsState()
 
@@ -72,6 +82,12 @@ fun SearchScreen(
                 value = query,
                 onValueChange = viewModel::onQueryChange,
                 modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
+                    imeAction = androidx.compose.ui.text.input.ImeAction.Search,
+                ),
+                keyboardActions = androidx.compose.foundation.text.KeyboardActions(
+                    onSearch = { viewModel.onSubmit() },
+                ),
                 placeholder = {
                     Text(
                         "جستجوی غذا…",
@@ -81,7 +97,7 @@ fun SearchScreen(
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Default.Search,
-                        contentDescription = null,
+                        contentDescription = "جستجو",
                     )
                 },
                 trailingIcon = {
@@ -102,6 +118,21 @@ fun SearchScreen(
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
                 ),
+            )
+
+            Spacer(Modifier.height(12.dp))
+
+            // Have-on-hand ingredient search: "what can I cook with X?"
+            IngredientField(
+                value = ingredients,
+                onValueChange = viewModel::onIngredientsChange,
+                label = "مواد در دسترس (با کاما جدا کن)",
+            )
+            Spacer(Modifier.height(8.dp))
+            IngredientField(
+                value = excluded,
+                onValueChange = viewModel::onExcludedChange,
+                label = "مواد نامطلوب (حذف شود)",
             )
 
             Spacer(Modifier.height(12.dp))
@@ -127,10 +158,65 @@ fun SearchScreen(
                 }
             }
 
+            Spacer(Modifier.height(8.dp))
+
+            // Dietary filter chips
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                item {
+                    CategoryChip(
+                        label = "رژیمی",
+                        selected = diet == null,
+                        onClick = { viewModel.onDietSelect(null) },
+                    )
+                }
+                items(DietFilter.values().toList()) { d ->
+                    CategoryChip(
+                        label = d.label,
+                        selected = diet == d,
+                        onClick = { viewModel.onDietSelect(d) },
+                    )
+                }
+            }
+
             Spacer(Modifier.height(16.dp))
 
+            // Search history (shown when query is empty)
+            // Hoisted so the same instance is reused across recompositions.
+            val history = remember { SearchHistory(context) }
+            val historyQueries by history.queries.collectAsState()
+            if (query.isBlank() && historyQueries.isNotEmpty()) {
+                SearchHistoryChips(
+                    history = historyQueries,
+                    onSelect = { viewModel.onQueryChange(it) },
+                    onClear = { history.clear() },
+                )
+                Spacer(Modifier.height(8.dp))
+            }
+
+            // Recently viewed (shown when query is empty)
+            val recentVm: RecentlyViewedViewModel = viewModel()
+            val recentFoods by recentVm.recent.collectAsState()
+            if (query.isBlank() && recentFoods.isNotEmpty()) {
+                Text(
+                    text = "اخیراً دیده شده",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
+                )
+                Spacer(Modifier.height(8.dp))
+                recentFoods.forEach { food ->
+                    SearchResultItem(food = food, onClick = { onFoodClick(food.id) })
+                    Spacer(Modifier.height(8.dp))
+                }
+                Spacer(Modifier.height(16.dp))
+            }
+
             // Results
-            if (results.isEmpty() && query.isNotBlank()) {
+            val filtering = query.isNotBlank() || selectedCategoryId != null || diet != null ||
+                ingredients.isNotBlank() || excluded.isNotBlank()
+            if (results.isEmpty() && filtering) {
                 Text(
                     text = "نتیجه‌ای یافت نشد",
                     style = MaterialTheme.typography.bodyLarge,
@@ -169,7 +255,11 @@ private fun CategoryChip(
             MaterialTheme.colorScheme.primary
         else
             MaterialTheme.colorScheme.surfaceVariant,
-        modifier = Modifier.clickable(onClick = onClick),
+        modifier = Modifier.clickable(
+            onClick = onClick,
+            role = androidx.compose.ui.semantics.Role.Button,
+            onClickLabel = "انتخاب $label",
+        ),
     ) {
         Text(
             text = label,
@@ -192,7 +282,11 @@ private fun SearchResultItem(
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick),
+            .clickable(
+                onClick = onClick,
+                role = androidx.compose.ui.semantics.Role.Button,
+                onClickLabel = "نمایش ${food.name}",
+            ),
         shape = RoundedCornerShape(12.dp),
         color = MaterialTheme.colorScheme.surface,
     ) {
@@ -235,11 +329,42 @@ private fun SearchResultItem(
             if (food.difficulty.isNotBlank()) {
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    text = "سختی: ${food.difficulty}",
+                    text = "سختی: ${difficultyLabel(food.difficulty)}",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }
     }
+}
+
+@Composable
+private fun IngredientField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = Modifier.fillMaxWidth(),
+        placeholder = {
+            Text(label, fontFamily = YekanBakh)
+        },
+        singleLine = true,
+        shape = RoundedCornerShape(12.dp),
+        colors = OutlinedTextFieldDefaults.colors(
+            unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+            focusedContainerColor = MaterialTheme.colorScheme.surface,
+        ),
+    )
+}
+
+private fun difficultyLabel(d: String): String = when (d.uppercase()) {
+    "EASY" -> "آسان"
+    "MEDIUM" -> "متوسط"
+    "HARD" -> "سخت"
+    else -> d
 }

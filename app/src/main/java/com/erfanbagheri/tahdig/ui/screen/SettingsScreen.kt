@@ -31,6 +31,8 @@ import com.erfanbagheri.tahdig.ui.viewmodel.SettingsViewModel
 @Composable
 fun SettingsScreen(
     viewModel: SettingsViewModel,
+    onBackup: () -> Unit = {},
+    onRestore: () -> Unit = {},
 ) {
     val themeMode by viewModel.themeMode.collectAsState()
 
@@ -67,6 +69,55 @@ fun SettingsScreen(
 
         Spacer(Modifier.height(32.dp))
 
+        // Notifications section
+        Text(
+            text = "اعلان‌ها",
+            style = MaterialTheme.typography.titleMedium,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+
+        Spacer(Modifier.height(8.dp))
+
+        val context = androidx.compose.ui.platform.LocalContext.current
+        val dailyNotify by viewModel.dailyNotify.collectAsState()
+
+        // API 33+: notifications need runtime permission, so ask when the user enables the toggle.
+        val permissionLauncher = androidx.activity.compose.rememberLauncherForActivityResult(
+            androidx.activity.result.contract.ActivityResultContracts.RequestPermission(),
+        ) { granted ->
+            viewModel.setDailyNotify(context, granted)
+        }
+        val needsPermission = android.os.Build.VERSION.SDK_INT >= 33 &&
+            androidx.core.content.ContextCompat.checkSelfPermission(
+                context, android.Manifest.permission.POST_NOTIFICATIONS,
+            ) != android.content.pm.PackageManager.PERMISSION_GRANTED
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+        ) {
+            Text(
+                text = "پیشنهاد روزانه غذا",
+                style = MaterialTheme.typography.bodyLarge,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.weight(1f),
+            )
+            androidx.compose.material3.Switch(
+                checked = dailyNotify,
+                onCheckedChange = { enabled ->
+                    if (enabled && needsPermission) {
+                        permissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+                    } else {
+                        viewModel.setDailyNotify(context, enabled)
+                    }
+                },
+            )
+        }
+
+        Spacer(Modifier.height(32.dp))
+
         // About section
         Text(
             text = "درباره",
@@ -93,8 +144,41 @@ fun SettingsScreen(
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
 
+        // Backup / Restore section
+        Spacer(Modifier.height(32.dp))
+
+        Text(
+            text = "پشتیبان‌گیری",
+            style = MaterialTheme.typography.titleMedium,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+
+        Spacer(Modifier.height(8.dp))
+
+        BackupRestoreRow("ذخیره پشتیبان", onBackup)
+        BackupRestoreRow("بازیابی پشتیبان", onRestore)
+
         Spacer(Modifier.height(48.dp))
     }
+}
+
+@Composable
+private fun BackupRestoreRow(label: String, onClick: () -> Unit) {
+    Text(
+        text = label,
+        style = MaterialTheme.typography.bodyLarge,
+        fontFamily = YekanBakh,
+        color = MaterialTheme.colorScheme.primary,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(
+                onClick = onClick,
+                role = androidx.compose.ui.semantics.Role.Button,
+                onClickLabel = "انتخاب تم $label",
+            )
+            .padding(vertical = 12.dp),
+    )
 }
 
 @Composable
@@ -128,7 +212,7 @@ private fun ThemeOption(
             if (selected) {
                 Icon(
                     imageVector = Icons.Default.Check,
-                    contentDescription = null,
+                    contentDescription = "انتخاب‌شده",
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(20.dp),
                 )

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="12dp"
+    android:contentDescription="غذای امروز، برای باز کردن برنامه لمس کنید"
+    android:background="#1F1B16">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="🌟 غذای امروز"
+        android:textColor="#E8C07D"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/widget_dish_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="طاق دیگ"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:contentDescription="نام غذای امروز" />
+
+</LinearLayout>

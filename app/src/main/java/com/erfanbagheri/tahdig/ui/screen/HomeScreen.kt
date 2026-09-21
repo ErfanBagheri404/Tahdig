@@ -24,26 +24,47 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
+import com.erfanbagheri.tahdig.util.Haptics
 import com.erfanbagheri.tahdig.ui.viewmodel.HomeViewModel
 
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel,
+    onBrowseCategories: () -> Unit = {},
 ) {
     val suggestion by viewModel.suggestion.collectAsState()
     val mealLabel by viewModel.mealLabel.collectAsState()
     val isFavorite by viewModel.isFavorite.collectAsState()
+    val view = LocalView.current
+    val dishOfDay by viewModel.dishOfDay.collectAsState()
+    // Refresh day-dependent state when app returns to foreground (midnight-safe).
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) viewModel.refreshDay()
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -72,6 +93,36 @@ fun HomeScreen(
 
             Spacer(Modifier.height(40.dp))
 
+            // Dish of the day (deterministic by date)
+            dishOfDay?.let { dod ->
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(14.dp),
+                    color = MaterialTheme.colorScheme.secondaryContainer,
+                ) {
+                    Column(modifier = Modifier.padding(14.dp)) {
+                        Text(
+                            text = "🌟 غذای امروز",
+                            style = MaterialTheme.typography.labelLarge,
+                            fontFamily = YekanBakh,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        )
+                        Spacer(Modifier.height(4.dp))
+                        Text(
+                            text = dod.name,
+                            style = MaterialTheme.typography.titleLarge,
+                            fontFamily = YekanBakh,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        )
+                    }
+                }
+                Spacer(Modifier.height(20.dp))
+            }
+            TextButton(onClick = onBrowseCategories) {
+                Text("مرور دسته‌بندی‌ها", fontFamily = YekanBakh)
+            }
+            Spacer(Modifier.height(24.dp))
             // Suggestion card
             if (suggestion != null) {
                 SuggestionCard(
@@ -96,7 +147,10 @@ fun HomeScreen(
             ) {
                 // Favorite toggle
                 IconButton(
-                    onClick = { viewModel.toggleFavorite() },
+                    onClick = {
+                        Haptics.tap(view)
+                        viewModel.toggleFavorite()
+                    },
                     enabled = suggestion != null,
                 ) {
                     Icon(
@@ -109,16 +163,19 @@ fun HomeScreen(
 
                 // Re-roll
                 Button(
-                    onClick = { viewModel.roll() },
+                    onClick = {
+                        Haptics.tap(view)
+                        viewModel.roll()
+                    },
                     modifier = Modifier.weight(1f),
                 ) {
                     Icon(
                         imageVector = Icons.Default.Refresh,
-                        contentDescription = "غذا دیگه",
+                        contentDescription = "غذای دیگه",
                         modifier = Modifier.size(20.dp),
                     )
                     Spacer(Modifier.width(8.dp))
-                    Text("غذا دیگه")
+                    Text("غذای دیگه")
                 }
 
                 // Block current
@@ -152,6 +209,7 @@ fun SuggestionCard(
 
     Column(
         modifier = modifier
+            .semantics { contentDescription = "پیشنهاد غذا: ${food.name}" }
             .background(
                 color = MaterialTheme.colorScheme.surface,
                 shape = RoundedCornerShape(20.dp),
@@ -212,7 +270,7 @@ fun SuggestionCard(
                     MetaChip("زمان آماده‌سازی: ${food.prepTimeMin} دقیقه")
                 }
                 if (food.difficulty.isNotBlank()) {
-                    MetaChip("سختی: ${food.difficulty}")
+                    MetaChip("سختی: ${difficultyLabel(food.difficulty)}")
                 }
             }
         }
@@ -252,4 +310,11 @@ fun MetaChip(label: String) {
             )
             .padding(horizontal = 10.dp, vertical = 4.dp),
     )
+}
+
+private fun difficultyLabel(d: String): String = when (d.uppercase()) {
+    "EASY" -> "آسان"
+    "MEDIUM" -> "متوسط"
+    "HARD" -> "سخت"
+    else -> d
 }

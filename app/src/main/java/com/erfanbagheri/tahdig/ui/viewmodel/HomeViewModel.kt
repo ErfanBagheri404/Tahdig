@@ -11,7 +11,9 @@ import com.erfanbagheri.tahdig.util.MealTimeHelper
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 class HomeViewModel(app: Application) : AndroidViewModel(app) {
 
@@ -36,10 +38,31 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
     private val _isFavorite = MutableStateFlow(false)
     val isFavorite: StateFlow<Boolean> = _isFavorite.asStateFlow()
 
+    /** Deterministic dish of the day — same dish all day, stable across restarts. */
+    private val _dishOfDay = MutableStateFlow<FoodEntity?>(null)
+    val dishOfDay: StateFlow<FoodEntity?> = _dishOfDay.asStateFlow()
+
     init {
         refreshMealLabel()
         loadHistory()
         roll()
+        loadDishOfDay()
+    }
+
+    /** Pick today's dish from the day-of-year index — no DB change, no extra screen. */
+    fun loadDishOfDay() {
+        viewModelScope.launch {
+            val all = foodDao.observeAll().first()
+            if (all.isNotEmpty()) {
+                _dishOfDay.value = all[LocalDate.now().dayOfYear % all.size]
+            }
+        }
+    }
+
+    /** Refresh day-dependent state (call on foreground/resume) — midnight-safe. */
+    fun refreshDay() {
+        refreshMealLabel()
+        loadDishOfDay()
     }
 
     /** Re-read meal bucket (call from a timer or recomposition). */
@@ -68,6 +91,15 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
             // Fallback: random from ANY bucket if current bucket is empty
             if (pick == null) {
                 pick = foodDao.randomAny(1).firstOrNull()
+            }
+
+            // Smart weighting: 30% chance favor a favorited dish (skip if already favorited)
+            if (pick != null && !isFavorited(pick.id) && Math.random() < 0.30) {
+                val favPicks = favoriteDao.observeFavoritedFoods().first()
+                    .filter { it.mealTime.contains(bucket, ignoreCase = true) }
+                if (favPicks.isNotEmpty()) {
+                    pick = favPicks.random()
+                }
             }
 
             _suggestion.value = pick
