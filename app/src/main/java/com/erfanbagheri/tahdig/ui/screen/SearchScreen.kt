@@ -35,11 +35,8 @@ import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-<<<<<<< HEAD
 import androidx.lifecycle.viewmodel.compose.viewModel
-=======
 import com.erfanbagheri.tahdig.util.DietFilter
->>>>>>> origin/feat/dietary-filter
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
 import com.erfanbagheri.tahdig.ui.viewmodel.SearchHistory
 import com.erfanbagheri.tahdig.ui.viewmodel.RecentlyViewedViewModel
@@ -54,6 +51,8 @@ fun SearchScreen(
     val query by viewModel.query.collectAsState()
     val selectedCategoryId by viewModel.selectedCategoryId.collectAsState()
     val diet by viewModel.diet.collectAsState()
+    val ingredients by viewModel.ingredients.collectAsState()
+    val excluded by viewModel.excluded.collectAsState()
     val categories by viewModel.categories.collectAsState()
     val results by viewModel.results.collectAsState()
 
@@ -119,6 +118,21 @@ fun SearchScreen(
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
                 ),
+            )
+
+            Spacer(Modifier.height(12.dp))
+
+            // Have-on-hand ingredient search: "what can I cook with X?"
+            IngredientField(
+                value = ingredients,
+                onValueChange = viewModel::onIngredientsChange,
+                label = "مواد در دسترس (با کاما جدا کن)",
+            )
+            Spacer(Modifier.height(8.dp))
+            IngredientField(
+                value = excluded,
+                onValueChange = viewModel::onExcludedChange,
+                label = "مواد نامطلوب (حذف شود)",
             )
 
             Spacer(Modifier.height(12.dp))
@@ -200,7 +214,8 @@ fun SearchScreen(
             }
 
             // Results
-            val filtering = query.isNotBlank() || selectedCategoryId != null || diet != null
+            val filtering = query.isNotBlank() || selectedCategoryId != null || diet != null ||
+                ingredients.isNotBlank() || excluded.isNotBlank()
             if (results.isEmpty() && filtering) {
                 Text(
                     text = "نتیجه‌ای یافت نشد",
@@ -321,4 +336,28 @@ private fun SearchResultItem(
             }
         }
     }
+}
+
+@Composable
+private fun IngredientField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = Modifier.fillMaxWidth(),
+        placeholder = {
+            Text(label, fontFamily = YekanBakh)
+        },
+        singleLine = true,
+        shape = RoundedCornerShape(12.dp),
+        colors = OutlinedTextFieldDefaults.colors(
+            unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+            focusedContainerColor = MaterialTheme.colorScheme.surface,
+        ),
+    )
 }
