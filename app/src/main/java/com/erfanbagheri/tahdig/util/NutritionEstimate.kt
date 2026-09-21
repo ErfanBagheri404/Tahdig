@@ -7,26 +7,48 @@ package com.erfanbagheri.tahdig.util
 object NutritionEstimate {
     data class Info(val calories: Int, val protein: String, val fat: String, val carb: String)
 
-    private val CALORIE_MAP = mapOf(
-        "کباب" to 320, "خورشت" to 220, "پلو" to 280, "آش" to 180, "سالاد" to 90,
-        "سوپ" to 120, "دسر" to 350, "شیرینی" to 400, "نان" to 250, "ماهی" to 200,
-        "املت" to 220, "کوکو" to 250, "کتلت" to 280, "سبزیجات" to 100,
+    /** (calories, protein ratio, fat ratio) — carb ratio is the remainder. */
+    private data class Macro(val cal: Int, val protein: Double, val fat: Double)
+
+    private val MACROS = mapOf(
+        "کباب" to Macro(320, 0.30, 0.45),
+        "خورشت" to Macro(220, 0.15, 0.40),
+        "پلو" to Macro(280, 0.08, 0.20),
+        "آش" to Macro(180, 0.15, 0.25),
+        "سالاد" to Macro(90, 0.10, 0.40),
+        "سوپ" to Macro(120, 0.15, 0.30),
+        "دسر" to Macro(350, 0.05, 0.40),
+        "شیرینی" to Macro(400, 0.05, 0.45),
+        "نان" to Macro(250, 0.12, 0.15),
+        "ماهی" to Macro(200, 0.45, 0.25),
+        "املت" to Macro(220, 0.20, 0.55),
+        "کوکو" to Macro(250, 0.20, 0.50),
+        "کتلت" to Macro(280, 0.22, 0.45),
+        "سبزیجات" to Macro(100, 0.15, 0.15),
     )
+    private val FALLBACK = Macro(250, 0.15, 0.35)
 
     fun estimate(name: String, tags: String): Info {
-        val text = "$name $tags"
-        val cal = CALORIE_MAP.entries.find { text.contains(it.key) }?.value ?: 250
-        val ratio = when {
-            text.contains("سبزی") || text.contains("سالاد") -> 0.1
-            text.contains("گوشت") || text.contains("کباب") -> 0.3
-            text.contains("دسر") || text.contains("شیرینی") -> 0.05
-            else -> 0.15
-        }
+        // Name wins over tags: "سالاد شیرازی" tagged سبزیجات is still a 90 kcal salad.
+        val macro = bestMatch(name) ?: bestMatch(tags) ?: FALLBACK
+
+        // 4 kcal/g protein & carbs, 9 kcal/g fat.
+        val protein = macro.cal * macro.protein / 4
+        val fat = macro.cal * macro.fat / 9
+        val carb = (macro.cal * (1 - macro.protein - macro.fat) / 4).coerceAtLeast(0.0)
+
         return Info(
-            calories = cal,
-            protein = "${(cal * ratio / 4).toInt()}g",
-            fat = "${(cal * 0.35 / 9).toInt()}g",
-            carb = "${(cal * (1 - ratio - 0.35) / 4).toInt()}g",
+            calories = macro.cal,
+            protein = "${protein.toInt()}g",
+            fat = "${fat.toInt()}g",
+            carb = "${carb.toInt()}g",
         )
     }
+
+    /** Longest matching keyword wins, so a specific term can't be shadowed by a generic one. */
+    private fun bestMatch(text: String): Macro? =
+        MACROS.entries
+            .filter { text.contains(it.key) }
+            .maxByOrNull { it.key.length }
+            ?.value
 }
