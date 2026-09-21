@@ -29,6 +29,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -37,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
+import com.erfanbagheri.tahdig.util.Haptics
 import com.erfanbagheri.tahdig.ui.viewmodel.HomeViewModel
 
 @Composable
@@ -46,6 +48,7 @@ fun HomeScreen(
     val suggestion by viewModel.suggestion.collectAsState()
     val mealLabel by viewModel.mealLabel.collectAsState()
     val isFavorite by viewModel.isFavorite.collectAsState()
+    val view = LocalView.current
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -98,7 +101,10 @@ fun HomeScreen(
             ) {
                 // Favorite toggle
                 IconButton(
-                    onClick = { viewModel.toggleFavorite() },
+                    onClick = {
+                        Haptics.tap(view)
+                        viewModel.toggleFavorite()
+                    },
                     enabled = suggestion != null,
                 ) {
                     Icon(
@@ -111,7 +117,10 @@ fun HomeScreen(
 
                 // Re-roll
                 Button(
-                    onClick = { viewModel.roll() },
+                    onClick = {
+                        Haptics.tap(view)
+                        viewModel.roll()
+                    },
                     modifier = Modifier.weight(1f),
                 ) {
                     Icon(

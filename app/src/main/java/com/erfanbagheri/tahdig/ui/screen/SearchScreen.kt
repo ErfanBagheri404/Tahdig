@@ -35,8 +35,10 @@ import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
 import com.erfanbagheri.tahdig.ui.viewmodel.SearchHistory
+import com.erfanbagheri.tahdig.ui.viewmodel.RecentlyViewedViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.SearchViewModel
 
 @Composable
@@ -150,6 +152,21 @@ fun SearchScreen(
                     onClear = { history.clear() },
                 )
                 Spacer(Modifier.height(8.dp))
+            // Recently viewed (shown when query is empty)
+            val recentVm: RecentlyViewedViewModel = viewModel()
+            val recentFoods by recentVm.recent.collectAsState()
+            if (query.isBlank() && recentFoods.isNotEmpty()) {
+                Text(
+                    text = "اخیراً دیده شده",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
+                )
+                Spacer(Modifier.height(8.dp))
+                recentFoods.forEach { food ->
+                    SearchResultItem(food = food, onClick = { onFoodClick(food.id) })
+                    Spacer(Modifier.height(8.dp))
+                }
+                Spacer(Modifier.height(16.dp))
             }
 
             // Results

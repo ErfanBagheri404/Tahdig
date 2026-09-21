@@ -48,6 +48,7 @@ import com.erfanbagheri.tahdig.ui.viewmodel.MealPlanViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.FavoritesViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.HistoryViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.HomeViewModel
+import com.erfanbagheri.tahdig.ui.viewmodel.RatingViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.SearchViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.SettingsViewModel
 import com.erfanbagheri.tahdig.util.BackupRestore
@@ -157,10 +158,12 @@ private fun TahdigApp() {
                     )
                 }
                 detailFoodId >= 0 -> {
+                    val rvm: RatingViewModel = viewModel()
                     FoodDetailScreen(
                         foodId = detailFoodId,
                         onBack = { detailFoodId = -1L },
                         onStartStepMode = { id -> detailFoodId = -1L; stepModeFoodId = id },
+                        ratingViewModel = rvm,
                     )
                 }
                 selectedTab == 0 -> {
