@@ -172,7 +172,11 @@ private fun BackupRestoreRow(label: String, onClick: () -> Unit) {
         color = MaterialTheme.colorScheme.primary,
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick)
+            .clickable(
+                onClick = onClick,
+                role = androidx.compose.ui.semantics.Role.Button,
+                onClickLabel = "انتخاب تم $label",
+            )
             .padding(vertical = 12.dp),
     )
 }

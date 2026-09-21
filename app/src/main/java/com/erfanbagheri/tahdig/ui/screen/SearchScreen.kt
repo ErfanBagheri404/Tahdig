@@ -188,7 +188,11 @@ private fun CategoryChip(
             MaterialTheme.colorScheme.primary
         else
             MaterialTheme.colorScheme.surfaceVariant,
-        modifier = Modifier.clickable(onClick = onClick),
+        modifier = Modifier.clickable(
+            onClick = onClick,
+            role = androidx.compose.ui.semantics.Role.Button,
+            onClickLabel = "انتخاب $label",
+        ),
     ) {
         Text(
             text = label,
@@ -211,7 +215,11 @@ private fun SearchResultItem(
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick),
+            .clickable(
+                onClick = onClick,
+                role = androidx.compose.ui.semantics.Role.Button,
+                onClickLabel = "نمایش ${food.name}",
+            ),
         shape = RoundedCornerShape(12.dp),
         color = MaterialTheme.colorScheme.surface,
     ) {
