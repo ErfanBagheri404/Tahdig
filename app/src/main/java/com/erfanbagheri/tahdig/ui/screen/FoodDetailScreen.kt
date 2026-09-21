@@ -247,7 +247,7 @@ fun FoodDetailScreen(
                                 DetailChip("زمان آماده‌سازی: ${f.prepTimeMin} دقیقه")
                             }
                             if (f.difficulty.isNotBlank()) {
-                                DetailChip("سختی: ${f.difficulty}")
+                                DetailChip("سختی: ${difficultyLabel(f.difficulty)}")
                             }
                             val spiceLevel = com.erfanbagheri.tahdig.util.SpiceProfile.level(f.tags, f.ingredients, f.name)
                             if (spiceLevel > 0) {
@@ -473,4 +473,11 @@ private fun DetailChip(label: String) {
             )
             .padding(horizontal = 12.dp, vertical = 6.dp),
     )
+}
+
+private fun difficultyLabel(d: String): String = when (d.uppercase()) {
+    "EASY" -> "آسان"
+    "MEDIUM" -> "متوسط"
+    "HARD" -> "سخت"
+    else -> d
 }

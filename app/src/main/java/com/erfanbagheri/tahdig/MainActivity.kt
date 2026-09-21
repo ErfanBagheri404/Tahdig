@@ -25,6 +25,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableIntStateOf
@@ -73,8 +76,11 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            TahdigTheme {
-                TahdigApp()
+            // Farsi-only app: force RTL regardless of device locale.
+            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+                TahdigTheme {
+                    TahdigApp()
+                }
             }
         }
     }
@@ -146,14 +152,14 @@ private fun TahdigApp() {
                     NavigationBarItem(
                         selected = selectedTab == 4,
                         onClick = { selectedTab = 4 },
-                        icon = { Icon(Icons.Default.Settings, contentDescription = null) },
-                        label = { Text("تنظیمات") },
-                    )
-                    NavigationBarItem(
-                        selected = selectedTab == 4,
-                        onClick = { selectedTab = 4 },
                         icon = { Icon(Icons.Default.Star, contentDescription = null) },
                         label = { Text("برنامه") },
+                    )
+                    NavigationBarItem(
+                        selected = selectedTab == 5,
+                        onClick = { selectedTab = 5 },
+                        icon = { Icon(Icons.Default.Settings, contentDescription = null) },
+                        label = { Text("تنظیمات") },
                     )
                 }
             }
@@ -242,18 +248,18 @@ private fun TahdigApp() {
                     ShoppingListScreen(viewModel = vm)
                 }
                 selectedTab == 4 -> {
+                    val vm: MealPlanViewModel = viewModel()
+                    MealPlanScreen(
+                        viewModel = vm,
+                        onFoodClick = { detailFoodId = it },
+                    )
+                }
+                selectedTab == 5 -> {
                     val vm: SettingsViewModel = viewModel()
                     SettingsScreen(
                         viewModel = vm,
                         onBackup = { backupLauncher.launch("tahdig-backup.db") },
                         onRestore = { restoreLauncher.launch(arrayOf("*/*")) },
-                    )
-                }
-                selectedTab == 4 -> {
-                    val vm: MealPlanViewModel = viewModel()
-                    MealPlanScreen(
-                        viewModel = vm,
-                        onFoodClick = { detailFoodId = it },
                     )
                 }
             }

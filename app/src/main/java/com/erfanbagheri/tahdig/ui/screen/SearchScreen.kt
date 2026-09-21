@@ -329,7 +329,7 @@ private fun SearchResultItem(
             if (food.difficulty.isNotBlank()) {
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    text = "سختی: ${food.difficulty}",
+                    text = "سختی: ${difficultyLabel(food.difficulty)}",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -360,4 +360,11 @@ private fun IngredientField(
             focusedContainerColor = MaterialTheme.colorScheme.surface,
         ),
     )
+}
+
+private fun difficultyLabel(d: String): String = when (d.uppercase()) {
+    "EASY" -> "آسان"
+    "MEDIUM" -> "متوسط"
+    "HARD" -> "سخت"
+    else -> d
 }

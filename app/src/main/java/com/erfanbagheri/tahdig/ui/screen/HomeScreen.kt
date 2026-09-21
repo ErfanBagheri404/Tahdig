@@ -171,11 +171,11 @@ fun HomeScreen(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Refresh,
-                        contentDescription = "غذا دیگه",
+                        contentDescription = "غذای دیگه",
                         modifier = Modifier.size(20.dp),
                     )
                     Spacer(Modifier.width(8.dp))
-                    Text("غذا دیگه")
+                    Text("غذای دیگه")
                 }
 
                 // Block current
@@ -270,7 +270,7 @@ fun SuggestionCard(
                     MetaChip("زمان آماده‌سازی: ${food.prepTimeMin} دقیقه")
                 }
                 if (food.difficulty.isNotBlank()) {
-                    MetaChip("سختی: ${food.difficulty}")
+                    MetaChip("سختی: ${difficultyLabel(food.difficulty)}")
                 }
             }
         }
@@ -310,4 +310,11 @@ fun MetaChip(label: String) {
             )
             .padding(horizontal = 10.dp, vertical = 4.dp),
     )
+}
+
+private fun difficultyLabel(d: String): String = when (d.uppercase()) {
+    "EASY" -> "آسان"
+    "MEDIUM" -> "متوسط"
+    "HARD" -> "سخت"
+    else -> d
 }
