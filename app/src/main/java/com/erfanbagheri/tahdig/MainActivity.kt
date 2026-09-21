@@ -48,6 +48,7 @@ import com.erfanbagheri.tahdig.ui.screen.FoodDetailScreen
 import com.erfanbagheri.tahdig.data.prefs.SettingsStore
 import com.erfanbagheri.tahdig.ui.screen.HomeScreen
 import com.erfanbagheri.tahdig.ui.screen.OnboardingPager
+import com.erfanbagheri.tahdig.ui.screen.PantryScreen
 import com.erfanbagheri.tahdig.ui.screen.SearchScreen
 import com.erfanbagheri.tahdig.ui.screen.SettingsScreen
 import com.erfanbagheri.tahdig.ui.screen.StepModeScreen
@@ -59,6 +60,7 @@ import com.erfanbagheri.tahdig.ui.viewmodel.FavoritesViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.CategoryViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.HistoryViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.HomeViewModel
+import com.erfanbagheri.tahdig.ui.viewmodel.PantryViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.RatingViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.SearchViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.SettingsViewModel
@@ -117,6 +119,7 @@ private fun TahdigApp() {
     var stepModeFoodId by rememberSaveable { mutableLongStateOf(-1L) }
     var categoryRoute by rememberSaveable { mutableLongStateOf(-1L) }
     var browseCategories by rememberSaveable { mutableStateOf(false) }
+    var showPantry by rememberSaveable { mutableStateOf(false) }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -210,6 +213,14 @@ private fun TahdigApp() {
                         onBack = { browseCategories = false },
                     )
                 }
+                showPantry -> {
+                    val vm: PantryViewModel = viewModel()
+                    PantryScreen(
+                        viewModel = vm,
+                        onFoodClick = { detailFoodId = it },
+                        onBack = { showPantry = false },
+                    )
+                }
                 categoryRoute >= 0 -> {
                     val cm = viewModel<CategoryViewModel>()
                     CategoryDishesScreen(
@@ -232,6 +243,7 @@ private fun TahdigApp() {
                     SearchScreen(
                         viewModel = vm,
                         onFoodClick = { detailFoodId = it },
+                        onOpenPantry = { showPantry = true },
                     )
                 }
                 selectedTab == 2 -> {

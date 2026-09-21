@@ -46,6 +46,7 @@ import com.erfanbagheri.tahdig.ui.viewmodel.SearchViewModel
 fun SearchScreen(
     viewModel: SearchViewModel,
     onFoodClick: (Long) -> Unit = {},
+    onOpenPantry: () -> Unit = {},
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
     val query by viewModel.query.collectAsState()
@@ -119,6 +120,39 @@ fun SearchScreen(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
                 ),
             )
+
+            Spacer(Modifier.height(12.dp))
+
+            // Pantry entry — "what can I cook with what I have?"
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable(onClick = onOpenPantry),
+                shape = RoundedCornerShape(12.dp),
+                color = MaterialTheme.colorScheme.secondaryContainer,
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(text = "🧺", fontSize = 20.sp)
+                    Spacer(Modifier.width(12.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "چی دارم؟",
+                            style = MaterialTheme.typography.titleSmall,
+                            fontFamily = YekanBakh,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        )
+                        Text(
+                            text = "بگو خونه چی داری، غذا پیشنهاد بده",
+                            style = MaterialTheme.typography.labelSmall,
+                            fontFamily = YekanBakh,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        )
+                    }
+                }
+            }
 
             Spacer(Modifier.height(12.dp))
 
