@@ -112,10 +112,15 @@ fun FoodDetailScreen(
 
                     // Star rating
                     if (ratingViewModel != null) {
-                        val stars by ratingViewModel.stars(f.id).collectAsState()
+                        val dbStars by ratingViewModel.stars(f.id).collectAsState()
+                        // Optimistic local value so rapid taps don't read a stale DB value
+                        var localStars by remember(f.id) { mutableStateOf<Int?>(null) }
                         StarRating(
-                            stars = stars,
-                            onRate = { ratingViewModel.setStars(f.id, it) },
+                            stars = localStars ?: dbStars,
+                            onRate = {
+                                localStars = it
+                                ratingViewModel.setStars(f.id, it)
+                            },
                         )
                         Spacer(Modifier.height(20.dp))
                     }
