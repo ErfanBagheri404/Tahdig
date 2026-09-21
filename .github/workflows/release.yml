@@ -4,6 +4,8 @@ on:
   push:
     tags:
       - 'v*'
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -48,11 +50,22 @@ jobs:
             echo "no keystore secret — release APKs will be unsigned"
           fi
 
+      - name: Run unit tests
+        run: ./gradlew testDebugUnitTest
+
       - name: Build Release APKs (all ABIs)
         run: ./gradlew assembleRelease
 
       - name: List built APKs
         run: find app/build/outputs/apk/release -name "*.apk" -exec ls -lh {} \;
+
+      - name: Upload APKs as build artifact (branch pushes only)
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: tahdig-apks-${{ github.sha }}
+          path: app/build/outputs/apk/release/*.apk
+          retention-days: 14
 
       - name: Create GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
