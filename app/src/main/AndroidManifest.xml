@@ -4,6 +4,10 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
+    <!-- Dish photos are fetched from Wikimedia. Without this, Coil's OkHttp
+         dispatcher throws an uncaught SecurityException and the app crashes. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".TahdigApplication"
         android:allowBackup="true"
