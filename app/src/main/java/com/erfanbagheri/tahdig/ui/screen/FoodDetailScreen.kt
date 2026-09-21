@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.VolumeUp
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -68,6 +69,7 @@ fun FoodDetailScreen(
     onStartStepMode: (Long) -> Unit = {},
     ratingViewModel: RatingViewModel? = null,
     onAddToShoppingList: (Long, String) -> Unit = { _, _ -> },
+    onShare: (FoodEntity) -> Unit = {},
 ) {
     val context = LocalContext.current.applicationContext
     var food by remember { mutableStateOf<FoodEntity?>(null) }
@@ -144,6 +146,16 @@ fun FoodDetailScreen(
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "بازگشت")
+                    }
+                },
+                actions = {
+                    if (food != null) {
+                        IconButton(onClick = { onShare(food!!) }) {
+                            Icon(
+                                imageVector = Icons.Default.Share,
+                                contentDescription = "اشتراک‌گذاری",
+                            )
+                        }
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
