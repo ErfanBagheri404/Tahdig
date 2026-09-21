@@ -28,14 +28,31 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Build Debug APKs (all ABIs)
-        run: ./gradlew assembleDebug
+      - name: Decode keystore (skips silently when secret is unset)
+        env:
+          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PW: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PW: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          if [ -n "$KEYSTORE_B64" ]; then
+            echo "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/release.keystore"
+            {
+              echo "ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/release.keystore"
+              echo "ANDROID_KEYSTORE_PASSWORD=$KEYSTORE_PW"
+              echo "ANDROID_KEY_ALIAS=$KEY_ALIAS"
+              echo "ANDROID_KEY_PASSWORD=$KEY_PW"
+            } >> "$GITHUB_ENV"
+            echo "keystore decoded"
+          else
+            echo "no keystore secret — release APKs will be unsigned"
+          fi
 
       - name: Build Release APKs (all ABIs)
         run: ./gradlew assembleRelease
 
       - name: List built APKs
-        run: find app/build/outputs/apk -name "*.apk" -exec ls -lh {} \;
+        run: find app/build/outputs/apk/release -name "*.apk" -exec ls -lh {} \;
 
       - name: Create GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
@@ -43,7 +60,6 @@ jobs:
         with:
           generate_release_notes: true
           files: |
-            app/build/outputs/apk/debug/*.apk
             app/build/outputs/apk/release/*.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

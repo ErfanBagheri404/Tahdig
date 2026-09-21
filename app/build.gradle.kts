@@ -31,7 +31,16 @@ android {
     }
 
     signingConfigs {
-        if (keystorePropsFile.exists()) {
+        // CI: keystore decoded from ANDROID_KEYSTORE_BASE64 secret into a temp file.
+        val ciKeystore = System.getenv("ANDROID_KEYSTORE_PATH")
+        if (!ciKeystore.isNullOrBlank()) {
+            create("release") {
+                storeFile = file(ciKeystore)
+                storePassword = System.getenv("ANDROID_KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("ANDROID_KEY_ALIAS")
+                keyPassword = System.getenv("ANDROID_KEY_PASSWORD")
+            }
+        } else if (keystorePropsFile.exists()) {
             create("release") {
                 storeFile = file(keystoreProps.getProperty("storeFile"))
                 storePassword = keystoreProps.getProperty("storePassword")
@@ -50,7 +59,7 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            if (keystorePropsFile.exists()) signingConfig = signingConfigs.getByName("release")
+            signingConfig = signingConfigs.findByName("release")
         }
     }
 
