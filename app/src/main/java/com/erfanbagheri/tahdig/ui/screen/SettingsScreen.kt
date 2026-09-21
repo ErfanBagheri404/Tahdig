@@ -33,6 +33,7 @@ fun SettingsScreen(
     viewModel: SettingsViewModel,
     onBackup: () -> Unit = {},
     onRestore: () -> Unit = {},
+    onOpenHeatmap: () -> Unit = {},
 ) {
     val themeMode by viewModel.themeMode.collectAsState()
 
@@ -158,6 +159,20 @@ fun SettingsScreen(
 
         BackupRestoreRow("ذخیره پشتیبان", onBackup)
         BackupRestoreRow("بازیابی پشتیبان", onRestore)
+
+        // Cooking history heatmap
+        Spacer(Modifier.height(32.dp))
+
+        Text(
+            text = "سابقه پخت",
+            style = MaterialTheme.typography.titleMedium,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+
+        Spacer(Modifier.height(8.dp))
+
+        BackupRestoreRow("تقویم پخت", onOpenHeatmap)
 
         Spacer(Modifier.height(48.dp))
     }

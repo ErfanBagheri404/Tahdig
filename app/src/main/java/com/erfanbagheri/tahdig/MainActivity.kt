@@ -50,6 +50,7 @@ import com.erfanbagheri.tahdig.ui.screen.HomeScreen
 import com.erfanbagheri.tahdig.ui.screen.OnboardingPager
 import com.erfanbagheri.tahdig.ui.screen.PantryScreen
 import com.erfanbagheri.tahdig.ui.screen.SearchScreen
+import com.erfanbagheri.tahdig.ui.screen.CookHeatmapScreen
 import com.erfanbagheri.tahdig.ui.screen.SettingsScreen
 import com.erfanbagheri.tahdig.ui.screen.StepModeScreen
 import com.erfanbagheri.tahdig.ui.screen.ShoppingListScreen
@@ -66,6 +67,7 @@ import com.erfanbagheri.tahdig.ui.viewmodel.SearchViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.SettingsViewModel
 import com.erfanbagheri.tahdig.util.BackupRestore
 import com.erfanbagheri.tahdig.ui.viewmodel.ShoppingViewModel
+import com.erfanbagheri.tahdig.ui.viewmodel.CookHeatmapViewModel
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -120,6 +122,7 @@ private fun TahdigApp() {
     var categoryRoute by rememberSaveable { mutableLongStateOf(-1L) }
     var browseCategories by rememberSaveable { mutableStateOf(false) }
     var showPantry by rememberSaveable { mutableStateOf(false) }
+    var showHeatmap by rememberSaveable { mutableStateOf(false) }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -221,6 +224,13 @@ private fun TahdigApp() {
                         onBack = { showPantry = false },
                     )
                 }
+                showHeatmap -> {
+                    val vm: CookHeatmapViewModel = viewModel()
+                    CookHeatmapScreen(
+                        viewModel = vm,
+                        onBack = { showHeatmap = false },
+                    )
+                }
                 categoryRoute >= 0 -> {
                     val cm = viewModel<CategoryViewModel>()
                     CategoryDishesScreen(
@@ -275,6 +285,7 @@ private fun TahdigApp() {
                         viewModel = vm,
                         onBackup = { backupLauncher.launch("tahdig-backup.db") },
                         onRestore = { restoreLauncher.launch(arrayOf("*/*")) },
+                        onOpenHeatmap = { showHeatmap = true },
                     )
                 }
             }

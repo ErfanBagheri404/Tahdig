@@ -26,6 +26,10 @@ interface HistoryDao {
     @Query("DELETE FROM history")
     suspend fun clearAll()
 
+    /** Raw timestamps for heatmap aggregation — a few hundred rows, fits in memory. */
+    @Query("SELECT timestamp FROM history ORDER BY timestamp")
+    suspend fun allTimestamps(): List<Long>
+
     // ── History list with food details ───────────────────────────
 
     /** Most recent picks, newest first, joined with food rows. */
