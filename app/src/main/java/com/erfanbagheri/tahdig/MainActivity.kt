@@ -66,6 +66,7 @@ import com.erfanbagheri.tahdig.ui.viewmodel.RatingViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.SearchViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.SettingsViewModel
 import com.erfanbagheri.tahdig.util.BackupRestore
+import com.erfanbagheri.tahdig.util.ShareCard
 import com.erfanbagheri.tahdig.ui.viewmodel.ShoppingViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.CookHeatmapViewModel
 import kotlinx.coroutines.launch
@@ -197,14 +198,7 @@ private fun TahdigApp() {
                             detailFoodId = -1L
                         },
                         onShare = { food ->
-                            val send = Intent(Intent.ACTION_SEND).apply {
-                                type = "text/plain"
-                                putExtra(Intent.EXTRA_SUBJECT, food.name)
-                                putExtra(Intent.EXTRA_TEXT, shareText(food))
-                            }
-                            context.startActivity(
-                                Intent.createChooser(send, "اشتراک‌گذاری غذا"),
-                            )
+                            ShareCard.share(context, food)
                         },
                     )
                 }
@@ -291,20 +285,4 @@ private fun TahdigApp() {
             }
         }
     }
-}
-
-private fun shareText(food: FoodEntity): String = buildString {
-    appendLine("🍽 ${food.name}")
-    if (food.nameEn.isNotBlank()) appendLine("(${food.nameEn})")
-    appendLine()
-    if (food.ingredients.isNotBlank()) {
-        appendLine("مواد لازم:")
-        appendLine(food.ingredients)
-        appendLine()
-    }
-    if (food.description.isNotBlank()) {
-        appendLine(food.description)
-        appendLine()
-    }
-    append("پیشنهاد از اپلیکیشن ته‌دیگ 🍚")
 }
