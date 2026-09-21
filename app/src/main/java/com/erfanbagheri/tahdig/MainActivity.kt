@@ -29,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -37,6 +38,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.lifecycleScope
 import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
 import com.erfanbagheri.tahdig.data.local.TahdigDatabase
+import com.erfanbagheri.tahdig.ui.screen.CategoryBrowseScreen
+import com.erfanbagheri.tahdig.ui.screen.CategoryDishesScreen
 import com.erfanbagheri.tahdig.ui.screen.FavoritesScreen
 import com.erfanbagheri.tahdig.ui.screen.FoodDetailScreen
 import com.erfanbagheri.tahdig.data.prefs.SettingsStore
@@ -50,6 +53,7 @@ import com.erfanbagheri.tahdig.ui.theme.TahdigTheme
 import com.erfanbagheri.tahdig.ui.screen.MealPlanScreen
 import com.erfanbagheri.tahdig.ui.viewmodel.MealPlanViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.FavoritesViewModel
+import com.erfanbagheri.tahdig.ui.viewmodel.CategoryViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.HistoryViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.HomeViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.RatingViewModel
@@ -81,7 +85,6 @@ private fun TahdigApp() {
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
     var detailFoodId by rememberSaveable { mutableLongStateOf(-1L) }
     val context = LocalContext.current
-
     // Backup/restore SAF launchers
     val backupLauncher = androidx.activity.compose.rememberLauncherForActivityResult(
         androidx.activity.result.contract.ActivityResultContracts.CreateDocument("application/octet-stream"),
@@ -99,7 +102,6 @@ private fun TahdigApp() {
             ).show()
         }
     } }
-
     // Onboarding gate — first launch only
     val onboarded by com.erfanbagheri.tahdig.data.prefs.SettingsStore.onboarded.collectAsState()
     if (!onboarded) {
@@ -107,6 +109,8 @@ private fun TahdigApp() {
         return
     }
     var stepModeFoodId by rememberSaveable { mutableLongStateOf(-1L) }
+    var categoryRoute by rememberSaveable { mutableLongStateOf(-1L) }
+    var browseCategories by rememberSaveable { mutableStateOf(false) }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -192,9 +196,30 @@ private fun TahdigApp() {
                         },
                     )
                 }
+                browseCategories -> {
+                    val cm = viewModel<CategoryViewModel>()
+                    CategoryBrowseScreen(
+                        viewModel = cm,
+                        onCategoryClick = { categoryRoute = it },
+                        onBack = { browseCategories = false },
+                    )
+                }
+                categoryRoute >= 0 -> {
+                    val cm = viewModel<CategoryViewModel>()
+                    CategoryDishesScreen(
+                        viewModel = cm,
+                        categoryId = categoryRoute,
+                        categoryName = "",
+                        onFoodClick = { detailFoodId = it },
+                        onBack = { categoryRoute = -1L },
+                    )
+                }
                 selectedTab == 0 -> {
                     val vm: HomeViewModel = viewModel()
-                    HomeScreen(viewModel = vm)
+                    HomeScreen(
+                        viewModel = vm,
+                        onBrowseCategories = { browseCategories = true },
+                    )
                 }
                 selectedTab == 1 -> {
                     val vm: SearchViewModel = viewModel()

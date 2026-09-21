@@ -24,6 +24,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
@@ -48,6 +49,7 @@ import com.erfanbagheri.tahdig.ui.viewmodel.HomeViewModel
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel,
+    onBrowseCategories: () -> Unit = {},
 ) {
     val suggestion by viewModel.suggestion.collectAsState()
     val mealLabel by viewModel.mealLabel.collectAsState()
@@ -117,7 +119,10 @@ fun HomeScreen(
                 }
                 Spacer(Modifier.height(20.dp))
             }
-
+            TextButton(onClick = onBrowseCategories) {
+                Text("مرور دسته‌بندی‌ها", fontFamily = YekanBakh)
+            }
+            Spacer(Modifier.height(24.dp))
             // Suggestion card
             if (suggestion != null) {
                 SuggestionCard(
