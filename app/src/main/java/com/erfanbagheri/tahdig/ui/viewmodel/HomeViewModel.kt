@@ -7,6 +7,7 @@ import com.erfanbagheri.tahdig.data.local.TahdigDatabase
 import com.erfanbagheri.tahdig.data.local.entity.FavoriteEntity
 import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
 import com.erfanbagheri.tahdig.data.local.entity.HistoryEntity
+import com.erfanbagheri.tahdig.util.LeftoverMatcher
 import com.erfanbagheri.tahdig.util.MealTimeHelper
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,6 +27,11 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
     // ── current suggestion ──────────────────────────────────────────
     private val _suggestion = MutableStateFlow<FoodEntity?>(null)
     val suggestion: StateFlow<FoodEntity?> = _suggestion.asStateFlow()
+
+    // ── leftover prompt ────────────────────────────────────────────
+    /** Dishes suggested from leftovers. Empty = no card shown. */
+    private val _leftoverSuggestions = MutableStateFlow<List<FoodEntity>>(emptyList())
+    val leftoverSuggestions: StateFlow<List<FoodEntity>> = _leftoverSuggestions.asStateFlow()
 
     // ── UI state ────────────────────────────────────────────────────
     private val _mealLabel = MutableStateFlow(MealTimeHelper.currentLabel())
@@ -140,6 +146,25 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
                 roll()
             }
         }
+    }
+
+    /**
+     * User says they cooked the current dish. Shows leftover suggestions:
+     * dishes sharing ≥2 ingredients with the cooked dish.
+     */
+    fun markCooked() {
+        viewModelScope.launch {
+            val cooked = _suggestion.value ?: return@launch
+            val all = foodDao.observeAll().first()
+            val suggestions = LeftoverMatcher.findLeftovers(cooked, all)
+            _leftoverSuggestions.value = suggestions
+            roll()
+        }
+    }
+
+    /** Dismiss the leftover suggestion card. */
+    fun dismissLeftover() {
+        _leftoverSuggestions.value = emptyList()
     }
 
     private suspend fun isFavorited(foodId: Long): Boolean =

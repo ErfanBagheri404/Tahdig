@@ -1,6 +1,7 @@
 package com.erfanbagheri.tahdig.ui.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,13 +12,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Block
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -52,12 +57,14 @@ import com.erfanbagheri.tahdig.ui.viewmodel.HomeViewModel
 fun HomeScreen(
     viewModel: HomeViewModel,
     onBrowseCategories: () -> Unit = {},
+    onFoodClick: (Long) -> Unit = {},
 ) {
     val suggestion by viewModel.suggestion.collectAsState()
     val mealLabel by viewModel.mealLabel.collectAsState()
     val isFavorite by viewModel.isFavorite.collectAsState()
     val view = LocalView.current
     val dishOfDay by viewModel.dishOfDay.collectAsState()
+    val leftoverSuggestions by viewModel.leftoverSuggestions.collectAsState()
     // Refresh day-dependent state when app returns to foreground (midnight-safe).
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
@@ -125,6 +132,49 @@ fun HomeScreen(
                 Text("مرور دسته‌بندی‌ها", fontFamily = YekanBakh)
             }
             Spacer(Modifier.height(24.dp))
+            // Leftover prompt, after cooking — dismissible, above the suggestion.
+            leftoverSuggestions.takeIf { it.isNotEmpty() }?.let { leftovers ->
+                Surface(
+                    color = MaterialTheme.colorScheme.secondaryContainer,
+                    shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Column(modifier = Modifier.padding(14.dp)) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = "از این چیزی مونده؟ فردا با باقی‌مونده‌ش چی درست کنم؟",
+                                style = MaterialTheme.typography.titleSmall,
+                                fontFamily = YekanBakh,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                modifier = Modifier.weight(1f),
+                            )
+                            IconButton(onClick = viewModel::dismissLeftover) {
+                                Icon(Icons.Default.Close, contentDescription = "بستن",
+                                    modifier = Modifier.size(18.dp))
+                            }
+                        }
+                        Spacer(Modifier.height(6.dp))
+                        LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            items(leftovers, key = { it.id }) { food ->
+                                Surface(
+                                    shape = RoundedCornerShape(10.dp),
+                                    color = MaterialTheme.colorScheme.surface,
+                                    modifier = Modifier.clickable { onFoodClick(food.id) },
+                                ) {
+                                    Text(
+                                        text = food.name,
+                                        style = MaterialTheme.typography.labelLarge,
+                                        fontFamily = YekanBakh,
+                                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+                Spacer(Modifier.height(16.dp))
+            }
+
             // Suggestion card
             if (suggestion != null) {
                 SuggestionCard(
@@ -159,6 +209,22 @@ fun HomeScreen(
                         imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                         contentDescription = if (isFavorite) "حذف از علاقه‌مندی‌ها" else "افزودن به علاقه‌مندی‌ها",
                         tint = if (isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(28.dp),
+                    )
+                }
+
+                // Cooked — triggers the leftover prompt
+                IconButton(
+                    onClick = {
+                        Haptics.confirm(view)
+                        viewModel.markCooked()
+                    },
+                    enabled = suggestion != null,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Restaurant,
+                        contentDescription = "پختم",
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(28.dp),
                     )
                 }

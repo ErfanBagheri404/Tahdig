@@ -236,6 +236,7 @@ private fun TahdigApp() {
                     HomeScreen(
                         viewModel = vm,
                         onBrowseCategories = { browseCategories = true },
+                        onFoodClick = { detailFoodId = it },
                     )
                 }
                 selectedTab == 1 -> {
