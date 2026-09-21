@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.erfanbagheri.tahdig.data.local.TahdigDatabase
 import com.erfanbagheri.tahdig.data.local.entity.CategoryEntity
 import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
+import com.erfanbagheri.tahdig.util.DietFilter
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,6 +30,10 @@ class SearchViewModel(app: Application) : AndroidViewModel(app) {
     private val _selectedCategoryId = MutableStateFlow<Long?>(null)
     val selectedCategoryId: StateFlow<Long?> = _selectedCategoryId.asStateFlow()
 
+    /** Dietary filter applied after the DB query (in-memory, tag-based). */
+    private val _diet = MutableStateFlow<DietFilter?>(null)
+    val diet: StateFlow<DietFilter?> = _diet.asStateFlow()
+
     val categories: StateFlow<List<CategoryEntity>> = categoryDao.observeAll()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
@@ -38,6 +43,9 @@ class SearchViewModel(app: Application) : AndroidViewModel(app) {
     }
         .debounce(300)
         .flatMapLatest { (q, cat) -> foodDao.search(q, cat) }
+        .combine(_diet) { foods, diet ->
+            if (diet == null) foods else foods.filter { diet.matches(it.tags) }
+        }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     fun onQueryChange(text: String) { _query.value = text }
@@ -50,5 +58,9 @@ class SearchViewModel(app: Application) : AndroidViewModel(app) {
 
     fun onCategorySelect(categoryId: Long?) {
         _selectedCategoryId.value = if (_selectedCategoryId.value == categoryId) null else categoryId
+    }
+
+    fun onDietSelect(diet: DietFilter?) {
+        _diet.value = if (_diet.value == diet) null else diet
     }
 }

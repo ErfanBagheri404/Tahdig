@@ -35,7 +35,11 @@ import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+<<<<<<< HEAD
 import androidx.lifecycle.viewmodel.compose.viewModel
+=======
+import com.erfanbagheri.tahdig.util.DietFilter
+>>>>>>> origin/feat/dietary-filter
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
 import com.erfanbagheri.tahdig.ui.viewmodel.SearchHistory
 import com.erfanbagheri.tahdig.ui.viewmodel.RecentlyViewedViewModel
@@ -49,6 +53,7 @@ fun SearchScreen(
     val context = androidx.compose.ui.platform.LocalContext.current
     val query by viewModel.query.collectAsState()
     val selectedCategoryId by viewModel.selectedCategoryId.collectAsState()
+    val diet by viewModel.diet.collectAsState()
     val categories by viewModel.categories.collectAsState()
     val results by viewModel.results.collectAsState()
 
@@ -139,6 +144,29 @@ fun SearchScreen(
                 }
             }
 
+            Spacer(Modifier.height(8.dp))
+
+            // Dietary filter chips
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                item {
+                    CategoryChip(
+                        label = "رژیمی",
+                        selected = diet == null,
+                        onClick = { viewModel.onDietSelect(null) },
+                    )
+                }
+                items(DietFilter.values().toList()) { d ->
+                    CategoryChip(
+                        label = d.label,
+                        selected = diet == d,
+                        onClick = { viewModel.onDietSelect(d) },
+                    )
+                }
+            }
+
             Spacer(Modifier.height(16.dp))
 
             // Search history (shown when query is empty)
@@ -172,7 +200,8 @@ fun SearchScreen(
             }
 
             // Results
-            if (results.isEmpty() && query.isNotBlank()) {
+            val filtering = query.isNotBlank() || selectedCategoryId != null || diet != null
+            if (results.isEmpty() && filtering) {
                 Text(
                     text = "نتیجه‌ای یافت نشد",
                     style = MaterialTheme.typography.bodyLarge,
