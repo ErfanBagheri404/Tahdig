@@ -83,7 +83,7 @@ fun ShoppingListScreen(
         } else {
             // Grouped by shopping aisle so the list follows the route through a store.
             // Grouping the entities directly (not the parsed text) keeps each row's id.
-            val grouped = items.groupBy { com.erfanbagheri.tahdig.util.IngredientParser.categoryOf(it.item) }
+            val grouped = items.groupBy { com.erfanbagheri.tahdig.util.IngredientRegistry.aisleOf(it.item) }
                 .toList()
                 .sortedBy { (bucket, _) -> if (bucket == "سایر") 1 else 0 }
             LazyColumn(
