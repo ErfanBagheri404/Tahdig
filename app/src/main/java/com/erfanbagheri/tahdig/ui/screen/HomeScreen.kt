@@ -132,6 +132,48 @@ fun HomeScreen(
                 Text("مرور دسته‌بندی‌ها", fontFamily = YekanBakh)
             }
             Spacer(Modifier.height(24.dp))
+
+            // «یکی از آرشیو» — a forgotten or never-cooked dish, deterministic per day.
+            val serendipity by viewModel.serendipity.collectAsState()
+            serendipity?.let { pick ->
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(14.dp),
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                ) {
+                    Column(modifier = Modifier.padding(14.dp)) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = "🗂️ یکی از آرشیو",
+                                style = MaterialTheme.typography.labelLarge,
+                                fontFamily = YekanBakh,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.weight(1f),
+                            )
+                            IconButton(onClick = viewModel::skipSerendipity) {
+                                Icon(Icons.Default.Close, contentDescription = "نه ممنون — ۳۰ روز پنهان",
+                                    modifier = Modifier.size(18.dp))
+                            }
+                        }
+                        Spacer(Modifier.height(4.dp))
+                        Text(
+                            text = pick.food.name,
+                            style = MaterialTheme.typography.titleLarge,
+                            fontFamily = YekanBakh,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.clickable { onFoodClick(pick.food.id) },
+                        )
+                        Text(
+                            text = pick.reason,
+                            style = MaterialTheme.typography.bodySmall,
+                            fontFamily = YekanBakh,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+                Spacer(Modifier.height(24.dp))
+            }
             // Leftover prompt, after cooking — dismissible, above the suggestion.
             leftoverSuggestions.takeIf { it.isNotEmpty() }?.let { leftovers ->
                 Surface(

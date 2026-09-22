@@ -9,6 +9,7 @@ import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
 import com.erfanbagheri.tahdig.data.local.entity.HistoryEntity
 import com.erfanbagheri.tahdig.util.LeftoverMatcher
 import com.erfanbagheri.tahdig.util.MealTimeHelper
+import com.erfanbagheri.tahdig.util.SerendipityPicker
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -48,11 +49,22 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
     private val _dishOfDay = MutableStateFlow<FoodEntity?>(null)
     val dishOfDay: StateFlow<FoodEntity?> = _dishOfDay.asStateFlow()
 
+    /** «یکی از آرشیو» — forgotten/never-cooked pick + its Farsi reason line. */
+    private val _serendipity = MutableStateFlow<SerendipityPick?>(null)
+    val serendipity: StateFlow<SerendipityPick?> = _serendipity.asStateFlow()
+
+    data class SerendipityPick(val food: FoodEntity, val reason: String)
+
+    private val serendipityPrefs by lazy {
+        getApplication<Application>().getSharedPreferences("tahdig_serendipity", 0)
+    }
+
     init {
         refreshMealLabel()
         loadHistory()
         roll()
         loadDishOfDay()
+        loadSerendipity()
     }
 
     /** Pick today's dish from the day-of-year index — no DB change, no extra screen. */
@@ -69,6 +81,45 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
     fun refreshDay() {
         refreshMealLabel()
         loadDishOfDay()
+        loadSerendipity()
+    }
+
+    /**
+     * Pick the archive dish — never-cooked/never-favourited first, stalest when all
+     * touched. Deterministic per day, honours a 30-day skip.
+     */
+    fun loadSerendipity() {
+        viewModelScope.launch {
+            val all = foodDao.observeAll().first()
+            val stamps = historyDao.cookStamps().associate { it.foodId to it.ts }
+            val favs = favoriteDao.observeFavoritedFoods().first().map { it.id }.toSet()
+
+            val skippedUntil = serendipityPrefs.getLong("skip_until", 0L)
+            val skippedId = serendipityPrefs.getLong("skip_id", -1L)
+            val now = System.currentTimeMillis()
+            val effectiveStamps = if (skippedUntil > now && skippedId != -1L) {
+                stamps + (skippedId to skippedUntil) // hidden until the window lapses
+            } else {
+                stamps
+            }
+
+            val pool = SerendipityPicker.pool(all, effectiveStamps, favs, now)
+            val pick = SerendipityPicker.pickForDay(pool, LocalDate.now().dayOfYear)
+            _serendipity.value = pick?.let {
+                SerendipityPick(it, SerendipityPicker.reason(it, stamps, now))
+            }
+        }
+    }
+
+    /** Hide the current archive pick for 30 days — never a permanent block. */
+    fun skipSerendipity() {
+        val food = _serendipity.value?.food ?: return
+        serendipityPrefs.edit()
+            .putLong("skip_id", food.id)
+            .putLong("skip_until", System.currentTimeMillis() + 30L * 86_400_000L)
+            .apply()
+        _serendipity.value = null
+        loadSerendipity()
     }
 
     /** Re-read meal bucket (call from a timer or recomposition). */
