@@ -69,15 +69,22 @@ fun FoodDetailScreen(
     onStartStepMode: (Long) -> Unit = {},
     ratingViewModel: RatingViewModel? = null,
     onAddToShoppingList: (Long, String) -> Unit = { _, _ -> },
+    /** Adds only the pantry gap, so the user isn't told to rebuy what they own. */
+    onAddMissing: (String) -> Unit = {},
     onShare: (FoodEntity) -> Unit = {},
 ) {
     val context = LocalContext.current.applicationContext
     var food by remember { mutableStateOf<FoodEntity?>(null) }
 
+    // Pantry state for the "what am I missing" line. Loaded once per dish; the pantry
+    // only changes while the Pantry screen is open, so a one-shot read is enough.
+    var pantry by remember { mutableStateOf<List<String>>(emptyList()) }
+
     val recentViewDao = TahdigDatabase.getInstance(context).recentViewDao()
     LaunchedEffect(foodId) {
         val db = TahdigDatabase.getInstance(context)
         food = db.foodDao().getById(foodId)
+        pantry = db.pantryDao().allItems()
         food?.let { recentViewDao.recordView(it.id) }
     }
 
@@ -329,6 +336,83 @@ fun FoodDetailScreen(
                             color = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.fillMaxWidth(),
                         )
+
+                        // ── What's missing vs the pantry ──────────────────────────
+                        // Only meaningful once the user has a pantry; with none, every
+                        // ingredient would read as missing, which is noise not insight.
+                        if (pantry.isNotEmpty()) {
+                            val diff = com.erfanbagheri.tahdig.util.MissingDiff
+                                .diff(f.ingredients, pantry)
+                            Spacer(Modifier.height(12.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Text(
+                                    text = diff.summary(),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    fontFamily = YekanBakh,
+                                    color = if (diff.allCovered)
+                                        MaterialTheme.colorScheme.primary
+                                    else
+                                        MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier.weight(1f),
+                                )
+                                // Adds just the gap, not the whole ingredient list —
+                                // buying what you already have is the thing to avoid.
+                                if (diff.missing.isNotEmpty()) {
+                                    TextButton(onClick = {
+                                        onAddMissing(diff.missing.joinToString("، ") { it.display })
+                                    }) {
+                                        Text("افزودن کم‌داشته‌ها", fontFamily = YekanBakh)
+                                    }
+                                }
+                            }
+                        }
+
+                        // ── Substitutes ───────────────────────────────────────────
+                        // Per-ingredient swaps, so a missing saffron is a suggestion
+                        // rather than a dead end.
+                        val swaps = remember(f.ingredients) {
+                            com.erfanbagheri.tahdig.util.MissingDiff.itemsOf(f.ingredients)
+                                .mapNotNull { name ->
+                                    val list = com.erfanbagheri.tahdig.util.SubstitutionRegistry
+                                        .swapsForName(name)
+                                    if (list.isEmpty()) null else name to list
+                                }
+                        }
+                        if (swaps.isNotEmpty()) {
+                            Spacer(Modifier.height(16.dp))
+                            var showSubs by remember { mutableStateOf(false) }
+                            TextButton(onClick = { showSubs = !showSubs }) {
+                                Text(
+                                    text = if (showSubs) "بستن جایگزین‌ها" else "جایگزین‌ها را ببین",
+                                    fontFamily = YekanBakh,
+                                )
+                            }
+                            if (showSubs) {
+                                swaps.forEach { (from, list) ->
+                                    Column(modifier = Modifier.fillMaxWidth()) {
+                                        Text(
+                                            text = from,
+                                            style = MaterialTheme.typography.labelLarge,
+                                            fontFamily = YekanBakh,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            modifier = Modifier.padding(top = 8.dp, bottom = 2.dp),
+                                        )
+                                        list.forEach { swap ->
+                                            Text(
+                                                text = "${swap.toName} — ${ratioLabel(swap.ratio)}${if (swap.caveat.isBlank()) "" else " · ${swap.caveat}"}",
+                                                style = MaterialTheme.typography.bodySmall,
+                                                fontFamily = YekanBakh,
+                                                color = MaterialTheme.colorScheme.onSurface,
+                                                modifier = Modifier.padding(start = 12.dp, bottom = 2.dp),
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
                         // Unit converter (cups/grams/tbsp quick reference)
                         Spacer(Modifier.height(16.dp))
                         var showConverter by remember { mutableStateOf(false) }
@@ -477,3 +561,16 @@ private fun difficultyLabel(d: String): String = when (d.uppercase()) {
     "HARD" -> "سخت"
     else -> d
 }
+
+/**
+ * Human phrasing for a swap's ratio. A ratio of 1.0 is not a "×1.0" to the reader —
+ * "همان مقدار" says what it means; 0.0 marks a swap the table flags as incomplete.
+ */
+private fun ratioLabel(ratio: Double): String = when {
+    ratio <= 0.0 -> "جایگزین کامل نیست"
+    kotlin.math.abs(ratio - 1.0) < 0.001 -> "همان مقدار"
+    else -> "با نسبت ${com.erfanbagheri.tahdig.util.PersianText.toPersianDigits(trimNum(ratio))}"
+}
+
+private fun trimNum(v: Double): String =
+    if (v == v.toLong().toDouble()) v.toLong().toString() else v.toString()

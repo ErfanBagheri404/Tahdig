@@ -1,0 +1,2688 @@
+{
+ "version": 1,
+ "ingredients": [
+  {
+   "id": "meat",
+   "fa": "گوشت",
+   "en": "Meat",
+   "aisle": "پروتئین",
+   "baseUnit": "گرم",
+   "aliases": [
+    "beef",
+    "lamb",
+    "meat",
+    "گوشت خورشی",
+    "گوشت گاو"
+   ]
+  },
+  {
+   "id": "ground_meat",
+   "fa": "گوشت چرخ کرده",
+   "en": "Ground meat",
+   "aisle": "پروتئین",
+   "baseUnit": "گرم",
+   "aliases": [
+    "ground beef",
+    "mince",
+    "minced beef",
+    "گوشت چرخ‌کرده"
+   ]
+  },
+  {
+   "id": "lamb_shank",
+   "fa": "ماهیچه گوسفند",
+   "en": "Lamb shank",
+   "aisle": "پروتئین",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "lamb_rib",
+   "fa": "راسته گوسفند",
+   "en": "Rack of lamb",
+   "aisle": "پروتئین",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "lamb_fillet",
+   "fa": "فیله گوسفند",
+   "en": "Lamb fillet",
+   "aisle": "پروتئین",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "lamb_neck",
+   "fa": "گوشت قلم",
+   "en": "Lamb neck",
+   "aisle": "پروتئین",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "mutton",
+   "fa": "گوشت گوسفند",
+   "en": "Mutton",
+   "aisle": "پروتئین",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "lamb_bone",
+   "fa": "گوشت با استخوان",
+   "en": "Bone-in meat",
+   "aisle": "پروتئین",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "chicken",
+   "fa": "مرغ",
+   "en": "Chicken",
+   "aisle": "پروتئین",
+   "baseUnit": "گرم",
+   "aliases": [
+    "chicken breast",
+    "مرغ کامل"
+   ]
+  },
+  {
+   "id": "chicken_breast",
+   "fa": "سینه مرغ",
+   "en": "Chicken breast",
+   "aisle": "پروتئین",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "ground_chicken",
+   "fa": "مرغ چرخ کرده",
+   "en": "Ground chicken",
+   "aisle": "پروتئین",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "fried_chicken",
+   "fa": "مرغ سوخاری",
+   "en": "Fried chicken",
+   "aisle": "پروتئین",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "meat_or_chicken",
+   "fa": "مرغ یا گوشت",
+   "en": "Chicken or meat",
+   "aisle": "پروتئین",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "kebab",
+   "fa": "کباب",
+   "en": "Kebab",
+   "aisle": "پروتئین",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "koobideh",
+   "fa": "کباب کوبیده",
+   "en": "Koobideh kebab",
+   "aisle": "پروتئین",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "koofteh",
+   "fa": "کوفته",
+   "en": "Meatball",
+   "aisle": "پروتئین",
+   "baseUnit": "گرم",
+   "aliases": [
+    "meatballs"
+   ]
+  },
+  {
+   "id": "fish",
+   "fa": "ماهی",
+   "en": "Fish",
+   "aisle": "پروتئین",
+   "baseUnit": "گرم",
+   "aliases": [],
+   "allergen": "ماهی"
+  },
+  {
+   "id": "salmon",
+   "fa": "ماهی سالمون",
+   "en": "Salmon",
+   "aisle": "پروتئین",
+   "baseUnit": "گرم",
+   "aliases": [
+    "سالمون"
+   ],
+   "allergen": "ماهی"
+  },
+  {
+   "id": "trout",
+   "fa": "ماهی قزل آلا",
+   "en": "Trout",
+   "aisle": "پروتئین",
+   "baseUnit": "گرم",
+   "aliases": [
+    "ماهی قزل‌آلا"
+   ],
+   "allergen": "ماهی"
+  },
+  {
+   "id": "ground_fish",
+   "fa": "ماهی چرخ کرده",
+   "en": "Ground fish",
+   "aisle": "پروتئین",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "tuna_can",
+   "fa": "تن ماهی",
+   "en": "Canned tuna",
+   "aisle": "پروتئین",
+   "baseUnit": "قوطی",
+   "aliases": [
+    "tinned tuna",
+    "tuna"
+   ],
+   "allergen": "ماهی"
+  },
+  {
+   "id": "shrimp",
+   "fa": "میگو",
+   "en": "Shrimp",
+   "aisle": "پروتئین",
+   "baseUnit": "گرم",
+   "aliases": [
+    "prawns",
+    "پراون"
+   ],
+   "allergen": "صدف"
+  },
+  {
+   "id": "eggs",
+   "fa": "تخم مرغ",
+   "en": "Egg",
+   "aisle": "پروتئین",
+   "baseUnit": "عدد",
+   "aliases": [
+    "egg",
+    "eggs",
+    "تخم",
+    "تخم‌مرغ"
+   ],
+   "allergen": "تخم‌مرغ"
+  },
+  {
+   "id": "egg_yolk",
+   "fa": "زرده تخم مرغ",
+   "en": "Egg yolk",
+   "aisle": "پروتئین",
+   "baseUnit": "عدد",
+   "aliases": [
+    "egg yolk",
+    "egg yolks",
+    "زرده تخم‌مرغ"
+   ],
+   "allergen": "تخم‌مرغ"
+  },
+  {
+   "id": "sausage",
+   "fa": "سوسیس",
+   "en": "Sausage",
+   "aisle": "پروتئین",
+   "baseUnit": "گرم",
+   "aliases": [
+    "sausages"
+   ]
+  },
+  {
+   "id": "ham",
+   "fa": "ژامبون",
+   "en": "Ham",
+   "aisle": "پروتئین",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "bacon",
+   "fa": "بیکن",
+   "en": "Bacon",
+   "aisle": "پروتئین",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "pepperoni",
+   "fa": "پپرونی",
+   "en": "Pepperoni",
+   "aisle": "پروتئین",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "chorizo",
+   "fa": "چوریزو",
+   "en": "Chorizo",
+   "aisle": "پروتئین",
+   "baseUnit": "گرم",
+   "aliases": [
+    "chorizo sausage"
+   ]
+  },
+  {
+   "id": "anchovy",
+   "fa": "آنچوی",
+   "en": "Anchovy",
+   "aisle": "پروتئین",
+   "baseUnit": "گرم",
+   "aliases": [
+    "anchovies"
+   ],
+   "allergen": "ماهی"
+  },
+  {
+   "id": "liver",
+   "fa": "جگر",
+   "en": "Liver",
+   "aisle": "پروتئین",
+   "baseUnit": "گرم",
+   "aliases": [
+    "جگر گوسفند"
+   ]
+  },
+  {
+   "id": "heart",
+   "fa": "دل",
+   "en": "Heart",
+   "aisle": "پروتئین",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "kidney",
+   "fa": "قلوه",
+   "en": "Kidney",
+   "aisle": "پروتئین",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "tripe",
+   "fa": "سیرابی",
+   "en": "Tripe",
+   "aisle": "پروتئین",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "kale_pache",
+   "fa": "کله و پاچه گوسفند",
+   "en": "Head and trotters",
+   "aisle": "پروتئین",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "milk",
+   "fa": "شیر",
+   "en": "Milk",
+   "aisle": "لبنیات",
+   "baseUnit": "میلی‌لیتر",
+   "aliases": [
+    "ml milk",
+    "شیر گاو"
+   ],
+   "densityGPerCup": 245,
+   "allergen": "لبنیات"
+  },
+  {
+   "id": "sheep_milk",
+   "fa": "شیر گوسفند",
+   "en": "Sheep milk",
+   "aisle": "لبنیات",
+   "baseUnit": "میلی‌لیتر",
+   "aliases": []
+  },
+  {
+   "id": "yogurt",
+   "fa": "ماست",
+   "en": "Yogurt",
+   "aisle": "لبنیات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "yoghurt",
+    "ماست معمولی"
+   ],
+   "densityGPerCup": 245,
+   "allergen": "لبنیات"
+  },
+  {
+   "id": "greek_yogurt",
+   "fa": "ماست چکیده",
+   "en": "Strained yogurt",
+   "aisle": "لبنیات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "greek yogurt",
+    "ماست یونانی"
+   ],
+   "allergen": "لبنیات"
+  },
+  {
+   "id": "doogh",
+   "fa": "دوغ",
+   "en": "Doogh",
+   "aisle": "لبنیات",
+   "baseUnit": "میلی‌لیتر",
+   "aliases": []
+  },
+  {
+   "id": "cheese",
+   "fa": "پنیر",
+   "en": "Cheese",
+   "aisle": "لبنیات",
+   "baseUnit": "گرم",
+   "aliases": [],
+   "allergen": "لبنیات"
+  },
+  {
+   "id": "feta",
+   "fa": "پنیر فتا",
+   "en": "Feta",
+   "aisle": "لبنیات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "feta cheese"
+   ],
+   "allergen": "لبنیات"
+  },
+  {
+   "id": "cheddar",
+   "fa": "پنیر چدار",
+   "en": "Cheddar",
+   "aisle": "لبنیات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "cheddar cheese"
+   ],
+   "allergen": "لبنیات"
+  },
+  {
+   "id": "mozzarella",
+   "fa": "پنیر موزارلا",
+   "en": "Mozzarella",
+   "aisle": "لبنیات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "mozzarella cheese",
+    "موزارلا"
+   ],
+   "allergen": "لبنیات"
+  },
+  {
+   "id": "parmesan",
+   "fa": "پنیر پارمسان",
+   "en": "Parmesan",
+   "aisle": "لبنیات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "parmesan cheese"
+   ],
+   "allergen": "لبنیات"
+  },
+  {
+   "id": "pizza_cheese",
+   "fa": "پنیر پیتزا",
+   "en": "Pizza cheese",
+   "aisle": "لبنیات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "mascarpone",
+   "fa": "پنیر ماسکارپونه",
+   "en": "Mascarpone",
+   "aisle": "لبنیات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "ماسکارپونه"
+   ],
+   "allergen": "لبنیات"
+  },
+  {
+   "id": "cream",
+   "fa": "خامه",
+   "en": "Cream",
+   "aisle": "لبنیات",
+   "baseUnit": "میلی‌لیتر",
+   "aliases": [
+    "heavy cream",
+    "خامه صبحانه"
+   ],
+   "densityGPerCup": 240,
+   "allergen": "لبنیات"
+  },
+  {
+   "id": "double_cream",
+   "fa": "خامه دوغی",
+   "en": "Double cream",
+   "aisle": "لبنیات",
+   "baseUnit": "میلی‌لیتر",
+   "aliases": [
+    "double cream"
+   ],
+   "allergen": "لبنیات"
+  },
+  {
+   "id": "butter",
+   "fa": "کره",
+   "en": "Butter",
+   "aisle": "لبنیات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "unsalted butter",
+    "کره حیوانی"
+   ],
+   "densityGPerCup": 227,
+   "allergen": "لبنیات"
+  },
+  {
+   "id": "ghee",
+   "fa": "روغن حیوانی",
+   "en": "Ghee",
+   "aisle": "لبنیات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "clarified butter",
+    "روغن کرمانشاهی"
+   ]
+  },
+  {
+   "id": "mosir",
+   "fa": "موسیر",
+   "en": "Wild leek",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "ketchup",
+   "fa": "سس کچاپ",
+   "en": "Ketchup",
+   "aisle": "روغن و سس",
+   "baseUnit": "قاشق غذاخوری",
+   "aliases": [
+    "tomato ketchup",
+    "کچاپ"
+   ]
+  },
+  {
+   "id": "oregano",
+   "fa": "پونه کوهی",
+   "en": "Oregano",
+   "aisle": "ادویه",
+   "baseUnit": "قاشق چای‌خوری",
+   "aliases": [
+    "dried oregano",
+    "oregano",
+    "پونه"
+   ]
+  },
+  {
+   "id": "cranberry",
+   "fa": "کرنبری",
+   "en": "Cranberry",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "cranberries",
+    "قره قاط"
+   ]
+  },
+  {
+   "id": "kashk",
+   "fa": "کشک",
+   "en": "Kashk",
+   "aisle": "لبنیات",
+   "baseUnit": "گرم",
+   "aliases": [],
+   "allergen": "لبنیات"
+  },
+  {
+   "id": "sereshir",
+   "fa": "سرشیر",
+   "en": "Clotted cream",
+   "aisle": "لبنیات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "ice_cream",
+   "fa": "بستنی",
+   "en": "Ice cream",
+   "aisle": "لبنیات",
+   "baseUnit": "گرم",
+   "aliases": [],
+   "allergen": "لبنیات"
+  },
+  {
+   "id": "rennet",
+   "fa": "مایه پنیر",
+   "en": "Rennet",
+   "aisle": "لبنیات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "chickpeas",
+   "fa": "نخود",
+   "en": "Chickpeas",
+   "aisle": "حبوبات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "chickpea",
+    "garbanzo"
+   ],
+   "densityGPerCup": 200
+  },
+  {
+   "id": "lentils",
+   "fa": "عدس",
+   "en": "Lentils",
+   "aisle": "حبوبات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "lentil"
+   ],
+   "densityGPerCup": 200
+  },
+  {
+   "id": "beans",
+   "fa": "لوبیا",
+   "en": "Beans",
+   "aisle": "حبوبات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "bean"
+   ]
+  },
+  {
+   "id": "kidney_beans",
+   "fa": "لوبیا قرمز",
+   "en": "Kidney beans",
+   "aisle": "حبوبات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "red kidney beans"
+   ]
+  },
+  {
+   "id": "pinto_beans",
+   "fa": "لوبیا چیتی",
+   "en": "Pinto beans",
+   "aisle": "حبوبات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "black_eyed_beans",
+   "fa": "لوبیا چشم بلبلی",
+   "en": "Black-eyed beans",
+   "aisle": "حبوبات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "green_beans",
+   "fa": "لوبیا سبز",
+   "en": "Green beans",
+   "aisle": "حبوبات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "split_peas",
+   "fa": "لپه",
+   "en": "Split peas",
+   "aisle": "حبوبات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "fava_beans",
+   "fa": "باقلا",
+   "en": "Fava beans",
+   "aisle": "حبوبات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "broad beans",
+    "باقالی"
+   ]
+  },
+  {
+   "id": "mung_beans",
+   "fa": "ماش",
+   "en": "Mung beans",
+   "aisle": "حبوبات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "peas",
+   "fa": "نخود فرنگی",
+   "en": "Peas",
+   "aisle": "حبوبات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "green peas"
+   ]
+  },
+  {
+   "id": "soy_sauce",
+   "fa": "سس سویا",
+   "en": "Soy sauce",
+   "aisle": "روغن و سس",
+   "baseUnit": "قاشق غذاخوری",
+   "aliases": [],
+   "allergen": "سویا"
+  },
+  {
+   "id": "onion",
+   "fa": "پیاز",
+   "en": "Onion",
+   "aisle": "سبزیجات",
+   "baseUnit": "عدد",
+   "aliases": [
+    "chopped onion",
+    "onions",
+    "red onion",
+    "پیاز سفید",
+    "پیاز قرمز"
+   ]
+  },
+  {
+   "id": "fried_onion",
+   "fa": "پیاز داغ",
+   "en": "Fried onion",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "garlic",
+   "fa": "سیر",
+   "en": "Garlic",
+   "aisle": "سبزیجات",
+   "baseUnit": "حبه",
+   "aliases": [
+    "cloves garlic",
+    "garlic clove",
+    "garlic cloves",
+    "سیر تازه"
+   ]
+  },
+  {
+   "id": "potato",
+   "fa": "سیب زمینی",
+   "en": "Potato",
+   "aisle": "سبزیجات",
+   "baseUnit": "عدد",
+   "aliases": [
+    "potatoes",
+    "سیب زمینی آب‌پز",
+    "سیب‌زمینی"
+   ]
+  },
+  {
+   "id": "tomato",
+   "fa": "گوجه",
+   "en": "Tomato",
+   "aisle": "سبزیجات",
+   "baseUnit": "عدد",
+   "aliases": [
+    "tomatoes",
+    "گوجه فرنگی",
+    "گوجه‌فرنگی"
+   ]
+  },
+  {
+   "id": "tomato_paste",
+   "fa": "رب گوجه",
+   "en": "Tomato paste",
+   "aisle": "روغن و سس",
+   "baseUnit": "قاشق غذاخوری",
+   "aliases": [
+    "tomato paste",
+    "tomato puree",
+    "رب گوجه فرنگی"
+   ],
+   "densityGPerCup": 260
+  },
+  {
+   "id": "tomato_sauce",
+   "fa": "سس گوجه",
+   "en": "Tomato sauce",
+   "aisle": "روغن و سس",
+   "baseUnit": "میلی‌لیتر",
+   "aliases": [
+    "passata",
+    "tomato sauce"
+   ]
+  },
+  {
+   "id": "cherry_tomato",
+   "fa": "گوجه گیلاسی",
+   "en": "Cherry tomato",
+   "aisle": "سبزیجات",
+   "baseUnit": "عدد",
+   "aliases": [
+    "cherry tomatoes"
+   ]
+  },
+  {
+   "id": "eggplant",
+   "fa": "بادمجان",
+   "en": "Eggplant",
+   "aisle": "سبزیجات",
+   "baseUnit": "عدد",
+   "aliases": [
+    "aubergine",
+    "eggplants"
+   ]
+  },
+  {
+   "id": "cucumber",
+   "fa": "خیار",
+   "en": "Cucumber",
+   "aisle": "سبزیجات",
+   "baseUnit": "عدد",
+   "aliases": [
+    "cucumbers"
+   ]
+  },
+  {
+   "id": "pickle",
+   "fa": "خیارشور",
+   "en": "Pickles",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "gherkins",
+    "pickle"
+   ]
+  },
+  {
+   "id": "zucchini",
+   "fa": "کدو سبز",
+   "en": "Zucchini",
+   "aisle": "سبزیجات",
+   "baseUnit": "عدد",
+   "aliases": [
+    "courgette",
+    "zucchini"
+   ]
+  },
+  {
+   "id": "pumpkin",
+   "fa": "کدو حلوایی",
+   "en": "Pumpkin",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "squash",
+   "fa": "کدو",
+   "en": "Squash",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "carrot",
+   "fa": "هویج",
+   "en": "Carrot",
+   "aisle": "سبزیجات",
+   "baseUnit": "عدد",
+   "aliases": [
+    "carrots"
+   ]
+  },
+  {
+   "id": "mushroom",
+   "fa": "قارچ",
+   "en": "Mushroom",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "mushrooms"
+   ]
+  },
+  {
+   "id": "bell_pepper",
+   "fa": "فلفل دلمه",
+   "en": "Bell pepper",
+   "aisle": "سبزیجات",
+   "baseUnit": "عدد",
+   "aliases": [
+    "green pepper",
+    "peppers",
+    "red pepper",
+    "فلفل دلمه‌ای"
+   ]
+  },
+  {
+   "id": "chilli",
+   "fa": "فلفل قرمز",
+   "en": "Chilli",
+   "aisle": "سبزیجات",
+   "baseUnit": "عدد",
+   "aliases": [
+    "chili",
+    "chillies",
+    "red chilli",
+    "فلفل تند"
+   ]
+  },
+  {
+   "id": "spinach",
+   "fa": "اسفناج",
+   "en": "Spinach",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "lettuce",
+   "fa": "کاهو",
+   "en": "Lettuce",
+   "aisle": "سبزیجات",
+   "baseUnit": "عدد",
+   "aliases": []
+  },
+  {
+   "id": "cabbage",
+   "fa": "کلم",
+   "en": "Cabbage",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "red_cabbage",
+   "fa": "کلم برگ",
+   "en": "Red cabbage",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "broccoli",
+   "fa": "کلم بروکلی",
+   "en": "Broccoli",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "cauliflower",
+   "fa": "گل کلم",
+   "en": "Cauliflower",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "celery",
+   "fa": "کرفس",
+   "en": "Celery",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "beetroot",
+   "fa": "چغندر",
+   "en": "Beetroot",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "okra",
+   "fa": "بامیه",
+   "en": "Okra",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "corn",
+   "fa": "ذرت",
+   "en": "Corn",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "sweetcorn"
+   ]
+  },
+  {
+   "id": "olive",
+   "fa": "زیتون",
+   "en": "Olive",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "olives"
+   ]
+  },
+  {
+   "id": "green_olive",
+   "fa": "زیتون سبز",
+   "en": "Green olives",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "avocado",
+   "fa": "آووکادو",
+   "en": "Avocado",
+   "aisle": "سبزیجات",
+   "baseUnit": "عدد",
+   "aliases": [
+    "avocados",
+    "آواکادو"
+   ]
+  },
+  {
+   "id": "herbs",
+   "fa": "سبزی",
+   "en": "Fresh herbs",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "fresh herbs",
+    "سبزی تازه",
+    "سبزی معطر"
+   ]
+  },
+  {
+   "id": "herbs_mixed",
+   "fa": "سبزیجات",
+   "en": "Mixed vegetables",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "vegetables",
+    "سبزیجات مختلف",
+    "سبزیجات مخلوط"
+   ]
+  },
+  {
+   "id": "ash_herbs",
+   "fa": "سبزی آش",
+   "en": "Ash herbs",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "stew_herbs",
+   "fa": "سبزی خورشتی",
+   "en": "Stew herbs",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "local_herbs",
+   "fa": "سبزی محلی",
+   "en": "Local herbs",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "mint",
+   "fa": "نعنا",
+   "en": "Mint",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "mint leaves",
+    "نعناع"
+   ]
+  },
+  {
+   "id": "dried_mint",
+   "fa": "نعنا خشک",
+   "en": "Dried mint",
+   "aisle": "ادویه",
+   "baseUnit": "گرم",
+   "aliases": [
+    "dried mint"
+   ]
+  },
+  {
+   "id": "parsley",
+   "fa": "جعفری",
+   "en": "Parsley",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "flat parsley"
+   ]
+  },
+  {
+   "id": "dill",
+   "fa": "شوید",
+   "en": "Dill",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "basil",
+   "fa": "ریحان",
+   "en": "Basil",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "basil leaves"
+   ]
+  },
+  {
+   "id": "tarragon",
+   "fa": "تره",
+   "en": "Chives",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "fenugreek",
+   "fa": "شنبلیله",
+   "en": "Fenugreek",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "thyme",
+   "fa": "آویشن",
+   "en": "Thyme",
+   "aisle": "ادویه",
+   "baseUnit": "قاشق چای‌خوری",
+   "aliases": [
+    "sprigs thyme",
+    "thyme sprigs"
+   ]
+  },
+  {
+   "id": "kangar",
+   "fa": "کنگر",
+   "en": "Cardoon",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "rhubarb",
+   "fa": "ریواس",
+   "en": "Rhubarb",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "lemon",
+   "fa": "لیمو",
+   "en": "Lemon",
+   "aisle": "سبزیجات",
+   "baseUnit": "عدد",
+   "aliases": [
+    "lemons",
+    "لیمو ترش"
+   ]
+  },
+  {
+   "id": "lemon_juice",
+   "fa": "آبلیمو",
+   "en": "Lemon juice",
+   "aisle": "روغن و سس",
+   "baseUnit": "قاشق غذاخوری",
+   "aliases": [
+    "lemon juice",
+    "آب لیمو"
+   ]
+  },
+  {
+   "id": "dried_lime",
+   "fa": "لیمو عمانی",
+   "en": "Dried lime",
+   "aisle": "ادویه",
+   "baseUnit": "عدد",
+   "aliases": [
+    "لیمو عمانی سیاه"
+   ]
+  },
+  {
+   "id": "orange",
+   "fa": "پرتقال",
+   "en": "Orange",
+   "aisle": "سبزیجات",
+   "baseUnit": "عدد",
+   "aliases": [
+    "oranges"
+   ]
+  },
+  {
+   "id": "orange_zest",
+   "fa": "خلال پرتقال",
+   "en": "Orange zest",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "orange zest"
+   ]
+  },
+  {
+   "id": "grapefruit",
+   "fa": "نارنج",
+   "en": "Bitter orange",
+   "aisle": "سبزیجات",
+   "baseUnit": "عدد",
+   "aliases": []
+  },
+  {
+   "id": "banana",
+   "fa": "موز",
+   "en": "Banana",
+   "aisle": "سبزیجات",
+   "baseUnit": "عدد",
+   "aliases": [
+    "bananas"
+   ]
+  },
+  {
+   "id": "apple",
+   "fa": "سیب",
+   "en": "Apple",
+   "aisle": "سبزیجات",
+   "baseUnit": "عدد",
+   "aliases": [
+    "apples"
+   ]
+  },
+  {
+   "id": "quince",
+   "fa": "به",
+   "en": "Quince",
+   "aisle": "سبزیجات",
+   "baseUnit": "عدد",
+   "aliases": []
+  },
+  {
+   "id": "peach",
+   "fa": "هلو",
+   "en": "Peach",
+   "aisle": "سبزیجات",
+   "baseUnit": "عدد",
+   "aliases": [
+    "peaches",
+    "ه هلو",
+    "هلو انجیری"
+   ]
+  },
+  {
+   "id": "nectarine",
+   "fa": "شلیل",
+   "en": "Nectarine",
+   "aisle": "سبزیجات",
+   "baseUnit": "عدد",
+   "aliases": [
+    "nectarines"
+   ]
+  },
+  {
+   "id": "apricot",
+   "fa": "زردآلو",
+   "en": "Apricot",
+   "aisle": "سبزیجات",
+   "baseUnit": "عدد",
+   "aliases": [
+    "apricots"
+   ]
+  },
+  {
+   "id": "plum",
+   "fa": "آلو",
+   "en": "Plum",
+   "aisle": "سبزیجات",
+   "baseUnit": "عدد",
+   "aliases": [
+    "plums",
+    "آلوچه"
+   ]
+  },
+  {
+   "id": "dried_plum",
+   "fa": "آلو بخارا",
+   "en": "Dried plum",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "آلو مسما"
+   ]
+  },
+  {
+   "id": "sour_plum",
+   "fa": "گوجه سبز",
+   "en": "Sour plum",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "greengage",
+   "fa": "آلوچه سبز",
+   "en": "Greengage",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "cherry",
+   "fa": "آلبالو",
+   "en": "Sour cherry",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "cherries",
+    "گیلاس"
+   ]
+  },
+  {
+   "id": "pomegranate",
+   "fa": "انار",
+   "en": "Pomegranate",
+   "aisle": "سبزیجات",
+   "baseUnit": "عدد",
+   "aliases": [
+    "pomegranate seeds",
+    "انار دانه"
+   ]
+  },
+  {
+   "id": "pomegranate_paste",
+   "fa": "رب انار",
+   "en": "Pomegranate paste",
+   "aisle": "روغن و سس",
+   "baseUnit": "قاشق غذاخوری",
+   "aliases": []
+  },
+  {
+   "id": "barberry",
+   "fa": "زرشک",
+   "en": "Barberry",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "date",
+   "fa": "خرما",
+   "en": "Date",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "dates"
+   ]
+  },
+  {
+   "id": "fig",
+   "fa": "انجیر",
+   "en": "Fig",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "figs"
+   ]
+  },
+  {
+   "id": "raisin",
+   "fa": "کشمش",
+   "en": "Raisin",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "raisins",
+    "کشمش پلویی"
+   ]
+  },
+  {
+   "id": "tamarind",
+   "fa": "تمر هندی",
+   "en": "Tamarind",
+   "aisle": "ادویه",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "unripe_grape",
+   "fa": "غوره",
+   "en": "Unripe grape",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "sumac",
+   "fa": "سماق",
+   "en": "Sumac",
+   "aisle": "ادویه",
+   "baseUnit": "قاشق چای‌خوری",
+   "aliases": []
+  },
+  {
+   "id": "khatmi",
+   "fa": "خرفه",
+   "en": "Purslane",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "apricot_dried",
+   "fa": "قیسی",
+   "en": "Dried apricot",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "dried apricots",
+    "زردآلو خشک"
+   ]
+  },
+  {
+   "id": "fig_dried",
+   "fa": "انجیر خشک",
+   "en": "Dried fig",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "dried figs"
+   ]
+  },
+  {
+   "id": "plum_dried",
+   "fa": "آلو خشک",
+   "en": "Dehydrated plum",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "turnip",
+   "fa": "شلغم",
+   "en": "Turnip",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "watermelon",
+   "fa": "هندوانه",
+   "en": "Watermelon",
+   "aisle": "سبزیجات",
+   "baseUnit": "عدد",
+   "aliases": []
+  },
+  {
+   "id": "melon",
+   "fa": "طالبی",
+   "en": "Melon",
+   "aisle": "سبزیجات",
+   "baseUnit": "عدد",
+   "aliases": [
+    "cantaloupe",
+    "خربزه"
+   ]
+  },
+  {
+   "id": "tangerine",
+   "fa": "نارنگی",
+   "en": "Tangerine",
+   "aisle": "سبزیجات",
+   "baseUnit": "عدد",
+   "aliases": []
+  },
+  {
+   "id": "kiwi",
+   "fa": "کیوی",
+   "en": "Kiwi",
+   "aisle": "سبزیجات",
+   "baseUnit": "عدد",
+   "aliases": []
+  },
+  {
+   "id": "pineapple",
+   "fa": "آناناس",
+   "en": "Pineapple",
+   "aisle": "سبزیجات",
+   "baseUnit": "عدد",
+   "aliases": []
+  },
+  {
+   "id": "pear",
+   "fa": "گلابی",
+   "en": "Pear",
+   "aisle": "سبزیجات",
+   "baseUnit": "عدد",
+   "aliases": []
+  },
+  {
+   "id": "persimmon",
+   "fa": "خرمالو",
+   "en": "Persimmon",
+   "aisle": "سبزیجات",
+   "baseUnit": "عدد",
+   "aliases": []
+  },
+  {
+   "id": "mango",
+   "fa": "انبه",
+   "en": "Mango",
+   "aisle": "سبزیجات",
+   "baseUnit": "عدد",
+   "aliases": []
+  },
+  {
+   "id": "strawberry",
+   "fa": "توت فرنگی",
+   "en": "Strawberry",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "strawberries",
+    "توت‌فرنگی"
+   ]
+  },
+  {
+   "id": "grape",
+   "fa": "انگور",
+   "en": "Grape",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "grapes"
+   ]
+  },
+  {
+   "id": "papaya",
+   "fa": "پاپایا",
+   "en": "Papaya",
+   "aisle": "سبزیجات",
+   "baseUnit": "عدد",
+   "aliases": []
+  },
+  {
+   "id": "fruit",
+   "fa": "میوه",
+   "en": "Fruit",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "میوه فصل",
+    "میوه های مختلف"
+   ]
+  },
+  {
+   "id": "dried_fruit",
+   "fa": "میوه خشک",
+   "en": "Dried fruit",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "coconut",
+   "fa": "نارگیل",
+   "en": "Coconut",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "coconut milk",
+    "desiccated coconut"
+   ]
+  },
+  {
+   "id": "olive_oil",
+   "fa": "روغن زیتون",
+   "en": "Olive oil",
+   "aisle": "روغن و سس",
+   "baseUnit": "میلی‌لیتر",
+   "aliases": [
+    "extra virgin olive oil",
+    "olive oil"
+   ],
+   "densityGPerCup": 216
+  },
+  {
+   "id": "rice",
+   "fa": "برنج",
+   "en": "Rice",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "basmati rice",
+    "برنج ایرانی",
+    "برنج سفید"
+   ],
+   "densityGPerCup": 185
+  },
+  {
+   "id": "rice_arborio",
+   "fa": "برنج آربوریو",
+   "en": "Arborio rice",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "arborio"
+   ]
+  },
+  {
+   "id": "flour",
+   "fa": "آرد",
+   "en": "Flour",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "all purpose flour",
+    "plain flour",
+    "آرد سفید"
+   ],
+   "densityGPerCup": 125,
+   "allergen": "گلوتن"
+  },
+  {
+   "id": "self_raising_flour",
+   "fa": "آرد الک شده",
+   "en": "Self-raising flour",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "self-raising flour",
+    "selfraising flour"
+   ]
+  },
+  {
+   "id": "rice_flour",
+   "fa": "آرد برنج",
+   "en": "Rice flour",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "barley_flour",
+   "fa": "آرد جو",
+   "en": "Barley flour",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "wheat",
+   "fa": "گندم",
+   "en": "Wheat",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "sprouted_wheat",
+   "fa": "گندم جوانه زده",
+   "en": "Sprouted wheat",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "bread",
+   "fa": "نان",
+   "en": "Bread",
+   "aisle": "غلات",
+   "baseUnit": "عدد",
+   "aliases": [
+    "bread"
+   ],
+   "allergen": "گلوتن"
+  },
+  {
+   "id": "lavash",
+   "fa": "نان لواش",
+   "en": "Lavash",
+   "aisle": "غلات",
+   "baseUnit": "عدد",
+   "aliases": []
+  },
+  {
+   "id": "baguette",
+   "fa": "نان باگت",
+   "en": "Baguette",
+   "aisle": "غلات",
+   "baseUnit": "عدد",
+   "aliases": [],
+   "allergen": "گلوتن"
+  },
+  {
+   "id": "toast_bread",
+   "fa": "نان تست",
+   "en": "Toast bread",
+   "aisle": "غلات",
+   "baseUnit": "عدد",
+   "aliases": [
+    "sliced bread",
+    "toast"
+   ],
+   "allergen": "گلوتن"
+  },
+  {
+   "id": "burger_bun",
+   "fa": "نان برگر",
+   "en": "Burger bun",
+   "aisle": "غلات",
+   "baseUnit": "عدد",
+   "aliases": [
+    "burger buns"
+   ],
+   "allergen": "گلوتن"
+  },
+  {
+   "id": "hot_dog_bun",
+   "fa": "نان هات داگ",
+   "en": "Hot dog bun",
+   "aisle": "غلات",
+   "baseUnit": "عدد",
+   "aliases": []
+  },
+  {
+   "id": "milk_bread",
+   "fa": "نان شیری",
+   "en": "Milk bread",
+   "aisle": "غلات",
+   "baseUnit": "عدد",
+   "aliases": []
+  },
+  {
+   "id": "pastry_bread",
+   "fa": "نان شیرینی",
+   "en": "Sweet bun",
+   "aisle": "غلات",
+   "baseUnit": "عدد",
+   "aliases": []
+  },
+  {
+   "id": "taco_shell",
+   "fa": "نان تاکو",
+   "en": "Taco shell",
+   "aisle": "غلات",
+   "baseUnit": "عدد",
+   "aliases": [
+    "taco shells"
+   ]
+  },
+  {
+   "id": "fried_bread",
+   "fa": "نان سرخ شده",
+   "en": "Fried bread",
+   "aisle": "غلات",
+   "baseUnit": "عدد",
+   "aliases": []
+  },
+  {
+   "id": "pasta",
+   "fa": "پاستا",
+   "en": "Pasta",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": [],
+   "allergen": "گلوتن"
+  },
+  {
+   "id": "spaghetti",
+   "fa": "اسپاگتی",
+   "en": "Spaghetti",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": [],
+   "allergen": "گلوتن"
+  },
+  {
+   "id": "penne",
+   "fa": "پنه",
+   "en": "Penne",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "fettuccine",
+   "fa": "فتوچینی",
+   "en": "Fettuccine",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "macaroni",
+   "fa": "ماکارونی",
+   "en": "Macaroni",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": [],
+   "allergen": "گلوتن"
+  },
+  {
+   "id": "shaped_pasta",
+   "fa": "ماکارونی فرمی",
+   "en": "Shaped pasta",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "colored_pasta",
+   "fa": "پاستای رنگی",
+   "en": "Coloured pasta",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "lasagna",
+   "fa": "لازانیا",
+   "en": "Lasagna sheets",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "lasagne"
+   ],
+   "allergen": "گلوتن"
+  },
+  {
+   "id": "noodles",
+   "fa": "نودل",
+   "en": "Noodles",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "noodle"
+   ]
+  },
+  {
+   "id": "instant_noodles",
+   "fa": "نودل آماده",
+   "en": "Instant noodles",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "ramen",
+   "fa": "نودل رامن",
+   "en": "Ramen noodles",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "rice_noodles",
+   "fa": "نودل برنجی",
+   "en": "Rice noodles",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "reshteh",
+   "fa": "رشته",
+   "en": "Reshteh noodles",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "noodles",
+    "رشته آشی",
+    "رشته پلویی"
+   ]
+  },
+  {
+   "id": "faloodeh_reshteh",
+   "fa": "رشته فالوده",
+   "en": "Faloodeh noodles",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "bulgur",
+   "fa": "بلغور",
+   "en": "Bulgur",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": [],
+   "densityGPerCup": 182
+  },
+  {
+   "id": "semolina",
+   "fa": "سمولینا",
+   "en": "Semolina",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "oats",
+   "fa": "جو",
+   "en": "Barley",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "barley",
+    "oats"
+   ]
+  },
+  {
+   "id": "quinoa",
+   "fa": "کینوا",
+   "en": "Quinoa",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "cornstarch",
+   "fa": "نشاسته",
+   "en": "Cornstarch",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "cornflour",
+    "نشاسته ذرت"
+   ],
+   "densityGPerCup": 120
+  },
+  {
+   "id": "yeast",
+   "fa": "خمیرمایه",
+   "en": "Yeast",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "dried yeast",
+    "yeast"
+   ]
+  },
+  {
+   "id": "dough",
+   "fa": "خمیر",
+   "en": "Dough",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "pizza_dough",
+   "fa": "خمیر پیتزا",
+   "en": "Pizza dough",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "thick_dough",
+   "fa": "خمیر ضخیم",
+   "en": "Thick dough",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "sweet_dough",
+   "fa": "خمیر شیرینی",
+   "en": "Sweet dough",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "shortcrust pastry"
+   ]
+  },
+  {
+   "id": "gyoza_wrapper",
+   "fa": "خمیر گیوزا",
+   "en": "Gyoza wrapper",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "tortilla",
+   "fa": "تورتیلا",
+   "en": "Tortilla",
+   "aisle": "غلات",
+   "baseUnit": "عدد",
+   "aliases": [
+    "tortillas"
+   ]
+  },
+  {
+   "id": "breadcrumbs",
+   "fa": "پودر سوخاری",
+   "en": "Breadcrumbs",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "breadcrumbs",
+    "panko"
+   ],
+   "densityGPerCup": 110,
+   "allergen": "گلوتن"
+  },
+  {
+   "id": "cracker",
+   "fa": "کراکر",
+   "en": "Cracker",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "crackers"
+   ]
+  },
+  {
+   "id": "biscuit",
+   "fa": "بیسکوییت",
+   "en": "Biscuit",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "biscuits"
+   ]
+  },
+  {
+   "id": "cone",
+   "fa": "قیف",
+   "en": "Cone",
+   "aisle": "غلات",
+   "baseUnit": "عدد",
+   "aliases": []
+  },
+  {
+   "id": "salt",
+   "fa": "نمک",
+   "en": "Salt",
+   "aisle": "ادویه",
+   "baseUnit": "قاشق چای‌خوری",
+   "aliases": [
+    "pinch salt",
+    "salt",
+    "نمک دریا"
+   ]
+  },
+  {
+   "id": "pepper",
+   "fa": "فلفل",
+   "en": "Pepper",
+   "aisle": "ادویه",
+   "baseUnit": "قاشق چای‌خوری",
+   "aliases": [
+    "black pepper",
+    "فلفل سیاه"
+   ]
+  },
+  {
+   "id": "turmeric",
+   "fa": "زردچوبه",
+   "en": "Turmeric",
+   "aisle": "ادویه",
+   "baseUnit": "قاشق چای‌خوری",
+   "aliases": []
+  },
+  {
+   "id": "saffron",
+   "fa": "زعفران",
+   "en": "Saffron",
+   "aisle": "ادویه",
+   "baseUnit": "گرم",
+   "aliases": [
+    "زعفران دم کرده"
+   ]
+  },
+  {
+   "id": "cinnamon",
+   "fa": "دارچین",
+   "en": "Cinnamon",
+   "aisle": "ادویه",
+   "baseUnit": "قاشق چای‌خوری",
+   "aliases": [
+    "cinnamon stick"
+   ]
+  },
+  {
+   "id": "ginger",
+   "fa": "زنجبیل",
+   "en": "Ginger",
+   "aisle": "ادویه",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "cardamom",
+   "fa": "هل",
+   "en": "Cardamom",
+   "aisle": "ادویه",
+   "baseUnit": "قاشق چای‌خوری",
+   "aliases": [
+    "cardamom pods"
+   ]
+  },
+  {
+   "id": "cumin",
+   "fa": "زیره",
+   "en": "Cumin",
+   "aisle": "ادویه",
+   "baseUnit": "قاشق چای‌خوری",
+   "aliases": [
+    "cumin seeds",
+    "ground cumin"
+   ]
+  },
+  {
+   "id": "spice_mix",
+   "fa": "ادویه",
+   "en": "Mixed spice",
+   "aisle": "ادویه",
+   "baseUnit": "قاشق چای‌خوری",
+   "aliases": [
+    "mixed spice",
+    "ادویه هندی",
+    "ادویه پلویی"
+   ]
+  },
+  {
+   "id": "vanilla",
+   "fa": "وانیل",
+   "en": "Vanilla",
+   "aisle": "ادویه",
+   "baseUnit": "قاشق چای‌خوری",
+   "aliases": [
+    "vanilla essence",
+    "vanilla extract"
+   ]
+  },
+  {
+   "id": "paprika",
+   "fa": "پاپریکا",
+   "en": "Paprika",
+   "aisle": "ادویه",
+   "baseUnit": "قاشق چای‌خوری",
+   "aliases": []
+  },
+  {
+   "id": "allspice",
+   "fa": "بهار ادویه",
+   "en": "Allspice",
+   "aisle": "ادویه",
+   "baseUnit": "قاشق چای‌خوری",
+   "aliases": [
+    "allspice"
+   ]
+  },
+  {
+   "id": "curry_powder",
+   "fa": "سس کاری",
+   "en": "Curry powder",
+   "aisle": "ادویه",
+   "baseUnit": "قاشق غذاخوری",
+   "aliases": [
+    "curry powder"
+   ]
+  },
+  {
+   "id": "baking_powder",
+   "fa": "بیکینگ پودر",
+   "en": "Baking powder",
+   "aisle": "ادویه",
+   "baseUnit": "قاشق چای‌خوری",
+   "aliases": [
+    "baking powder"
+   ]
+  },
+  {
+   "id": "rose_water",
+   "fa": "گلاب",
+   "en": "Rose water",
+   "aisle": "ادویه",
+   "baseUnit": "میلی‌لیتر",
+   "aliases": [
+    "rosewater"
+   ]
+  },
+  {
+   "id": "sesame",
+   "fa": "کنجد",
+   "en": "Sesame",
+   "aisle": "ادویه",
+   "baseUnit": "گرم",
+   "aliases": [
+    "sesame seeds"
+   ],
+   "allergen": "کنجد"
+  },
+  {
+   "id": "sunflower_seeds",
+   "fa": "تخمه آفتابگردان",
+   "en": "Sunflower seeds",
+   "aisle": "ادویه",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "pumpkin_seeds",
+   "fa": "تخمه کدو",
+   "en": "Pumpkin seeds",
+   "aisle": "ادویه",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "seeds",
+   "fa": "تخمه",
+   "en": "Seeds",
+   "aisle": "ادویه",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "walnut_ground",
+   "fa": "گردوی آسیاب شده",
+   "en": "Ground walnut",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": [],
+   "densityGPerCup": 100,
+   "allergen": "مغزها"
+  },
+  {
+   "id": "oil",
+   "fa": "روغن",
+   "en": "Oil",
+   "aisle": "روغن و سس",
+   "baseUnit": "میلی‌لیتر",
+   "aliases": [
+    "sunflower oil",
+    "vegetable oil",
+    "روغن مایع"
+   ],
+   "densityGPerCup": 216
+  },
+  {
+   "id": "mayonnaise",
+   "fa": "مایونز",
+   "en": "Mayonnaise",
+   "aisle": "روغن و سس",
+   "baseUnit": "قاشق غذاخوری",
+   "aliases": [
+    "mayo",
+    "سس مایونز"
+   ]
+  },
+  {
+   "id": "sauce",
+   "fa": "سس",
+   "en": "Sauce",
+   "aisle": "روغن و سس",
+   "baseUnit": "قاشق غذاخوری",
+   "aliases": []
+  },
+  {
+   "id": "bechamel",
+   "fa": "سس بشامل",
+   "en": "Bechamel",
+   "aisle": "روغن و سس",
+   "baseUnit": "میلی‌لیتر",
+   "aliases": [
+    "sauce bechamel"
+   ]
+  },
+  {
+   "id": "pesto",
+   "fa": "سس پستو",
+   "en": "Pesto",
+   "aisle": "روغن و سس",
+   "baseUnit": "قاشق غذاخوری",
+   "aliases": [
+    "pesto"
+   ]
+  },
+  {
+   "id": "caesar_sauce",
+   "fa": "سس سزار",
+   "en": "Caesar dressing",
+   "aisle": "روغن و سس",
+   "baseUnit": "قاشق غذاخوری",
+   "aliases": []
+  },
+  {
+   "id": "vinegar",
+   "fa": "سرکه",
+   "en": "Vinegar",
+   "aisle": "روغن و سس",
+   "baseUnit": "میلی‌لیتر",
+   "aliases": [
+    "white vinegar",
+    "سرکه سفید"
+   ]
+  },
+  {
+   "id": "sugar",
+   "fa": "شکر",
+   "en": "Sugar",
+   "aisle": "روغن و سس",
+   "baseUnit": "گرم",
+   "aliases": [
+    "caster sugar",
+    "granulated sugar",
+    "شکر سفید"
+   ],
+   "densityGPerCup": 200
+  },
+  {
+   "id": "icing_sugar",
+   "fa": "پودر قند",
+   "en": "Icing sugar",
+   "aisle": "روغن و سس",
+   "baseUnit": "گرم",
+   "aliases": [
+    "confectioners sugar",
+    "powdered sugar"
+   ],
+   "densityGPerCup": 120
+  },
+  {
+   "id": "candy",
+   "fa": "قند",
+   "en": "Sugar cube",
+   "aisle": "روغن و سس",
+   "baseUnit": "گرم",
+   "aliases": [
+    "sugar cubes"
+   ]
+  },
+  {
+   "id": "honey",
+   "fa": "عسل",
+   "en": "Honey",
+   "aisle": "روغن و سس",
+   "baseUnit": "قاشق غذاخوری",
+   "aliases": [],
+   "densityGPerCup": 340
+  },
+  {
+   "id": "molasses",
+   "fa": "شیره",
+   "en": "Molasses",
+   "aisle": "روغن و سس",
+   "baseUnit": "قاشق غذاخوری",
+   "aliases": [
+    "grape molasses"
+   ]
+  },
+  {
+   "id": "jam",
+   "fa": "مربا",
+   "en": "Jam",
+   "aisle": "روغن و سس",
+   "baseUnit": "قاشق غذاخوری",
+   "aliases": [
+    "marmalade"
+   ]
+  },
+  {
+   "id": "syrup",
+   "fa": "شربت",
+   "en": "Syrup",
+   "aisle": "روغن و سس",
+   "baseUnit": "میلی‌لیتر",
+   "aliases": []
+  },
+  {
+   "id": "chocolate",
+   "fa": "شکلات",
+   "en": "Chocolate",
+   "aisle": "روغن و سس",
+   "baseUnit": "گرم",
+   "aliases": [
+    "dark chocolate",
+    "شکلات تلخ"
+   ]
+  },
+  {
+   "id": "cocoa",
+   "fa": "کاکائو",
+   "en": "Cocoa",
+   "aisle": "روغن و سس",
+   "baseUnit": "گرم",
+   "aliases": [
+    "cocoa powder"
+   ],
+   "densityGPerCup": 85
+  },
+  {
+   "id": "custard",
+   "fa": "کاستارد",
+   "en": "Custard",
+   "aisle": "روغن و سس",
+   "baseUnit": "گرم",
+   "aliases": [
+    "custard powder"
+   ]
+  },
+  {
+   "id": "gelatin",
+   "fa": "پودر ژله",
+   "en": "Gelatine",
+   "aisle": "روغن و سس",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "coffee",
+   "fa": "قهوه",
+   "en": "Coffee",
+   "aisle": "روغن و سس",
+   "baseUnit": "گرم",
+   "aliases": [
+    "instant coffee"
+   ]
+  },
+  {
+   "id": "nescafe",
+   "fa": "نسکافه",
+   "en": "Instant coffee",
+   "aisle": "روغن و سس",
+   "baseUnit": "",
+   "aliases": []
+  },
+  {
+   "id": "tea",
+   "fa": "چای",
+   "en": "Tea",
+   "aisle": "روغن و سس",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "green_tea",
+   "fa": "چای سبز",
+   "en": "Green tea",
+   "aisle": "روغن و سس",
+   "baseUnit": "",
+   "aliases": []
+  },
+  {
+   "id": "earl_grey",
+   "fa": "چای ارل گری",
+   "en": "Earl grey tea",
+   "aisle": "روغن و سس",
+   "baseUnit": "",
+   "aliases": []
+  },
+  {
+   "id": "chamomile",
+   "fa": "بابونه",
+   "en": "Chamomile",
+   "aisle": "روغن و سس",
+   "baseUnit": "",
+   "aliases": []
+  },
+  {
+   "id": "willow_distillate",
+   "fa": "عرق بیدمشک",
+   "en": "Willow distillate",
+   "aisle": "روغن و سس",
+   "baseUnit": "میلی‌لیتر",
+   "aliases": []
+  },
+  {
+   "id": "orange_blossom",
+   "fa": "عرق بهارنارنج",
+   "en": "Orange blossom water",
+   "aisle": "روغن و سس",
+   "baseUnit": "میلی‌لیتر",
+   "aliases": []
+  },
+  {
+   "id": "mint_distillate",
+   "fa": "عرق نعنا",
+   "en": "Mint distillate",
+   "aisle": "روغن و سس",
+   "baseUnit": "میلی‌لیتر",
+   "aliases": []
+  },
+  {
+   "id": "mint_extract",
+   "fa": "عصاره نعناع",
+   "en": "Mint extract",
+   "aisle": "روغن و سس",
+   "baseUnit": "قاشق چای‌خوری",
+   "aliases": []
+  },
+  {
+   "id": "chia",
+   "fa": "تخم شربتی",
+   "en": "Chia seeds",
+   "aisle": "روغن و سس",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "cress_seeds",
+   "fa": "خاکشیر",
+   "en": "Cress seeds",
+   "aisle": "روغن و سس",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "tahini",
+   "fa": "ارده",
+   "en": "Tahini",
+   "aisle": "روغن و سس",
+   "baseUnit": "قاشق غذاخوری",
+   "aliases": [],
+   "allergen": "کنجد"
+  },
+  {
+   "id": "juice",
+   "fa": "آب پرتقال",
+   "en": "Orange juice",
+   "aisle": "روغن و سس",
+   "baseUnit": "میلی‌لیتر",
+   "aliases": [
+    "juice",
+    "orange juice"
+   ]
+  },
+  {
+   "id": "water",
+   "fa": "آب",
+   "en": "Water",
+   "aisle": "سایر",
+   "baseUnit": "میلی‌لیتر",
+   "aliases": [
+    "water",
+    "آب سرد"
+   ],
+   "densityGPerCup": 236
+  },
+  {
+   "id": "warm_water",
+   "fa": "آب گرم",
+   "en": "Warm water",
+   "aisle": "سایر",
+   "baseUnit": "میلی‌لیتر",
+   "aliases": [
+    "boiling water",
+    "warm water",
+    "آب جوش"
+   ]
+  },
+  {
+   "id": "ice",
+   "fa": "یخ",
+   "en": "Ice",
+   "aisle": "سایر",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "stock",
+   "fa": "آبگوشت",
+   "en": "Stock",
+   "aisle": "سایر",
+   "baseUnit": "میلی‌لیتر",
+   "aliases": [
+    "broth",
+    "chicken stock",
+    "stock cube",
+    "آب گوشت"
+   ]
+  },
+  {
+   "id": "nuts",
+   "fa": "آجیل",
+   "en": "Nuts",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "mixed nuts"
+   ],
+   "allergen": "مغزها"
+  },
+  {
+   "id": "almond",
+   "fa": "بادام",
+   "en": "Almond",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "almonds",
+    "flaked almonds"
+   ],
+   "allergen": "مغزها"
+  },
+  {
+   "id": "almond_slivers",
+   "fa": "خلال بادام",
+   "en": "Almond slivers",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "almond_ground",
+   "fa": "بادام آسیاب شده",
+   "en": "Ground almond",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "ground almonds"
+   ],
+   "densityGPerCup": 100,
+   "allergen": "مغزها"
+  },
+  {
+   "id": "pistachio",
+   "fa": "پسته",
+   "en": "Pistachio",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "pistachios"
+   ],
+   "allergen": "مغزها"
+  },
+  {
+   "id": "hazelnut",
+   "fa": "فندق",
+   "en": "Hazelnut",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "hazelnuts"
+   ],
+   "allergen": "مغزها"
+  },
+  {
+   "id": "peanut",
+   "fa": "بادام زمینی",
+   "en": "Peanut",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "peanuts"
+   ],
+   "allergen": "مغزها"
+  },
+  {
+   "id": "walnut",
+   "fa": "گردو",
+   "en": "Walnut",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "walnuts",
+    "خلال گردو"
+   ],
+   "allergen": "مغزها"
+  },
+  {
+   "id": "chestnut",
+   "fa": "بلوط",
+   "en": "Chestnut",
+   "aisle": "غلات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "chestnuts"
+   ],
+   "allergen": "مغزها"
+  },
+  {
+   "id": "cheese_platter",
+   "fa": "پنیرها",
+   "en": "Cheeses",
+   "aisle": "لبنیات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "mung_sprouts",
+   "fa": "شاهی",
+   "en": "Cress",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": []
+  }
+ ]
+}
