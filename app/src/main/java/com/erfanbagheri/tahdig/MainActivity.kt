@@ -126,6 +126,8 @@ private fun TahdigApp() {
         return
     }
     var stepModeFoodId by rememberSaveable { mutableLongStateOf(-1L) }
+    // Resume-vs-fresh for the mode above (#93); lives across config changes.
+    var stepModeResume by rememberSaveable { mutableStateOf(false) }
     var categoryRoute by rememberSaveable { mutableLongStateOf(-1L) }
     var browseCategories by rememberSaveable { mutableStateOf(false) }
     var showPantry by rememberSaveable { mutableStateOf(false) }
@@ -142,7 +144,8 @@ private fun TahdigApp() {
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
-            if (detailFoodId < 0) {
+            // Fullscreen cook-along (#93): no bottom nav while the mode owns the screen.
+            if (detailFoodId < 0 && stepModeFoodId < 0) {
                 NavigationBar(
                     containerColor = MaterialTheme.colorScheme.surface,
                 ) {
@@ -197,7 +200,10 @@ private fun TahdigApp() {
                 stepModeFoodId >= 0 -> {
                     StepModeScreen(
                         foodId = stepModeFoodId,
-                        onBack = { stepModeFoodId = -1L },
+                        onBack = { stepModeFoodId = -1L; stepModeResume = false },
+                        resume = stepModeResume,
+                        // A technique overlay owns back while open (#101).
+                        backEnabled = techniqueRoute.isEmpty(),
                         onTechnique = { techniqueRoute = it },
                     )
                 }
@@ -208,7 +214,8 @@ private fun TahdigApp() {
                     FoodDetailScreen(
                         foodId = detailFoodId,
                         onBack = { detailFoodId = -1L },
-                        onStartStepMode = { id -> detailFoodId = -1L; stepModeFoodId = id },
+                        onStartStepMode = { id -> detailFoodId = -1L; stepModeResume = false; stepModeFoodId = id },
+                        onResumeStepMode = { id -> detailFoodId = -1L; stepModeResume = true; stepModeFoodId = id },
                         ratingViewModel = rvm,
                         milestoneViewModel = mvm,
                         onAddToShoppingList = { id, ingredients ->

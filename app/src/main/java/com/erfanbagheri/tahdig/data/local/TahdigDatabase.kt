@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.erfanbagheri.tahdig.data.local.dao.CategoryDao
+import com.erfanbagheri.tahdig.data.local.dao.CookSessionDao
 import com.erfanbagheri.tahdig.data.local.dao.FavoriteDao
 import com.erfanbagheri.tahdig.data.local.dao.FoodDao
 import com.erfanbagheri.tahdig.data.local.dao.HistoryDao
@@ -15,6 +16,7 @@ import com.erfanbagheri.tahdig.data.local.dao.RatingDao
 import com.erfanbagheri.tahdig.data.local.dao.RecentViewDao
 import com.erfanbagheri.tahdig.data.local.dao.ShoppingDao
 import com.erfanbagheri.tahdig.data.local.entity.CategoryEntity
+import com.erfanbagheri.tahdig.data.local.entity.CookSessionEntity
 import com.erfanbagheri.tahdig.data.local.entity.FavoriteEntity
 import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
 import com.erfanbagheri.tahdig.data.local.entity.HistoryEntity
@@ -38,8 +40,9 @@ import com.erfanbagheri.tahdig.data.local.seed.SeedLoader
         ShoppingItemEntity::class,
         PantryItemEntity::class,
         MilestoneCheckEntity::class,
+        CookSessionEntity::class,
     ],
-    version = 8,
+    version = 9,
     exportSchema = true,
 )
 abstract class TahdigDatabase : RoomDatabase() {
@@ -54,6 +57,7 @@ abstract class TahdigDatabase : RoomDatabase() {
     abstract fun shoppingDao(): ShoppingDao
     abstract fun pantryDao(): PantryDao
     abstract fun milestoneCheckDao(): MilestoneCheckDao
+    abstract fun cookSessionDao(): CookSessionDao
 
     companion object {
         private const val DB_NAME = "tahdig.db"

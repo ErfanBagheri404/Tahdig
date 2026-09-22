@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Star
@@ -69,6 +70,8 @@ fun FoodDetailScreen(
     foodId: Long,
     onBack: () -> Unit,
     onStartStepMode: (Long) -> Unit = {},
+    /** Resume an interrupted session (#93) — restores exact step + countdown. */
+    onResumeStepMode: (Long) -> Unit = {},
     ratingViewModel: RatingViewModel? = null,
     onAddToShoppingList: (Long, String) -> Unit = { _, _ -> },
     /** Adds only the pantry gap, so the user isn't told to rebuy what they own. */
@@ -85,6 +88,9 @@ fun FoodDetailScreen(
     var pantry by remember { mutableStateOf<List<String>>(emptyList()) }
 
     val recentViewDao = TahdigDatabase.getInstance(context).recentViewDao()
+    // Interrupted cook session (#93): offer «ادامه بده» only when one exists.
+    val cookSession by TahdigDatabase.getInstance(context).cookSessionDao()
+        .observe(foodId).collectAsState(initial = null)
     LaunchedEffect(foodId) {
         val db = TahdigDatabase.getInstance(context)
         food = db.foodDao().getById(foodId)
@@ -569,6 +575,24 @@ fun FoodDetailScreen(
                         border = cookBorder,
                     ) {
                         Text("حالت پخت مرحله‌به‌مرحله", fontFamily = YekanBakh)
+                    }
+
+                    // Resume offer (#93): an interrupted session jumps straight back
+                    // to its step + countdown. Renders above the fresh-start button.
+                    if (cookSession != null) {
+                        Spacer(Modifier.height(8.dp))
+                        Button(onClick = { onResumeStepMode(f.id) }) {
+                            Icon(
+                                imageVector = Icons.Filled.PlayArrow,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp),
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            Text(
+                                text = "ادامه بده",
+                                fontFamily = YekanBakh,
+                            )
+                        }
                     }
 
                     Spacer(Modifier.height(12.dp))

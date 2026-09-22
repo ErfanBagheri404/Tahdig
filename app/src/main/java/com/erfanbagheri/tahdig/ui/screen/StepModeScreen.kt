@@ -4,7 +4,9 @@ import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.view.WindowManager
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Timer
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,23 +40,35 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.erfanbagheri.tahdig.data.local.entity.CookSessionEntity
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
+import com.erfanbagheri.tahdig.util.CookSessionMath
 import com.erfanbagheri.tahdig.util.DurationParser
 import com.erfanbagheri.tahdig.util.Haptics
 import com.erfanbagheri.tahdig.util.PersianText
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+
+/** Sentence-split shared by composition and the session loader — one definition, no drift. */
+internal fun splitSteps(description: String): List<String> =
+    description.split(Regex("[.!؟\\n]+")).map { it.trim() }.filter { it.isNotBlank() }
+        .ifEmpty { listOf(description) }
 
 /**
  * Guided cooking: one step at a time, with an inline timer when the step states a
@@ -63,6 +78,10 @@ import kotlinx.coroutines.isActive
 fun StepModeScreen(
     foodId: Long,
     onBack: () -> Unit,
+    /** Restore an interrupted session instead of starting fresh (#93). */
+    resume: Boolean = false,
+    /** False while a technique overlay owns the system back button (#101). */
+    backEnabled: Boolean = true,
     /** Opens a linked technique page (#101); back returns to this step. */
     onTechnique: (String) -> Unit = {},
 ) {
@@ -70,12 +89,52 @@ fun StepModeScreen(
     val view = LocalView.current
     val haptic = LocalHapticFeedback.current
 
+    // ── Cook session state (#93) ───────────────────────────────────
+    // Declared above the loader that writes them. Written on state changes only
+    // (step move, pause, resume) — never per timer tick; restore math is
+    // CookSessionMath's job.
+    var current by remember { mutableIntStateOf(0) }
+    var remaining by remember { mutableLongStateOf(0L) }
+    var running by remember { mutableStateOf(false) }
+    var fired by remember { mutableStateOf(false) }
+    var showExitConfirm by remember { mutableStateOf(false) }
+    val sessionDao = remember(appContext) {
+        com.erfanbagheri.tahdig.data.local.TahdigDatabase
+            .getInstance(appContext).cookSessionDao()
+    }
+    val scope = rememberCoroutineScope()
+
     var food by remember {
         mutableStateOf<com.erfanbagheri.tahdig.data.local.entity.FoodEntity?>(null)
     }
     LaunchedEffect(foodId) {
-        food = com.erfanbagheri.tahdig.data.local.TahdigDatabase
-            .getInstance(appContext).foodDao().getById(foodId)
+        val db = com.erfanbagheri.tahdig.data.local.TahdigDatabase.getInstance(appContext)
+        val f = db.foodDao().getById(foodId)
+        // Read the session BEFORE exposing `food` — once food lands, the UI may
+        // persist a fresh row, and a late read would restore that instead (#93).
+        val sess = if (resume) db.cookSessionDao().get(foodId) else null
+        food = f
+        val list = splitSteps(f?.description ?: "")
+        val target = sess?.let { CookSessionMath.restoreStep(it.stepIndex, list.size) } ?: 0
+        val dur = list.getOrNull(target)?.let { DurationParser.first(it) }
+        if (sess != null) {
+            remaining = if (dur == null) 0L else CookSessionMath.restoreRemaining(
+                sess.remainingMs, sess.updatedAt, System.currentTimeMillis(), sess.paused,
+            )
+            running = dur != null && !sess.paused && remaining > 0
+        } else {
+            remaining = dur?.seconds ?: 0L
+            running = false
+        }
+        fired = false
+        current = target
+        // Normalize updatedAt so the next restore measures from now, not history.
+        sessionDao.save(
+            CookSessionEntity(
+                foodId = foodId, stepIndex = target, remainingMs = remaining,
+                paused = !running, updatedAt = System.currentTimeMillis(),
+            )
+        )
     }
 
     val description = food?.description ?: ""
@@ -105,11 +164,42 @@ fun StepModeScreen(
     // Session-scoped readiness, cleared when the cook session ends (screen leaves).
     var readyTools by remember(foodId) { mutableStateOf(emptySet<String>()) }
 
-    val steps = remember(description) {
-        description.split(Regex("[.!؟\\n]+")).map { it.trim() }.filter { it.isNotBlank() }
-            .ifEmpty { listOf(description) }
+    val steps = remember(description) { splitSteps(description) }
+
+    // ── Session navigation (#93) ───────────────────────────────────
+    // durationOf/goTo own every step move (buttons, swipe, system-back) so the
+    // timer reset and the persist happen in exactly one place.
+
+    fun durationOf(index: Int) = steps.getOrNull(index)?.let { DurationParser.first(it) }
+
+    fun persistSession() {
+        scope.launch {
+            sessionDao.save(
+                CookSessionEntity(
+                    foodId = foodId,
+                    stepIndex = current,
+                    remainingMs = remaining,
+                    paused = !running,
+                    updatedAt = System.currentTimeMillis(),
+                )
+            )
+        }
     }
-    var current by remember { mutableIntStateOf(0) }
+
+    /** One navigation path for buttons, swipe and system-back: timer resets per step. */
+    fun goTo(target: Int) {
+        if (target == current || target !in steps.indices) return
+        Haptics.tap(view)
+        current = target
+        remaining = durationOf(target)?.seconds ?: 0L
+        running = false
+        fired = false
+        persistSession()
+    }
+
+    val goBackInMode = {
+        if (current > 0) goTo(current - 1) else showExitConfirm = true
+    }
 
     // Hold the display on while cooking — the user's hands are busy, and the
     // screen sleeping between steps is the most annoying thing here.
@@ -128,15 +218,11 @@ fun StepModeScreen(
     val stepText = remember(current, steps) { steps.getOrElse(current) { "" } }
     val stepHeat = remember(stepText) { com.erfanbagheri.tahdig.util.HeatTagger.levelOf(stepText) }
     val stepCues = remember(stepText) { com.erfanbagheri.tahdig.util.DonenessCues.of(stepText) }
-    var remaining by remember(current) { mutableLongStateOf(stepDuration?.seconds ?: 0L) }
-    var running by remember(current) { mutableStateOf(false) }
-    var fired by remember(current) { mutableStateOf(false) }
+    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
 
-    LaunchedEffect(current, stepDuration) {
-        remaining = stepDuration?.seconds ?: 0L
-        running = false
-        fired = false
-    }
+    // System/back-button inside the mode: previous step, exit confirm on step 1.
+    // Gated so a technique overlay sitting on top owns back while it is open.
+    BackHandler(enabled = backEnabled) { goBackInMode() }
 
     LaunchedEffect(running, current) {
         if (!running) return@LaunchedEffect
@@ -168,7 +254,7 @@ fun StepModeScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                IconButton(onClick = onBack) {
+                IconButton(onClick = { goBackInMode() }) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "بازگشت")
                 }
                 Text(
@@ -255,7 +341,22 @@ fun StepModeScreen(
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .weight(1f)
+                    // Horizontal swipe turns pages (#93). Direction comes from
+                    // CookSessionMath.stepForSwipe, so RTL advances on dx > 0.
+                    .pointerInput(steps) {
+                        var total = 0f
+                        detectHorizontalDragGestures(
+                            onDragStart = { total = 0f },
+                            onHorizontalDrag = { _, dx -> total += dx },
+                            onDragEnd = {
+                                goTo(CookSessionMath.stepForSwipe(total, isRtl, current, steps.lastIndex))
+                                total = 0f
+                            },
+                            onDragCancel = { total = 0f },
+                        )
+                    },
             )
 
             // Technique deep-links (#101): linked terms of THIS step as tappable chips.
@@ -342,6 +443,8 @@ fun StepModeScreen(
                                 onClick = {
                                     Haptics.tap(view)
                                     running = !running
+                                    // Pause/resume is a state change → persist (#93).
+                                    persistSession()
                                 },
                                 enabled = remaining > 0L,
                             ) {
@@ -352,6 +455,7 @@ fun StepModeScreen(
                                     remaining = stepDuration.seconds
                                     running = false
                                     fired = false
+                                    persistSession()
                                 },
                             ) {
                                 Text("از نو", fontFamily = YekanBakh)
@@ -401,10 +505,7 @@ fun StepModeScreen(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Button(
-                    onClick = {
-                        Haptics.tap(view)
-                        if (current < steps.lastIndex) current++
-                    },
+                    onClick = { goTo(current + 1) },
                     enabled = current < steps.lastIndex,
                 ) {
                     Icon(
@@ -416,10 +517,7 @@ fun StepModeScreen(
                     Text("مرحله بعد", fontFamily = YekanBakh)
                 }
                 Button(
-                    onClick = {
-                        Haptics.tap(view)
-                        if (current > 0) current--
-                    },
+                    onClick = { goTo(current - 1) },
                     enabled = current > 0,
                 ) {
                     Text("مرحله قبل", fontFamily = YekanBakh)
@@ -430,6 +528,32 @@ fun StepModeScreen(
                         modifier = Modifier.size(20.dp),
                     )
                 }
+            }
+
+            // Exit confirm (#93): only reachable on step 1 — mid-recipe back is
+            // just "previous step", so no confirm there.
+            if (showExitConfirm) {
+                AlertDialog(
+                    onDismissRequest = { showExitConfirm = false },
+                    title = { Text("خروج از حالت پخت؟", fontFamily = YekanBakh) },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            showExitConfirm = false
+                            // Normal exit clears the session; force-stop can't
+                            // run this, so «ادامه بده» survives exactly the
+                            // interrupted case (#93).
+                            scope.launch { sessionDao.clear(foodId) }
+                            onBack()
+                        }) {
+                            Text("خروج", fontFamily = YekanBakh)
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { showExitConfirm = false }) {
+                            Text("ادامه", fontFamily = YekanBakh)
+                        }
+                    },
+                )
             }
         }
     }
