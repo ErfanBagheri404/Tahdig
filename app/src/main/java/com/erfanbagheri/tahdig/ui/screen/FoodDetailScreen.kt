@@ -72,6 +72,8 @@ fun FoodDetailScreen(
     /** Adds only the pantry gap, so the user isn't told to rebuy what they own. */
     onAddMissing: (String) -> Unit = {},
     onShare: (FoodEntity) -> Unit = {},
+    /** Mise-en-place checked-state store (#99); null renders rows without checks. */
+    milestoneViewModel: com.erfanbagheri.tahdig.ui.viewmodel.MilestoneViewModel? = null,
 ) {
     val context = LocalContext.current.applicationContext
     var food by remember { mutableStateOf<FoodEntity?>(null) }
@@ -297,6 +299,22 @@ fun FoodDetailScreen(
                         DetailChip(if (real != null) "واقعی" else "تخمینی")
                     }
 
+                    // ── Mise-en-place (#99) ───────────────────────────────────────
+                    // Parsed once per dish; display scales with servings, hashes never do.
+                    var servings by remember { mutableStateOf(1) }
+                    val checkedHashes = if (milestoneViewModel != null)
+                        milestoneViewModel.checkedHashes.collectAsState().value
+                    else emptySet<String>()
+                    LaunchedEffect(f.id) { milestoneViewModel?.forFood(f.id) }
+                    val miseParsed = remember(f.ingredients) {
+                        com.erfanbagheri.tahdig.util.MisePlace.rowsOf(f.ingredients)
+                    }
+                    val miseRows = remember(miseParsed, servings) {
+                        com.erfanbagheri.tahdig.util.MisePlace.rowsFor(miseParsed, servings)
+                    }
+                    val miseChecked = miseRows.map { it.hash }.toSet() intersect checkedHashes
+                    val miseReady = miseRows.isNotEmpty() && miseChecked.size == miseRows.size
+
                     if (f.ingredients.isNotBlank()) {
                         Spacer(Modifier.height(28.dp))
                         Text(
@@ -309,7 +327,6 @@ fun FoodDetailScreen(
                         Spacer(Modifier.height(8.dp))
 
                         // Serving scale stepper
-                        var servings by remember { mutableStateOf(1) }
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -328,14 +345,42 @@ fun FoodDetailScreen(
                             }
                         }
                         Spacer(Modifier.height(8.dp))
-                        Text(
-                            text = if (servings == 1) f.ingredients
-                                   else com.erfanbagheri.tahdig.util.ServingScaler.scale(f.ingredients, servings.toDouble()),
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontFamily = YekanBakh,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.fillMaxWidth(),
-                        )
+
+                        // ── Checklist: counter + reset, then tappable rows (#99) ──
+                        if (miseRows.isNotEmpty()) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.fillMaxWidth(),
+                            ) {
+                                Text(
+                                    text = com.erfanbagheri.tahdig.ui.components.miseCounter(
+                                        miseChecked.size, miseRows.size,
+                                    ),
+                                    style = MaterialTheme.typography.labelLarge,
+                                    fontFamily = YekanBakh,
+                                    fontWeight = FontWeight.Bold,
+                                    color = if (miseReady)
+                                        MaterialTheme.colorScheme.primary
+                                    else MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier.weight(1f),
+                                )
+                                // Reset is per dish and only offered once something is checked.
+                                if (miseChecked.isNotEmpty()) {
+                                    TextButton(onClick = { milestoneViewModel?.clear(f.id) }) {
+                                        Text("پاک کردن", fontFamily = YekanBakh)
+                                    }
+                                }
+                            }
+                            com.erfanbagheri.tahdig.ui.components.MiseChecklist(
+                                rows = miseRows,
+                                checkedHashes = miseChecked,
+                                // No VM (call-site omitted it) => rows render but don't toggle.
+                                onToggle = if (milestoneViewModel != null)
+                                    { hash -> milestoneViewModel.toggle(f.id, hash) }
+                                else null,
+                                modifier = Modifier.fillMaxWidth(),
+                            )
+                        }
 
                         // ── What's missing vs the pantry ──────────────────────────
                         // Only meaningful once the user has a pantry; with none, every
@@ -477,7 +522,21 @@ fun FoodDetailScreen(
                     }
 
                     Spacer(Modifier.height(16.dp))
-                    Button(onClick = { onStartStepMode(f.id) }) {
+                    // All-checked emphasis: a border color change on the cook entry,
+                    // not a nag — readiness should feel earned, not demanded.
+                    val cookBorder = when {
+                        miseRows.isEmpty() -> null
+                        miseReady -> androidx.compose.foundation.BorderStroke(
+                            2.dp, MaterialTheme.colorScheme.primary,
+                        )
+                        else -> androidx.compose.foundation.BorderStroke(
+                            1.dp, MaterialTheme.colorScheme.outlineVariant,
+                        )
+                    }
+                    Button(
+                        onClick = { onStartStepMode(f.id) },
+                        border = cookBorder,
+                    ) {
                         Text("حالت پخت مرحله‌به‌مرحله", fontFamily = YekanBakh)
                     }
 

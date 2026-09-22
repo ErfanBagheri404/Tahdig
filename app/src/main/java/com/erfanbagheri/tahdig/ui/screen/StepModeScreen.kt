@@ -30,6 +30,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
@@ -76,6 +77,21 @@ fun StepModeScreen(
 
     val description = food?.description ?: ""
     val foodName = food?.name ?: ""
+
+    // ── Read-only mise-en-place overview (#99) ─────────────────────
+    // Cook mode shows prep state but can't toggle it — a mid-cook tap must never
+    // uncheck something the user already verified.
+    var showMise by remember { mutableStateOf(false) }
+    val miseCheckedList by remember(foodId) {
+        com.erfanbagheri.tahdig.data.local.TahdigDatabase
+            .getInstance(appContext).milestoneCheckDao().observeHashes(foodId)
+    }.collectAsState(initial = emptyList())
+    val miseChecked = miseCheckedList.toSet()
+    val miseRows = remember(food) {
+        com.erfanbagheri.tahdig.util.MisePlace.rowsOf(food?.ingredients ?: "")
+            .map { com.erfanbagheri.tahdig.util.MisePlace.rowsFor(listOf(it), 1).first() }
+    }
+
     val steps = remember(description) {
         description.split(Regex("[.!؟\\n]+")).map { it.trim() }.filter { it.isNotBlank() }
             .ifEmpty { listOf(description) }
@@ -146,6 +162,27 @@ fun StepModeScreen(
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.weight(1f),
                 )
+            }
+
+            // Read-only mise-en-place overview (#99): shows prep state, never toggles it.
+            if (miseRows.isNotEmpty()) {
+                androidx.compose.material3.TextButton(onClick = { showMise = !showMise }) {
+                    androidx.compose.material3.Text(
+                        text = if (showMise) "بستن مواد لازم"
+                        else "مواد لازم · " + com.erfanbagheri.tahdig.ui.components.miseCounter(
+                            miseRows.count { it.hash in miseChecked }, miseRows.size,
+                        ),
+                        fontFamily = YekanBakh,
+                    )
+                }
+                if (showMise) {
+                    com.erfanbagheri.tahdig.ui.components.MiseChecklist(
+                        rows = miseRows,
+                        checkedHashes = miseChecked,
+                        onToggle = null,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
             }
 
             Spacer(Modifier.height(12.dp))

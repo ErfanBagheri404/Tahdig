@@ -188,11 +188,13 @@ private fun TahdigApp() {
                 detailFoodId >= 0 -> {
                     val rvm: RatingViewModel = viewModel()
                     val svm: ShoppingViewModel = viewModel()
+                    val mvm: com.erfanbagheri.tahdig.ui.viewmodel.MilestoneViewModel = viewModel()
                     FoodDetailScreen(
                         foodId = detailFoodId,
                         onBack = { detailFoodId = -1L },
                         onStartStepMode = { id -> detailFoodId = -1L; stepModeFoodId = id },
                         ratingViewModel = rvm,
+                        milestoneViewModel = mvm,
                         onAddToShoppingList = { id, ingredients ->
                             svm.addIngredients(id, ingredients)
                             detailFoodId = -1L

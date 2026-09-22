@@ -9,6 +9,7 @@ import com.erfanbagheri.tahdig.data.local.dao.FavoriteDao
 import com.erfanbagheri.tahdig.data.local.dao.FoodDao
 import com.erfanbagheri.tahdig.data.local.dao.HistoryDao
 import com.erfanbagheri.tahdig.data.local.dao.MealPlanDao
+import com.erfanbagheri.tahdig.data.local.dao.MilestoneCheckDao
 import com.erfanbagheri.tahdig.data.local.dao.PantryDao
 import com.erfanbagheri.tahdig.data.local.dao.RatingDao
 import com.erfanbagheri.tahdig.data.local.dao.RecentViewDao
@@ -18,6 +19,7 @@ import com.erfanbagheri.tahdig.data.local.entity.FavoriteEntity
 import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
 import com.erfanbagheri.tahdig.data.local.entity.HistoryEntity
 import com.erfanbagheri.tahdig.data.local.entity.MealPlanEntity
+import com.erfanbagheri.tahdig.data.local.entity.MilestoneCheckEntity
 import com.erfanbagheri.tahdig.data.local.entity.PantryItemEntity
 import com.erfanbagheri.tahdig.data.local.entity.RatingEntity
 import com.erfanbagheri.tahdig.data.local.entity.RecentViewEntity
@@ -35,8 +37,9 @@ import com.erfanbagheri.tahdig.data.local.seed.SeedLoader
         RecentViewEntity::class,
         ShoppingItemEntity::class,
         PantryItemEntity::class,
+        MilestoneCheckEntity::class,
     ],
-    version = 5,
+    version = 6,
     exportSchema = true,
 )
 abstract class TahdigDatabase : RoomDatabase() {
@@ -50,6 +53,7 @@ abstract class TahdigDatabase : RoomDatabase() {
     abstract fun recentViewDao(): RecentViewDao
     abstract fun shoppingDao(): ShoppingDao
     abstract fun pantryDao(): PantryDao
+    abstract fun milestoneCheckDao(): MilestoneCheckDao
 
     companion object {
         private const val DB_NAME = "tahdig.db"
