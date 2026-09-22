@@ -6,6 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.erfanbagheri.tahdig.data.local.dao.CategoryDao
 import com.erfanbagheri.tahdig.data.local.dao.FavoriteDao
+import com.erfanbagheri.tahdig.data.local.dao.FilterPresetDao
 import com.erfanbagheri.tahdig.data.local.dao.FoodDao
 import com.erfanbagheri.tahdig.data.local.dao.HistoryDao
 import com.erfanbagheri.tahdig.data.local.dao.MealPlanDao
@@ -15,6 +16,7 @@ import com.erfanbagheri.tahdig.data.local.dao.RecentViewDao
 import com.erfanbagheri.tahdig.data.local.dao.ShoppingDao
 import com.erfanbagheri.tahdig.data.local.entity.CategoryEntity
 import com.erfanbagheri.tahdig.data.local.entity.FavoriteEntity
+import com.erfanbagheri.tahdig.data.local.entity.FilterPresetEntity
 import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
 import com.erfanbagheri.tahdig.data.local.entity.HistoryEntity
 import com.erfanbagheri.tahdig.data.local.entity.MealPlanEntity
@@ -23,6 +25,11 @@ import com.erfanbagheri.tahdig.data.local.entity.RatingEntity
 import com.erfanbagheri.tahdig.data.local.entity.RecentViewEntity
 import com.erfanbagheri.tahdig.data.local.entity.ShoppingItemEntity
 import com.erfanbagheri.tahdig.data.local.seed.SeedLoader
+import com.erfanbagheri.tahdig.util.DifficultyFilter
+import com.erfanbagheri.tahdig.util.DietFilter
+import com.erfanbagheri.tahdig.util.FilterPresetCodec
+import com.erfanbagheri.tahdig.util.FilterPresetPayload
+import com.erfanbagheri.tahdig.util.TimeBucket
 
 @Database(
     entities = [
@@ -35,8 +42,9 @@ import com.erfanbagheri.tahdig.data.local.seed.SeedLoader
         RecentViewEntity::class,
         ShoppingItemEntity::class,
         PantryItemEntity::class,
+        FilterPresetEntity::class,
     ],
-    version = 5,
+    version = 6,
     exportSchema = true,
 )
 abstract class TahdigDatabase : RoomDatabase() {
@@ -50,6 +58,7 @@ abstract class TahdigDatabase : RoomDatabase() {
     abstract fun recentViewDao(): RecentViewDao
     abstract fun shoppingDao(): ShoppingDao
     abstract fun pantryDao(): PantryDao
+    abstract fun filterPresetDao(): FilterPresetDao
 
     companion object {
         private const val DB_NAME = "tahdig.db"
@@ -85,7 +94,23 @@ abstract class TahdigDatabase : RoomDatabase() {
             val db = getInstance(context)
             if (db.foodDao().count() == 0) {
                 SeedLoader.loadInto(db, context.assets)
+                seedStarterPresets(db)
             }
+        }
+
+        /**
+         * Two editable starter presets (#87). Only on fresh creation (the caller's
+         * food-count gate), so a user's deletions never resurrect them.
+         */
+        private suspend fun seedStarterPresets(db: TahdigDatabase) {
+            val dao = db.filterPresetDao()
+            if (dao.count() != 0) return
+            dao.save("شام سریع", FilterPresetCodec.encode(
+                FilterPresetPayload(time = TimeBucket.UNDER_30.name, difficulty = DifficultyFilter.EASY.name),
+            ))
+            dao.save("گیاهی", FilterPresetCodec.encode(
+                FilterPresetPayload(diet = DietFilter.VEGETARIAN.name),
+            ))
         }
     }
 }
