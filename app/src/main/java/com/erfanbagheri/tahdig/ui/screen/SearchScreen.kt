@@ -41,6 +41,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.erfanbagheri.tahdig.util.DietFilter
+import com.erfanbagheri.tahdig.util.DifficultyFilter
+import com.erfanbagheri.tahdig.util.SortOrder
+import com.erfanbagheri.tahdig.util.TimeBucket
 import com.erfanbagheri.tahdig.util.VoiceInput
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
 import com.erfanbagheri.tahdig.ui.viewmodel.SearchHistory
@@ -61,6 +64,7 @@ fun SearchScreen(
     val excluded by viewModel.excluded.collectAsState()
     val categories by viewModel.categories.collectAsState()
     val results by viewModel.results.collectAsState()
+    val cuisine by viewModel.cuisine.collectAsState()
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -218,6 +222,93 @@ fun SearchScreen(
                         label = d.label,
                         selected = diet == d,
                         onClick = { viewModel.onDietSelect(d) },
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(8.dp))
+
+            // Advanced filters: time / difficulty / sort (collapse to one hairline row)
+            val timeBucket by viewModel.timeBucket.collectAsState()
+            val difficultyFilter by viewModel.difficultyFilter.collectAsState()
+            val sortOrder by viewModel.sortOrder.collectAsState()
+            val activeFilterCount by viewModel.activeFilterCount.collectAsState()
+            val cuisines by viewModel.cuisines.collectAsState()
+
+            // Time chips
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                items(TimeBucket.values().toList()) { bucket ->
+                    CategoryChip(
+                        label = bucket.label,
+                        selected = timeBucket == bucket,
+                        onClick = { viewModel.onTimeSelect(bucket) },
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(8.dp))
+
+            // Difficulty chips
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                items(DifficultyFilter.values().toList()) { d ->
+                    CategoryChip(
+                        label = d.label,
+                        selected = difficultyFilter == d,
+                        onClick = { viewModel.onDifficultySelect(d) },
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(8.dp))
+
+            // Cuisine chips — «همه» plus one chip per cuisine present in the DB
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                item {
+                    CategoryChip(
+                        label = "همه آشپزی‌ها",
+                        selected = cuisine == null,
+                        onClick = { viewModel.onCuisineSelect(null) },
+                    )
+                }
+                items(cuisines, key = { it }) { code ->
+                    CategoryChip(
+                        label = cuisineLabel(code),
+                        selected = cuisine == code,
+                        onClick = { viewModel.onCuisineSelect(code) },
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(8.dp))
+
+            // Sort + clear-all row
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = "ترتیب:",
+                    style = MaterialTheme.typography.labelMedium,
+                    fontFamily = YekanBakh,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Spacer(Modifier.width(8.dp))
+                SortOrder.values().forEach { s ->
+                    CategoryChip(
+                        label = s.label,
+                        selected = sortOrder == s,
+                        onClick = { viewModel.onSortSelect(s) },
+                    )
+                    Spacer(Modifier.width(4.dp))
+                }
+                if (activeFilterCount > 0) {
+                    Spacer(Modifier.weight(1f))
+                    Text(
+                        text = "حذف فیلترها",
+                        style = MaterialTheme.typography.labelMedium,
+                        fontFamily = YekanBakh,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.clickable(onClick = viewModel::clearFilters),
                     )
                 }
             }
@@ -442,4 +533,32 @@ private fun difficultyLabel(d: String): String = when (d.uppercase()) {
     "MEDIUM" -> "متوسط"
     "HARD" -> "سخت"
     else -> d
+}
+
+/** Farsi label for a [FoodEntity.cuisine] code. */
+private fun cuisineLabel(code: String): String = when (code.uppercase()) {
+    "IRANI" -> "🇮🇷 ایرانی"
+    "GILAKI" -> "گیلانی"
+    "ISFAHANI" -> "اصفهانی"
+    "SHIRAZI" -> "شیرازی"
+    "INTERNATIONAL" -> "🌍 بین‌المللی"
+    "ITALIAN" -> "ایتالیایی"
+    "TURKISH" -> "ترکی"
+    "ARABIC" -> "عربی"
+    "CHINESE" -> "چینی"
+    "JAPANESE" -> "ژاپنی"
+    "KOREAN" -> "کره‌ای"
+    "INDIAN" -> "هندی"
+    "THAI" -> "تایلندی"
+    "VIETNAMESE" -> "ویتنامی"
+    "GREEK" -> "یونانی"
+    "FRENCH" -> "فرانسوی"
+    "SPANISH" -> "اسپانیایی"
+    "MEXICAN" -> "مکزیکی"
+    "AMERICAN" -> "آمریکایی"
+    "BRITISH" -> "انگلیسی"
+    "POLISH" -> "لهستانی"
+    "HUNGARIAN" -> "مجاری"
+    "RUSSIAN" -> "روسی"
+    else -> code.lowercase().replaceFirstChar { it.uppercase() }
 }
