@@ -17,7 +17,9 @@ import com.erfanbagheri.tahdig.R
 import com.erfanbagheri.tahdig.data.local.TahdigDatabase
 import com.erfanbagheri.tahdig.data.prefs.SettingsStore
 import kotlinx.coroutines.CoroutineScope
+import com.erfanbagheri.tahdig.util.ExpiryMath
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 /** Fires a daily "what to cook today" notification. Scheduled with AlarmManager (no WorkManager dep). */
@@ -56,6 +58,15 @@ class DailyNotifyReceiver : BroadcastReceiver() {
             TahdigDatabase.getInstance(context).foodDao().randomAny(1).firstOrNull()?.name
         }.getOrNull() ?: "یک غذای خوشمزه"
 
+        // Optional expiry content (#106): only when something really is expiring.
+        val expiring = runCatching {
+            val now = System.currentTimeMillis()
+            val urgent = TahdigDatabase.getInstance(context).pantryDao().observeAll().first()
+                .filter { ExpiryMath.isUrgent(ExpiryMath.daysTo(it.expiresAt, now)) }
+                .map { it.item }
+            ExpiryMath.summary(urgent)
+        }.getOrNull()?.takeIf { it.isNotBlank() }
+
         val tap = PendingIntent.getActivity(
             context, 0,
             Intent(context, MainActivity::class.java),
@@ -64,7 +75,9 @@ class DailyNotifyReceiver : BroadcastReceiver() {
         val notif = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle("امروز چی بپزیم؟ 🍽")
-            .setContentText("پیشنهاد امروز: $name")
+            .setContentText(
+                if (expiring != null) "$name · $expiring" else "پیشنهاد امروز: $name",
+            )
             .setAutoCancel(true)
             .setContentIntent(tap)
             .build()

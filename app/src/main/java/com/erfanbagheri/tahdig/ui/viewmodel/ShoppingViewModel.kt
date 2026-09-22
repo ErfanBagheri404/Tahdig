@@ -57,6 +57,11 @@ class ShoppingViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch { mergeInto(split(ingredients), foodId) }
     }
 
+    /** Items with no single source dish — a pantry row being replaced (#106). */
+    fun addItems(ingredients: String) {
+        viewModelScope.launch { mergeInto(split(ingredients), null) }
+    }
+
     /**
      * Add the ingredients of every dish in the weekly plan in one pass, so a dish
      * planned twice does not double its onion and overlapping dishes share rows.
