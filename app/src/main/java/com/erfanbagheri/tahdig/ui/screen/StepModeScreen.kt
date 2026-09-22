@@ -57,6 +57,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import com.erfanbagheri.tahdig.notify.TimerScheduler
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalView
@@ -224,6 +225,9 @@ fun StepModeScreen(
         com.erfanbagheri.tahdig.util.MisePlace.rowsOf(food?.ingredients ?: "")
             .map { com.erfanbagheri.tahdig.util.MisePlace.rowsFor(listOf(it), 1.0).first() }
     }
+
+    // ── Timer center (#95): overlay above the step view ──
+    var showTimers by remember { mutableStateOf(false) }
 
     // ── Equipment (#100): count in the top bar, full list in an overlay ──
     var showTools by remember { mutableStateOf(false) }
@@ -455,13 +459,22 @@ fun StepModeScreen(
     }
 
     LaunchedEffect(running, current) {
-        if (!running) return@LaunchedEffect
+        if (!running) {
+            // Pause / step-move disarms the mirror alarm (#95).
+            TimerScheduler.cancel(appContext, TimerScheduler.STEP_ID)
+            return@LaunchedEffect
+        }
+        // Arm the step mirror so the notification still fires if the process
+        // dies mid-step (#95 — this issue owns the mechanism for step timers too).
+        TimerScheduler.scheduleStep(appContext, System.currentTimeMillis() + remaining * 1000L)
         while (isActive && running) {
             delay(1000)
             if (remaining <= 1L) {
                 remaining = 0L
                 running = false
                 fired = true
+                // Completed in-app — cancel so the receiver cannot double-fire.
+                TimerScheduler.cancel(appContext, TimerScheduler.STEP_ID)
                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                 Haptics.confirm(view)
             } else {
@@ -509,6 +522,14 @@ fun StepModeScreen(
                             .padding(8.dp),
                     )
                 }
+                // Timer center entry (#95): named countdowns for the other pots.
+                IconButton(onClick = { showTimers = true }) {
+                    Icon(
+                        Icons.Default.Timer,
+                        contentDescription = "تایمرها",
+                        tint = MaterialTheme.colorScheme.primary,
+                    )
+                }
                 // Keep-awake override (#98): session-scoped switch in the top bar.
                 Spacer(Modifier.width(8.dp))
                 Text(
@@ -522,6 +543,10 @@ fun StepModeScreen(
                     onCheckedChange = { manualKeepAwake = it },
                 )
             }
+
+            // Persistent hairline strip (#95): every running timer stays visible.
+            Spacer(Modifier.height(4.dp))
+            TimerStrip(onOpen = { showTimers = true })
 
             // Tools overlay: same chips as the detail screen, session-scoped toggles.
             if (showTools && tools.isNotEmpty()) {
@@ -865,6 +890,11 @@ fun StepModeScreen(
                 }
             }
         }
+
+            // Timer center (#95): covers the mode while open, back to the step after.
+            if (showTimers) {
+                TimerCenterOverlay(onClose = { showTimers = false })
+            }
 
             // Done state (#98): covers the whole mode until a route is chosen.
             if (showDone) {
