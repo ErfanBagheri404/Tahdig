@@ -57,6 +57,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import com.erfanbagheri.tahdig.notify.TimerScheduler
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalView
@@ -154,6 +155,10 @@ fun StepModeScreen(
     var manualKeepAwake by remember { mutableStateOf(false) }
     // Done state (#98): celebration covers the mode until a route is chosen.
     var showDone by rememberSaveable { mutableStateOf(false) }
+    // Timer center overlay (#95) — sits with the other ownership flags so the
+    // BackHandler and the voice session below can consult it (locals are
+    // order-sensitive in a composable body).
+    var showTimers by remember { mutableStateOf(false) }
 
     // ── Cook session state (#93) ───────────────────────────────────
     // Declared above the loader that writes them. Written on state changes only
@@ -355,7 +360,12 @@ fun StepModeScreen(
     // plain exit once the done overlay owns the screen (#98).
     // Gated so a technique overlay sitting on top owns back while it is open.
     BackHandler(enabled = backEnabled) {
-        if (showDone) onBack() else goBackInMode()
+        // Overlay ownership order: timer center, then done, then the step.
+        when {
+            showTimers -> showTimers = false
+            showDone -> onBack()
+            else -> goBackInMode()
+        }
     }
 
     // ── Undo window (#98) ───────────────────────────────────────────
@@ -400,8 +410,9 @@ fun StepModeScreen(
     // or the mode leaves, so no mic is held (AC).
     val voiceSession = remember(appContext) {
         CookVoiceSession(appContext) { transcript ->
-            // Done overlay owns the screen (#98): no commands behind it.
-            if (showDone) return@CookVoiceSession
+            // Done (#98) and timer (#95) overlays own the screen: no commands
+            // behind them — «بعدی» must not move a step the user cannot see.
+            if (showDone || showTimers) return@CookVoiceSession
             val cmd = CookVoiceCommands.match(transcript)
             voiceEcho = cmd?.let { CookVoiceCommands.echoOf(it) } ?: CookVoiceCommands.UNKNOWN_ECHO
             Haptics.tap(view)
@@ -455,13 +466,22 @@ fun StepModeScreen(
     }
 
     LaunchedEffect(running, current) {
-        if (!running) return@LaunchedEffect
+        if (!running) {
+            // Pause / step-move disarms the mirror alarm (#95).
+            TimerScheduler.cancel(appContext, TimerScheduler.STEP_ID)
+            return@LaunchedEffect
+        }
+        // Arm the step mirror so the notification still fires if the process
+        // dies mid-step (#95 — this issue owns the mechanism for step timers too).
+        TimerScheduler.scheduleStep(appContext, System.currentTimeMillis() + remaining * 1000L)
         while (isActive && running) {
             delay(1000)
             if (remaining <= 1L) {
                 remaining = 0L
                 running = false
                 fired = true
+                // Completed in-app — cancel so the receiver cannot double-fire.
+                TimerScheduler.cancel(appContext, TimerScheduler.STEP_ID)
                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                 Haptics.confirm(view)
             } else {
@@ -509,6 +529,14 @@ fun StepModeScreen(
                             .padding(8.dp),
                     )
                 }
+                // Timer center entry (#95): named countdowns for the other pots.
+                IconButton(onClick = { showTimers = true }) {
+                    Icon(
+                        Icons.Default.Timer,
+                        contentDescription = "تایمرها",
+                        tint = MaterialTheme.colorScheme.primary,
+                    )
+                }
                 // Keep-awake override (#98): session-scoped switch in the top bar.
                 Spacer(Modifier.width(8.dp))
                 Text(
@@ -522,6 +550,10 @@ fun StepModeScreen(
                     onCheckedChange = { manualKeepAwake = it },
                 )
             }
+
+            // Persistent hairline strip (#95): every running timer stays visible.
+            Spacer(Modifier.height(4.dp))
+            TimerStrip(onOpen = { showTimers = true })
 
             // Tools overlay: same chips as the detail screen, session-scoped toggles.
             if (showTools && tools.isNotEmpty()) {
@@ -865,6 +897,15 @@ fun StepModeScreen(
                 }
             }
         }
+
+            // Timer center (#95): covers the mode while open, back to the step after.
+            if (showTimers) {
+                TimerCenterOverlay(
+                    onClose = { showTimers = false },
+                    // AC default: the current step's own duration text (editable).
+                    defaultName = steps.getOrNull(current) ?: "",
+                )
+            }
 
             // Done state (#98): covers the whole mode until a route is chosen.
             if (showDone) {

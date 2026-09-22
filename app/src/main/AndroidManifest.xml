@@ -7,6 +7,10 @@
          our own SpeechRecognizer session records directly, so this is required. -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- Cook timers must fire at the right minute (#95). On API 31+ this can be
+         revoked by the user; TimerScheduler checks canScheduleExactAlarms() and
+         degrades to inexact rather than crashing. -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
 
     <!-- Dish photos are fetched from Wikimedia. Without this, Coil's OkHttp
          dispatcher throws an uncaught SecurityException and the app crashes. -->
@@ -46,6 +50,7 @@
         </activity>
 
         <receiver android:name=".notify.DailyNotifyReceiver" android:exported="false" />
+        <receiver android:name=".notify.TimerReceiver" android:exported="false" />
 
         <receiver
             android:name=".widget.DishOfDayWidget"
