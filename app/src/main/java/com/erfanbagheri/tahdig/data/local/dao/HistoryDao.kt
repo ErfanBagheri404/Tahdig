@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.ColumnInfo
 import com.erfanbagheri.tahdig.data.local.entity.HistoryEntity
 import com.erfanbagheri.tahdig.data.local.entity.HistoryWithFood
 import kotlinx.coroutines.flow.Flow
@@ -29,6 +30,15 @@ interface HistoryDao {
     /** Raw timestamps for heatmap aggregation — a few hundred rows, fits in memory. */
     @Query("SELECT timestamp FROM history ORDER BY timestamp")
     suspend fun allTimestamps(): List<Long>
+
+    /** One row per dish: its most recent cook timestamp — feeds the serendipity pool. */
+    data class CookStamp(
+        @ColumnInfo(name = "food_id") val foodId: Long,
+        @ColumnInfo(name = "ts") val ts: Long,
+    )
+
+    @Query("SELECT food_id, MAX(timestamp) AS ts FROM history GROUP BY food_id")
+    suspend fun cookStamps(): List<CookStamp>
 
     // ── History list with food details ───────────────────────────
 
