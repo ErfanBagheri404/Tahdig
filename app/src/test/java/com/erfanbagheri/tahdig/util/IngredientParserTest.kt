@@ -2,9 +2,26 @@ package com.erfanbagheri.tahdig.util
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
+import org.junit.BeforeClass
 import org.junit.Test
+import java.io.File
 
 class IngredientParserTest {
+
+    companion object {
+        /**
+         * Load the real glossary up front. Without this the result of [IngredientParser.merge]
+         * depends on whether some other test class already installed the table into the shared
+         * static — the merge key uses canonical ids when they resolve.
+         */
+        @JvmStatic
+        @BeforeClass
+        fun loadGlossary() {
+            IngredientRegistry.installFromJson(
+                File("src/main/assets/seed/ingredients.json").readText()
+            )
+        }
+    }
 
     @Test
     fun `parses quantity unit item`() {
@@ -75,8 +92,18 @@ class IngredientParserTest {
     }
 
     @Test
-    fun `mixed quantity and bare do not sum`() {
+    fun `a bare line joins the canonical row without inventing a quantity`() {
+        // «پیاز» and «۲ عدد پیاز» are the same shopping need (see #104): the bare line
+        // folds in and keeps the stated quantity rather than adding a phantom zero.
         val merged = IngredientParser.merge(listOf("۲ عدد پیاز", "پیاز"))
+        assertEquals(1, merged.size)
+        assertEquals(2.0, merged[0].quantity!!, 0.001)
+    }
+
+    @Test
+    fun `known units that differ are not summed even for a canonical ingredient`() {
+        // ۲ پیمانه + ۱۰۰ گرم is not a quantity we can add; two rows is the honest answer.
+        val merged = IngredientParser.merge(listOf("۲ پیمانه آرد", "۱۰۰ گرم آرد"))
         assertEquals(2, merged.size)
     }
 

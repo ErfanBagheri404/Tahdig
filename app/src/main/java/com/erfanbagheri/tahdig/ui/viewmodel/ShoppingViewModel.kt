@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.erfanbagheri.tahdig.data.local.TahdigDatabase
 import com.erfanbagheri.tahdig.data.local.entity.ShoppingItemEntity
 import com.erfanbagheri.tahdig.util.IngredientParser
+import com.erfanbagheri.tahdig.util.IngredientRegistry
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -73,7 +74,7 @@ class ShoppingViewModel(app: Application) : AndroidViewModel(app) {
         // to recover the unit/item identity they merge on.
         val byKey = existing.associateBy {
             val p = IngredientParser.parse(it.item)
-            IngredientParser.mergeKey(p.unit, p.item)
+            IngredientRegistry.mergeKeyFor(p.unit, p.item)
         }
         val merged = IngredientParser.merge(existing.map { it.item } + parts)
 
@@ -81,7 +82,7 @@ class ShoppingViewModel(app: Application) : AndroidViewModel(app) {
         val add = mutableListOf<String>()
         for (m in merged) {
             val text = m.display()
-            val prev = byKey[IngredientParser.mergeKey(m.unit, m.item)]
+            val prev = byKey[IngredientRegistry.mergeKeyFor(m.unit, m.item)]
             if (prev != null) keep += prev.id to text else add += text
         }
         // Delete only the rows that were folded into another row.

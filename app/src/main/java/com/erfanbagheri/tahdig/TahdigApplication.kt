@@ -2,6 +2,7 @@ package com.erfanbagheri.tahdig
 
 import android.app.Application
 import com.erfanbagheri.tahdig.data.prefs.SettingsStore
+import com.erfanbagheri.tahdig.util.IngredientRegistry
 import com.erfanbagheri.tahdig.util.NutritionDB
 
 class TahdigApplication : Application() {
@@ -9,5 +10,6 @@ class TahdigApplication : Application() {
         super.onCreate()
         SettingsStore.init(this)
         NutritionDB.load(assets)
+        IngredientRegistry.load(this)
     }
 }
