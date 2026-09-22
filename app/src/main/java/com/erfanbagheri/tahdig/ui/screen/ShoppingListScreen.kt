@@ -13,10 +13,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -32,11 +36,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.erfanbagheri.tahdig.data.local.entity.ShoppingItemEntity
+import com.erfanbagheri.tahdig.data.prefs.SettingsStore
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
+import com.erfanbagheri.tahdig.util.AislePlanner
 import com.erfanbagheri.tahdig.ui.viewmodel.ShoppingViewModel
 
 @Composable
@@ -47,7 +54,13 @@ fun ShoppingListScreen(
     // Pantry items already at home: those rows get a «داری» badge and sink to the bottom
     // so the list reads as a shopping route, not a restatement of the cupboard.
     val pantryNames by viewModel.pantryItems.collectAsState()
+    val tripActive by SettingsStore.tripActive.collectAsState()
+    val aisleOrder by SettingsStore.aisleOrder.collectAsState()
+    val aisleRenames by SettingsStore.aisleRenames.collectAsState()
+    val aisleHidden by SettingsStore.aisleHidden.collectAsState()
     val checkedCount = items.count { it.isChecked }
+    var showAisleManager by remember { mutableStateOf(false) }
+    var showTripEnd by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.fillMaxSize()) {
         Spacer(Modifier.height(48.dp))
@@ -64,10 +77,22 @@ fun ShoppingListScreen(
                 color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.weight(1f),
             )
-            if (checkedCount > 0) {
+            if (checkedCount > 0 && !tripActive) {
                 TextButton(onClick = { viewModel.clearChecked() }) {
                     Text("حذف انجام‌شده‌ها", fontFamily = YekanBakh)
                 }
+            }
+            if (tripActive) {
+                TextButton(onClick = { showTripEnd = true }) {
+                    Text("پایان", fontFamily = YekanBakh, fontWeight = FontWeight.Bold)
+                }
+            } else {
+                TextButton(onClick = { viewModel.startTrip() }) {
+                    Text("شروع سفر خرید", fontFamily = YekanBakh)
+                }
+            }
+            TextButton(onClick = { showAisleManager = true }) {
+                Text("مسیر", fontFamily = YekanBakh)
             }
         }
 
@@ -88,18 +113,23 @@ fun ShoppingListScreen(
             // Grouped by shopping aisle so the list follows the route through a store.
             // Grouping the entities directly (not the parsed text) keeps each row's id.
             // Within an aisle, rows the pantry already covers sink to the bottom.
-            val grouped = items
-                .sortedBy { if (viewModel.inPantry(it.item, pantryNames)) 1 else 0 }
-                .groupBy { com.erfanbagheri.tahdig.util.IngredientRegistry.aisleOf(it.item) }
-                .toList()
-                .sortedBy { (bucket, _) -> if (bucket == "سایر") 1 else 0 }
+            val sections = com.erfanbagheri.tahdig.util.AislePlanner.plan(
+                groups = items
+                    .sortedBy { if (viewModel.inPantry(it.item, pantryNames)) 1 else 0 }
+                    .groupBy { com.erfanbagheri.tahdig.util.IngredientRegistry.aisleOf(it.item) },
+                order = aisleOrder,
+                renames = aisleRenames,
+                hidden = aisleHidden,
+            )
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 20.dp),
                 verticalArrangement = Arrangement.spacedBy(6.dp),
             ) {
-                grouped.forEach { (bucket, rows) ->
+                sections.forEach { sec ->
+                    val bucket = sec.header
+                    val rows = sec.rows
                     item(key = "hdr-$bucket") {
                         Text(
                             text = bucket,
@@ -120,6 +150,19 @@ fun ShoppingListScreen(
                 }
             }
         }
+    }
+
+    if (showAisleManager) {
+        AisleManagerSheet(onDismiss = { showAisleManager = false })
+    }
+    if (showTripEnd) {
+        TripEndDialog(
+            onDismiss = { showTripEnd = false },
+            onConfirm = {
+                viewModel.endTrip()
+                showTripEnd = false
+            },
+        )
     }
 }
 
@@ -190,4 +233,121 @@ private fun ShoppingRow(
             }
         }
     }
+}
+
+
+/**
+ * Aisle manager (#108): rename (stored as an override on the canonical key),
+ * reorder (up/down within the store-route list), hide (folded into "سایر").
+ * Every change persists immediately — there is no save state to lose.
+ */
+@Composable
+private fun AisleManagerSheet(onDismiss: () -> Unit) {
+    var order by remember { mutableStateOf(SettingsStore.aisleOrder.value.ifEmpty { AislePlanner.KNOWN }) }
+    var renames by remember { mutableStateOf(SettingsStore.aisleRenames.value) }
+    var hidden by remember { mutableStateOf(SettingsStore.aisleHidden.value) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("مسیر خرید", fontFamily = YekanBakh) },
+        text = {
+            Column(Modifier.verticalScroll(rememberScrollState())) {
+                order.forEachIndexed { index, key ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text(
+                            text = renames[key]?.takeIf { it.isNotBlank() } ?: key,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontFamily = YekanBakh,
+                            color = if (key in hidden) {
+                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+                            } else {
+                                MaterialTheme.colorScheme.onSurface
+                            },
+                            modifier = Modifier.weight(1f),
+                        )
+                        IconButton(
+                            enabled = index > 0,
+                            onClick = {
+                                val next = order.toMutableList()
+                                next[index] = next[index - 1].also { next[index - 1] = next[index] }
+                                order = next
+                            },
+                        ) { Text("▲", fontFamily = YekanBakh) }
+                        IconButton(
+                            enabled = index < order.lastIndex,
+                            onClick = {
+                                val next = order.toMutableList()
+                                next[index] = next[index + 1].also { next[index + 1] = next[index] }
+                                order = next
+                            },
+                        ) { Text("▼", fontFamily = YekanBakh) }
+                        TextButton(onClick = {
+                            hidden = if (key in hidden) hidden - key else hidden + key
+                        }) {
+                            Text(
+                                if (key in hidden) "پنهان" else "نمایش",
+                                fontFamily = YekanBakh,
+                                style = MaterialTheme.typography.labelMedium,
+                            )
+                        }
+                    }
+                    // One-line rename: the placeholder shows the current name.
+                    OutlinedTextField(
+                        value = renames[key] ?: "",
+                        onValueChange = { text ->
+                            renames = if (text.isBlank() || text == key) {
+                                renames - key
+                            } else {
+                                renames + (key to text)
+                            }
+                        },
+                        singleLine = true,
+                        label = { Text("نام جدید", fontFamily = YekanBakh) },
+                        placeholder = { Text(key, fontFamily = YekanBakh) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 6.dp),
+                    )
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = {
+                SettingsStore.setAisleConfig(order, renames, hidden)
+                onDismiss()
+            }) { Text("ذخیره", fontFamily = YekanBakh) }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text("لغو", fontFamily = YekanBakh) }
+        },
+    )
+}
+
+/**
+ * End-trip confirmation (#108): archives date + counts + a row snapshot for
+ * history, then clears the list. Cancel keeps the trip running.
+ */
+@Composable
+private fun TripEndDialog(onDismiss: () -> Unit, onConfirm: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("پایان سفر خرید؟", fontFamily = YekanBakh) },
+        text = {
+            Text(
+                "لیست ثبت و پاک می‌شه. توی تاریخچه می‌مونه.",
+                fontFamily = YekanBakh,
+            )
+        },
+        confirmButton = {
+            TextButton(onClick = onConfirm) {
+                Text("ثبت و پایان", fontFamily = YekanBakh, fontWeight = FontWeight.Bold)
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text("ادامه", fontFamily = YekanBakh) }
+        },
+    )
 }

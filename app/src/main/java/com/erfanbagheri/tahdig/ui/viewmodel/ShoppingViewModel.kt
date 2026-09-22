@@ -6,9 +6,13 @@ import androidx.lifecycle.viewModelScope
 import com.erfanbagheri.tahdig.data.local.TahdigDatabase
 import com.erfanbagheri.tahdig.data.local.entity.ShoppingItemEntity
 import com.erfanbagheri.tahdig.util.IngredientParser
+import com.erfanbagheri.tahdig.data.local.entity.ShoppingTripEntity
+import com.erfanbagheri.tahdig.data.prefs.SettingsStore
+import com.erfanbagheri.tahdig.util.AislePlanner
 import com.erfanbagheri.tahdig.util.IngredientRegistry
 import com.erfanbagheri.tahdig.util.MissingDiff
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -17,6 +21,8 @@ import kotlinx.coroutines.launch
 class ShoppingViewModel(app: Application) : AndroidViewModel(app) {
     private val db = TahdigDatabase.getInstance(app)
     private val shoppingDao = db.shoppingDao()
+    private val tripDao = db.shoppingTripDao()
+    private val jx = kotlinx.serialization.json.Json
     private val mealPlanDao = db.mealPlanDao()
     private val foodDao = db.foodDao()
 
@@ -51,6 +57,68 @@ class ShoppingViewModel(app: Application) : AndroidViewModel(app) {
     fun clearAll() {
         viewModelScope.launch { shoppingDao.clearAll() }
     }
+
+    // ── Aisle manager (#108) ─────────────────────────────────────────
+    // SettingsStore owns the persisted config; the grouping pass in the screen
+    // reads it through the pure AislePlanner below.
+
+    /** Reorder aisles: the first persisted list wins; new aisles append later. */
+    fun moveAisle(before: String, after: String) {
+        val known = SettingsStore.aisleOrder.value.toMutableList()
+        if (before !in known) known += before
+        if (after !in known) known += after
+        val next = known.filterNot { it == before }.toMutableList()
+        next.add(next.indexOf(after) + 1, before)
+        SettingsStore.setAisleConfig(next, SettingsStore.aisleRenames.value, SettingsStore.aisleHidden.value)
+    }
+
+    fun renameAisle(canonical: String, display: String) {
+        val next = SettingsStore.aisleRenames.value.toMutableMap()
+        if (display.isBlank() || display == canonical) next.remove(canonical) else next[canonical] = display
+        SettingsStore.setAisleConfig(SettingsStore.aisleOrder.value, next, SettingsStore.aisleHidden.value)
+    }
+
+    /** Hide: view-only fold into «سایر» via AislePlanner — data never moves. */
+    fun setAisleHidden(canonical: String, hidden: Boolean) {
+        val next = SettingsStore.aisleHidden.value.toMutableSet()
+        if (hidden) next += canonical else next -= canonical
+        SettingsStore.setAisleConfig(SettingsStore.aisleOrder.value, SettingsStore.aisleRenames.value, next)
+    }
+
+    // ── Trip mode (#108) ────────────────────────────────────────────
+    // Trip mode is a LIGHT flag: the snapshot is taken at END time from the
+    // live rows, because Room already holds the truth — checkoffs during the
+    // trip just accumulate in place.
+
+    /** Past trips, newest first — read-only history for the history view. */
+    val trips = tripDao.observeAll()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    fun startTrip() = SettingsStore.setTripActive(true)
+
+    /** Archive the current list (date + counts + rows) into history (#108). */
+    fun endTrip() {
+        viewModelScope.launch {
+            val rows = shoppingDao.allRows()
+            if (rows.isNotEmpty()) {
+                val (total, bought) = AislePlanner.tripCounts(rows.map { it.item to it.isChecked })
+                val snap = jx.encodeToString(
+                    ListSerializer(TripRow.serializer()),
+                    rows.map { TripRow(it.item, it.isChecked) },
+                )
+                tripDao.insert(ShoppingTripEntity(endedAt = System.currentTimeMillis(), total = total, bought = bought, itemsJson = snap))
+            }
+            SettingsStore.setTripActive(false)
+        }
+    }
+
+    fun clearTripHistory() {
+        viewModelScope.launch { tripDao.clearAll() }
+    }
+
+    /** One archived row — mirrors the JSON keys the file has always used. */
+    @kotlinx.serialization.Serializable
+    data class TripRow(val item: String, val checked: Boolean)
 
     /** Add every ingredient of [ingredients] (comma/،-separated) as a list item. */
     fun addIngredients(foodId: Long, ingredients: String) {
