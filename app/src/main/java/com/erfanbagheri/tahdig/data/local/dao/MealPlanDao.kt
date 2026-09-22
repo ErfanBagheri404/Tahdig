@@ -30,4 +30,7 @@ interface MealPlanDao {
     /** Every distinct dish planned for the week — the source for the shopping list. */
     @Query("SELECT DISTINCT foodId FROM meal_plan")
     suspend fun allFoodIds(): List<Long>
+
+    @Query("DELETE FROM meal_plan")
+    suspend fun clearAll()
 }
