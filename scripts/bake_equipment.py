@@ -76,7 +76,9 @@ def norm(s: str) -> str:
 
 
 def is_fa(c):
-    return c is not None and 0x0600 <= ord(c) <= 0x06FF
+    # Letters only: the Persian block also holds digits and «،» which must NOT
+    # block a boundary (matches EquipmentInferrer's Character.isLetter rule).
+    return c is not None and c.isalpha()
 
 
 def contains_word(hay: str, needle: str) -> bool:

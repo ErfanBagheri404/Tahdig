@@ -8,6 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -54,6 +55,8 @@ import com.erfanbagheri.tahdig.ui.screen.CookHeatmapScreen
 import com.erfanbagheri.tahdig.ui.screen.SettingsScreen
 import com.erfanbagheri.tahdig.ui.screen.StepModeScreen
 import com.erfanbagheri.tahdig.ui.screen.ShoppingListScreen
+import com.erfanbagheri.tahdig.ui.screen.TechniqueDetailScreen
+import com.erfanbagheri.tahdig.ui.screen.TechniquesScreen
 import com.erfanbagheri.tahdig.ui.theme.TahdigTheme
 import com.erfanbagheri.tahdig.ui.screen.MealPlanScreen
 import com.erfanbagheri.tahdig.ui.viewmodel.MealPlanViewModel
@@ -124,6 +127,10 @@ private fun TahdigApp() {
     var browseCategories by rememberSaveable { mutableStateOf(false) }
     var showPantry by rememberSaveable { mutableStateOf(false) }
     var showHeatmap by rememberSaveable { mutableStateOf(false) }
+    var browseTechniques by rememberSaveable { mutableStateOf(false) }
+    // Technique opened from a step: back must restore the exact step, so the step
+    // screen stays on the back stack and this only overlays the technique page.
+    var techniqueRoute by rememberSaveable { mutableStateOf("") }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -172,17 +179,19 @@ private fun TahdigApp() {
             }
         },
     ) { padding ->
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding),
-            color = MaterialTheme.colorScheme.background,
-        ) {
-            when {
+    Surface(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(padding),
+        color = MaterialTheme.colorScheme.background,
+    ) {
+        Box(Modifier.fillMaxSize()) {
+        when {
                 stepModeFoodId >= 0 -> {
                     StepModeScreen(
                         foodId = stepModeFoodId,
                         onBack = { stepModeFoodId = -1L },
+                        onTechnique = { techniqueRoute = it },
                     )
                 }
                 detailFoodId >= 0 -> {
@@ -215,6 +224,7 @@ private fun TahdigApp() {
                         viewModel = cm,
                         onCategoryClick = { categoryRoute = it },
                         onBack = { browseCategories = false },
+                        onTechniques = { browseTechniques = true },
                     )
                 }
                 showPantry -> {
@@ -290,6 +300,27 @@ private fun TahdigApp() {
                     )
                 }
             }
+            // Technique library overlays (#101) — stacked ABOVE the current screen:
+            // a technique opened from a step never disposes the step screen, so
+            // back lands on the exact step again (acceptance criterion).
+            if (techniqueRoute.isNotEmpty()) {
+                TechniqueDetailScreen(
+                    techniqueId = techniqueRoute,
+                    onBack = { techniqueRoute = "" },
+                    onDishClick = { id ->
+                        techniqueRoute = ""
+                        browseTechniques = false
+                        detailFoodId = id
+                    },
+                )
+            }
+            if (browseTechniques && techniqueRoute.isEmpty()) {
+                TechniquesScreen(
+                    onBack = { browseTechniques = false },
+                    onOpen = { techniqueRoute = it },
+                )
+            }
+            } // Box (base screen + technique overlays)
         }
     }
 }

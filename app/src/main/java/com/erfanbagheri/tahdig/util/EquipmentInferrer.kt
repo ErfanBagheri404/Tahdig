@@ -82,5 +82,5 @@ object EquipmentInferrer {
     }
 
     private fun isFaLetter(c: Char?): Boolean =
-        c != null && c in '\u0600'..'\u06FF'
+        c != null && Character.isLetter(c)
 }
