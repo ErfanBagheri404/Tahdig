@@ -522,6 +522,28 @@ fun FoodDetailScreen(
                     }
 
                     Spacer(Modifier.height(16.dp))
+                    // ── Equipment (#100) ──────────────────────────────────────────
+                    // Baked seed list first, keyword inference as fallback; «آماده»
+                    // toggles are session-scoped (remember), deliberately not persisted.
+                    val tools = remember(f.equipment, f.ingredients, f.description) {
+                        com.erfanbagheri.tahdig.util.EquipmentInferrer.forDish(
+                            f.equipment, f.description, f.ingredients,
+                        )
+                    }
+                    var readyTools by remember(f.id) { mutableStateOf(emptySet<String>()) }
+                    if (tools.isNotEmpty()) {
+                        com.erfanbagheri.tahdig.ui.components.EquipmentRow(
+                            labels = tools,
+                            readyLabels = readyTools,
+                            onToggle = { label ->
+                                readyTools = if (label in readyTools) readyTools - label
+                                else readyTools + label
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                        Spacer(Modifier.height(12.dp))
+                    }
+
                     // All-checked emphasis: a border color change on the cook entry,
                     // not a nag — readiness should feel earned, not demanded.
                     val cookBorder = when {

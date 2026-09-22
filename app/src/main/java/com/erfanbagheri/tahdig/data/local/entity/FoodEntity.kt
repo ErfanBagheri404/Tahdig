@@ -63,6 +63,12 @@ data class FoodEntity(
     @ColumnInfo(name = "is_blocked")
     val isBlocked: Boolean = false,
 
+    /**
+     * Comma-separated equipment labels («قابلمه، فر»), baked into seed for known
+     * dishes; empty falls back to keyword inference at render time (#100).
+     */
+    val equipment: String = "",
+
     /** Sort priority (lower = more likely to be picked) */
     val priority: Int = 0,
 )

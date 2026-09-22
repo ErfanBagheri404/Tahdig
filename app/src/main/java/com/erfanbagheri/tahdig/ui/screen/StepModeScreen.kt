@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.view.WindowManager
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -92,6 +93,16 @@ fun StepModeScreen(
             .map { com.erfanbagheri.tahdig.util.MisePlace.rowsFor(listOf(it), 1).first() }
     }
 
+    // ── Equipment (#100): count in the top bar, full list in an overlay ──
+    var showTools by remember { mutableStateOf(false) }
+    val tools = remember(food) {
+        com.erfanbagheri.tahdig.util.EquipmentInferrer.forDish(
+            food?.equipment ?: "", food?.description ?: "", food?.ingredients ?: "",
+        )
+    }
+    // Session-scoped readiness, cleared when the cook session ends (screen leaves).
+    var readyTools by remember(foodId) { mutableStateOf(emptySet<String>()) }
+
     val steps = remember(description) {
         description.split(Regex("[.!؟\\n]+")).map { it.trim() }.filter { it.isNotBlank() }
             .ifEmpty { listOf(description) }
@@ -161,6 +172,33 @@ fun StepModeScreen(
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.weight(1f),
+                )
+                if (tools.isNotEmpty()) {
+                    Text(
+                        text = com.erfanbagheri.tahdig.ui.components.equipmentCountLabel(
+                            readyTools.size, tools.size,
+                        ),
+                        style = MaterialTheme.typography.labelMedium,
+                        fontFamily = YekanBakh,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier
+                            .clickable { showTools = !showTools }
+                            .padding(8.dp),
+                    )
+                }
+            }
+
+            // Tools overlay: same chips as the detail screen, session-scoped toggles.
+            if (showTools && tools.isNotEmpty()) {
+                Spacer(Modifier.height(8.dp))
+                com.erfanbagheri.tahdig.ui.components.EquipmentRow(
+                    labels = tools,
+                    readyLabels = readyTools,
+                    onToggle = { label ->
+                        readyTools = if (label in readyTools) readyTools - label
+                        else readyTools + label
+                    },
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
 
