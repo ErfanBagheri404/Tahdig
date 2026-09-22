@@ -222,7 +222,7 @@ fun StepModeScreen(
     val miseChecked = miseCheckedList.toSet()
     val miseRows = remember(food) {
         com.erfanbagheri.tahdig.util.MisePlace.rowsOf(food?.ingredients ?: "")
-            .map { com.erfanbagheri.tahdig.util.MisePlace.rowsFor(listOf(it), 1).first() }
+            .map { com.erfanbagheri.tahdig.util.MisePlace.rowsFor(listOf(it), 1.0).first() }
     }
 
     // ── Equipment (#100): count in the top bar, full list in an overlay ──
