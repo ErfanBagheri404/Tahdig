@@ -71,6 +71,16 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
         loadDishOfDay()
     }
 
+    /**
+     * Pull-to-refresh: re-ranks the local feed (fresh meal bucket + a new weighted pick).
+     * Purely local — an offline app showing a network spinner would be a lie, so this
+     * never touches connectivity.
+     */
+    fun refreshFeed() {
+        refreshMealLabel()
+        roll()
+    }
+
     /** Re-read meal bucket (call from a timer or recomposition). */
     fun refreshMealLabel() {
         _mealLabel.value = MealTimeHelper.currentLabel()

@@ -8,6 +8,7 @@ import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
 import com.erfanbagheri.tahdig.data.local.entity.PantryItemEntity
 import com.erfanbagheri.tahdig.util.PantryMatcher
 import com.erfanbagheri.tahdig.util.PersianText
+import com.erfanbagheri.tahdig.util.UndoHostState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -63,7 +64,20 @@ class PantryViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    fun remove(id: Long) = viewModelScope.launch { pantryDao.deleteById(id) }
+    fun remove(id: Long) = viewModelScope.launch {
+        val row = pantryDao.allRows().firstOrNull { it.id == id } ?: return@launch
+        pantryDao.deleteById(id)
+        UndoHostState.push("«${row.item}» از انباری حذف شد") {
+            viewModelScope.launch { pantryDao.insert(row.copy(id = 0)) }
+        }
+    }
 
-    fun clearAll() = viewModelScope.launch { pantryDao.clearAll() }
+    fun clearAll() = viewModelScope.launch {
+        val rows = pantryDao.allRows()
+        if (rows.isEmpty()) return@launch
+        pantryDao.clearAll()
+        UndoHostState.push("انباری خالی شد") {
+            viewModelScope.launch { rows.forEach { pantryDao.insert(it.copy(id = 0)) } }
+        }
+    }
 }
