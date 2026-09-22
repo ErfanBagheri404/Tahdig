@@ -32,4 +32,11 @@ data class PantryItemEntity(
     /** Optional expiry epoch ms (#106); null = undated (most legacy rows). */
     @ColumnInfo(name = "expires_at")
     val expiresAt: Long? = null,
+
+    /**
+     * Tap-count stock (#109). The issue's "existing entity fields" premise was
+     * wrong — no quantity existed — so this Int is the whole model: staples are
+     * countable, and 0 is a valid shown state (the row stays removable by X).
+     */
+    val quantity: Int = 1,
 )

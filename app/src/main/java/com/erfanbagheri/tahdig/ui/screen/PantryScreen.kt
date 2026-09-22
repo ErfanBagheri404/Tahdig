@@ -7,6 +7,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -30,6 +32,10 @@ import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
@@ -43,10 +49,12 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.material3.ExperimentalMaterial3Api as ExpM3
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
@@ -56,6 +64,9 @@ import com.erfanbagheri.tahdig.util.ExpiryMath
 import com.erfanbagheri.tahdig.util.PersianText
 import com.erfanbagheri.tahdig.ui.components.DishThumb
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
+import com.erfanbagheri.tahdig.util.Haptics
+import com.erfanbagheri.tahdig.util.StapleCounter
+import com.erfanbagheri.tahdig.util.IngredientRegistry
 import com.erfanbagheri.tahdig.ui.viewmodel.PantryViewModel
 
 /**
@@ -78,6 +89,15 @@ fun PantryScreen(
     // an expiring staple actually lifted it.
     val topDish = ranked.firstOrNull()
     var editingExpiry by remember { mutableStateOf<PantryItemEntity?>(null) }
+    // Bulk-clear undo (#109): armed snapshot + snackbar host + haptic view.
+    val clearUndo by viewModel.clearUndo.collectAsState()
+    val undoHost = remember { SnackbarHostState() }
+    val view = LocalView.current
+    // Staples not yet stocked, one tap each — straight from the glossary (#109).
+    val quickAdd = remember(items) {
+        val stocked = items.mapNotNull { IngredientRegistry.resolve(it.item)?.id }.toSet()
+        IngredientRegistry.commonStaples().filterNot { it.id in stocked }
+    }
 
     val fullMatches = ranked.filter { it.coverage >= 1f }
     val partialMatches = ranked.filter { it.coverage < 1f }
@@ -86,6 +106,7 @@ fun PantryScreen(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background,
     ) {
+        Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
             Row(
                 modifier = Modifier
@@ -109,10 +130,19 @@ fun PantryScreen(
                     )
                 }
                 if (items.isNotEmpty()) {
-                    IconButton(onClick = { viewModel.clearAll() }) {
+                    TextButton(onClick = {
+                        Haptics.confirm(view)
+                        viewModel.fillAll()
+                    }) {
+                        Text("همه پر شد", fontFamily = YekanBakh)
+                    }
+                    IconButton(onClick = {
+                        Haptics.confirm(view)
+                        viewModel.clearAll()
+                    }) {
                         Icon(
                             Icons.Default.DeleteSweep,
-                            contentDescription = "پاک کردن همه",
+                            contentDescription = "خالی کن",
                             tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
@@ -158,21 +188,55 @@ fun PantryScreen(
                 }
             }
 
-            Spacer(Modifier.height(12.dp))
-
-            // Pantry chips
-            if (items.isNotEmpty()) {
+            // One-tap staples (#109): the common items, only those not already
+            // in the pantry, so the row shrinks as the pantry fills.
+            if (quickAdd.isNotEmpty()) {
+                Spacer(Modifier.height(10.dp))
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 20.dp),
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    items(items, key = { it.id }) { it2 ->
-                        PantryChip(label = it2.item, onRemove = { viewModel.remove(it2.id) })
+                    items(quickAdd, key = { it.id }) { ing ->
+                        Surface(
+                            shape = RoundedCornerShape(8.dp),
+                            color = MaterialTheme.colorScheme.surface,
+                            modifier = Modifier
+                                .border(
+                                    1.dp,
+                                    MaterialTheme.colorScheme.outlineVariant,
+                                    RoundedCornerShape(8.dp),
+                                )
+                                .clickable {
+                                    Haptics.tap(view)
+                                    viewModel.onDraftChange(ing.fa)
+                                    viewModel.addDraft()
+                                },
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Icon(
+                                    Icons.Default.Add,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(14.dp),
+                                )
+                                Spacer(Modifier.width(4.dp))
+                                Text(
+                                    text = ing.fa,
+                                    style = MaterialTheme.typography.labelLarge,
+                                    fontFamily = YekanBakh,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                )
+                            }
+                        }
                     }
                 }
-                Spacer(Modifier.height(16.dp))
             }
+
+            Spacer(Modifier.height(12.dp))
 
             if (items.isEmpty()) {
                 Text(
@@ -193,6 +257,21 @@ fun PantryScreen(
                         start = 20.dp, end = 20.dp, bottom = 24.dp,
                     ),
                 ) {
+                    // Counters (#109): the whole pantry, tap to adjust stock.
+                    item {
+                        SectionHeader("چقدر داری؟")
+                    }
+                    items(items, key = { "cnt_${it.id}" }) { pantryItem ->
+                        CounterRow(
+                            item = pantryItem,
+                            onStep = { delta ->
+                                Haptics.tap(view)
+                                viewModel.stepQuantity(pantryItem.id, pantryItem.quantity, delta)
+                            },
+                            onRemove = { viewModel.remove(pantryItem.id) },
+                        )
+                    }
+
                     // «رو به اتمام» (#106): soonest first, red band under 3 days.
                     if (expiring.isNotEmpty()) {
                         item {
@@ -239,6 +318,25 @@ fun PantryScreen(
                 }
             }
 
+            // Bulk-clear undo (#109): the snackbar only exists while a snapshot
+            // is armed, so it never lingers after the window passes.
+            if (clearUndo.isNotEmpty()) {
+                LaunchedEffect(clearUndo) {
+                    val result = undoHost.showSnackbar(
+                        message = "پاک شد",
+                        actionLabel = "بازگردانی",
+                        duration = SnackbarDuration.Short,
+                    )
+                    if (result == SnackbarResult.ActionPerformed) viewModel.restoreClear()
+                }
+            }
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.BottomCenter,
+            ) {
+                SnackbarHost(hostState = undoHost)
+            }
+
             // «tap -> edit date» (#106); «بدون تاریخ» clears back to undated.
             editingExpiry?.let { editing ->
                 ExpiryDatePicker(
@@ -250,7 +348,91 @@ fun PantryScreen(
                     },
                 )
             }
+            } // Column
+            SnackbarHost(
+                hostState = undoHost,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(16.dp),
+            )
+        } // Box
+    }
+}
+
+/**
+ * One staple counter row (#109): name + 「− ۲ +」 stepper. Quantity renders in
+ * Persian digits and 0 is a legal shown value — the row stays so the user can
+ * still tap + or remove it. 48dp targets, haptic on each change.
+ */
+@Composable
+private fun CounterRow(
+    item: PantryItemEntity,
+    onStep: (Int) -> Unit,
+    onRemove: () -> Unit,
+) {
+    Surface(color = MaterialTheme.colorScheme.surface) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = item.item,
+                style = MaterialTheme.typography.bodyMedium,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.weight(1f),
+            )
+            StepperButton(
+                label = "\u2212",
+                enabled = item.quantity > 0,
+                onClick = { onStep(-1) },
+            )
+            Text(
+                text = PersianText.toPersianDigits(item.quantity.toString()),
+                style = MaterialTheme.typography.titleMedium,
+                fontFamily = YekanBakh,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.width(36.dp),
+            )
+            StepperButton(
+                label = "+",
+                enabled = item.quantity < StapleCounter.MAX,
+                onClick = { onStep(1) },
+            )
+            IconButton(onClick = onRemove, modifier = Modifier.size(48.dp)) {
+                Icon(
+                    Icons.Default.Close,
+                    contentDescription = "حذف ${item.item}",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
         }
+    }
+}
+
+/** A flat 48dp stepper target — no stock FAB, matching the app's hairline look. */
+@Composable
+private fun StepperButton(label: String, enabled: Boolean, onClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .size(48.dp)
+            .clickable(enabled = enabled, onClick = onClick),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.titleMedium,
+            fontFamily = YekanBakh,
+            color = if (enabled) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
+            },
+        )
     }
 }
 
@@ -264,34 +446,6 @@ private fun SectionHeader(label: String) {
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         modifier = Modifier.padding(top = 16.dp, bottom = 6.dp),
     )
-}
-
-@Composable
-private fun PantryChip(label: String, onRemove: () -> Unit) {
-    Surface(
-        shape = RoundedCornerShape(20.dp),
-        color = MaterialTheme.colorScheme.surfaceVariant,
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(start = 14.dp, end = 4.dp, top = 2.dp, bottom = 2.dp),
-        ) {
-            Text(
-                text = label,
-                style = MaterialTheme.typography.labelMedium,
-                fontFamily = YekanBakh,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            IconButton(onClick = onRemove, modifier = Modifier.size(28.dp)) {
-                Icon(
-                    Icons.Default.Close,
-                    contentDescription = "حذف $label",
-                    modifier = Modifier.size(14.dp),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-        }
-    }
 }
 
 @Composable
