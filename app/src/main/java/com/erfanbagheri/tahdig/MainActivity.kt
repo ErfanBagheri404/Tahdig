@@ -55,6 +55,7 @@ import com.erfanbagheri.tahdig.ui.screen.CookHeatmapScreen
 import com.erfanbagheri.tahdig.ui.screen.SettingsScreen
 import com.erfanbagheri.tahdig.ui.screen.StepModeScreen
 import com.erfanbagheri.tahdig.ui.screen.ShoppingListScreen
+import com.erfanbagheri.tahdig.ui.screen.OccasionsScreen
 import com.erfanbagheri.tahdig.ui.screen.TechniqueDetailScreen
 import com.erfanbagheri.tahdig.ui.screen.TechniquesScreen
 import com.erfanbagheri.tahdig.ui.theme.TahdigTheme
@@ -128,6 +129,7 @@ private fun TahdigApp() {
     var showPantry by rememberSaveable { mutableStateOf(false) }
     var showHeatmap by rememberSaveable { mutableStateOf(false) }
     var browseTechniques by rememberSaveable { mutableStateOf(false) }
+    var browseOccasions by rememberSaveable { mutableStateOf(false) }
     // Technique opened from a step: back must restore the exact step, so the step
     // screen stays on the back stack and this only overlays the technique page.
     var techniqueRoute by rememberSaveable { mutableStateOf("") }
@@ -225,6 +227,7 @@ private fun TahdigApp() {
                         onCategoryClick = { categoryRoute = it },
                         onBack = { browseCategories = false },
                         onTechniques = { browseTechniques = true },
+                        onOccasions = { browseOccasions = true },
                     )
                 }
                 showPantry -> {
@@ -312,6 +315,12 @@ private fun TahdigApp() {
                         browseTechniques = false
                         detailFoodId = id
                     },
+                )
+            }
+            if (browseOccasions) {
+                OccasionsScreen(
+                    onBack = { browseOccasions = false },
+                    onFoodClick = { id -> browseOccasions = false; detailFoodId = id },
                 )
             }
             if (browseTechniques && techniqueRoute.isEmpty()) {
