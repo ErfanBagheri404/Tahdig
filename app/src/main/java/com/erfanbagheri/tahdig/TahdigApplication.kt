@@ -4,6 +4,7 @@ import android.app.Application
 import com.erfanbagheri.tahdig.data.prefs.SettingsStore
 import com.erfanbagheri.tahdig.util.IngredientRegistry
 import com.erfanbagheri.tahdig.util.NutritionDB
+import com.erfanbagheri.tahdig.util.SubstitutionRegistry
 
 class TahdigApplication : Application() {
     override fun onCreate() {
@@ -11,5 +12,6 @@ class TahdigApplication : Application() {
         SettingsStore.init(this)
         NutritionDB.load(assets)
         IngredientRegistry.load(this)
+        SubstitutionRegistry.load(this)
     }
 }

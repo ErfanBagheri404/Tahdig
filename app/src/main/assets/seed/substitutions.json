@@ -1,0 +1,1760 @@
+{
+ "version": 1,
+ "substitutions": [
+  {
+   "from": "greek_yogurt",
+   "subs": [
+    {
+     "to": "yogurt",
+     "ratio": 1.0,
+     "caveat": "ماست معمولی رقیق‌تر است؛ آب آن را بگیرید."
+    },
+    {
+     "to": "cream",
+     "ratio": 0.5,
+     "caveat": "برای جاهای چرب مناسب است، نه برای دوغ."
+    },
+    {
+     "to": "kashk",
+     "ratio": 0.6,
+     "caveat": "طعم شوری می‌دهد؛ نمک غذا را کم کنید."
+    }
+   ]
+  },
+  {
+   "from": "yogurt",
+   "subs": [
+    {
+     "to": "greek_yogurt",
+     "ratio": 1.0,
+     "caveat": "سفت‌تر می‌شود؛ کمی آب اضافه کنید."
+    },
+    {
+     "to": "kashk",
+     "ratio": 0.5,
+     "caveat": "برای کشک‌دار کردن سس؛ شورتر می‌شود."
+    }
+   ]
+  },
+  {
+   "from": "cream",
+   "subs": [
+    {
+     "to": "milk",
+     "ratio": 1.0,
+     "caveat": "رقیق‌تر می‌شود؛ با کمی کره جبران کنید."
+    },
+    {
+     "to": "double_cream",
+     "ratio": 0.5,
+     "caveat": "غنی‌تر است؛ مقدار را کم کنید."
+    }
+   ]
+  },
+  {
+   "from": "double_cream",
+   "subs": [
+    {
+     "to": "cream",
+     "ratio": 2.0,
+     "caveat": "دو برابر حجم بگذارید."
+    },
+    {
+     "to": "butter",
+     "ratio": 0.4,
+     "caveat": "هنگام پخت اضافه کنید تا جدا نشود."
+    }
+   ]
+  },
+  {
+   "from": "milk",
+   "subs": [
+    {
+     "to": "cream",
+     "ratio": 0.5,
+     "caveat": "با آب رقیق کنید تا به قوام شیر برسد."
+    },
+    {
+     "to": "sheep_milk",
+     "ratio": 1.0,
+     "caveat": "طعم قوی‌تری می‌دهد."
+    }
+   ]
+  },
+  {
+   "from": "butter",
+   "subs": [
+    {
+     "to": "oil",
+     "ratio": 0.8,
+     "caveat": "روغن مایع کمتر لازم است؛ برای شیرینی مناسب نیست."
+    },
+    {
+     "to": "ghee",
+     "ratio": 1.0,
+     "caveat": "طعم نزدیک‌تری به کره دارد."
+    }
+   ]
+  },
+  {
+   "from": "kashk",
+   "subs": [
+    {
+     "to": "greek_yogurt",
+     "ratio": 1.5,
+     "caveat": "شوری و غلظت را با نمک جبران کنید."
+    },
+    {
+     "to": "yogurt",
+     "ratio": 1.5,
+     "caveat": "رقیق‌تر است؛ نمک اضافه کنید."
+    }
+   ]
+  },
+  {
+   "from": "feta",
+   "subs": [
+    {
+     "to": "cheese",
+     "ratio": 1.0,
+     "caveat": "شوری کمتری دارد؛ نمک اضافه کنید."
+    },
+    {
+     "to": "parmesan",
+     "ratio": 0.7,
+     "caveat": "سخت‌تر و شورتر است."
+    }
+   ]
+  },
+  {
+   "from": "mozzarella",
+   "subs": [
+    {
+     "to": "pizza_cheese",
+     "ratio": 1.0,
+     "caveat": "کشسانی کمتری دارد."
+    },
+    {
+     "to": "cheddar",
+     "ratio": 0.8,
+     "caveat": "طعم تندتری می‌دهد."
+    }
+   ]
+  },
+  {
+   "from": "parmesan",
+   "subs": [
+    {
+     "to": "cheddar",
+     "ratio": 1.2,
+     "caveat": "شوری کمتری دارد؛ نمک اضافه کنید."
+    },
+    {
+     "to": "cheese",
+     "ratio": 1.2,
+     "caveat": "بافت متفاوت می‌شود."
+    }
+   ]
+  },
+  {
+   "from": "mascarpone",
+   "subs": [
+    {
+     "to": "cream",
+     "ratio": 1.0,
+     "caveat": "با کمی ماست چکیده مخلوط کنید تا سفت شود."
+    },
+    {
+     "to": "greek_yogurt",
+     "ratio": 0.8,
+     "caveat": "طعم ترشی می‌دهد."
+    }
+   ]
+  },
+  {
+   "from": "sereshir",
+   "subs": [
+    {
+     "to": "cream",
+     "ratio": 0.8,
+     "caveat": "چرب‌تر و رقیق‌تر است."
+    },
+    {
+     "to": "milk",
+     "ratio": 1.0,
+     "caveat": "با کمی کره بجوشانید تا غلیظ شود."
+    }
+   ]
+  },
+  {
+   "from": "doogh",
+   "subs": [
+    {
+     "to": "yogurt",
+     "ratio": 0.5,
+     "caveat": "با آب و نمک رقیق کنید."
+    },
+    {
+     "to": "milk",
+     "ratio": 0.5,
+     "caveat": "طعم ماست را از دست می‌دهد."
+    }
+   ]
+  },
+  {
+   "from": "rennet",
+   "subs": [
+    {
+     "to": "lemon_juice",
+     "ratio": 0.5,
+     "caveat": "جایگزین کامل نیست؛ برای پنیر خانگی محدود است."
+    }
+   ]
+  },
+  {
+   "from": "oil",
+   "subs": [
+    {
+     "to": "butter",
+     "ratio": 1.25,
+     "caveat": "برای پخت داغ مراقب سوختن باشید."
+    },
+    {
+     "to": "olive_oil",
+     "ratio": 1.0,
+     "caveat": "طعم زیتون در غذا می‌آید."
+    }
+   ]
+  },
+  {
+   "from": "olive_oil",
+   "subs": [
+    {
+     "to": "oil",
+     "ratio": 1.0,
+     "caveat": "طعم زیتون از بین می‌رود."
+    },
+    {
+     "to": "butter",
+     "ratio": 1.25,
+     "caveat": "برای سالاد مناسب نیست."
+    }
+   ]
+  },
+  {
+   "from": "vinegar",
+   "subs": [
+    {
+     "to": "lemon_juice",
+     "ratio": 1.0,
+     "caveat": "طعم تازه‌تری می‌دهد."
+    },
+    {
+     "to": "unripe_grape",
+     "ratio": 1.0,
+     "caveat": "ترشی ملایم‌تری دارد."
+    }
+   ]
+  },
+  {
+   "from": "lemon_juice",
+   "subs": [
+    {
+     "to": "vinegar",
+     "ratio": 0.75,
+     "caveat": "کمتر لازم است؛ طعم تندتری می‌دهد."
+    },
+    {
+     "to": "unripe_grape",
+     "ratio": 1.0,
+     "caveat": "برای بعضی غذاها ترشی کمتری می‌دهد."
+    }
+   ]
+  },
+  {
+   "from": "tomato_paste",
+   "subs": [
+    {
+     "to": "tomato_sauce",
+     "ratio": 2.0,
+     "caveat": "رقیق‌تر است؛ باید جا بیفتد."
+    },
+    {
+     "to": "pomegranate_paste",
+     "ratio": 1.0,
+     "caveat": "طعم ملس می‌دهد؛ برای رب مناسب نیست."
+    }
+   ]
+  },
+  {
+   "from": "mayonnaise",
+   "subs": [
+    {
+     "to": "yogurt",
+     "ratio": 1.0,
+     "caveat": "برای سالاد سرد به کار می‌رود."
+    },
+    {
+     "to": "cream",
+     "ratio": 0.8,
+     "caveat": "چرب‌تر می‌شود."
+    }
+   ]
+  },
+  {
+   "from": "bechamel",
+   "subs": [
+    {
+     "to": "milk",
+     "ratio": 1.0,
+     "caveat": "با کمی آرد و کره بجوشانید."
+    },
+    {
+     "to": "cream",
+     "ratio": 0.8,
+     "caveat": "غلیظ‌تر و چرب‌تر است."
+    }
+   ]
+  },
+  {
+   "from": "soy_sauce",
+   "subs": [
+    {
+     "to": "salt",
+     "ratio": 0.2,
+     "caveat": "نمک کمتر لازم است، رنگ غذا تغییر می‌کند."
+    }
+   ]
+  },
+  {
+   "from": "ketchup",
+   "subs": [
+    {
+     "to": "tomato_paste",
+     "ratio": 1.0,
+     "caveat": "با کمی شکر و سرکه رقیق کنید."
+    }
+   ]
+  },
+  {
+   "from": "saffron",
+   "subs": [
+    {
+     "to": "turmeric",
+     "ratio": 1.0,
+     "caveat": "رنگ زرد می‌دهد ولی عطر زعفران را ندارد."
+    },
+    {
+     "to": "spice_mix",
+     "ratio": 1.0,
+     "caveat": "بسته به ترکیب، عطر متفاوتی می‌دهد."
+    }
+   ]
+  },
+  {
+   "from": "turmeric",
+   "subs": [
+    {
+     "to": "curry_powder",
+     "ratio": 1.0,
+     "caveat": "عطر و طعم دیگری اضافه می‌کند."
+    },
+    {
+     "to": "saffron",
+     "ratio": 0.3,
+     "caveat": "گران‌تر است؛ فقط برای رنگ و عطر."
+    }
+   ]
+  },
+  {
+   "from": "sumac",
+   "subs": [
+    {
+     "to": "lemon_juice",
+     "ratio": 0.5,
+     "caveat": "ترشی تازه می‌دهد ولی رنگ سماق را نه."
+    },
+    {
+     "to": "dried_lime",
+     "ratio": 0.5,
+     "caveat": "عطر متفاوتی دارد."
+    }
+   ]
+  },
+  {
+   "from": "dried_lime",
+   "subs": [
+    {
+     "to": "lemon_juice",
+     "ratio": 1.0,
+     "caveat": "ترشی می‌دهد ولی عطر دودی را نه."
+    },
+    {
+     "to": "sumac",
+     "ratio": 1.0,
+     "caveat": "برای کباب مناسب است."
+    }
+   ]
+  },
+  {
+   "from": "rose_water",
+   "subs": [
+    {
+     "to": "orange_blossom",
+     "ratio": 1.0,
+     "caveat": "عطر متفاوت ولی هم‌خانواده."
+    },
+    {
+     "to": "vanilla",
+     "ratio": 0.5,
+     "caveat": "برای شیرینی، نه برای غذاهای سنتی."
+    }
+   ]
+  },
+  {
+   "from": "vanilla",
+   "subs": [
+    {
+     "to": "cinnamon",
+     "ratio": 0.5,
+     "caveat": "طعم متفاوتی می‌دهد."
+    }
+   ]
+  },
+  {
+   "from": "cinnamon",
+   "subs": [
+    {
+     "to": "cardamom",
+     "ratio": 0.5,
+     "caveat": "عطر نزدیکی برای شیرینی دارد."
+    },
+    {
+     "to": "allspice",
+     "ratio": 1.0,
+     "caveat": "کامل‌تر ولی تندتر."
+    }
+   ]
+  },
+  {
+   "from": "ginger",
+   "subs": [
+    {
+     "to": "cardamom",
+     "ratio": 0.5,
+     "caveat": "عطر گرم می‌دهد."
+    }
+   ]
+  },
+  {
+   "from": "cumin",
+   "subs": [
+    {
+     "to": "curry_powder",
+     "ratio": 1.5,
+     "caveat": "چند ادویه دیگر هم می‌آید."
+    }
+   ]
+  },
+  {
+   "from": "paprika",
+   "subs": [
+    {
+     "to": "chilli",
+     "ratio": 0.5,
+     "caveat": "تندتر است؛ مقدار را کم کنید."
+    },
+    {
+     "to": "bell_pepper",
+     "ratio": 0.0,
+     "caveat": "فقط برای رنگ؛ طعم نمی‌دهد."
+    }
+   ]
+  },
+  {
+   "from": "chilli",
+   "subs": [
+    {
+     "to": "paprika",
+     "ratio": 1.5,
+     "caveat": "ملایم‌تر است؛ مقدار را بیشتر کنید."
+    },
+    {
+     "to": "pepper",
+     "ratio": 1.0,
+     "caveat": "تندی متفاوتی می‌دهد."
+    }
+   ]
+  },
+  {
+   "from": "pepper",
+   "subs": [
+    {
+     "to": "chilli",
+     "ratio": 0.5,
+     "caveat": "تندتر می‌شود."
+    }
+   ]
+  },
+  {
+   "from": "allspice",
+   "subs": [
+    {
+     "to": "cinnamon",
+     "ratio": 1.0,
+     "caveat": "با کمی هل و میخک ترکیب کنید."
+    },
+    {
+     "to": "cardamom",
+     "ratio": 1.0,
+     "caveat": "برای شیرینی مناسب است."
+    }
+   ]
+  },
+  {
+   "from": "cardamom",
+   "subs": [
+    {
+     "to": "cinnamon",
+     "ratio": 0.5,
+     "caveat": "عطر متفاوتی می‌دهد."
+    },
+    {
+     "to": "allspice",
+     "ratio": 0.5,
+     "caveat": "کامل‌تر است."
+    }
+   ]
+  },
+  {
+   "from": "curry_powder",
+   "subs": [
+    {
+     "to": "turmeric",
+     "ratio": 0.5,
+     "caveat": "با کمی زیره و فلفل ترکیب کنید."
+    },
+    {
+     "to": "spice_mix",
+     "ratio": 1.0,
+     "caveat": "بسته به ترکیب."
+    }
+   ]
+  },
+  {
+   "from": "baking_powder",
+   "subs": [
+    {
+     "to": "yeast",
+     "ratio": 0.3,
+     "caveat": "واکنش متفاوت؛ برای کیک مناسب نیست."
+    }
+   ]
+  },
+  {
+   "from": "yeast",
+   "subs": [
+    {
+     "to": "baking_powder",
+     "ratio": 3.0,
+     "caveat": "برای نان کار نمی‌کند، فقط برای شیرینی‌های سریع."
+    }
+   ]
+  },
+  {
+   "from": "cornstarch",
+   "subs": [
+    {
+     "to": "flour",
+     "ratio": 2.0,
+     "caveat": "دو برابر لازم است؛ سس شفاف نمی‌شود."
+    },
+    {
+     "to": "rice_flour",
+     "ratio": 1.0,
+     "caveat": "نتیجه مشابه است."
+    }
+   ]
+  },
+  {
+   "from": "flour",
+   "subs": [
+    {
+     "to": "rice_flour",
+     "ratio": 1.0,
+     "caveat": "بدون گلوتن؛ برای نان پف نمی‌کند."
+    },
+    {
+     "to": "cornstarch",
+     "ratio": 0.5,
+     "caveat": "فقط برای غلظت، نه برای پخت."
+    }
+   ]
+  },
+  {
+   "from": "rice_flour",
+   "subs": [
+    {
+     "to": "flour",
+     "ratio": 1.0,
+     "caveat": "گلوتن دارد؛ نتیجه متفاوت است."
+    },
+    {
+     "to": "cornstarch",
+     "ratio": 1.0,
+     "caveat": "برای غلظت مناسب است."
+    }
+   ]
+  },
+  {
+   "from": "breadcrumbs",
+   "subs": [
+    {
+     "to": "biscuit",
+     "ratio": 1.0,
+     "caveat": "با گوشت‌کوب ریز کنید."
+    },
+    {
+     "to": "cracker",
+     "ratio": 1.0,
+     "caveat": "با گوشت‌کوب ریز کنید."
+    }
+   ]
+  },
+  {
+   "from": "pasta",
+   "subs": [
+    {
+     "to": "noodles",
+     "ratio": 1.0,
+     "caveat": "بافت متفاوت ولی کار می‌کند."
+    },
+    {
+     "to": "spaghetti",
+     "ratio": 1.0,
+     "caveat": "شکل متفاوت."
+    }
+   ]
+  },
+  {
+   "from": "spaghetti",
+   "subs": [
+    {
+     "to": "penne",
+     "ratio": 1.0,
+     "caveat": "شکل متفاوت؛ زمان پخت را تنظیم کنید."
+    },
+    {
+     "to": "macaroni",
+     "ratio": 1.0,
+     "caveat": "برای پاستا مناسب است."
+    }
+   ]
+  },
+  {
+   "from": "rice",
+   "subs": [
+    {
+     "to": "bulgur",
+     "ratio": 1.0,
+     "caveat": "زمان پخت کمتر است."
+    },
+    {
+     "to": "quinoa",
+     "ratio": 1.0,
+     "caveat": "سبک‌تر و بدون نشاسته."
+    }
+   ]
+  },
+  {
+   "from": "bulgur",
+   "subs": [
+    {
+     "to": "rice",
+     "ratio": 1.0,
+     "caveat": "زمان پخت بیشتر است."
+    },
+    {
+     "to": "quinoa",
+     "ratio": 1.0,
+     "caveat": "بافت متفاوت."
+    }
+   ]
+  },
+  {
+   "from": "bread",
+   "subs": [
+    {
+     "to": "lavash",
+     "ratio": 1.0,
+     "caveat": "نازک‌تر است."
+    },
+    {
+     "to": "baguette",
+     "ratio": 1.0,
+     "caveat": "ضخیم‌تر است."
+    }
+   ]
+  },
+  {
+   "from": "lavash",
+   "subs": [
+    {
+     "to": "bread",
+     "ratio": 1.0,
+     "caveat": "ضخیم‌تر است؛ نصف کنید."
+    },
+    {
+     "to": "tortilla",
+     "ratio": 1.0,
+     "caveat": "برای پیچیدن مناسب‌تر است."
+    }
+   ]
+  },
+  {
+   "from": "tortilla",
+   "subs": [
+    {
+     "to": "lavash",
+     "ratio": 1.0,
+     "caveat": "نازک‌تر است."
+    }
+   ]
+  },
+  {
+   "from": "ground_meat",
+   "subs": [
+    {
+     "to": "ground_chicken",
+     "ratio": 1.0,
+     "caveat": "سبک‌تر می‌شود؛ چربی کمتری دارد."
+    },
+    {
+     "to": "lentils",
+     "ratio": 1.0,
+     "caveat": "برای کوفته گیاهی؛ بافت متفاوت."
+    }
+   ]
+  },
+  {
+   "from": "ground_chicken",
+   "subs": [
+    {
+     "to": "ground_meat",
+     "ratio": 1.0,
+     "caveat": "سنگین‌تر می‌شود."
+    },
+    {
+     "to": "chicken_breast",
+     "ratio": 0.0,
+     "caveat": "با چرخ کردن استفاده کنید."
+    }
+   ]
+  },
+  {
+   "from": "chicken",
+   "subs": [
+    {
+     "to": "meat",
+     "ratio": 1.0,
+     "caveat": "زمان پخت بیشتر است."
+    }
+   ]
+  },
+  {
+   "from": "meat",
+   "subs": [
+    {
+     "to": "chicken",
+     "ratio": 1.0,
+     "caveat": "زمان پخت کمتر است."
+    }
+   ]
+  },
+  {
+   "from": "lamb_shank",
+   "subs": [
+    {
+     "to": "meat",
+     "ratio": 1.0,
+     "caveat": "زمان پخت کمتری لازم دارد."
+    },
+    {
+     "to": "lamb_neck",
+     "ratio": 1.0,
+     "caveat": "بافت نزدیکی دارد."
+    }
+   ]
+  },
+  {
+   "from": "fish",
+   "subs": [
+    {
+     "to": "chicken",
+     "ratio": 1.0,
+     "caveat": "طعم کاملاً متفاوت."
+    },
+    {
+     "to": "shrimp",
+     "ratio": 1.0,
+     "caveat": "زمان پخت کمتر است."
+    }
+   ]
+  },
+  {
+   "from": "shrimp",
+   "subs": [
+    {
+     "to": "fish",
+     "ratio": 1.0,
+     "caveat": "بافت متفاوت؛ زمان پخت بیشتر."
+    }
+   ]
+  },
+  {
+   "from": "salmon",
+   "subs": [
+    {
+     "to": "trout",
+     "ratio": 1.0,
+     "caveat": "نزدیک‌ترین جایگزین است."
+    },
+    {
+     "to": "fish",
+     "ratio": 1.0,
+     "caveat": "گونه دیگر؛ زمان پخت تنظیم شود."
+    }
+   ]
+  },
+  {
+   "from": "trout",
+   "subs": [
+    {
+     "to": "salmon",
+     "ratio": 1.0,
+     "caveat": "چرب‌تر است."
+    },
+    {
+     "to": "fish",
+     "ratio": 1.0,
+     "caveat": "گونه دیگر."
+    }
+   ]
+  },
+  {
+   "from": "eggs",
+   "subs": [
+    {
+     "to": "egg_yolk",
+     "ratio": 0.0,
+     "caveat": "فقط زرده سفتی کمتری می‌دهد؛ برای کیک مناسب نیست."
+    },
+    {
+     "to": "flour",
+     "ratio": 0.0,
+     "caveat": "جایگزین گیاهی کامل نیست."
+    }
+   ]
+  },
+  {
+   "from": "egg_yolk",
+   "subs": [
+    {
+     "to": "eggs",
+     "ratio": 1.5,
+     "caveat": "سفیده هم اضافه می‌شود؛ کمی غلیظ‌تر می‌شود."
+    }
+   ]
+  },
+  {
+   "from": "tuna_can",
+   "subs": [
+    {
+     "to": "fish",
+     "ratio": 1.0,
+     "caveat": "پخت لازم دارد."
+    }
+   ]
+  },
+  {
+   "from": "sausage",
+   "subs": [
+    {
+     "to": "ham",
+     "ratio": 1.0,
+     "caveat": "کم‌چرب‌تر است."
+    },
+    {
+     "to": "chorizo",
+     "ratio": 1.0,
+     "caveat": "تندتر و چرب‌تر."
+    }
+   ]
+  },
+  {
+   "from": "ham",
+   "subs": [
+    {
+     "to": "sausage",
+     "ratio": 1.0,
+     "caveat": "چرب‌تر است."
+    }
+   ]
+  },
+  {
+   "from": "bacon",
+   "subs": [
+    {
+     "to": "ham",
+     "ratio": 1.0,
+     "caveat": "دودی نیست؛ کمی روغن اضافه کنید."
+    }
+   ]
+  },
+  {
+   "from": "chorizo",
+   "subs": [
+    {
+     "to": "sausage",
+     "ratio": 1.0,
+     "caveat": "تندی کمتری دارد؛ پاپریکا اضافه کنید."
+    }
+   ]
+  },
+  {
+   "from": "anchovy",
+   "subs": [
+    {
+     "to": "tuna_can",
+     "ratio": 1.0,
+     "caveat": "شور نیست؛ نمک اضافه کنید."
+    }
+   ]
+  },
+  {
+   "from": "liver",
+   "subs": [
+    {
+     "to": "meat",
+     "ratio": 1.0,
+     "caveat": "طعم و بافت کاملاً متفاوت."
+    }
+   ]
+  },
+  {
+   "from": "onion",
+   "subs": [
+    {
+     "to": "fried_onion",
+     "ratio": 1.0,
+     "caveat": "شیرین‌تر است؛ نمک کمتر."
+    },
+    {
+     "to": "tarragon",
+     "ratio": 0.3,
+     "caveat": "فقط عطر پیازچه می‌دهد."
+    }
+   ]
+  },
+  {
+   "from": "garlic",
+   "subs": [
+    {
+     "to": "mosir",
+     "ratio": 1.0,
+     "caveat": "ملایم‌تر است."
+    },
+    {
+     "to": "onion",
+     "ratio": 0.5,
+     "caveat": "طعم متفاوتی می‌دهد."
+    }
+   ]
+  },
+  {
+   "from": "tomato",
+   "subs": [
+    {
+     "to": "tomato_paste",
+     "ratio": 0.3,
+     "caveat": "کمی آب اضافه کنید."
+    },
+    {
+     "to": "cherry_tomato",
+     "ratio": 1.5,
+     "caveat": "شیرین‌تر است."
+    }
+   ]
+  },
+  {
+   "from": "cherry_tomato",
+   "subs": [
+    {
+     "to": "tomato",
+     "ratio": 0.7,
+     "caveat": "آب بیشتری دارد."
+    }
+   ]
+  },
+  {
+   "from": "tomato_sauce",
+   "subs": [
+    {
+     "to": "tomato_paste",
+     "ratio": 0.5,
+     "caveat": "با آب رقیق کنید."
+    },
+    {
+     "to": "tomato",
+     "ratio": 2.0,
+     "caveat": "با گوشت‌کوب له کنید."
+    }
+   ]
+  },
+  {
+   "from": "eggplant",
+   "subs": [
+    {
+     "to": "zucchini",
+     "ratio": 1.0,
+     "caveat": "آب بیشتری می‌دهد."
+    },
+    {
+     "to": "bell_pepper",
+     "ratio": 1.0,
+     "caveat": "برای سرخ کردن مناسب است."
+    }
+   ]
+  },
+  {
+   "from": "zucchini",
+   "subs": [
+    {
+     "to": "eggplant",
+     "ratio": 1.0,
+     "caveat": "جذب روغن بیشتری دارد."
+    }
+   ]
+  },
+  {
+   "from": "cucumber",
+   "subs": [
+    {
+     "to": "pickle",
+     "ratio": 1.0,
+     "caveat": "شور است؛ برای سالاد نشاید."
+    }
+   ]
+  },
+  {
+   "from": "pickle",
+   "subs": [
+    {
+     "to": "cucumber",
+     "ratio": 1.0,
+     "caveat": "شوری از بین می‌رود."
+    }
+   ]
+  },
+  {
+   "from": "mushroom",
+   "subs": [
+    {
+     "to": "eggplant",
+     "ratio": 1.0,
+     "caveat": "بافت متفاوت ولی کار می‌کند."
+    }
+   ]
+  },
+  {
+   "from": "spinach",
+   "subs": [
+    {
+     "to": "lettuce",
+     "ratio": 1.0,
+     "caveat": "پخت سریع‌تری لازم دارد."
+    }
+   ]
+  },
+  {
+   "from": "lettuce",
+   "subs": [
+    {
+     "to": "cabbage",
+     "ratio": 1.0,
+     "caveat": "تازه‌تر و تردتر است."
+    }
+   ]
+  },
+  {
+   "from": "cabbage",
+   "subs": [
+    {
+     "to": "red_cabbage",
+     "ratio": 1.0,
+     "caveat": "رنگ غذا را تغییر می‌دهد."
+    },
+    {
+     "to": "lettuce",
+     "ratio": 1.0,
+     "caveat": "نرم‌تر است."
+    }
+   ]
+  },
+  {
+   "from": "bell_pepper",
+   "subs": [
+    {
+     "to": "chilli",
+     "ratio": 0.5,
+     "caveat": "تند می‌شود."
+    },
+    {
+     "to": "tomato",
+     "ratio": 1.0,
+     "caveat": "برای پخت مناسب است."
+    }
+   ]
+  },
+  {
+   "from": "potato",
+   "subs": [
+    {
+     "to": "pumpkin",
+     "ratio": 1.0,
+     "caveat": "شیرین‌تر می‌شود."
+    },
+    {
+     "to": "turnip",
+     "ratio": 1.0,
+     "caveat": "طعم قوی‌تری می‌دهد."
+    }
+   ]
+  },
+  {
+   "from": "pumpkin",
+   "subs": [
+    {
+     "to": "potato",
+     "ratio": 1.0,
+     "caveat": "شیرینی از بین می‌رود."
+    },
+    {
+     "to": "carrot",
+     "ratio": 1.0,
+     "caveat": "شیرین‌تر می‌شود."
+    }
+   ]
+  },
+  {
+   "from": "carrot",
+   "subs": [
+    {
+     "to": "pumpkin",
+     "ratio": 1.0,
+     "caveat": "رنگ متفاوت."
+    }
+   ]
+  },
+  {
+   "from": "celery",
+   "subs": [
+    {
+     "to": "kangar",
+     "ratio": 1.0,
+     "caveat": "طعم تلخ‌تری دارد."
+    }
+   ]
+  },
+  {
+   "from": "herbs",
+   "subs": [
+    {
+     "to": "parsley",
+     "ratio": 1.0,
+     "caveat": "تنها یک سبزی؛ ترکیب کنید."
+    },
+    {
+     "to": "dill",
+     "ratio": 1.0,
+     "caveat": "تنها یک سبزی؛ ترکیب کنید."
+    }
+   ]
+  },
+  {
+   "from": "dill",
+   "subs": [
+    {
+     "to": "parsley",
+     "ratio": 1.0,
+     "caveat": "عطر متفاوتی می‌دهد."
+    },
+    {
+     "to": "herbs",
+     "ratio": 1.0,
+     "caveat": "ترکیب را استفاده کنید."
+    }
+   ]
+  },
+  {
+   "from": "parsley",
+   "subs": [
+    {
+     "to": "dill",
+     "ratio": 1.0,
+     "caveat": "عطر متفاوتی می‌دهد."
+    },
+    {
+     "to": "herbs",
+     "ratio": 1.0,
+     "caveat": "ترکیب را استفاده کنید."
+    }
+   ]
+  },
+  {
+   "from": "mint",
+   "subs": [
+    {
+     "to": "dried_mint",
+     "ratio": 1.0,
+     "caveat": "خشک‌تر؛ مقدار را کم کنید."
+    },
+    {
+     "to": "mint_distillate",
+     "ratio": 0.3,
+     "caveat": "برای نوشیدنی مناسب است."
+    }
+   ]
+  },
+  {
+   "from": "dried_mint",
+   "subs": [
+    {
+     "to": "mint",
+     "ratio": 1.5,
+     "caveat": "تازه‌تر است؛ مقدار را بیشتر کنید."
+    },
+    {
+     "to": "mint_extract",
+     "ratio": 0.2,
+     "caveat": "خیلی غلیظ است."
+    }
+   ]
+  },
+  {
+   "from": "basil",
+   "subs": [
+    {
+     "to": "mint",
+     "ratio": 1.0,
+     "caveat": "طعم متفاوتی می‌دهد."
+    }
+   ]
+  },
+  {
+   "from": "thyme",
+   "subs": [
+    {
+     "to": "oregano",
+     "ratio": 1.0,
+     "caveat": "نزدیک‌ترین جایگزین خشک است."
+    }
+   ]
+  },
+  {
+   "from": "fenugreek",
+   "subs": [
+    {
+     "to": "tarragon",
+     "ratio": 1.0,
+     "caveat": "عطر کمتری دارد."
+    }
+   ]
+  },
+  {
+   "from": "lemon",
+   "subs": [
+    {
+     "to": "dried_lime",
+     "ratio": 1.0,
+     "caveat": "عطر دودی می‌دهد."
+    },
+    {
+     "to": "vinegar",
+     "ratio": 0.3,
+     "caveat": "فقط ترشی."
+    }
+   ]
+  },
+  {
+   "from": "orange",
+   "subs": [
+    {
+     "to": "tangerine",
+     "ratio": 1.5,
+     "caveat": "شیرین‌تر و کوچک‌تر."
+    },
+    {
+     "to": "grapefruit",
+     "ratio": 1.0,
+     "caveat": "تلخ‌تر است."
+    }
+   ]
+  },
+  {
+   "from": "tangerine",
+   "subs": [
+    {
+     "to": "orange",
+     "ratio": 1.0,
+     "caveat": "بزرگ‌تر است؛ نصف کنید."
+    }
+   ]
+  },
+  {
+   "from": "apple",
+   "subs": [
+    {
+     "to": "pear",
+     "ratio": 1.0,
+     "caveat": "نرم‌تر است."
+    },
+    {
+     "to": "quince",
+     "ratio": 0.5,
+     "caveat": "سخت و ترش."
+    }
+   ]
+  },
+  {
+   "from": "pear",
+   "subs": [
+    {
+     "to": "apple",
+     "ratio": 1.0,
+     "caveat": "ترد‌تر است."
+    }
+   ]
+  },
+  {
+   "from": "peach",
+   "subs": [
+    {
+     "to": "nectarine",
+     "ratio": 1.0,
+     "caveat": "پوست صاف دارد."
+    },
+    {
+     "to": "apricot",
+     "ratio": 1.5,
+     "caveat": "کوچک‌تر و ترش‌تر."
+    }
+   ]
+  },
+  {
+   "from": "nectarine",
+   "subs": [
+    {
+     "to": "peach",
+     "ratio": 1.0,
+     "caveat": "پوست کرکی دارد."
+    }
+   ]
+  },
+  {
+   "from": "apricot",
+   "subs": [
+    {
+     "to": "peach",
+     "ratio": 0.7,
+     "caveat": "بزرگ‌تر است."
+    },
+    {
+     "to": "apricot_dried",
+     "ratio": 0.5,
+     "caveat": "خشک و شیرین‌تر."
+    }
+   ]
+  },
+  {
+   "from": "cherry",
+   "subs": [
+    {
+     "to": "strawberry",
+     "ratio": 1.0,
+     "caveat": "ترشی کمتری دارد."
+    },
+    {
+     "to": "plum",
+     "ratio": 1.0,
+     "caveat": "بافت متفاوت."
+    }
+   ]
+  },
+  {
+   "from": "strawberry",
+   "subs": [
+    {
+     "to": "cherry",
+     "ratio": 1.0,
+     "caveat": "ترش‌تر می‌شود."
+    }
+   ]
+  },
+  {
+   "from": "date",
+   "subs": [
+    {
+     "to": "raisin",
+     "ratio": 1.0,
+     "caveat": "شیرینی کمتری دارد."
+    },
+    {
+     "to": "fig_dried",
+     "ratio": 1.0,
+     "caveat": "شیرینی ملایم‌تر."
+    }
+   ]
+  },
+  {
+   "from": "raisin",
+   "subs": [
+    {
+     "to": "date",
+     "ratio": 1.0,
+     "caveat": "شیرین‌تر و چسبنده‌تر."
+    },
+    {
+     "to": "barberry",
+     "ratio": 1.0,
+     "caveat": "ترش است؛ برای پلو مناسب."
+    }
+   ]
+  },
+  {
+   "from": "barberry",
+   "subs": [
+    {
+     "to": "raisin",
+     "ratio": 0.7,
+     "caveat": "شیرین می‌شود."
+    },
+    {
+     "to": "cranberry",
+     "ratio": 1.0,
+     "caveat": "ترشی مشابه."
+    }
+   ]
+  },
+  {
+   "from": "pomegranate_paste",
+   "subs": [
+    {
+     "to": "tomato_paste",
+     "ratio": 1.0,
+     "caveat": "طعم ملس از بین می‌رود."
+    },
+    {
+     "to": "molasses",
+     "ratio": 0.5,
+     "caveat": "شیرین‌تر است."
+    }
+   ]
+  },
+  {
+   "from": "coconut",
+   "subs": [
+    {
+     "to": "almond",
+     "ratio": 1.0,
+     "caveat": "طعم متفاوت؛ برای شیرینی مناسب."
+    }
+   ]
+  },
+  {
+   "from": "almond",
+   "subs": [
+    {
+     "to": "hazelnut",
+     "ratio": 1.0,
+     "caveat": "طعم نزدیکی دارد."
+    },
+    {
+     "to": "walnut",
+     "ratio": 1.0,
+     "caveat": "چرب‌تر و تلخ‌تر."
+    }
+   ]
+  },
+  {
+   "from": "walnut",
+   "subs": [
+    {
+     "to": "almond",
+     "ratio": 1.0,
+     "caveat": "کم‌چرب‌تر."
+    },
+    {
+     "to": "hazelnut",
+     "ratio": 1.0,
+     "caveat": "شیرین‌تر."
+    }
+   ]
+  },
+  {
+   "from": "hazelnut",
+   "subs": [
+    {
+     "to": "almond",
+     "ratio": 1.0,
+     "caveat": "طعم نزدیکی دارد."
+    }
+   ]
+  },
+  {
+   "from": "pistachio",
+   "subs": [
+    {
+     "to": "almond",
+     "ratio": 1.0,
+     "caveat": "طعم و رنگ متفاوت."
+    }
+   ]
+  },
+  {
+   "from": "peanut",
+   "subs": [
+    {
+     "to": "almond",
+     "ratio": 1.0,
+     "caveat": "برای کره آجیل مناسب است."
+    }
+   ]
+  },
+  {
+   "from": "chickpeas",
+   "subs": [
+    {
+     "to": "beans",
+     "ratio": 1.0,
+     "caveat": "بافت متفاوت ولی کار می‌کند."
+    },
+    {
+     "to": "lentils",
+     "ratio": 1.0,
+     "caveat": "زمان پخت کمتر."
+    }
+   ]
+  },
+  {
+   "from": "lentils",
+   "subs": [
+    {
+     "to": "split_peas",
+     "ratio": 1.0,
+     "caveat": "نزدیک‌ترین جایگزین."
+    },
+    {
+     "to": "chickpeas",
+     "ratio": 1.0,
+     "caveat": "زمان پخت بیشتر."
+    }
+   ]
+  },
+  {
+   "from": "split_peas",
+   "subs": [
+    {
+     "to": "lentils",
+     "ratio": 1.0,
+     "caveat": "نزدیک‌ترین جایگزین."
+    }
+   ]
+  },
+  {
+   "from": "beans",
+   "subs": [
+    {
+     "to": "chickpeas",
+     "ratio": 1.0,
+     "caveat": "زمان پخت مشابه."
+    },
+    {
+     "to": "kidney_beans",
+     "ratio": 1.0,
+     "caveat": "رنگ و بافت متفاوت."
+    }
+   ]
+  },
+  {
+   "from": "kidney_beans",
+   "subs": [
+    {
+     "to": "pinto_beans",
+     "ratio": 1.0,
+     "caveat": "نزدیک‌ترین جایگزین."
+    },
+    {
+     "to": "beans",
+     "ratio": 1.0,
+     "caveat": "عمومی‌تر."
+    }
+   ]
+  },
+  {
+   "from": "pinto_beans",
+   "subs": [
+    {
+     "to": "kidney_beans",
+     "ratio": 1.0,
+     "caveat": "نزدیک‌ترین جایگزین."
+    }
+   ]
+  },
+  {
+   "from": "green_beans",
+   "subs": [
+    {
+     "to": "peas",
+     "ratio": 1.0,
+     "caveat": "کوچک‌تر و شیرین‌تر."
+    }
+   ]
+  },
+  {
+   "from": "fava_beans",
+   "subs": [
+    {
+     "to": "green_beans",
+     "ratio": 1.0,
+     "caveat": "بافت متفاوت."
+    }
+   ]
+  },
+  {
+   "from": "mung_beans",
+   "subs": [
+    {
+     "to": "lentils",
+     "ratio": 1.0,
+     "caveat": "زمان پخت کمتر."
+    }
+   ]
+  },
+  {
+   "from": "sugar",
+   "subs": [
+    {
+     "to": "honey",
+     "ratio": 0.75,
+     "caveat": "شیرین‌تر است؛ مایع غذا را زیاد می‌کند."
+    },
+    {
+     "to": "molasses",
+     "ratio": 1.0,
+     "caveat": "رنگ و طعم تغییر می‌کند."
+    }
+   ]
+  },
+  {
+   "from": "honey",
+   "subs": [
+    {
+     "to": "sugar",
+     "ratio": 1.3,
+     "caveat": "شیرینی و رطوبت کمتری می‌دهد."
+    },
+    {
+     "to": "molasses",
+     "ratio": 1.0,
+     "caveat": "تلخ‌تر است."
+    }
+   ]
+  },
+  {
+   "from": "icing_sugar",
+   "subs": [
+    {
+     "to": "sugar",
+     "ratio": 1.0,
+     "caveat": "با آسیاب ریز کنید."
+    }
+   ]
+  },
+  {
+   "from": "molasses",
+   "subs": [
+    {
+     "to": "honey",
+     "ratio": 1.0,
+     "caveat": "شیرین‌تر و بی‌رنگ‌تر."
+    },
+    {
+     "to": "sugar",
+     "ratio": 1.0,
+     "caveat": "با کمی آب حل کنید."
+    }
+   ]
+  },
+  {
+   "from": "chocolate",
+   "subs": [
+    {
+     "to": "cocoa",
+     "ratio": 0.5,
+     "caveat": "با کره و شکر ترکیب کنید."
+    }
+   ]
+  },
+  {
+   "from": "cocoa",
+   "subs": [
+    {
+     "to": "chocolate",
+     "ratio": 2.0,
+     "caveat": "چربی و شکر آن را کم کنید."
+    }
+   ]
+  },
+  {
+   "from": "tea",
+   "subs": [
+    {
+     "to": "green_tea",
+     "ratio": 1.0,
+     "caveat": "طعم و کافئین کمتر."
+    }
+   ]
+  },
+  {
+   "from": "green_tea",
+   "subs": [
+    {
+     "to": "tea",
+     "ratio": 1.0,
+     "caveat": "کافئین بیشتر."
+    }
+   ]
+  },
+  {
+   "from": "coffee",
+   "subs": [
+    {
+     "to": "nescafe",
+     "ratio": 1.0,
+     "caveat": "طعم متفاوت و ملایم‌تر."
+    }
+   ]
+  },
+  {
+   "from": "nescafe",
+   "subs": [
+    {
+     "to": "coffee",
+     "ratio": 1.0,
+     "caveat": "دم‌کردنی لازم دارد."
+    }
+   ]
+  }
+ ]
+}
