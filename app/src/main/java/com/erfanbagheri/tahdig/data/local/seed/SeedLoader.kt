@@ -34,6 +34,13 @@ object SeedLoader {
      */
     private const val IMAGES_FILE = "seed/images.json"
 
+    /**
+     * Baked per-dish equipment ({ "3": ["تابه", "فر"] }), keyed by food id.
+     * Same ownership as images.json: written by scripts/bake_equipment.py so the
+     * 27 seed files stay a plain dish diff. Missing file = runtime inference only.
+     */
+    private const val EQUIPMENT_FILE = "seed/equipment.json"
+
     private val json = Json { ignoreUnknownKeys = true }
 
     suspend fun loadInto(db: TahdigDatabase, assets: AssetManager) = withContext(Dispatchers.IO) {
@@ -49,6 +56,7 @@ object SeedLoader {
                 )
             }
         val images = readImages(assets)
+        val equipment = readEquipment(assets)
 
         // Insert categories first — foods reference them by slug.
         db.categoryDao().insertAll(
@@ -78,6 +86,7 @@ object SeedLoader {
                     tags = it.tags,
                     description = it.description,
                     imageUrl = it.imageUrl ?: images[it.id.toString()]?.url,
+                    equipment = equipment[it.id].orEmpty().joinToString(","),
                     priority = it.priority,
                 )
             }
@@ -92,6 +101,15 @@ object SeedLoader {
         json.decodeFromString<Map<String, ImageSeed>>(
             assets.open(IMAGES_FILE).bufferedReader().use { it.readText() }
         )
+    } catch (_: Exception) {
+        emptyMap()
+    }
+
+    /** Best-effort like images: a missing/broken file degrades to inference, never a crash. */
+    private fun readEquipment(assets: AssetManager): Map<Long, List<String>> = try {
+        json.decodeFromString<Map<String, List<String>>>(
+            assets.open(EQUIPMENT_FILE).bufferedReader().use { it.readText() }
+        ).mapNotNull { (k, v) -> k.toLongOrNull()?.let { it to v } }.toMap()
     } catch (_: Exception) {
         emptyMap()
     }
