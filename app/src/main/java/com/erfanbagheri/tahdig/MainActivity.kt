@@ -198,6 +198,8 @@ private fun TahdigApp() {
         Box(Modifier.fillMaxSize()) {
         when {
                 stepModeFoodId >= 0 -> {
+                    // Captured at composition: onCooked runs outside composable context (#98).
+                    val homeVm: HomeViewModel = viewModel()
                     StepModeScreen(
                         foodId = stepModeFoodId,
                         onBack = { stepModeFoodId = -1L; stepModeResume = false },
@@ -205,6 +207,19 @@ private fun TahdigApp() {
                         // A technique overlay owns back while open (#101).
                         backEnabled = techniqueRoute.isEmpty(),
                         onTechnique = { techniqueRoute = it },
+                        // Done state (#98): rating lands on detail; «پختم» → leftovers + Home.
+                        onRate = {
+                            detailFoodId = stepModeFoodId
+                            stepModeFoodId = -1L
+                            stepModeResume = false
+                        },
+                        onCooked = { f ->
+                            homeVm.showLeftoversFor(f)
+                            detailFoodId = -1L
+                            stepModeFoodId = -1L
+                            stepModeResume = false
+                            selectedTab = 0
+                        },
                     )
                 }
                 detailFoodId >= 0 -> {
