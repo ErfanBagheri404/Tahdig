@@ -54,6 +54,7 @@ interface HistoryDao {
             f.image_url AS f_image_url,
             f.is_blocked AS f_is_blocked,
             f.equipment AS f_equipment,
+            f.flavors  AS f_flavors,
             f.priority  AS f_priority
         FROM history h
         INNER JOIN foods f ON f.id = h.food_id

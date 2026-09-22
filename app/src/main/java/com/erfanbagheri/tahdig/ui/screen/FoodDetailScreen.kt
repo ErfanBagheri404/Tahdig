@@ -4,6 +4,8 @@ import android.speech.tts.TextToSpeech
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -61,7 +63,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import java.util.Locale
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun FoodDetailScreen(
     foodId: Long,
@@ -236,11 +238,12 @@ fun FoodDetailScreen(
                         )
                     }
 
-                    if (f.prepTimeMin > 0 || f.difficulty.isNotBlank()) {
+                    if (f.prepTimeMin > 0 || f.difficulty.isNotBlank() || f.flavors.isNotBlank()) {
                         Spacer(Modifier.height(24.dp))
-                        Row(
+                        // FlowRow so the taste badges (#89) wrap instead of overflowing.
+                        FlowRow(
                             horizontalArrangement = Arrangement.spacedBy(12.dp),
-                            verticalAlignment = Alignment.CenterVertically,
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
                             if (f.prepTimeMin > 0) {
                                 DetailChip("زمان آماده‌سازی: ${f.prepTimeMin} دقیقه")
@@ -251,6 +254,12 @@ fun FoodDetailScreen(
                             val spiceLevel = com.erfanbagheri.tahdig.util.SpiceProfile.level(f.tags, f.ingredients, f.name)
                             if (spiceLevel > 0) {
                                 DetailChip(com.erfanbagheri.tahdig.util.SpiceProfile.label(spiceLevel))
+                            }
+                            // Taste badges next to the spice pill (#89) — baked axis labels.
+                            f.flavors.split(',').forEach { raw ->
+                                com.erfanbagheri.tahdig.util.Flavor.entries
+                                    .firstOrNull { it.name == raw.trim() }
+                                    ?.let { DetailChip(it.label) }
                             }
                         }
                     }
