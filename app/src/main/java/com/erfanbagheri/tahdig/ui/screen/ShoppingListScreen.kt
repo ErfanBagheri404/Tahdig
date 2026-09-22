@@ -31,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
@@ -43,6 +44,9 @@ fun ShoppingListScreen(
     viewModel: ShoppingViewModel,
 ) {
     val items by viewModel.items.collectAsState()
+    // Pantry items already at home: those rows get a «داری» badge and sink to the bottom
+    // so the list reads as a shopping route, not a restatement of the cupboard.
+    val pantryNames by viewModel.pantryItems.collectAsState()
     val checkedCount = items.count { it.isChecked }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -83,7 +87,10 @@ fun ShoppingListScreen(
         } else {
             // Grouped by shopping aisle so the list follows the route through a store.
             // Grouping the entities directly (not the parsed text) keeps each row's id.
-            val grouped = items.groupBy { com.erfanbagheri.tahdig.util.IngredientRegistry.aisleOf(it.item) }
+            // Within an aisle, rows the pantry already covers sink to the bottom.
+            val grouped = items
+                .sortedBy { if (viewModel.inPantry(it.item, pantryNames)) 1 else 0 }
+                .groupBy { com.erfanbagheri.tahdig.util.IngredientRegistry.aisleOf(it.item) }
                 .toList()
                 .sortedBy { (bucket, _) -> if (bucket == "سایر") 1 else 0 }
             LazyColumn(
@@ -105,6 +112,7 @@ fun ShoppingListScreen(
                     items(rows, key = { it.id }) { item ->
                         ShoppingRow(
                             item = item,
+                            inPantry = viewModel.inPantry(item.item, pantryNames),
                             onToggle = { checked -> viewModel.setChecked(item.id, checked) },
                             onDelete = { viewModel.remove(item.id) },
                         )
@@ -118,6 +126,7 @@ fun ShoppingListScreen(
 @Composable
 private fun ShoppingRow(
     item: ShoppingItemEntity,
+    inPantry: Boolean = false,
     onToggle: (Boolean) -> Unit,
     onDelete: () -> Unit,
 ) {
@@ -126,7 +135,11 @@ private fun ShoppingRow(
     val checked = localChecked ?: item.isChecked
 
     Surface(
-        modifier = Modifier.fillMaxWidth(),
+        // Faded, not hidden: the user asked for the item to be on the list, so it stays
+        // visible and one tap from un-marking — it just stops demanding attention.
+        modifier = Modifier
+            .fillMaxWidth()
+            .graphicsLayer { alpha = if (inPantry) 0.55f else 1f },
         shape = RoundedCornerShape(10.dp),
         color = MaterialTheme.colorScheme.surface,
     ) {
@@ -141,6 +154,15 @@ private fun ShoppingRow(
                     onToggle(target)
                 },
             )
+            if (inPantry) {
+                Text(
+                    text = "داری",
+                    style = MaterialTheme.typography.labelMedium,
+                    fontFamily = YekanBakh,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(end = 6.dp),
+                )
+            }
             Text(
                 text = item.item,
                 style = MaterialTheme.typography.bodyLarge,

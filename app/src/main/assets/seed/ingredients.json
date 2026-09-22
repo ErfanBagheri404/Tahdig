@@ -497,6 +497,59 @@
    "allergen": "لبنیات"
   },
   {
+   "id": "ghee",
+   "fa": "روغن حیوانی",
+   "en": "Ghee",
+   "aisle": "لبنیات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "clarified butter",
+    "روغن کرمانشاهی"
+   ]
+  },
+  {
+   "id": "mosir",
+   "fa": "موسیر",
+   "en": "Wild leek",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": []
+  },
+  {
+   "id": "ketchup",
+   "fa": "سس کچاپ",
+   "en": "Ketchup",
+   "aisle": "روغن و سس",
+   "baseUnit": "قاشق غذاخوری",
+   "aliases": [
+    "tomato ketchup",
+    "کچاپ"
+   ]
+  },
+  {
+   "id": "oregano",
+   "fa": "پونه کوهی",
+   "en": "Oregano",
+   "aisle": "ادویه",
+   "baseUnit": "قاشق چای‌خوری",
+   "aliases": [
+    "dried oregano",
+    "oregano",
+    "پونه"
+   ]
+  },
+  {
+   "id": "cranberry",
+   "fa": "کرنبری",
+   "en": "Cranberry",
+   "aisle": "سبزیجات",
+   "baseUnit": "گرم",
+   "aliases": [
+    "cranberries",
+    "قره قاط"
+   ]
+  },
+  {
    "id": "kashk",
    "fa": "کشک",
    "en": "Kashk",

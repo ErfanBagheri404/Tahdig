@@ -197,6 +197,11 @@ private fun TahdigApp() {
                             svm.addIngredients(id, ingredients)
                             detailFoodId = -1L
                         },
+                        onAddMissing = { missing ->
+                            // Same dish context: only the gap goes on the list.
+                            svm.addIngredients(detailFoodId, missing)
+                            detailFoodId = -1L
+                        },
                         onShare = { food ->
                             ShareCard.share(context, food)
                         },

@@ -7,8 +7,10 @@ import com.erfanbagheri.tahdig.data.local.TahdigDatabase
 import com.erfanbagheri.tahdig.data.local.entity.ShoppingItemEntity
 import com.erfanbagheri.tahdig.util.IngredientParser
 import com.erfanbagheri.tahdig.util.IngredientRegistry
+import com.erfanbagheri.tahdig.util.MissingDiff
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -20,6 +22,19 @@ class ShoppingViewModel(app: Application) : AndroidViewModel(app) {
 
     val items: StateFlow<List<ShoppingItemEntity>> = shoppingDao.observeAll()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    /** Pantry display names, feeding the «داری» badge and sink-to-bottom ordering. */
+    val pantryItems: StateFlow<List<String>> = db.pantryDao().observeAll()
+        .map { list -> list.map { it.item } }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    /**
+     * True when the pantry already covers a list row. Reuses the missing-diff so the
+     * badge and the detail screen's gap line can never disagree — an approved substitute
+     * counts as "have" in both.
+     */
+    fun inPantry(row: String, pantry: List<String>): Boolean =
+        pantry.isNotEmpty() && MissingDiff.diff(row, pantry).allCovered
 
     fun setChecked(id: Long, checked: Boolean) {
         viewModelScope.launch { shoppingDao.setChecked(id, checked) }
