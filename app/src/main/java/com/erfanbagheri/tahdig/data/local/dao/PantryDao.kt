@@ -25,4 +25,8 @@ interface PantryDao {
     /** Raw strings for in-memory filtering, no Flow needed for one-shot checks. */
     @Query("SELECT item FROM pantry")
     suspend fun allItems(): List<String>
+
+    /** Optional expiry edit per item — «tap -> edit date» (#106). */
+    @Query("UPDATE pantry SET expires_at = :expiresAt WHERE id = :id")
+    suspend fun setExpiry(id: Long, expiresAt: Long?)
 }

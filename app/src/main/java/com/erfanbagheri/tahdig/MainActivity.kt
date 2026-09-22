@@ -263,11 +263,15 @@ private fun TahdigApp() {
                 }
                 showPantry -> {
                     val vm: PantryViewModel = viewModel()
+                    val svm: ShoppingViewModel = viewModel()
                     PantryScreen(
                         viewModel = vm,
                         onFoodClick = { detailFoodId = it },
                         onBack = { showPantry = false },
                         onOpenLeftover = { showPantry = false; showLeftover = true },
+                        // Swipe on an expiring row (#106): the replacement goes on
+                        // the shopping list, the stale row leaves the pantry.
+                        onAddToShopping = { item -> svm.addItems(item.item) },
                     )
                 }
                 showLeftover -> {
@@ -303,6 +307,7 @@ private fun TahdigApp() {
                         onBrowseCategories = { browseCategories = true },
                         onFoodClick = { detailFoodId = it },
                         onOpenLeftover = { showLeftover = true },
+                        onOpenPantry = { showPantry = true },
                     )
                 }
                 selectedTab == 1 -> {
