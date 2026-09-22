@@ -2,6 +2,7 @@ package com.erfanbagheri.tahdig.ui.screen
 
 import android.speech.tts.TextToSpeech
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -58,6 +59,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.erfanbagheri.tahdig.data.local.TahdigDatabase
 import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
+import com.erfanbagheri.tahdig.data.prefs.SettingsStore
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
 import com.erfanbagheri.tahdig.ui.viewmodel.RatingViewModel
 import kotlinx.coroutines.delay
@@ -295,28 +297,39 @@ fun FoodDetailScreen(
                         }
                     }
 
+                    // Scale state (#103): declared before nutrition + mise so both
+                    // read the same servings × batch factor.
+                    var servings by remember { mutableStateOf(1) }
+                    var batch by remember { mutableStateOf(1.0) }
+                    val scaleFactor = com.erfanbagheri.tahdig.util.ServingScaler
+                        .composed(servings, batch)
+
                     // Nutrition: real OFF data when the ingredients are covered,
                     // else the per-category heuristic. Badge says which.
                     val real = com.erfanbagheri.tahdig.util.NutritionEstimate
                         .estimateFromIngredients(f.ingredients)
                     val nut = real?.info
                         ?: com.erfanbagheri.tahdig.util.NutritionEstimate.estimate(f.name, f.tags)
+                    // Per-serving recalc (#103): chips reflect the amounts shown.
+                    fun scaledCalories(): Int = Math.round(nut.calories * scaleFactor).toInt()
+                    fun scaledGrams(s: String): String = if (scaleFactor == 1.0) s
+                    else s.removeSuffix("g").toDoubleOrNull()
+                        ?.let { "${Math.round(it * scaleFactor)}g" } ?: s
                     Spacer(Modifier.height(16.dp))
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        DetailChip("~${nut.calories} کالری")
-                        DetailChip("پروتئین ${nut.protein}")
-                        DetailChip("چربی ${nut.fat}")
-                        DetailChip("کربوهیدرات ${nut.carb}")
+                        DetailChip("~${scaledCalories()} کالری")
+                        DetailChip("پروتئین ${scaledGrams(nut.protein)}")
+                        DetailChip("چربی ${scaledGrams(nut.fat)}")
+                        DetailChip("کربوهیدرات ${scaledGrams(nut.carb)}")
                         // Honesty badge: the user should know which tier this came from.
                         DetailChip(if (real != null) "واقعی" else "تخمینی")
                     }
 
                     // ── Mise-en-place (#99) ───────────────────────────────────────
-                    // Parsed once per dish; display scales with servings, hashes never do.
-                    var servings by remember { mutableStateOf(1) }
+                    // Parsed once per dish; display scales with servings × batch, hashes never do.
                     val checkedHashes = if (milestoneViewModel != null)
                         milestoneViewModel.checkedHashes.collectAsState().value
                     else emptySet<String>()
@@ -324,8 +337,8 @@ fun FoodDetailScreen(
                     val miseParsed = remember(f.ingredients) {
                         com.erfanbagheri.tahdig.util.MisePlace.rowsOf(f.ingredients)
                     }
-                    val miseRows = remember(miseParsed, servings) {
-                        com.erfanbagheri.tahdig.util.MisePlace.rowsFor(miseParsed, servings)
+                    val miseRows = remember(miseParsed, scaleFactor) {
+                        com.erfanbagheri.tahdig.util.MisePlace.rowsFor(miseParsed, scaleFactor)
                     }
                     val miseChecked = miseRows.map { it.hash }.toSet() intersect checkedHashes
                     val miseReady = miseRows.isNotEmpty() && miseChecked.size == miseRows.size
@@ -357,6 +370,34 @@ fun FoodDetailScreen(
                             )
                             IconButton(onClick = { if (servings < 20) servings++ }) {
                                 Icon(Icons.Default.Add, contentDescription = "زیاد کردن")
+                            }
+                        }
+
+                        // Batch multiplier (#103): composes with servings above.
+                        Spacer(Modifier.height(4.dp))
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            com.erfanbagheri.tahdig.util.ServingScaler.BATCHES.forEach { mult ->
+                                val selected = batch == mult
+                                Text(
+                                    text = com.erfanbagheri.tahdig.util.PersianText
+                                        .toPersianDigits("${mult}x"),
+                                    style = MaterialTheme.typography.labelLarge,
+                                    fontFamily = YekanBakh,
+                                    fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
+                                    color = if (selected) MaterialTheme.colorScheme.onPrimary
+                                    else MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier
+                                        .background(
+                                            color = if (selected) MaterialTheme.colorScheme.primary
+                                            else MaterialTheme.colorScheme.surfaceVariant,
+                                            shape = RoundedCornerShape(8.dp),
+                                        )
+                                        .clickable { batch = mult }
+                                        .padding(horizontal = 12.dp, vertical = 6.dp),
+                                )
                             }
                         }
                         Spacer(Modifier.height(8.dp))
@@ -484,27 +525,77 @@ fun FoodDetailScreen(
                         }
                         if (showConverter) {
                             val uc = com.erfanbagheri.tahdig.util.UnitConverter
-                            val rows = listOf(
-                                "۱ پیمانه آرد" to "${uc.cupsToGrams(1.0, "آرد").value.toInt()} گرم",
-                                "۱ پیمانه شکر" to "${uc.cupsToGrams(1.0, "شکر").value.toInt()} گرم",
-                                "۱ قاشق غذاخوری" to "${uc.tablespoonsToGrams(1.0).value.toInt()} گرم",
-                                "۱ پیمانه" to "${uc.cupsToTablespoons(1.0).value.toInt()} قاشق غذاخوری",
-                            )
-                            rows.forEach { (from, to) ->
-                                Text(
-                                    text = "$from = $to",
-                                    style = MaterialTheme.typography.bodySmall,
-                                    fontFamily = YekanBakh,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 2.dp),
-                                )
+                            // Metric ⇄ ایرانی display (#103); the toggle only flips
+                            // the same rows' direction, so numbers always agree.
+                            var persianUnits by remember { mutableStateOf(false) }
+                            val favKey by SettingsStore.convertFavorite
+                                .collectAsState(initial = null)
+                            val rows = if (persianUnits) uc.iranianRows() else uc.metricRows()
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                listOf("متریک" to false, "ایرانی" to true).forEach { (label, iranian) ->
+                                    val selected = persianUnits == iranian
+                                    Text(
+                                        text = label,
+                                        style = MaterialTheme.typography.labelMedium,
+                                        fontFamily = YekanBakh,
+                                        color = if (selected) MaterialTheme.colorScheme.onPrimary
+                                        else MaterialTheme.colorScheme.onSurfaceVariant,
+                                        modifier = Modifier
+                                            .background(
+                                                color = if (selected) MaterialTheme.colorScheme.primary
+                                                else MaterialTheme.colorScheme.surfaceVariant,
+                                                shape = RoundedCornerShape(8.dp),
+                                            )
+                                            .clickable { persianUnits = iranian }
+                                            .padding(horizontal = 10.dp, vertical = 4.dp),
+                                    )
+                                }
+                            }
+                            Spacer(Modifier.height(8.dp))
+                            rows.forEach { row ->
+                                val value = uc.valueOf(row) ?: return@forEach
+                                val label = "${com.erfanbagheri.tahdig.util.PersianText.toPersianDigits(row.amount)} " +
+                                    "${row.from} = ${com.erfanbagheri.tahdig.util.PersianText.toPersianDigits(value)} ${row.to}"
+                                val isFav = row.key == favKey
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.fillMaxWidth(),
+                                ) {
+                                    Text(
+                                        text = label,
+                                        style = MaterialTheme.typography.bodySmall,
+                                        fontFamily = YekanBakh,
+                                        color = if (isFav) MaterialTheme.colorScheme.primary
+                                        else MaterialTheme.colorScheme.onSurfaceVariant,
+                                        modifier = Modifier.weight(1f),
+                                    )
+                                    // One-tap favorite (#103): remembered across restart.
+                                    Text(
+                                        text = if (isFav) "★" else "☆",
+                                        fontFamily = YekanBakh,
+                                        color = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier
+                                            .clickable { SettingsStore.setConvertFavorite(row.key) }
+                                            .padding(horizontal = 6.dp, vertical = 2.dp),
+                                    )
+                                }
                             }
                             Spacer(Modifier.height(12.dp))
                         }
                         Button(
-                            onClick = { onAddToShoppingList(f.id, f.ingredients) },
+                            // Same mergeInto path as before (#103): the whole blob is
+                            // pre-scaled once, so dedupe sees the scaled quantities.
+                            onClick = {
+                                onAddToShoppingList(
+                                    f.id,
+                                    if (scaleFactor == 1.0) f.ingredients
+                                    else com.erfanbagheri.tahdig.util.ServingScaler
+                                        .scaleAll(f.ingredients, scaleFactor),
+                                )
+                            },
                             modifier = Modifier.fillMaxWidth(),
                         ) {
                             Icon(

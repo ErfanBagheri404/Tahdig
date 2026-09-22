@@ -14,6 +14,7 @@ object SettingsStore {
     private const val KEY_VOICE_READ = "voice_read_aloud"   // TTS of next step (#94)
     private const val KEY_SHAKE = "shake_advance"           // shake-to-advance (#96)
     private const val KEY_SHAKE_SENS = "shake_sensitivity"  // 0f..1f slider (#96)
+    private const val KEY_CONVERT_FAV = "convert_favorite"  // last-used pair (#103)
 
     private lateinit var prefs: SharedPreferences
     private val _themeMode = MutableStateFlow(0)
@@ -37,6 +38,9 @@ object SettingsStore {
     private val _shakeSensitivity = MutableStateFlow(0.5f)
     val shakeSensitivity: StateFlow<Float> = _shakeSensitivity
 
+    private val _convertFavorite = MutableStateFlow<String?>(null)
+    val convertFavorite: StateFlow<String?> = _convertFavorite
+
     fun isInitialized(): Boolean = ::prefs.isInitialized
 
     fun init(context: Context) {
@@ -48,6 +52,13 @@ object SettingsStore {
         _voiceReadAloud.value = prefs.getBoolean(KEY_VOICE_READ, false)
         _shakeAdvance.value = prefs.getBoolean(KEY_SHAKE, false)
         _shakeSensitivity.value = prefs.getFloat(KEY_SHAKE_SENS, 0.5f)
+        _convertFavorite.value = prefs.getString(KEY_CONVERT_FAV, null)
+    }
+
+    /** Last-used converter pair, "from|to" key (#103) — survives restart. */
+    fun setConvertFavorite(key: String) {
+        prefs.edit().putString(KEY_CONVERT_FAV, key).apply()
+        _convertFavorite.value = key
     }
 
     /** Shake-to-advance in cook mode (#96); default off — gestures are opt-in. */

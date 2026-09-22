@@ -15,8 +15,8 @@ class MisePlaceTest {
     @Test
     fun `hash is stable across scaled servings`() {
         val blob = "۲ پیمانه آرد، ۳ عدد تخم‌مرغ، نمک"
-        val one = MisePlace.rowsFor(MisePlace.rowsOf(blob), 1).map { it.hash }
-        val six = MisePlace.rowsFor(MisePlace.rowsOf(blob), 6).map { it.hash }
+        val one = MisePlace.rowsFor(MisePlace.rowsOf(blob), 1.0).map { it.hash }
+        val six = MisePlace.rowsFor(MisePlace.rowsOf(blob), 6.0).map { it.hash }
         assertEquals(one, six)
     }
 
