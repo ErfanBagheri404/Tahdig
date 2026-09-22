@@ -168,6 +168,61 @@ fun SettingsScreen(
 
         Spacer(Modifier.height(32.dp))
 
+        // Shake to advance (#96) — off by default; additive to the buttons.
+        Text(
+            text = "تکان دادن گوشی",
+            style = MaterialTheme.typography.titleMedium,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+
+        Spacer(Modifier.height(8.dp))
+
+        val shakeAdvance by viewModel.shakeAdvance.collectAsState()
+        val shakeSensitivity by viewModel.shakeSensitivity.collectAsState()
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+        ) {
+            Text(
+                text = "مرحله بعد با تکان دادن",
+                style = MaterialTheme.typography.bodyLarge,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.weight(1f),
+            )
+            androidx.compose.material3.Switch(
+                checked = shakeAdvance,
+                onCheckedChange = { viewModel.setShakeAdvance(it) },
+            )
+        }
+
+        // Sensitivity only matters when the gesture is on — a slider over a
+        // disabled feature is noise.
+        if (shakeAdvance) {
+            Text(
+                text = "حساسیت",
+                style = MaterialTheme.typography.bodyMedium,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            androidx.compose.material3.Slider(
+                value = shakeSensitivity,
+                onValueChange = { viewModel.setShakeSensitivity(it) },
+                valueRange = 0f..1f,
+                modifier = Modifier.fillMaxWidth(),
+            )
+            Text(
+                text = "حساس‌تر = با تکان ملایم‌تر مرحله عوض می‌شود",
+                style = MaterialTheme.typography.bodySmall,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+
+        Spacer(Modifier.height(32.dp))
+
         // About section
         Text(
             text = "درباره",

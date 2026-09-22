@@ -14,6 +14,8 @@ class SettingsViewModel(app: Application) : AndroidViewModel(app) {
     val dailyNotify: StateFlow<Boolean> = SettingsStore.dailyNotify
     val voiceControl: StateFlow<Boolean> = SettingsStore.voiceControl
     val voiceReadAloud: StateFlow<Boolean> = SettingsStore.voiceReadAloud
+    val shakeAdvance: StateFlow<Boolean> = SettingsStore.shakeAdvance
+    val shakeSensitivity: StateFlow<Float> = SettingsStore.shakeSensitivity
 
     fun setThemeMode(mode: Int) = SettingsStore.setThemeMode(mode)
 
@@ -21,4 +23,6 @@ class SettingsViewModel(app: Application) : AndroidViewModel(app) {
         SettingsStore.setDailyNotify(context, enabled)
     fun setVoiceControl(enabled: Boolean) = SettingsStore.setVoiceControl(enabled)
     fun setVoiceReadAloud(enabled: Boolean) = SettingsStore.setVoiceReadAloud(enabled)
+    fun setShakeAdvance(enabled: Boolean) = SettingsStore.setShakeAdvance(enabled)
+    fun setShakeSensitivity(value: Float) = SettingsStore.setShakeSensitivity(value)
 }
