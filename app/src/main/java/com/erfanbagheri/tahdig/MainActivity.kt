@@ -127,6 +127,8 @@ private fun TahdigApp() {
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
+        // One undo affordance for every destructive action, above all screens.
+        snackbarHost = { com.erfanbagheri.tahdig.ui.components.UndoSnackbarHost() },
         bottomBar = {
             if (detailFoodId < 0) {
                 NavigationBar(

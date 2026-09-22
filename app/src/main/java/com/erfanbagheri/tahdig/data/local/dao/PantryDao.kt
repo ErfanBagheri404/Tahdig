@@ -22,6 +22,10 @@ interface PantryDao {
     @Query("DELETE FROM pantry")
     suspend fun clearAll()
 
+    /** Every row as entities, so a clear can be undone by re-inserting them. */
+    @Query("SELECT * FROM pantry")
+    suspend fun allRows(): List<PantryItemEntity>
+
     /** Raw strings for in-memory filtering, no Flow needed for one-shot checks. */
     @Query("SELECT item FROM pantry")
     suspend fun allItems(): List<String>

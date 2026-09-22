@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.erfanbagheri.tahdig.data.local.TahdigDatabase
 import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
 import com.erfanbagheri.tahdig.data.local.entity.HistoryWithFood
+import com.erfanbagheri.tahdig.util.UndoHostState
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -21,6 +22,13 @@ class HistoryViewModel(app: Application) : AndroidViewModel(app) {
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     fun clearHistory() {
-        viewModelScope.launch { historyDao.clearAll() }
+        viewModelScope.launch {
+            val rows = historyDao.allRows()
+            if (rows.isEmpty()) return@launch
+            historyDao.clearAll()
+            UndoHostState.push("تاریخچه پاک شد") {
+                viewModelScope.launch { historyDao.insertAll(rows) }
+            }
+        }
     }
 }
