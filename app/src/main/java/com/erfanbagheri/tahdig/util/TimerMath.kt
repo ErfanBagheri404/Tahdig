@@ -51,9 +51,12 @@ data class TimerState(
     /** True after the alarm fired; reset clears it. */
     val fired: Boolean = false,
 ) {
-    fun remainingMs(nowMs: Long): Long = if (running)
-        TimerMath.remaining(endsAtMs, nowMs, totalMs)
-    else pausedRemainingMs.coerceAtLeast(0L)
+    // Fired rows freeze at ۰۰:۰۰ — a recomposed tick past the end never shows ۵۹:۵۹.
+    fun remainingMs(nowMs: Long): Long = when {
+        fired -> 0L
+        running -> TimerMath.remaining(endsAtMs, nowMs, totalMs)
+        else -> pausedRemainingMs.coerceAtLeast(0L)
+    }
 
     /** Minutes+seconds display, Persian digits (۰۵:۱۲). */
     fun display(nowMs: Long): String =

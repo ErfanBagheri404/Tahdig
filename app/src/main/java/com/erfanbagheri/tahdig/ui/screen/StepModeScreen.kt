@@ -155,6 +155,10 @@ fun StepModeScreen(
     var manualKeepAwake by remember { mutableStateOf(false) }
     // Done state (#98): celebration covers the mode until a route is chosen.
     var showDone by rememberSaveable { mutableStateOf(false) }
+    // Timer center overlay (#95) — sits with the other ownership flags so the
+    // BackHandler and the voice session below can consult it (locals are
+    // order-sensitive in a composable body).
+    var showTimers by remember { mutableStateOf(false) }
 
     // ── Cook session state (#93) ───────────────────────────────────
     // Declared above the loader that writes them. Written on state changes only
@@ -225,9 +229,6 @@ fun StepModeScreen(
         com.erfanbagheri.tahdig.util.MisePlace.rowsOf(food?.ingredients ?: "")
             .map { com.erfanbagheri.tahdig.util.MisePlace.rowsFor(listOf(it), 1.0).first() }
     }
-
-    // ── Timer center (#95): overlay above the step view ──
-    var showTimers by remember { mutableStateOf(false) }
 
     // ── Equipment (#100): count in the top bar, full list in an overlay ──
     var showTools by remember { mutableStateOf(false) }
@@ -359,7 +360,12 @@ fun StepModeScreen(
     // plain exit once the done overlay owns the screen (#98).
     // Gated so a technique overlay sitting on top owns back while it is open.
     BackHandler(enabled = backEnabled) {
-        if (showDone) onBack() else goBackInMode()
+        // Overlay ownership order: timer center, then done, then the step.
+        when {
+            showTimers -> showTimers = false
+            showDone -> onBack()
+            else -> goBackInMode()
+        }
     }
 
     // ── Undo window (#98) ───────────────────────────────────────────
@@ -404,8 +410,9 @@ fun StepModeScreen(
     // or the mode leaves, so no mic is held (AC).
     val voiceSession = remember(appContext) {
         CookVoiceSession(appContext) { transcript ->
-            // Done overlay owns the screen (#98): no commands behind it.
-            if (showDone) return@CookVoiceSession
+            // Done (#98) and timer (#95) overlays own the screen: no commands
+            // behind them — «بعدی» must not move a step the user cannot see.
+            if (showDone || showTimers) return@CookVoiceSession
             val cmd = CookVoiceCommands.match(transcript)
             voiceEcho = cmd?.let { CookVoiceCommands.echoOf(it) } ?: CookVoiceCommands.UNKNOWN_ECHO
             Haptics.tap(view)
@@ -893,7 +900,11 @@ fun StepModeScreen(
 
             // Timer center (#95): covers the mode while open, back to the step after.
             if (showTimers) {
-                TimerCenterOverlay(onClose = { showTimers = false })
+                TimerCenterOverlay(
+                    onClose = { showTimers = false },
+                    // AC default: the current step's own duration text (editable).
+                    defaultName = steps.getOrNull(current) ?: "",
+                )
             }
 
             // Done state (#98): covers the whole mode until a route is chosen.

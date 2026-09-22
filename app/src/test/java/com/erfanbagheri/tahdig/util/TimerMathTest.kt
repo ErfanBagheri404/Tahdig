@@ -110,4 +110,17 @@ class TimerMathTest {
         val t = TimerState(1, "x", 10 * MIN, running = true, endsAtMs = T0 + 5 * MIN + 12_000L)
         assertEquals("۰۵:۱۲", t.display(T0))
     }
+
+    // ── self-review of PR #155 ────────────────────────────────────
+
+    @Test fun `a fired row freezes at zero`() {
+        val t = TimerState(1, "x", 10 * MIN, running = false, fired = true)
+        assertEquals(0L, t.remainingMs(T0))
+        assertEquals("۰۰:۰۰", t.display(T0))
+    }
+
+    @Test fun `a paused zero still displays zero`() {
+        val t = TimerState(1, "x", 10 * MIN, running = false, pausedRemainingMs = 0L)
+        assertEquals("۰۰:۰۰", t.display(T0))
+    }
 }

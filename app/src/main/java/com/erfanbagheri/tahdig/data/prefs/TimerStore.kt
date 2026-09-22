@@ -39,7 +39,12 @@ object TimerStore {
     /** Returns false when [MAX] is already running — the UI shows the Farsi hint. */
     fun add(context: Context, name: String, totalMs: Long): Boolean {
         if (_timers.value.size >= MAX || totalMs <= 0L) return false
-        val id = (_timers.value.maxOfOrNull { it.id } ?: 0L) + 1L
+        // Reuse the lowest free REQUEST slot (alarms address timers by id): with
+        // ≤MAX rows the only id that can be taken is 1..MAX, and a millis floor
+        // guards against any out-of-band row outside that range.
+        val used = _timers.value.map { it.id }.toSet()
+        val id = (1L..MAX).firstOrNull { it !in used }
+            ?: (System.currentTimeMillis().coerceAtLeast(MAX + 1L))
         val timer = TimerState(
             id = id,
             name = name.ifBlank { "تایمر" },

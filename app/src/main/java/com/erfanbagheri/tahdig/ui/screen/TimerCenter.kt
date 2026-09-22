@@ -115,11 +115,12 @@ fun TimerStrip(onOpen: () -> Unit, modifier: Modifier = Modifier) {
  * Max [TimerStore.MAX] concurrent — the add row disables with a Farsi hint.
  */
 @Composable
-fun TimerCenterOverlay(onClose: () -> Unit) {
+fun TimerCenterOverlay(onClose: () -> Unit, defaultName: String = "تایمر") {
     val context = LocalContext.current
     val timers by TimerStore.timers.collectAsState()
     val now = rememberNow()
-    var draftName by remember { mutableStateOf("") }
+    // AC: the name defaults to the step context, editable from the first keystroke.
+    var draftName by remember { mutableStateOf(defaultName) }
     var draftTime by remember { mutableStateOf("") }
     val atLimit = timers.size >= TimerStore.MAX
 
@@ -182,22 +183,24 @@ fun TimerCenterOverlay(onClose: () -> Unit) {
                     shape = RoundedCornerShape(12.dp),
                     colors = timerFieldColors(),
                 )
+                // «۱۰ دقیقه» parses as text; a bare «45» means seconds — the hint
+                // field must never accept input the parser would silently drop.
+                val secs = durationSeconds(draftTime)
+                val canAdd = !atLimit && secs != null
                 IconButton(
                     onClick = {
-                        val secs = draftTime.let { DurationParser.first(it)?.seconds }
                         if (secs != null && TimerStore.add(context, draftName, secs * 1000L)) {
-                            draftName = ""
+                            draftName = defaultName
                             draftTime = ""
                         }
                     },
                     // AC: UI disables add beyond the max.
-                    enabled = !atLimit && draftTime.isNotBlank(),
+                    enabled = canAdd,
                 ) {
                     Icon(
                         Icons.Default.Add,
                         contentDescription = "تایمر جدید",
-                        tint = if (!atLimit && draftTime.isNotBlank())
-                            MaterialTheme.colorScheme.primary
+                        tint = if (canAdd) MaterialTheme.colorScheme.primary
                         else MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
@@ -331,6 +334,14 @@ private fun TimerRow(
                 .background(MaterialTheme.colorScheme.outlineVariant),
         )
     }
+}
+
+/** «۱۰ دقیقه» via DurationParser; a bare «45» / «۴۵» is read as seconds. */
+private fun durationSeconds(raw: String): Long? {
+    val text = raw.trim()
+    if (text.isEmpty()) return null
+    DurationParser.first(text)?.let { return it.seconds }
+    return PersianText.toAsciiDigits(text).toLongOrNull()?.takeIf { it > 0 }
 }
 
 @Composable

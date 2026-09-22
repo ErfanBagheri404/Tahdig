@@ -30,7 +30,7 @@ class TimerReceiver : BroadcastReceiver() {
 
         if (id == TimerScheduler.STEP_ID) {
             // Cook-mode step mirror: never touches the store.
-            show(context, "زمان این مرحله تمام شد", "برو سراغ مرحله بعد")
+            fire(context, NOTIF_BASE + 999, "زمان این مرحله تمام شد", "برو سراغ مرحله بعد")
             return
         }
         // Stale alarm guard: a paused/cancelled timer must not notify (#95
@@ -38,10 +38,12 @@ class TimerReceiver : BroadcastReceiver() {
         if (timer == null || !timer.running) return
 
         TimerStore.markFired(timer.id)
-        show(context, timer.name, "زمان تایمر تمام شد ⏰")
+        // One notification id per timer id: two timers firing minutes apart
+        // appear as two rows AND race on the same id collapses safely.
+        fire(context, NOTIF_BASE + timer.id.toInt(), timer.name, "زمان تایمر تمام شد ⏰")
     }
 
-    private fun show(context: Context, title: String, text: String) {
+    private fun fire(context: Context, notificationId: Int, title: String, text: String) {
         // POST_NOTIFICATIONS is runtime-granted on API 33+; skip quietly when denied.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) !=
@@ -65,10 +67,8 @@ class TimerReceiver : BroadcastReceiver() {
             .setAutoCancel(true)
             .setContentIntent(tap)
             .build()
-        NotificationManagerCompat.from(context).notify(NOTIF_BASE + idSafe(title), notif)
+        NotificationManagerCompat.from(context).notify(notificationId, notif)
     }
-
-    private fun idSafe(title: String): Int = title.hashCode() and 0xFFFF
 
     companion object {
         const val EXTRA_ID = "timer_id"
