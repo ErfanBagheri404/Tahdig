@@ -154,14 +154,17 @@ fun LeftoverScreen(
                     ),
                 )
                 Spacer(Modifier.width(8.dp))
+                // Enable only on a draft that yields at least one real part —
+                // «،،» is not blank but add() would drop it silently.
+                val hasContent = draft.split(',', '،').any { it.isNotBlank() }
                 IconButton(
                     onClick = { viewModel.add() },
-                    enabled = draft.isNotBlank(),
+                    enabled = hasContent,
                 ) {
                     Icon(
                         Icons.Default.Add,
                         contentDescription = "افزودن",
-                        tint = if (draft.isNotBlank()) MaterialTheme.colorScheme.primary
+                        tint = if (hasContent) MaterialTheme.colorScheme.primary
                         else MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
