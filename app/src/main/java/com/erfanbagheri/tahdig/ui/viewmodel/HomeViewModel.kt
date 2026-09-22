@@ -171,17 +171,24 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /**
+     * Leftovers for an ARBITRARY dish (#98: cooked via cook-mode's done state —
+     * the home suggestion may be a different dish entirely). Surfaces the same
+     * prompt card as [markCooked].
+     */
+    fun showLeftoversFor(food: FoodEntity) {
+        viewModelScope.launch {
+            val all = foodDao.observeAll().first()
+            _leftoverSuggestions.value = LeftoverMatcher.findLeftovers(food, all)
+        }
+    }
+
+    /**
      * User says they cooked the current dish. Shows leftover suggestions:
      * dishes sharing ≥2 ingredients with the cooked dish.
      */
     fun markCooked() {
-        viewModelScope.launch {
-            val cooked = _suggestion.value ?: return@launch
-            val all = foodDao.observeAll().first()
-            val suggestions = LeftoverMatcher.findLeftovers(cooked, all)
-            _leftoverSuggestions.value = suggestions
-            roll()
-        }
+        _suggestion.value?.let { showLeftoversFor(it) }
+        roll()
     }
 
     /** Dismiss the leftover suggestion card. */
