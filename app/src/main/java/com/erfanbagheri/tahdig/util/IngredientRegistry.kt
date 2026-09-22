@@ -129,6 +129,19 @@ object IngredientRegistry {
     }
 
     /** Display bucket for an item: the canonical aisle, else the old keyword bucket. */
+    /**
+     * The ~20 staples worth a one-tap counter row (#109), taken from the real
+     * glossary so every entry resolves and carries its aisle. Order is the
+     * store route, so the counter block reads like the shopping list.
+     */
+    fun commonStaples(): List<Ingredient> =
+        byId.values
+            .filter { it.aisle in StapleAisles }
+            .sortedWith(compareBy({ StapleAisles.indexOf(it.aisle) }, { it.fa }))
+            .take(20)
+
+    private val StapleAisles = listOf("غلات", "پروتئین", "لبنیات", "سبزیجات", "حبوبات")
+
     fun aisleOf(item: String): String =
         resolve(item)?.aisle ?: IngredientParser.categoryOf(item)
 

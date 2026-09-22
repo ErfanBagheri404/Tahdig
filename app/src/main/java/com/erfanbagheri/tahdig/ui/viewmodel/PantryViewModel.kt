@@ -9,6 +9,7 @@ import com.erfanbagheri.tahdig.data.local.entity.PantryItemEntity
 import com.erfanbagheri.tahdig.util.PantryMatcher
 import com.erfanbagheri.tahdig.util.ExpiryMath
 import com.erfanbagheri.tahdig.util.PersianText
+import com.erfanbagheri.tahdig.util.StapleCounter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -120,5 +121,33 @@ class PantryViewModel(app: Application) : AndroidViewModel(app) {
 
     fun remove(id: Long) = viewModelScope.launch { pantryDao.deleteById(id) }
 
-    fun clearAll() = viewModelScope.launch { pantryDao.clearAll() }
+    // ── tap-counters (#109) ────────────────────────────────────────────
+
+    /**
+     * One −/+ tap. Bounds live in [StapleCounter] (pure, unit-tested); 0 is a
+     * legal shown value — the row stays visible and removable, just stockless.
+     */
+    fun stepQuantity(id: Long, current: Int, delta: Int) = viewModelScope.launch {
+        pantryDao.setQuantity(id, StapleCounter.step(current, delta))
+    }
+
+    /** «همه پر شد»: every staple back to exactly one — "stocked", not MAX. */
+    fun fillAll() = viewModelScope.launch { pantryDao.fillAll() }
+
+    /** Armed undo snapshot after a bulk clear; null/empty = no undo to show. */
+    private val _clearUndo = MutableStateFlow<List<PantryItemEntity>>(emptyList())
+    val clearUndo: StateFlow<List<PantryItemEntity>> = _clearUndo.asStateFlow()
+
+    /** Bulk clear: snapshot first so undo restores ids + counts byte-for-byte. */
+    fun clearAll() = viewModelScope.launch {
+        _clearUndo.value = StapleCounter.snapshotForClear(items.value)
+        pantryDao.clearAll()
+    }
+
+    /** «بازگردانی»: exact re-insert of the snapshot, then disarm. */
+    fun restoreClear() = viewModelScope.launch {
+        val snap = _clearUndo.value
+        if (snap.isNotEmpty()) pantryDao.insertAll(snap)
+        _clearUndo.value = emptyList()
+    }
 }
