@@ -39,7 +39,7 @@ import com.erfanbagheri.tahdig.data.local.seed.SeedLoader
         PantryItemEntity::class,
         MilestoneCheckEntity::class,
     ],
-    version = 7,
+    version = 8,
     exportSchema = true,
 )
 abstract class TahdigDatabase : RoomDatabase() {

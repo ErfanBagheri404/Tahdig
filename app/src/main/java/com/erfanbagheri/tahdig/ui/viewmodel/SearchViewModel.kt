@@ -7,6 +7,7 @@ import com.erfanbagheri.tahdig.data.local.TahdigDatabase
 import com.erfanbagheri.tahdig.data.local.entity.CategoryEntity
 import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
 import com.erfanbagheri.tahdig.util.DietFilter
+import com.erfanbagheri.tahdig.util.Flavor
 import com.erfanbagheri.tahdig.util.PersianText
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -41,6 +42,16 @@ class SearchViewModel(app: Application) : AndroidViewModel(app) {
     /** Comma/،-separated terms the user cannot eat — dish must contain none. */
     private val _excluded = MutableStateFlow("")
     val excluded: StateFlow<String> = _excluded.asStateFlow()
+    /** Selected taste axes (#89) — AND semantics: dish must carry every selected axis. */
+    private val _flavors = MutableStateFlow<Set<Flavor>>(emptySet())
+    val flavors: StateFlow<Set<Flavor>> = _flavors.asStateFlow()
+
+    /**
+     * Dishes carrying at least one taste tag — the chip row hides itself at zero
+     * instead of showing an empty filter (acceptance: «Zero flavor tags → hidden»).
+     */
+    val flavorCount: StateFlow<Int> = foodDao.observeFlavorCount()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
 
     val categories: StateFlow<List<CategoryEntity>> = categoryDao.observeAll()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
@@ -55,6 +66,13 @@ class SearchViewModel(app: Application) : AndroidViewModel(app) {
         }
         .combine(_diet) { foods, diet ->
             if (diet == null) foods else foods.filter { diet.matches(it.tags) }
+        }
+        .combine(_flavors) { foods, selected ->
+            if (selected.isEmpty()) foods
+            else foods.filter { food ->
+                val have = food.flavors.split(',').toSet()
+                selected.all { it.name in have }
+            }
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
@@ -74,6 +92,13 @@ class SearchViewModel(app: Application) : AndroidViewModel(app) {
 
     fun onDietSelect(diet: DietFilter?) {
         _diet.value = if (_diet.value == diet) null else diet
+    }
+
+    /** Multi-select toggle across the taste axes (#89) — AND, not OR. */
+    fun onFlavorToggle(flavor: Flavor) {
+        _flavors.value = _flavors.value.toMutableSet().apply {
+            if (!remove(flavor)) add(flavor)
+        }
     }
 
     /**

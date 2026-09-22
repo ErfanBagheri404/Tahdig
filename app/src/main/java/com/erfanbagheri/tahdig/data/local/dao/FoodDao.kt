@@ -26,6 +26,10 @@ interface FoodDao {
     @Query("SELECT COUNT(*) FROM foods")
     fun observeCount(): Flow<Int>
 
+    /** Dishes carrying at least one taste tag (#89) — powers the hidden-at-zero chip row. */
+    @Query("SELECT COUNT(*) FROM foods WHERE flavors != ''")
+    fun observeFlavorCount(): Flow<Int>
+
     @Query("SELECT COUNT(*) FROM foods")
     suspend fun count(): Int
 
