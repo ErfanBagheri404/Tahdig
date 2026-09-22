@@ -41,6 +41,8 @@ fun CategoryBrowseScreen(
     viewModel: CategoryViewModel,
     onCategoryClick: (Long) -> Unit,
     onBack: () -> Unit,
+    /** Standalone «تکنیک‌ها» browse entry (#101). */
+    onTechniques: () -> Unit = {},
 ) {
     val categories by viewModel.categories.collectAsState()
 
@@ -56,6 +58,31 @@ fun CategoryBrowseScreen(
             ) {
                 items(categories, key = { it.id }) { cat ->
                     CategoryTile(cat, onClick = { onCategoryClick(cat.id) })
+                }
+                // Technique library entry (#101) — knowledge, not a dish category.
+                item(key = "techniques") {
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable(onClick = onTechniques),
+                        shape = RoundedCornerShape(14.dp),
+                        color = MaterialTheme.colorScheme.surfaceVariant,
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(vertical = 20.dp, horizontal = 8.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            Text(text = "📖", fontSize = 32.sp)
+                            Spacer(Modifier.height(8.dp))
+                            Text(
+                                text = "تکنیک‌ها",
+                                style = MaterialTheme.typography.labelLarge,
+                                fontFamily = YekanBakh,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                textAlign = TextAlign.Center,
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -117,7 +144,7 @@ fun CategoryDishesScreen(
 }
 
 @Composable
-private fun Header(title: String, onBack: () -> Unit) {
+internal fun Header(title: String, onBack: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
