@@ -45,6 +45,8 @@ fun CategoryBrowseScreen(
     onTechniques: () -> Unit = {},
     /** Standalone «مناسبت‌ها» browse entry (#88). */
     onOccasions: () -> Unit = {},
+    /** Standalone «کاوش آشپزی» browse entry (#90). */
+    onCuisineMap: () -> Unit = {},
 ) {
     val categories by viewModel.categories.collectAsState()
 
@@ -103,6 +105,31 @@ fun CategoryBrowseScreen(
                             Spacer(Modifier.height(8.dp))
                             Text(
                                 text = "مناسبت‌ها",
+                                style = MaterialTheme.typography.labelLarge,
+                                fontFamily = YekanBakh,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                textAlign = TextAlign.Center,
+                            )
+                        }
+                    }
+                }
+                // Cuisine map entry (#90) — deep-linked from the top of Categories.
+                item(key = "cuisine-map") {
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable(onClick = onCuisineMap),
+                        shape = RoundedCornerShape(14.dp),
+                        color = MaterialTheme.colorScheme.surfaceVariant,
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(vertical = 20.dp, horizontal = 8.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            Text(text = "🗺", fontSize = 32.sp)
+                            Spacer(Modifier.height(8.dp))
+                            Text(
+                                text = "کاوش آشپزی",
                                 style = MaterialTheme.typography.labelLarge,
                                 fontFamily = YekanBakh,
                                 color = MaterialTheme.colorScheme.onSurface,

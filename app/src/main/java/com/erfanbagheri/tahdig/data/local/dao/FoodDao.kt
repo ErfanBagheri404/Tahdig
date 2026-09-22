@@ -26,6 +26,10 @@ interface FoodDao {
     @Query("SELECT COUNT(*) FROM foods")
     fun observeCount(): Flow<Int>
 
+    /** Dishes of one cuisine for the exploration map (#90). */
+    @Query("SELECT * FROM foods WHERE cuisine = :cuisine AND is_blocked = 0")
+    fun observeByCuisine(cuisine: String): Flow<List<FoodEntity>>
+
     /** Dishes carrying at least one taste tag (#89) — powers the hidden-at-zero chip row. */
     @Query("SELECT COUNT(*) FROM foods WHERE flavors != ''")
     fun observeFlavorCount(): Flow<Int>

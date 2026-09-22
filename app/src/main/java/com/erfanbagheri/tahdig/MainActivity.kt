@@ -56,6 +56,8 @@ import com.erfanbagheri.tahdig.ui.screen.SettingsScreen
 import com.erfanbagheri.tahdig.ui.screen.StepModeScreen
 import com.erfanbagheri.tahdig.ui.screen.ShoppingListScreen
 import com.erfanbagheri.tahdig.ui.screen.OccasionsScreen
+import com.erfanbagheri.tahdig.ui.screen.CuisineMapScreen
+import com.erfanbagheri.tahdig.ui.screen.RegionDishesScreen
 import com.erfanbagheri.tahdig.ui.screen.TechniqueDetailScreen
 import com.erfanbagheri.tahdig.ui.screen.TechniquesScreen
 import com.erfanbagheri.tahdig.ui.theme.TahdigTheme
@@ -130,6 +132,9 @@ private fun TahdigApp() {
     var showHeatmap by rememberSaveable { mutableStateOf(false) }
     var browseTechniques by rememberSaveable { mutableStateOf(false) }
     var browseOccasions by rememberSaveable { mutableStateOf(false) }
+    var browseCuisineMap by rememberSaveable { mutableStateOf(false) }
+    /** Region opened from the map (#90) — "" = map list, else the region key. */
+    var regionRoute by rememberSaveable { mutableStateOf("") }
     // Technique opened from a step: back must restore the exact step, so the step
     // screen stays on the back stack and this only overlays the technique page.
     var techniqueRoute by rememberSaveable { mutableStateOf("") }
@@ -228,6 +233,7 @@ private fun TahdigApp() {
                         onBack = { browseCategories = false },
                         onTechniques = { browseTechniques = true },
                         onOccasions = { browseOccasions = true },
+                        onCuisineMap = { browseCuisineMap = true },
                     )
                 }
                 showPantry -> {
@@ -321,6 +327,20 @@ private fun TahdigApp() {
                 OccasionsScreen(
                     onBack = { browseOccasions = false },
                     onFoodClick = { id -> browseOccasions = false; detailFoodId = id },
+                )
+            }
+            // Cuisine map (#90): region detail overlays the map so back returns to it.
+            if (browseCuisineMap && regionRoute.isEmpty()) {
+                CuisineMapScreen(
+                    onBack = { browseCuisineMap = false },
+                    onRegionClick = { regionRoute = it },
+                )
+            }
+            if (browseCuisineMap && regionRoute.isNotEmpty()) {
+                RegionDishesScreen(
+                    cuisine = regionRoute,
+                    onFoodClick = { id -> regionRoute = ""; browseCuisineMap = false; detailFoodId = id },
+                    onBack = { regionRoute = "" },
                 )
             }
             if (browseTechniques && techniqueRoute.isEmpty()) {
