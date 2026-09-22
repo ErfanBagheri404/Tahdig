@@ -124,6 +124,10 @@ fun StepModeScreen(
     val stepDuration = remember(current, steps) {
         steps.getOrNull(current)?.let { DurationParser.first(it) }
     }
+    // Per-step cues (#97): read from this step's own text every step change.
+    val stepText = remember(current, steps) { steps.getOrElse(current) { "" } }
+    val stepHeat = remember(stepText) { com.erfanbagheri.tahdig.util.HeatTagger.levelOf(stepText) }
+    val stepCues = remember(stepText) { com.erfanbagheri.tahdig.util.DonenessCues.of(stepText) }
     var remaining by remember(current) { mutableLongStateOf(stepDuration?.seconds ?: 0L) }
     var running by remember(current) { mutableStateOf(false) }
     var fired by remember(current) { mutableStateOf(false) }
@@ -312,6 +316,17 @@ fun StepModeScreen(
                                 fontFamily = YekanBakh,
                                 color = MaterialTheme.colorScheme.onSecondaryContainer,
                             )
+                            // Heat glyph beside the timer (#97) — flat text, no icons.
+                            if (stepHeat != null) {
+                                Spacer(Modifier.width(8.dp))
+                                Text(
+                                    text = com.erfanbagheri.tahdig.util.HeatTagger
+                                        .glyph(stepHeat) + " " + stepHeat.label,
+                                    style = MaterialTheme.typography.labelLarge,
+                                    fontFamily = YekanBakh,
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                )
+                            }
                         }
                         Spacer(Modifier.height(4.dp))
                         Text(
@@ -341,6 +356,38 @@ fun StepModeScreen(
                             ) {
                                 Text("از نو", fontFamily = YekanBakh)
                             }
+                        }
+                    }
+                }
+            }
+
+            // ── Doneness cues (#97) ────────────────────────────────────────
+            // Persistently in step view AND under the countdown: same slot, so the
+            // final-minute appearance can never cause a layout jump — only the
+            // color changes when ≤60s remain.
+            if (stepCues.isNotEmpty()) {
+                val cuesHot = stepDuration != null && (running || fired) && remaining <= 60L
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    stepCues.forEach { cue ->
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
+                        ) {
+                            Text(
+                                text = "□",
+                                style = MaterialTheme.typography.labelLarge,
+                                fontFamily = YekanBakh,
+                                color = if (cuesHot) MaterialTheme.colorScheme.primary
+                                else MaterialTheme.colorScheme.outlineVariant,
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            Text(
+                                text = cue,
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontFamily = YekanBakh,
+                                color = if (cuesHot) MaterialTheme.colorScheme.primary
+                                else MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
                         }
                     }
                 }
