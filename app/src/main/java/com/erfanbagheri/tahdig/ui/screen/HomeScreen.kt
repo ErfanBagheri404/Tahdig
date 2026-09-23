@@ -11,15 +11,24 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.material.icons.filled.Block
+import androidx.compose.material.icons.filled.Casino
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -27,19 +36,31 @@ import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.Fill
+import androidx.compose.ui.graphics.drawscope.withTransform
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.graphics.Color
@@ -54,8 +75,16 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
 import com.erfanbagheri.tahdig.ui.components.DishPhoto
+import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
+import com.erfanbagheri.tahdig.util.DietFilter
 import com.erfanbagheri.tahdig.util.Haptics
+import com.erfanbagheri.tahdig.util.MealTimeHelper
 import com.erfanbagheri.tahdig.util.PersianText
+import com.erfanbagheri.tahdig.util.RouletteMath
+import com.erfanbagheri.tahdig.util.ShakeDetector
+import com.erfanbagheri.tahdig.util.ShakeWatcher
+import kotlin.math.cos
+import kotlin.math.sin
 import com.erfanbagheri.tahdig.ui.viewmodel.HomeViewModel
 
 @Composable
@@ -78,6 +107,25 @@ fun HomeScreen(
     val leftoverSuggestions by viewModel.leftoverSuggestions.collectAsState()
     val occasion by viewModel.occasion.collectAsState()
     val occasionDishes by viewModel.occasionDishes.collectAsState()
+    // Dinner roulette (#123)
+    val spinOpen by viewModel.spinOpen.collectAsState()
+    val spinPool by viewModel.spinPool.collectAsState()
+    val spinPick by viewModel.spinPick.collectAsState()
+    val spinToken by viewModel.spinToken.collectAsState()
+    val spinBucket by viewModel.spinBucket.collectAsState()
+    val spinDiet by viewModel.spinDiet.collectAsState()
+    val shakeSpin by viewModel.shakeSpin.collectAsState()
+    val shakeSensitivity by viewModel.shakeSensitivity.collectAsState()
+
+    // Shake-to-spin (#123): the watcher only lives while this screen does —
+    // entering cook mode disposes it, so the two gestures can't collide.
+    DisposableEffect(view, shakeSpin, shakeSensitivity) {
+        val watcher = ShakeWatcher(view.context) { viewModel.openSpin() }
+        watcher.threshold = ShakeDetector.thresholdFor(shakeSensitivity)
+        watcher.enabled = shakeSpin
+        if (shakeSpin) watcher.start()
+        onDispose { watcher.stop() }
+    }
     // Refresh day-dependent state when app returns to foreground (midnight-safe).
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
@@ -129,6 +177,9 @@ fun HomeScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                // The action row (چرخوندن incl.) fell off the bottom once the
+                // nutrition/streak sections stacked up — scroll instead of clipping.
+                .verticalScroll(rememberScrollState())
                 .padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -361,7 +412,27 @@ fun HomeScreen(
                 )
             }
 
-            Spacer(Modifier.weight(1f))
+            // Spin sheet (#123) — wheel of the current filter pool.
+            if (spinOpen) {
+                SpinSheet(
+                    pool = spinPool,
+                    pick = spinPick,
+                    token = spinToken,
+                    bucket = spinBucket,
+                    diet = spinDiet,
+                    onPickFilters = { b, d -> viewModel.spinWith(b, d) },
+                    onVeto = viewModel::vetoSpin,
+                    onClose = viewModel::closeSpin,
+                    onOpenDish = { id ->
+                        viewModel.closeSpin()
+                        onFoodClick(id)
+                    },
+                    onLanded = { Haptics.confirm(view) },
+                )
+            }
+
+            // No weight() here — a scrolling column has unbounded height.
+            Spacer(Modifier.height(16.dp))
 
             // Action buttons
             Row(
@@ -416,6 +487,23 @@ fun HomeScreen(
                     )
                     Spacer(Modifier.width(8.dp))
                     Text("غذای دیگه")
+                }
+
+                // Dinner roulette (#123)
+                Button(
+                    onClick = {
+                        Haptics.tap(view)
+                        viewModel.openSpin()
+                    },
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Casino,
+                        contentDescription = null,
+                        modifier = Modifier.size(20.dp),
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Text("چرخوندن")
                 }
 
                 // Block current
@@ -668,4 +756,213 @@ private fun difficultyLabel(d: String): String = when (d.uppercase()) {
     "MEDIUM" -> "متوسط"
     "HARD" -> "سخت"
     else -> d
+}
+
+/** Meal buckets as (key, Farsi label) pairs for the sheet's زمان chips. */
+private val MEAL_BUCKETS = listOf(
+    MealTimeHelper.BREAKFAST to MealTimeHelper.BREAKFAST_FA,
+    MealTimeHelper.LUNCH to MealTimeHelper.LUNCH_FA,
+    MealTimeHelper.DINNER to MealTimeHelper.DINNER_FA,
+    MealTimeHelper.SNACK to MealTimeHelper.SNACK_FA,
+    MealTimeHelper.LIGHT_DINNER to MealTimeHelper.LIGHT_DINNER_FA,
+)
+
+/**
+ * Dinner roulette (#123): wheel of the current filter pool.
+ *
+ * The winner is decided up-front in the ViewModel ([RouletteMath.pick]) —
+ * this animation only *lands* it, so a dropped frame can never change the
+ * dish. Labels orbit with their slice and stay upright.
+ */
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@Composable
+private fun SpinSheet(
+    pool: List<FoodEntity>,
+    pick: FoodEntity?,
+    token: Long,
+    bucket: String,
+    diet: DietFilter?,
+    onPickFilters: (String, DietFilter?) -> Unit,
+    onVeto: () -> Unit,
+    onClose: () -> Unit,
+    onOpenDish: (Long) -> Unit,
+    onLanded: () -> Unit,
+) {
+    ModalBottomSheet(onDismissRequest = onClose) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .padding(bottom = 24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                text = "چرخوندن",
+                style = MaterialTheme.typography.titleLarge,
+                fontFamily = YekanBakh,
+            )
+            Spacer(Modifier.height(12.dp))
+
+            // Pre-spin filters (#123): زمان + رژیمی — changing either
+            // rebuilds the pool and spins again.
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                MEAL_BUCKETS.forEach { (key, fa) ->
+                    FilterChip(
+                        selected = bucket == key,
+                        onClick = { onPickFilters(key, diet) },
+                        label = { Text(fa, fontFamily = YekanBakh) },
+                    )
+                }
+            }
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp),
+            ) {
+                FilterChip(
+                    selected = diet == null,
+                    onClick = { onPickFilters(bucket, null) },
+                    label = { Text("همه", fontFamily = YekanBakh) },
+                )
+                DietFilter.values().forEach { d ->
+                    FilterChip(
+                        selected = diet == d,
+                        onClick = { onPickFilters(bucket, d) },
+                        label = { Text(d.label, fontFamily = YekanBakh) },
+                    )
+                }
+            }
+            Spacer(Modifier.height(20.dp))
+
+            if (pool.isEmpty() || pick == null) {
+                Text(
+                    text = "چیزی برای چرخوندن نیست",
+                    fontFamily = YekanBakh,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Spacer(Modifier.height(8.dp))
+                TextButton(onClick = onClose) { Text("بستن", fontFamily = YekanBakh) }
+                return@Column
+            }
+
+            val rotation = remember { Animatable(0f) }
+            var landed by remember(token) { mutableStateOf(false) }
+            val winnerIndex = pool.indexOfFirst { it.id == pick.id }
+            val target = RouletteMath.landingDegrees(winnerIndex, pool.size)
+            LaunchedEffect(token) {
+                landed = false
+                rotation.snapTo(0f)
+                rotation.animateTo(target, tween(1600))
+                landed = true
+                onLanded()
+            }
+
+            // Theme reads happen in composition — DrawScopes aren't composable.
+            val cWin = MaterialTheme.colorScheme.primaryContainer
+            val cEven = MaterialTheme.colorScheme.surfaceVariant
+            val cOdd = MaterialTheme.colorScheme.secondaryContainer
+            val cSpoke = MaterialTheme.colorScheme.outline.copy(alpha = 0.35f)
+            val cPointer = MaterialTheme.colorScheme.primary
+            val cLabel = MaterialTheme.colorScheme.onSurface
+
+            Box(
+                modifier = Modifier.size(280.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                // Slices spin…
+                Canvas(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .graphicsLayer(rotationZ = rotation.value),
+                ) {
+                    val arc = 360f / pool.size
+                    val r = size.minDimension / 2f
+                    pool.forEachIndexed { i, food ->
+                        val start = -90f + i * arc
+                        val fill = when {
+                            food.id == pick.id && landed -> cWin
+                            i % 2 == 0 -> cEven
+                            else -> cOdd
+                        }
+                        drawArc(
+                            color = fill,
+                            startAngle = start,
+                            sweepAngle = arc,
+                            useCenter = true,
+                            style = Fill,
+                        )
+                        // Hairline border on the arc curve…
+                        drawArc(
+                            color = cSpoke,
+                            startAngle = start,
+                            sweepAngle = arc,
+                            useCenter = false,
+                            style = Stroke(width = 1f),
+                        )
+                        // …and on each radial spoke.
+                        val rad = Math.toRadians(start.toDouble())
+                        drawLine(
+                            color = cSpoke,
+                            start = center,
+                            end = androidx.compose.ui.geometry.Offset(
+                                center.x + (r * sin(rad)).toFloat(),
+                                center.y - (r * cos(rad)).toFloat(),
+                            ),
+                            strokeWidth = 1f,
+                        )
+                    }
+                }
+
+                // …labels orbit with their slice, always upright.
+                val ring = 96.dp
+                pool.forEachIndexed { i, food ->
+                    val ang = Math.toRadians(RouletteMath.sliceCenterDeg(i, pool.size) + rotation.value)
+                    Text(
+                        text = if (food.name.length > 12) food.name.take(11) + "…" else food.name,
+                        style = MaterialTheme.typography.labelSmall,
+                        fontFamily = YekanBakh,
+                        color = cLabel,
+                        maxLines = 1,
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .offset(x = (ring.value * sin(ang)).dp, y = (-ring.value * cos(ang)).dp),
+                    )
+                }
+
+                // Static pointer — the wheel comes to it, not the reverse.
+                Canvas(modifier = Modifier.fillMaxSize()) {
+                    val w = size.width
+                    val p = androidx.compose.ui.graphics.Path().apply {
+                        moveTo(w / 2f - 10f, 0f)
+                        lineTo(w / 2f + 10f, 0f)
+                        lineTo(w / 2f, 24f)
+                        close()
+                    }
+                    drawPath(p, cPointer)
+                }
+            }
+
+            Spacer(Modifier.height(16.dp))
+            Text(
+                text = pick.name,
+                style = MaterialTheme.typography.titleMedium,
+                fontFamily = YekanBakh,
+                textAlign = TextAlign.Center,
+            )
+            Spacer(Modifier.height(12.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Button(onClick = { onOpenDish(pick.id) }) {
+                    Text("می‌بینمش", fontFamily = YekanBakh)
+                }
+                OutlinedButton(onClick = onVeto) {
+                    Text("نه", fontFamily = YekanBakh)
+                }
+            }
+            TextButton(onClick = onClose) { Text("بستن", fontFamily = YekanBakh) }
+        }
+    }
 }

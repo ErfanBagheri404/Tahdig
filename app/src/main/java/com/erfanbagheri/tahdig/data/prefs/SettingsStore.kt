@@ -30,6 +30,7 @@ object SettingsStore {
     private const val KEY_FREEZE_DECLINED = "streak_freeze_declined" // ISO day refused (#120)
     private const val KEY_ALLERGENS = "allergens"              // JSON set (#112)
     private const val KEY_ALLERGEN_HIDE = "allergen_hide"      // search-wide hide toggle (#112)
+    private const val KEY_SHAKE_SPIN = "shake_spin"            // shake-to-spin roulette (#123)
 
     private lateinit var prefs: SharedPreferences
     private val _themeMode = MutableStateFlow(0)
@@ -87,6 +88,10 @@ object SettingsStore {
     private val _allergenHide = MutableStateFlow(false)
     val allergenHide: StateFlow<Boolean> = _allergenHide
 
+    // ── Shake-to-spin roulette (#123) ──────────────────────────────
+    private val _shakeSpin = MutableStateFlow(false)
+    val shakeSpin: StateFlow<Boolean> = _shakeSpin
+
     private val js = kotlinx.serialization.json.Json
 
     private fun loadList(key: String): List<String> =
@@ -125,6 +130,7 @@ object SettingsStore {
         _freezeDeclinedDay.value = prefs.getString(KEY_FREEZE_DECLINED, "") ?: ""
         _allergens.value = loadSet(KEY_ALLERGENS)
         _allergenHide.value = prefs.getBoolean(KEY_ALLERGEN_HIDE, false)
+        _shakeSpin.value = prefs.getBoolean(KEY_SHAKE_SPIN, false)
         grantFreezeIfNeeded()
     }
 
@@ -177,6 +183,12 @@ object SettingsStore {
     fun setAllergenHide(on: Boolean) {
         prefs.edit().putBoolean(KEY_ALLERGEN_HIDE, on).apply()
         _allergenHide.value = on
+    }
+
+    /** Shake-to-spin (#123), off by default — shares the sensitivity slider. */
+    fun setShakeSpin(on: Boolean) {
+        prefs.edit().putBoolean(KEY_SHAKE_SPIN, on).apply()
+        _shakeSpin.value = on
     }
 
     /** Persist the full aisle-manager state in one write (#108). */
