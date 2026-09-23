@@ -218,6 +218,9 @@ private fun TahdigApp() {
                         },
                         onCooked = { f ->
                             homeVm.showLeftoversFor(f)
+                            // Journal stamp (#124) — same event as the history
+                            // and nutrition rows, and the prompt rides Home.
+                            homeVm.stampCook(f.id)
                             detailFoodId = -1L
                             stepModeFoodId = -1L
                             stepModeResume = false
@@ -321,9 +324,11 @@ private fun TahdigApp() {
                 selectedTab == 2 -> {
                     val fvm: FavoritesViewModel = viewModel()
                     val hvm: HistoryViewModel = viewModel()
+                    val jvm: com.erfanbagheri.tahdig.ui.viewmodel.JournalViewModel = viewModel()
                     FavoritesScreen(
                         favoritesViewModel = fvm,
                         historyViewModel = hvm,
+                        journalViewModel = jvm,
                         onFoodClick = { detailFoodId = it },
                     )
                 }
