@@ -22,6 +22,8 @@ class SettingsViewModel(app: Application) : AndroidViewModel(app) {
 
     fun setProfile(p: com.erfanbagheri.tahdig.util.DailyBudget.Profile) = SettingsStore.setProfile(p)
 
+
+
     fun setThemeMode(mode: Int) = SettingsStore.setThemeMode(mode)
 
     fun setDailyNotify(context: android.content.Context, enabled: Boolean) =
