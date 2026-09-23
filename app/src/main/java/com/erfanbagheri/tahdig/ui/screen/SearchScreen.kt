@@ -60,6 +60,7 @@ fun SearchScreen(
     val diet by viewModel.diet.collectAsState()
     val ingredients by viewModel.ingredients.collectAsState()
     val excluded by viewModel.excluded.collectAsState()
+    val nutriAb by viewModel.nutriAb.collectAsState()
     val flavors by viewModel.flavors.collectAsState()
     val flavorCount by viewModel.flavorCount.collectAsState()
     val categories by viewModel.categories.collectAsState()
@@ -221,6 +222,16 @@ fun SearchScreen(
                         label = d.label,
                         selected = diet == d,
                         onClick = { viewModel.onDietSelect(d) },
+                    )
+                }
+                // Nutri-Score A-B (#111). Kept in the diet row because it is
+                // the same kind of question — and it only ever keeps dishes
+                // whose grade came from real data.
+                item {
+                    CategoryChip(
+                        label = "نمره A-B",
+                        selected = nutriAb,
+                        onClick = { viewModel.onNutriAbToggle(!nutriAb) },
                     )
                 }
             }

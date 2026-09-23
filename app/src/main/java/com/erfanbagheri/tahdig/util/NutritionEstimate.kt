@@ -3,11 +3,11 @@ package com.erfanbagheri.tahdig.util
 /**
  * Estimated nutritional info for a dish. Two tiers:
  *
- * 1. REAL — the dish's ingredients are covered by [NutritionDB] (Open Food Facts,
+ * 1. REAL — the dish's ingredients are covered by [NutritionDB] (USDA SR Legacy,
  *    per-100g). Summed over the dish's ingredient list. Badge: "واقعی".
  * 2. Fallback — the per-category heuristic in [estimateHeuristic]. Badge: "تخمینی".
  *
- * ponytail: OFF gives per-100g but the seed has no gram amounts per ingredient,
+ * ponytail: the source gives per-100g but the seed has no gram amounts per ingredient,
  * so the "real" figure assumes equal 100g shares of every listed ingredient.
  * A gram-weights table would make this exact; add one when the data exists.
  */
@@ -55,8 +55,8 @@ object NutritionEstimate {
     data class Real(val info: Info, val covered: Int, val total: Int)
 
     /**
-     * Sum OFF macros over the dish's ingredient list (each as its 100g share).
-     * Returns null when fewer than [minCovered] ingredients have OFF data —
+     * Sum real macros over the dish's ingredient list (each as its 100g share).
+     * Returns null when fewer than [minCovered] ingredients have real data —
      * then the caller falls back to the heuristic with the "تخمینی" badge.
      */
     fun estimateFromIngredients(ingredients: String, minCovered: Int = 2): Real? {
