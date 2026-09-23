@@ -24,6 +24,9 @@ object NutritionDB {
         val saturatedFat: Double = 0.0,
         val fiber: Double = 0.0,
         val salt: Double = 0.0,
+        /** Kidney-cap nutrients (#113); 0 when the source lacked the column. */
+        val potassium: Double = 0.0,
+        val phosphorus: Double = 0.0,
         /** kJ per 100g — Nutri-Score's energy input, never derived from kcal. */
         val energyKj: Double = 0.0,
     )
@@ -49,6 +52,8 @@ object NutritionDB {
                         saturatedFat = e.optDouble("sat_fat", 0.0),
                         fiber = e.optDouble("fiber", 0.0),
                         salt = e.optDouble("salt", 0.0),
+                        potassium = e.optDouble("potassium", 0.0),
+                        phosphorus = e.optDouble("phosphorus", 0.0),
                         // Older rows have no kJ; fall back to the kcal conversion
                         // so a partially-baked entry still scores.
                         energyKj = if (e.has("kj")) e.optDouble("kj", 0.0)
