@@ -25,6 +25,15 @@ data class NutritionLabelData(
     /** Kidney-cap nutrients (#113), mg; 0 on an estimate. */
     val potassiumMg: Double = 0.0,
     val phosphorusMg: Double = 0.0,
+    /**
+     * Micro nutrients (#117), null when the source had no data. Null is
+     * meaningful: it renders «—». Zero would claim "none present", which is a
+     * different claim.
+     */
+    val calciumMg: Double? = null,
+    val ironMg: Double? = null,
+    val vitaminDUg: Double? = null,
+    val b12Ug: Double? = null,
     /** Nutri-Score grade, or null when the data can't support one. */
     val score: NutriLabel.Score?,
     /** NOVA group, or null on an estimate. */
@@ -75,11 +84,14 @@ data class NutritionLabelData(
                 var cal = 0.0; var pro = 0.0; var fat = 0.0; var carb = 0.0
                 var sugar = 0.0; var satFat = 0.0; var fiber = 0.0; var salt = 0.0
                 var kj = 0.0; var potassium = 0.0; var phosphorus = 0.0
+                var calcium = 0.0; var iron = 0.0; var vitd = 0.0; var b12 = 0.0
                 for (e in entries) {
                     cal += e.calories; pro += e.protein; fat += e.fat; carb += e.carbs
                     sugar += e.sugars; satFat += e.saturatedFat
                     fiber += e.fiber; salt += e.salt; kj += e.energyKj
                     potassium += e.potassium; phosphorus += e.phosphorus
+                    calcium += e.calcium; iron += e.iron
+                    vitd += e.vitaminD; b12 += e.b12
                 }
 
                 // A grade needs the inputs to actually be present. All-zero
@@ -107,6 +119,8 @@ data class NutritionLabelData(
                     proteinG = pro, fatG = fat, carbG = carb,
                     sugarG = sugar, satFatG = satFat, fiberG = fiber, saltG = salt,
                     potassiumMg = potassium, phosphorusMg = phosphorus,
+                    calciumMg = calcium, ironMg = iron,
+                    vitaminDUg = vitd, b12Ug = b12,
                     score = score,
                     // NOVA is a property of the ingredient LIST, so it is
                     // available whenever the ingredient text is.

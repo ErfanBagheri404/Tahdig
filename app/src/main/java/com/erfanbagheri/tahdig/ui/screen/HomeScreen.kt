@@ -299,7 +299,34 @@ fun HomeScreen(
             // No-goal mode renders the totals line only — the card must never
             // draw a ring it has no target for (AC: بدون هدف = totals only).
             nutritionDay?.let { day ->
-                TodayCard(day)
+                // Daily sodium against the cap (#117): resolve pass/warn/fail
+                // here with the same pure rule the report uses. Hidden when no
+                // cap is set or no meal had real data.
+                val sodium by viewModel.dailySodium.collectAsState()
+                val sodiumCap by viewModel.sodiumCap.collectAsState()
+                val sodiumLine: String? = sodiumCap?.let { cap ->
+                    if (sodium < 0.0) "سدیم امروز: بدون داده"
+                    else {
+                        val status = com.erfanbagheri.tahdig.util.MicroNutrients
+                            .dailyStatus(sodium, cap)
+                        val whole = sodium.toLong().toString()
+                        "${status?.symbol} سدیم امروز: ${
+                            PersianText.toPersianDigits(whole)
+                        } از ${PersianText.toPersianDigits(cap.toLong().toString())} — ${
+                            status?.label ?: ""
+                        }"
+                    }
+                }
+                val sodiumColor = sodiumCap?.let { cap ->
+                    when (com.erfanbagheri.tahdig.util.MicroNutrients.dailyStatus(sodium, cap)) {
+                        com.erfanbagheri.tahdig.util.NutrientCaps.Status.FAIL ->
+                            MaterialTheme.colorScheme.error
+                        com.erfanbagheri.tahdig.util.NutrientCaps.Status.WARN ->
+                            MaterialTheme.colorScheme.tertiary
+                        else -> MaterialTheme.colorScheme.onSurfaceVariant
+                    }
+                } ?: MaterialTheme.colorScheme.onSurfaceVariant
+                TodayCard(day, sodiumLine, sodiumColor)
                 Spacer(Modifier.height(16.dp))
             }
 
@@ -555,7 +582,11 @@ fun HomeScreen(
  * without a target is a lie.
  */
 @Composable
-fun TodayCard(day: com.erfanbagheri.tahdig.util.NutritionDay) {
+fun TodayCard(
+    day: com.erfanbagheri.tahdig.util.NutritionDay,
+    sodiumLine: String? = null,
+    sodiumColor: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.onSurfaceVariant,
+) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(14.dp),
@@ -607,6 +638,19 @@ fun TodayCard(day: com.erfanbagheri.tahdig.util.NutritionDay) {
                         MaterialTheme.colorScheme.error
                     },
                 )
+                // Daily sodium against the cap (#117). Only shown when a
+                // sodium cap is set and at least one logged meal had real
+                // data — a day of estimates reports unknown, not zero.
+                val sodium = sodiumLine
+                if (sodium != null) {
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        text = sodium,
+                        style = MaterialTheme.typography.bodySmall,
+                        fontFamily = YekanBakh,
+                        color = sodiumColor,
+                    )
+                }
             }
         }
     }
