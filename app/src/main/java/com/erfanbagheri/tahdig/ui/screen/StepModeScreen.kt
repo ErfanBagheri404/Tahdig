@@ -306,6 +306,13 @@ fun StepModeScreen(
                 )
             )
         }
+        // Second stamp of the same event (#110): the nutrition log. Same food,
+        // same moment, different consumer — never a separate user action.
+        com.erfanbagheri.tahdig.util.NutritionLog.logCooked(
+            db = com.erfanbagheri.tahdig.data.local.TahdigDatabase.getInstance(appContext),
+            food = f,
+            scope = scope,
+        )
         onCooked(f)
     }
 

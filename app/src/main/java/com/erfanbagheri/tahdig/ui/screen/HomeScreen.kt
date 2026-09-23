@@ -3,9 +3,11 @@ package com.erfanbagheri.tahdig.ui.screen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -36,6 +38,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.graphics.Color
@@ -51,6 +54,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
 import com.erfanbagheri.tahdig.ui.components.DishPhoto
 import com.erfanbagheri.tahdig.util.Haptics
+import com.erfanbagheri.tahdig.util.PersianText
 import com.erfanbagheri.tahdig.ui.viewmodel.HomeViewModel
 
 @Composable
@@ -68,6 +72,7 @@ fun HomeScreen(
     val view = LocalView.current
     val dishOfDay by viewModel.dishOfDay.collectAsState()
     val expirySummary by viewModel.expirySummary.collectAsState()
+    val nutritionDay by viewModel.nutritionDay.collectAsState()
     val leftoverSuggestions by viewModel.leftoverSuggestions.collectAsState()
     val occasion by viewModel.occasion.collectAsState()
     val occasionDishes by viewModel.occasionDishes.collectAsState()
@@ -162,6 +167,14 @@ fun HomeScreen(
                         modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
                     )
                 }
+                Spacer(Modifier.height(16.dp))
+            }
+
+            // ── Today's budget (#110) ──────────────────────────────────────
+            // No-goal mode renders the totals line only — the card must never
+            // draw a ring it has no target for (AC: بدون هدف = totals only).
+            nutritionDay?.let { day ->
+                TodayCard(day)
                 Spacer(Modifier.height(16.dp))
             }
 
@@ -355,6 +368,124 @@ fun HomeScreen(
 
             Spacer(Modifier.height(32.dp))
         }
+    }
+}
+
+/**
+ * «امروز» card (#110): consumed vs target. Rings are thin flat arcs — the
+ * house look forbids gradient candy, and a full circle simply means "at or
+ * over target" (the fraction is clamped upstream).
+ *
+ * With no goal the card degrades to a single totals line, deliberately: a ring
+ * without a target is a lie.
+ */
+@Composable
+fun TodayCard(day: com.erfanbagheri.tahdig.util.NutritionDay) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(14.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant,
+    ) {
+        Column(modifier = Modifier.padding(14.dp)) {
+            Text(
+                text = "امروز",
+                style = MaterialTheme.typography.labelLarge,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Spacer(Modifier.height(8.dp))
+            if (!day.hasGoal) {
+                Text(
+                    text = "${PersianText.toPersianDigits(day.consumedCal.toString())} کیلوکالری خورده\u200cشده",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontFamily = YekanBakh,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                Text(
+                    text = "برای هدف‌گذاری، پروفایل رو در تنظیمات پر کن",
+                    style = MaterialTheme.typography.bodySmall,
+                    fontFamily = YekanBakh,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            } else {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    RingColumn("کالری", day.rings[0], day.consumedCal, day.targetCal)
+                    RingColumn("پروتئین", day.rings[1], day.consumedProtein, day.macroTarget?.first ?: 0)
+                    RingColumn("کربوهیدرات", day.rings[2], day.consumedCarbs, day.macroTarget?.second ?: 0)
+                    RingColumn("چربی", day.rings[3], day.consumedFat, day.macroTarget?.third ?: 0)
+                }
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    text = if (day.remainingCal >= 0) {
+                        "${PersianText.toPersianDigits(day.remainingCal.toString())} کیلوکالری مونده"
+                    } else {
+                        "${PersianText.toPersianDigits((-day.remainingCal).toString())} کیلوکالری بیشتر از هدف"
+                    },
+                    style = MaterialTheme.typography.bodySmall,
+                    fontFamily = YekanBakh,
+                    color = if (day.remainingCal >= 0) {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    } else {
+                        MaterialTheme.colorScheme.error
+                    },
+                )
+            }
+        }
+    }
+}
+
+/** One flat ring + its label + «x از y» line. */
+@Composable
+private fun RingColumn(label: String, fraction: Double, consumed: Int, target: Int) {
+    // Theme colors are composable reads — DrawScope has no theme access, so
+    // they are captured out here and used inside the Canvas below.
+    val trackColor = MaterialTheme.colorScheme.outlineVariant
+    val arcColor = MaterialTheme.colorScheme.primary
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Box(contentAlignment = Alignment.Center) {
+            Canvas(modifier = Modifier.size(56.dp)) {
+                val stroke = 4.dp.toPx()
+                // Track first, then the arc on top — no gradient, no shadow.
+                drawArc(
+                    color = trackColor,
+                    startAngle = -90f,
+                    sweepAngle = 360f,
+                    useCenter = false,
+                    style = Stroke(width = stroke),
+                )
+                if (fraction > 0) {
+                    drawArc(
+                        color = arcColor,
+                        startAngle = -90f,
+                        sweepAngle = (360.0 * fraction).toFloat(),
+                        useCenter = false,
+                        style = Stroke(width = stroke),
+                    )
+                }
+            }
+            Text(
+                text = PersianText.toPersianDigits("${(fraction * 100).toInt()}%"),
+                style = MaterialTheme.typography.labelSmall,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+        }
+        Spacer(Modifier.height(2.dp))
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Text(
+            text = "${PersianText.toPersianDigits(consumed.toString())} از ${PersianText.toPersianDigits(target.toString())}",
+            style = MaterialTheme.typography.labelSmall,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
     }
 }
 
