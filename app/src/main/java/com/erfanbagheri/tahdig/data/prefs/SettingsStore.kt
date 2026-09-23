@@ -24,6 +24,10 @@ object SettingsStore {
     private const val KEY_AISLE_HIDDEN = "aisle_hidden"      // JSON set (#108)
     private const val KEY_TRIP_ACTIVE = "shopping_trip_active" // in-store trip (#108)
     private const val KEY_PROFILE = "nutrition_profile"          // JSON profile (#110)
+    private const val KEY_FREEZE = "streak_freezes"              // freeze tokens (#120)
+    private const val KEY_FREEZE_MONTH = "streak_freeze_month"   // YYYYMM of last grant
+    private const val KEY_WEEKLY_FLOOR = "weekly_floor"          // 1..7 cooks/week (#120)
+    private const val KEY_FREEZE_DECLINED = "streak_freeze_declined" // ISO day refused (#120)
 
     private lateinit var prefs: SharedPreferences
     private val _themeMode = MutableStateFlow(0)
@@ -67,6 +71,15 @@ object SettingsStore {
     private val _profile = MutableStateFlow(DailyBudget.Profile())
     val profile: StateFlow<DailyBudget.Profile> = _profile
 
+    // ── Cook streak (#120) ─────────────────────────────────────────
+    private val _freezes = MutableStateFlow(1)
+    val freezes: StateFlow<Int> = _freezes
+    private val _weeklyFloor = MutableStateFlow(3)
+    val weeklyFloor: StateFlow<Int> = _weeklyFloor
+    private val _freezeDeclinedDay = MutableStateFlow("")
+    val freezeDeclinedDay: StateFlow<String> = _freezeDeclinedDay
+
+
     private val js = kotlinx.serialization.json.Json
 
     private fun loadList(key: String): List<String> =
@@ -100,6 +113,47 @@ object SettingsStore {
         _profile.value = prefs.getString(KEY_PROFILE, null)
             ?.let { runCatching { js.decodeFromString(DailyBudget.Profile.serializer(), it) }.getOrNull() }
             ?: DailyBudget.Profile()
+        _freezes.value = prefs.getInt(KEY_FREEZE, 1).coerceAtLeast(0)
+        _weeklyFloor.value = prefs.getInt(KEY_WEEKLY_FLOOR, 3).coerceIn(1, 7)
+        _freezeDeclinedDay.value = prefs.getString(KEY_FREEZE_DECLINED, "") ?: ""
+        grantFreezeIfNeeded()
+    }
+
+    /**
+     * Monthly freeze grant (#120). One token on the 1st, bank capped at
+     * [StreakMath.MAX_FREEZE_BANK]; never granted twice in the same month.
+     */
+    fun grantFreezeIfNeeded(month: Int = java.time.LocalDate.now().monthValue): Boolean {
+        val last = prefs.getInt(KEY_FREEZE_MONTH, -1)
+        if (last == month) return false
+        val (next, _) = com.erfanbagheri.tahdig.util.StreakMath.grantMonthly(
+            current = _freezes.value,
+            lastGrantMonth = last.takeIf { it in 1..12 },
+            thisMonth = month,
+        )
+        prefs.edit().putInt(KEY_FREEZE, next).putInt(KEY_FREEZE_MONTH, month).apply()
+        _freezes.value = next
+        return true
+    }
+
+    /** Spend one freeze (user accepted the prompt) — floor is never below 0. */
+    fun spendFreeze() {
+        val next = (_freezes.value - 1).coerceAtLeast(0)
+        prefs.edit().putInt(KEY_FREEZE, next).apply()
+        _freezes.value = next
+    }
+
+    /** Record that the freeze prompt was declined for [isoDay] — decide again tomorrow. */
+    fun declineFreeze(isoDay: String) {
+        prefs.edit().putString(KEY_FREEZE_DECLINED, isoDay).apply()
+        _freezeDeclinedDay.value = isoDay
+    }
+
+    /** Weekly floor goal, cooks per Saturday-start week (#120). */
+    fun setWeeklyFloor(floor: Int) {
+        val v = floor.coerceIn(1, 7)
+        prefs.edit().putInt(KEY_WEEKLY_FLOOR, v).apply()
+        _weeklyFloor.value = v
     }
 
     /** Persist the full aisle-manager state in one write (#108). */

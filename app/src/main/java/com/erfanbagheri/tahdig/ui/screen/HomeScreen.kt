@@ -25,6 +25,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Restaurant
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -73,6 +74,7 @@ fun HomeScreen(
     val dishOfDay by viewModel.dishOfDay.collectAsState()
     val expirySummary by viewModel.expirySummary.collectAsState()
     val nutritionDay by viewModel.nutritionDay.collectAsState()
+    val streakUi by viewModel.streakUi.collectAsState()
     val leftoverSuggestions by viewModel.leftoverSuggestions.collectAsState()
     val occasion by viewModel.occasion.collectAsState()
     val occasionDishes by viewModel.occasionDishes.collectAsState()
@@ -84,6 +86,40 @@ fun HomeScreen(
         }
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+
+    // Freeze decision prompt (#120): only when a freeze is the difference
+    // between holding the streak and losing it, and not declined today.
+    if (streakUi.promptVisible) {
+        AlertDialog(
+            onDismissRequest = { viewModel.declineFreeze() },
+            title = {
+                Text(
+                    "امروز نپختی — انجماد مصرف بشه؟",
+                    fontFamily = YekanBakh,
+                )
+            },
+            text = {
+                Text(
+                    "با این انجماد سری پختت حفظ می‌شه. " +
+                        "ماهی یکی داری: " +
+                        PersianText.toPersianDigits(
+                            streakUi.state.freezesLeft.toString(),
+                        ) + " تا.",
+                    fontFamily = YekanBakh,
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = { viewModel.acceptFreeze() }) {
+                    Text("بله، انجماد", fontFamily = YekanBakh)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { viewModel.declineFreeze() }) {
+                    Text("نه", fontFamily = YekanBakh)
+                }
+            },
+        )
     }
 
     Surface(
@@ -98,18 +134,37 @@ fun HomeScreen(
         ) {
             Spacer(Modifier.height(48.dp))
 
-            // Meal label pill
-            Text(
-                text = mealLabel,
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier
-                    .background(
-                        color = MaterialTheme.colorScheme.surfaceVariant,
-                        shape = RoundedCornerShape(8.dp),
+            // Meal label pill + streak number (#120). Streak renders only
+            // when alive — a 0 would read as failure, not information.
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = mealLabel,
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier
+                        .background(
+                            color = MaterialTheme.colorScheme.surfaceVariant,
+                            shape = RoundedCornerShape(8.dp),
+                        )
+                        .padding(horizontal = 16.dp, vertical = 6.dp),
+                )
+                if (streakUi.state.current > 0) {
+                    Spacer(Modifier.width(8.dp))
+                    Text(
+                        text = "\uD83D\uDD25 " +
+                            PersianText.toPersianDigits(streakUi.state.current.toString()) + " روز",
+                        style = MaterialTheme.typography.labelLarge,
+                        fontFamily = YekanBakh,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier
+                            .background(
+                                color = MaterialTheme.colorScheme.primaryContainer,
+                                shape = RoundedCornerShape(8.dp),
+                            )
+                            .padding(horizontal = 12.dp, vertical = 6.dp),
                     )
-                    .padding(horizontal = 16.dp, vertical = 6.dp),
-            )
+                }
+            }
 
             Spacer(Modifier.height(40.dp))
 
@@ -177,6 +232,19 @@ fun HomeScreen(
                 TodayCard(day)
                 Spacer(Modifier.height(16.dp))
             }
+
+            // Weekly floor progress (#120) — flat line, no card.
+            Text(
+                text = "این هفته " +
+                    PersianText.toPersianDigits(streakUi.state.thisWeek.toString()) +
+                    " از " +
+                    PersianText.toPersianDigits(streakUi.state.weeklyFloor.toString()) +
+                    " پخت",
+                style = MaterialTheme.typography.bodySmall,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Spacer(Modifier.height(8.dp))
 
             // ── Occasion shelf (#88) ───────────────────────────────────────
             // Renders only while an occasion window is active — outside every

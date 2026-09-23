@@ -316,6 +316,7 @@ fun FoodDetailScreen(
                     else s.removeSuffix("g").toDoubleOrNull()
                         ?.let { "${Math.round(it * scaleFactor)}g" } ?: s
                     Spacer(Modifier.height(16.dp))
+
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically,

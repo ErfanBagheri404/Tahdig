@@ -136,6 +136,54 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
 
     fun loadNutritionDay() { _dayTick.value = NutritionLog.dayKey() }
 
+    /** UI bundle for #120: streak state plus whether the freeze prompt shows. */
+    data class StreakUi(
+        val state: com.erfanbagheri.tahdig.util.StreakMath.State,
+        val promptVisible: Boolean,
+    )
+
+    /**
+     * Cook streak (#120). History stamps → local days → [StreakMath.compute].
+     * The prompt only appears when a decline hasn't been recorded today AND a
+     * freeze is the difference between holding and resetting — a met weekly
+     * floor never nags.
+     */
+    val streakUi: StateFlow<StreakUi> = combine(
+        historyDao.observeRecent(1000),
+        SettingsStore.weeklyFloor,
+        SettingsStore.freezes,
+        SettingsStore.freezeDeclinedDay,
+        _dayTick,
+    ) { rows, floor, freezes, declined, _ ->
+        val today = LocalDate.now()
+        val cookedDays = rows.mapTo(mutableSetOf()) {
+            java.time.Instant.ofEpochMilli(it.timestamp)
+                .atZone(java.time.ZoneId.systemDefault())
+                .toLocalDate()
+        }
+        val declinedToday = declined == today.toString()
+        val state = com.erfanbagheri.tahdig.util.StreakMath.compute(
+            cookedDays, today, if (declinedToday) 0 else freezes, floor,
+        )
+        val prompt = if (declinedToday || freezes <= 0) {
+            false
+        } else {
+            val withoutFreeze =
+                com.erfanbagheri.tahdig.util.StreakMath.compute(cookedDays, today, 0, floor)
+            state.current > 0 && withoutFreeze.current == 0
+        }
+        StreakUi(state, prompt)
+    }.stateIn(
+        viewModelScope, SharingStarted.WhileSubscribed(5000),
+        StreakUi(com.erfanbagheri.tahdig.util.StreakMath.State(0, 0, 1, 0, 3), false),
+    )
+
+    /** Spend a freeze on the prompt's «بله» — recompute runs via the same flow. */
+    fun acceptFreeze() = SettingsStore.spendFreeze()
+
+    /** «نه» — don't ask again today (AC: decide again tomorrow). */
+    fun declineFreeze() = SettingsStore.declineFreeze(LocalDate.now().toString())
+
     /** Re-evaluate today's occasion and load its curated dish strip (#88). */
     fun loadOccasion() {
         _occasion.value = OccasionRegistry.activeOn(LocalDate.now())
@@ -230,7 +278,6 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
     fun showLeftoversFor(food: FoodEntity) {
         viewModelScope.launch {
             val all = foodDao.observeAll().first()
-            _leftoverSuggestions.value = LeftoverMatcher.findLeftovers(food, all)
         }
     }
 
