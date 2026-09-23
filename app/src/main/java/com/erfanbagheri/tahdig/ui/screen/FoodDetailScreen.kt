@@ -90,6 +90,11 @@ fun FoodDetailScreen(
     var pantry by remember { mutableStateOf<List<String>>(emptyList()) }
 
     val recentViewDao = TahdigDatabase.getInstance(context).recentViewDao()
+    // Cook journal for this dish (#124) — «۳ بار پختی» with the notes stacked.
+    // Photos are excluded by the query; the stack only needs count + notes.
+    val journalEntries by TahdigDatabase.getInstance(context).journalDao()
+        .observeForFood(foodId)
+        .collectAsState(initial = emptyList())
     // Interrupted cook session (#93): offer «ادامه بده» only when one exists.
     val cookSession by TahdigDatabase.getInstance(context).cookSessionDao()
         .observe(foodId).collectAsState(initial = null)
@@ -347,6 +352,30 @@ fun FoodDetailScreen(
                             )
                         }
                         Spacer(Modifier.height(12.dp))
+                    }
+
+                    // Cook history for this dish (#124): turns the journal into
+                    // learning data — «۳ بار پختی» plus each note, newest first.
+                    if (journalEntries.isNotEmpty()) {
+                        Text(
+                            text = "«" + f.name + "» را " +
+                                com.erfanbagheri.tahdig.util.PersianText
+                                    .toPersianDigits(journalEntries.size.toString()) +
+                                " بار پختی",
+                            style = MaterialTheme.typography.titleSmall,
+                            fontFamily = YekanBakh,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                        Spacer(Modifier.height(6.dp))
+                        journalEntries.filter { it.note.isNotBlank() }.forEach { entry ->
+                            Text(
+                                text = "• " + entry.note,
+                                style = MaterialTheme.typography.bodySmall,
+                                fontFamily = YekanBakh,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                        Spacer(Modifier.height(16.dp))
                     }
 
                     Row(
