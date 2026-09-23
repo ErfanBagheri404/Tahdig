@@ -7,6 +7,10 @@ import com.erfanbagheri.tahdig.data.local.TahdigDatabase
 import com.erfanbagheri.tahdig.data.local.entity.FavoriteEntity
 import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
 import com.erfanbagheri.tahdig.data.local.entity.HistoryEntity
+import com.erfanbagheri.tahdig.data.prefs.SettingsStore
+import com.erfanbagheri.tahdig.util.DailyBudget
+import com.erfanbagheri.tahdig.util.NutritionDay
+import com.erfanbagheri.tahdig.util.NutritionLog
 import com.erfanbagheri.tahdig.util.LeftoverMatcher
 import com.erfanbagheri.tahdig.util.MealTimeHelper
 import com.erfanbagheri.tahdig.util.OccasionRegistry
@@ -14,6 +18,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import com.erfanbagheri.tahdig.util.ExpiryMath
 import kotlinx.coroutines.flow.SharingStarted
@@ -99,7 +105,36 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
         refreshMealLabel()
         loadDishOfDay()
         loadOccasion()
+        loadNutritionDay()
     }
+
+    /**
+     * The day key the totals flow is bound to (#110). Re-assigned on resume so
+     * crossing midnight rebuilds the query instead of reporting yesterday.
+     */
+    private val _dayTick = MutableStateFlow(NutritionLog.dayKey())
+
+    /**
+     * Today's eaten-vs-target state for the «امروز» card (#110). Day-keyed so
+     * midnight rolls the card over on its own; the budget recomputes live from
+     * the stored profile, so a Settings edit updates the ring without a reload.
+     */
+    val nutritionDay: StateFlow<NutritionDay> = combine(
+        _dayTick.flatMapLatest { day -> db.nutritionLogDao().observeTotals(day) },
+        SettingsStore.profile,
+    ) { totals, profile ->
+        val budget = DailyBudget.budget(profile)
+        NutritionDay(
+            consumedCal = totals.cal,
+            consumedProtein = totals.pro,
+            consumedFat = totals.fat,
+            consumedCarbs = totals.carb,
+            targetCal = if (profile.hasGoal) budget else 0,
+            macroTarget = if (profile.hasGoal) DailyBudget.macroSplit(budget) else null,
+        )
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), NutritionDay())
+
+    fun loadNutritionDay() { _dayTick.value = NutritionLog.dayKey() }
 
     /** Re-evaluate today's occasion and load its curated dish strip (#88). */
     fun loadOccasion() {
@@ -204,7 +239,10 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
      * dishes sharing ≥2 ingredients with the cooked dish.
      */
     fun markCooked() {
-        _suggestion.value?.let { showLeftoversFor(it) }
+        _suggestion.value?.let { food ->
+            showLeftoversFor(food)
+            NutritionLog.logCooked(db, food, viewModelScope)
+        }
         roll()
     }
 

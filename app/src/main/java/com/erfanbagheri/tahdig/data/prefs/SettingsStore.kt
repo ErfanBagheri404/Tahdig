@@ -2,6 +2,7 @@ package com.erfanbagheri.tahdig.data.prefs
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.erfanbagheri.tahdig.util.DailyBudget
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.MapSerializer
@@ -22,6 +23,7 @@ object SettingsStore {
     private const val KEY_AISLE_RENAMES = "aisle_renames"    // JSON map (#108)
     private const val KEY_AISLE_HIDDEN = "aisle_hidden"      // JSON set (#108)
     private const val KEY_TRIP_ACTIVE = "shopping_trip_active" // in-store trip (#108)
+    private const val KEY_PROFILE = "nutrition_profile"          // JSON profile (#110)
 
     private lateinit var prefs: SharedPreferences
     private val _themeMode = MutableStateFlow(0)
@@ -61,6 +63,10 @@ object SettingsStore {
     private val _tripActive = MutableStateFlow(false)
     val tripActive: StateFlow<Boolean> = _tripActive
 
+    /** Calorie/macro profile (#110); default = «بدون هدف» (totals only). */
+    private val _profile = MutableStateFlow(DailyBudget.Profile())
+    val profile: StateFlow<DailyBudget.Profile> = _profile
+
     private val js = kotlinx.serialization.json.Json
 
     private fun loadList(key: String): List<String> =
@@ -91,6 +97,9 @@ object SettingsStore {
         _aisleRenames.value = loadMap(KEY_AISLE_RENAMES)
         _aisleHidden.value = loadSet(KEY_AISLE_HIDDEN)
         _tripActive.value = prefs.getBoolean(KEY_TRIP_ACTIVE, false)
+        _profile.value = prefs.getString(KEY_PROFILE, null)
+            ?.let { runCatching { js.decodeFromString(DailyBudget.Profile.serializer(), it) }.getOrNull() }
+            ?: DailyBudget.Profile()
     }
 
     /** Persist the full aisle-manager state in one write (#108). */
@@ -109,6 +118,12 @@ object SettingsStore {
     fun setTripActive(active: Boolean) {
         prefs.edit().putBoolean(KEY_TRIP_ACTIVE, active).apply()
         _tripActive.value = active
+    }
+
+    /** Persist the nutrition profile (#110); edits recompute the budget. */
+    fun setProfile(p: DailyBudget.Profile) {
+        prefs.edit().putString(KEY_PROFILE, js.encodeToString(DailyBudget.Profile.serializer(), p)).apply()
+        _profile.value = p
     }
 
     /** Last-used converter pair, "from|to" key (#103) — survives restart. */
