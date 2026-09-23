@@ -1,6 +1,7 @@
 package com.erfanbagheri.tahdig.ui.screen
 
 import com.erfanbagheri.tahdig.util.NutriLabel
+import com.erfanbagheri.tahdig.util.NutrientCaps
 import com.erfanbagheri.tahdig.util.NutritionDB
 import com.erfanbagheri.tahdig.util.NutritionEstimate
 
@@ -21,6 +22,9 @@ data class NutritionLabelData(
     val satFatG: Double,
     val fiberG: Double,
     val saltG: Double,
+    /** Kidney-cap nutrients (#113), mg; 0 on an estimate. */
+    val potassiumMg: Double = 0.0,
+    val phosphorusMg: Double = 0.0,
     /** Nutri-Score grade, or null when the data can't support one. */
     val score: NutriLabel.Score?,
     /** NOVA group, or null on an estimate. */
@@ -28,6 +32,27 @@ data class NutritionLabelData(
     val estimated: Boolean,
 ) {
     companion object {
+
+        /** Salt (NaCl) to sodium (Na): 1 g salt = 400 mg sodium. */
+        private const val SALT_TO_SODIUM_MG = 400.0
+
+        /**
+         * Per-serving amounts keyed by the nutrient a cap can target (#113).
+         * Null is the right answer for an estimate — see [NutrientCaps.check],
+         * which reports nothing rather than pretending an absent value is zero.
+         */
+        fun amounts(label: NutritionLabelData): Map<NutrientCaps.Nutrient, Double> = when {
+            label.estimated -> emptyMap()
+            else -> mapOf(
+                NutrientCaps.Nutrient.SODIUM to label.saltG * SALT_TO_SODIUM_MG,
+                NutrientCaps.Nutrient.SAT_FAT to label.satFatG,
+                NutrientCaps.Nutrient.SUGAR to label.sugarG,
+                NutrientCaps.Nutrient.CARBS to label.carbG,
+                NutrientCaps.Nutrient.POTASSIUM to label.potassiumMg,
+                NutrientCaps.Nutrient.PHOSPHORUS to label.phosphorusMg,
+                NutrientCaps.Nutrient.PROTEIN to label.proteinG,
+            )
+        }
 
         /** Ingredients that must resolve before a grade is honest. */
         private const val MIN_COVERED = 2
@@ -49,11 +74,12 @@ data class NutritionLabelData(
                 // the same documented approximation NutritionEstimate makes.
                 var cal = 0.0; var pro = 0.0; var fat = 0.0; var carb = 0.0
                 var sugar = 0.0; var satFat = 0.0; var fiber = 0.0; var salt = 0.0
-                var kj = 0.0
+                var kj = 0.0; var potassium = 0.0; var phosphorus = 0.0
                 for (e in entries) {
                     cal += e.calories; pro += e.protein; fat += e.fat; carb += e.carbs
                     sugar += e.sugars; satFat += e.saturatedFat
                     fiber += e.fiber; salt += e.salt; kj += e.energyKj
+                    potassium += e.potassium; phosphorus += e.phosphorus
                 }
 
                 // A grade needs the inputs to actually be present. All-zero
@@ -80,6 +106,7 @@ data class NutritionLabelData(
                     calories = cal.toInt(),
                     proteinG = pro, fatG = fat, carbG = carb,
                     sugarG = sugar, satFatG = satFat, fiberG = fiber, saltG = salt,
+                    potassiumMg = potassium, phosphorusMg = phosphorus,
                     score = score,
                     // NOVA is a property of the ingredient LIST, so it is
                     // available whenever the ingredient text is.

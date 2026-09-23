@@ -23,12 +23,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import com.erfanbagheri.tahdig.util.NutrientCaps
 import com.erfanbagheri.tahdig.util.PersianText
 import com.erfanbagheri.tahdig.ui.viewmodel.SettingsViewModel
 
@@ -199,6 +201,99 @@ fun SettingsScreen(
             Text(
                 "پنهان‌سازی غذاهای آلرژن‌دار",
                 fontFamily = YekanBakh,
+            )
+        }
+
+        Spacer(Modifier.height(32.dp))
+
+        // ── Nutrient caps (#113) ────────────────────────────────────
+        // «محدودیت‌های من». Preset first, then overrides: a personal cap wins
+        // over the preset for the same nutrient, and caps for other nutrients
+        // stack on top. These are personal limits, not medical advice.
+        val capPreset by viewModel.capPreset.collectAsState()
+        val capCustom by viewModel.capCustom.collectAsState()
+        Text(
+            text = "محدودیت‌های من",
+            style = MaterialTheme.typography.titleMedium,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Spacer(Modifier.height(4.dp))
+        Text(
+            text = "سقف هر ماده روی هر وعده حساب می‌شه، نه کل روز",
+            style = MaterialTheme.typography.bodySmall,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Spacer(Modifier.height(8.dp))
+        androidx.compose.foundation.layout.FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            NutrientCaps.Preset.entries.forEach { p ->
+                val on = capPreset == p.name
+                Text(
+                    text = p.label,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontFamily = YekanBakh,
+                    color = if (on) MaterialTheme.colorScheme.onPrimaryContainer
+                    else MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier
+                        .padding(bottom = 4.dp)
+                        .background(
+                            color = if (on) MaterialTheme.colorScheme.primaryContainer
+                            else MaterialTheme.colorScheme.surfaceVariant,
+                            shape = RoundedCornerShape(8.dp),
+                        )
+                        .clickable {
+                            viewModel.setCapPreset(if (on) null else p.name)
+                        }
+                        .padding(horizontal = 14.dp, vertical = 8.dp),
+                )
+            }
+        }
+        // Every active cap, preset or personal, in one flat list.
+        val activeCaps = remember(capPreset, capCustom) {
+            NutrientCaps.merge(
+                NutrientCaps.Preset.entries.firstOrNull { it.name == capPreset },
+                capCustom.mapNotNull { (k, v) ->
+                    NutrientCaps.Nutrient.entries.firstOrNull { it.name == k }?.let { it to v }
+                }.toMap(),
+            )
+        }
+        if (activeCaps.isNotEmpty()) {
+            Spacer(Modifier.height(8.dp))
+            activeCaps.forEach { (n, cap) ->
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
+                ) {
+                    Text(
+                        text = n.label,
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontFamily = YekanBakh,
+                        modifier = Modifier.weight(1f),
+                    )
+                    Text(
+                        text = "سقف ${PersianText.toPersianDigits(
+                            if (cap == cap.toLong().toDouble()) cap.toLong().toString()
+                            else String.format("%.1f", cap),
+                        )} ${n.unit}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontFamily = YekanBakh,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+        }
+        // Per-nutrient override steppers. Off by default (0) = follow the preset.
+        Spacer(Modifier.height(12.dp))
+        NutrientCaps.Nutrient.entries.forEach { n ->
+            val current = capCustom[n.name]?.toInt() ?: 0
+            StepperRow(
+                label = n.label,
+                value = current,
+                range = 0..5000,
+                onChange = { viewModel.setCapCustom(n.name, it.toDouble()) },
             )
         }
 
