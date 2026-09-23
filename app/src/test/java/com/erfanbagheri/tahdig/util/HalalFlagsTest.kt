@@ -90,6 +90,13 @@ class HalalFlagsTest {
     }
 
     @Test
+    fun breadcrumbsNeverTripsRum() {
+        // Real data hit: 28 seed dishes carry «breadcrumbs», which contains
+        // "rum". Substring matching would flag all 28 as alcohol.
+        assertEquals(emptyList<String>(), HalalFlags.flags("2 beaten eggs، 50g breadcrumbs"))
+    }
+
+    @Test
     fun waterAndWhineNeverTripWine() {
         assertEquals(emptyList<String>(), HalalFlags.flags("آب"))
         assertEquals(emptyList<String>(), HalalFlags.flags("whine and water"))
