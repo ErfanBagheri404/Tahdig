@@ -27,6 +27,11 @@ object NutritionDB {
         /** Kidney-cap nutrients (#113); 0 when the source lacked the column. */
         val potassium: Double = 0.0,
         val phosphorus: Double = 0.0,
+        /** Micro breakdown (#117); calcium mg, iron mg, vitamin D µg, B12 µg. */
+        val calcium: Double = 0.0,
+        val iron: Double = 0.0,
+        val vitaminD: Double = 0.0,
+        val b12: Double = 0.0,
         /** kJ per 100g — Nutri-Score's energy input, never derived from kcal. */
         val energyKj: Double = 0.0,
     )
@@ -54,6 +59,10 @@ object NutritionDB {
                         salt = e.optDouble("salt", 0.0),
                         potassium = e.optDouble("potassium", 0.0),
                         phosphorus = e.optDouble("phosphorus", 0.0),
+                        calcium = e.optDouble("calcium", 0.0),
+                        iron = e.optDouble("iron", 0.0),
+                        vitaminD = e.optDouble("vitaminD", 0.0),
+                        b12 = e.optDouble("b12", 0.0),
                         // Older rows have no kJ; fall back to the kcal conversion
                         // so a partially-baked entry still scores.
                         energyKj = if (e.has("kj")) e.optDouble("kj", 0.0)
