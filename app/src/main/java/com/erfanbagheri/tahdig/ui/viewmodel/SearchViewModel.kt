@@ -7,7 +7,9 @@ import com.erfanbagheri.tahdig.data.local.TahdigDatabase
 import com.erfanbagheri.tahdig.data.local.entity.CategoryEntity
 import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
 import com.erfanbagheri.tahdig.data.prefs.SettingsStore
+import com.erfanbagheri.tahdig.ui.screen.NutritionLabelData
 import com.erfanbagheri.tahdig.util.AllergenDetector
+import com.erfanbagheri.tahdig.util.NutriLabel
 import com.erfanbagheri.tahdig.util.DietFilter
 import com.erfanbagheri.tahdig.util.Flavor
 import com.erfanbagheri.tahdig.util.PersianText
@@ -45,6 +47,9 @@ class SearchViewModel(app: Application) : AndroidViewModel(app) {
     private val _excluded = MutableStateFlow("")
     val excluded: StateFlow<String> = _excluded.asStateFlow()
     /** Selected taste axes (#89) — AND semantics: dish must carry every selected axis. */
+    /** Nutri-Score A-B only (#111) — needs real per-100g data, so most dishes drop out. */
+    private val _nutriAb = MutableStateFlow(false)
+    val nutriAb: StateFlow<Boolean> = _nutriAb.asStateFlow()
     private val _flavors = MutableStateFlow<Set<Flavor>>(emptySet())
     val flavors: StateFlow<Set<Flavor>> = _flavors.asStateFlow()
 
@@ -84,7 +89,19 @@ class SearchViewModel(app: Application) : AndroidViewModel(app) {
             if (!hide || profile.isEmpty()) foods
             else foods.filter { !AllergenDetector.shouldHide(hide, profile, AllergenDetector.detect(it.ingredients)) }
         }
+        // Nutri-Score A-B filter (#111): composes last with everything above,
+        // and is a no-op while the chip is off.
+        .combine(_nutriAb) { foods, onlyAb ->
+            if (!onlyAb) foods
+            else foods.filter { food ->
+                val label = NutritionLabelData.of(food.name, food.tags, food.ingredients)
+                label.score?.let { NutriLabel.passesFilter(it, keepAB = true) } ?: false
+            }
+        }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    /** Nutri-Score A-B chip (#111); off by default. */
+    fun onNutriAbToggle(on: Boolean) { _nutriAb.value = on }
 
     fun onQueryChange(text: String) { _query.value = text }
 
