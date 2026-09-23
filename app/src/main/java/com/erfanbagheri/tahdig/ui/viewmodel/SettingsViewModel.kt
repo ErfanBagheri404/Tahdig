@@ -22,7 +22,11 @@ class SettingsViewModel(app: Application) : AndroidViewModel(app) {
 
     fun setProfile(p: com.erfanbagheri.tahdig.util.DailyBudget.Profile) = SettingsStore.setProfile(p)
 
+    val allergens = SettingsStore.allergens
+    val allergenHide = SettingsStore.allergenHide
 
+    fun setAllergens(set: Set<String>) = SettingsStore.setAllergens(set)
+    fun setAllergenHide(on: Boolean) = SettingsStore.setAllergenHide(on)
 
     fun setThemeMode(mode: Int) = SettingsStore.setThemeMode(mode)
 

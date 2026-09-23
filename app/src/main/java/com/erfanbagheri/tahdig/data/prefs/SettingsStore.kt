@@ -28,6 +28,8 @@ object SettingsStore {
     private const val KEY_FREEZE_MONTH = "streak_freeze_month"   // YYYYMM of last grant
     private const val KEY_WEEKLY_FLOOR = "weekly_floor"          // 1..7 cooks/week (#120)
     private const val KEY_FREEZE_DECLINED = "streak_freeze_declined" // ISO day refused (#120)
+    private const val KEY_ALLERGENS = "allergens"              // JSON set (#112)
+    private const val KEY_ALLERGEN_HIDE = "allergen_hide"      // search-wide hide toggle (#112)
 
     private lateinit var prefs: SharedPreferences
     private val _themeMode = MutableStateFlow(0)
@@ -79,6 +81,11 @@ object SettingsStore {
     private val _freezeDeclinedDay = MutableStateFlow("")
     val freezeDeclinedDay: StateFlow<String> = _freezeDeclinedDay
 
+    // ── Allergy profile (#112) ─────────────────────────────────────
+    private val _allergens = MutableStateFlow<Set<String>>(emptySet())
+    val allergens: StateFlow<Set<String>> = _allergens
+    private val _allergenHide = MutableStateFlow(false)
+    val allergenHide: StateFlow<Boolean> = _allergenHide
 
     private val js = kotlinx.serialization.json.Json
 
@@ -116,6 +123,8 @@ object SettingsStore {
         _freezes.value = prefs.getInt(KEY_FREEZE, 1).coerceAtLeast(0)
         _weeklyFloor.value = prefs.getInt(KEY_WEEKLY_FLOOR, 3).coerceIn(1, 7)
         _freezeDeclinedDay.value = prefs.getString(KEY_FREEZE_DECLINED, "") ?: ""
+        _allergens.value = loadSet(KEY_ALLERGENS)
+        _allergenHide.value = prefs.getBoolean(KEY_ALLERGEN_HIDE, false)
         grantFreezeIfNeeded()
     }
 
@@ -154,6 +163,20 @@ object SettingsStore {
         val v = floor.coerceIn(1, 7)
         prefs.edit().putInt(KEY_WEEKLY_FLOOR, v).apply()
         _weeklyFloor.value = v
+    }
+
+    /** Allergen multi-select (#112); values come from the seed's own taxonomy. */
+    fun setAllergens(set: Set<String>) {
+        prefs.edit()
+            .putString(KEY_ALLERGENS, js.encodeToString(ListSerializer(String.serializer()), set.toList()))
+            .apply()
+        _allergens.value = set
+    }
+
+    /** Search-wide hide toggle (#112); the detail band shows regardless. */
+    fun setAllergenHide(on: Boolean) {
+        prefs.edit().putBoolean(KEY_ALLERGEN_HIDE, on).apply()
+        _allergenHide.value = on
     }
 
     /** Persist the full aisle-manager state in one write (#108). */
