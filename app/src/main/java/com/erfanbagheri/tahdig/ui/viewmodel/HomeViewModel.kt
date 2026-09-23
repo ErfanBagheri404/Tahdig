@@ -13,7 +13,9 @@ import com.erfanbagheri.tahdig.util.NutritionDay
 import com.erfanbagheri.tahdig.util.NutritionLog
 import com.erfanbagheri.tahdig.util.AllergenDetector
 import com.erfanbagheri.tahdig.util.LeftoverMatcher
+import com.erfanbagheri.tahdig.util.DietFilter
 import com.erfanbagheri.tahdig.util.MealTimeHelper
+import com.erfanbagheri.tahdig.util.RouletteMath
 import com.erfanbagheri.tahdig.util.OccasionRegistry
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -244,6 +246,71 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
                 )
                 loadHistory()
             }
+        }
+    }
+
+    /** Shake-to-spin state (#123) — read by the Home watcher. */
+    val shakeSpin = SettingsStore.shakeSpin
+    val shakeSensitivity = SettingsStore.shakeSensitivity
+
+    // ── Dinner roulette (#123) ──────────────────────────────────────
+    val spinOpen = MutableStateFlow(false)
+    val spinBucket = MutableStateFlow(MealTimeHelper.currentBucket())
+    val spinDiet = MutableStateFlow<DietFilter?>(null)
+    /** Wheel pool in slice order — index alignment with the winner is the
+     *  whole game: the UI reads winnerIndex off this list. */
+    private val _spinPool = MutableStateFlow<List<FoodEntity>>(emptyList())
+    val spinPool: StateFlow<List<FoodEntity>> = _spinPool
+    private val _spinPick = MutableStateFlow<FoodEntity?>(null)
+    val spinPick: StateFlow<FoodEntity?> = _spinPick
+    /** Bumps on every spin so the wheel animates exactly once per pick. */
+    private val _spinToken = MutableStateFlow(0L)
+    val spinToken: StateFlow<Long> = _spinToken
+    /** Session-scoped veto set — «نه» dishes never come back this session. */
+    private val spinVetoed = mutableSetOf<Long>()
+
+    fun openSpin() {
+        spinOpen.value = true
+        rerollSpin()
+    }
+
+    fun closeSpin() {
+        spinOpen.value = false
+    }
+
+    /** Sheet chips changed the pool (زمان/رژیمی) — rebuild and spin. */
+    fun spinWith(bucket: String, diet: DietFilter?) {
+        spinBucket.value = bucket
+        spinDiet.value = diet
+        rerollSpin()
+    }
+
+    /** Veto the landed dish for this session, then spin again. */
+    fun vetoSpin() {
+        _spinPick.value?.let { spinVetoed.add(it.id) }
+        rerollSpin()
+    }
+
+    private fun rerollSpin() {
+        viewModelScope.launch {
+            val bucket = spinBucket.value
+            val diet = spinDiet.value
+            val candidates = foodDao.observeByMealTime(bucket).first()
+                .filter { diet == null || diet.matches(it.tags) }
+            val poolIds = RouletteMath.buildPool(
+                candidates = candidates.map { it.id },
+                vetoed = spinVetoed,
+                recent = historyDao.recentFoodIds(15),
+            )
+            if (poolIds.isEmpty()) {
+                _spinPool.value = emptyList()
+                _spinPick.value = null
+                return@launch
+            }
+            val winnerId = RouletteMath.pick(poolIds, seed = System.nanoTime())
+            _spinPool.value = poolIds.map { id -> candidates.first { it.id == id } }
+            _spinPick.value = _spinPool.value.first { it.id == winnerId }
+            _spinToken.value = _spinToken.value + 1
         }
     }
 

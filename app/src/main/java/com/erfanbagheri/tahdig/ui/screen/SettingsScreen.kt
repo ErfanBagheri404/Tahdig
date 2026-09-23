@@ -314,6 +314,7 @@ fun SettingsScreen(
 
         val shakeAdvance by viewModel.shakeAdvance.collectAsState()
         val shakeSensitivity by viewModel.shakeSensitivity.collectAsState()
+        val shakeSpin by viewModel.shakeSpin.collectAsState()
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -332,9 +333,29 @@ fun SettingsScreen(
             )
         }
 
+        // Shake-to-spin the dinner roulette (#123) — same gesture, same
+        // sensitivity slider, disabled by nature in cook mode (the home
+        // screen — and its watcher — isn't composed there).
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+        ) {
+            Text(
+                text = "چرخوندن با تکان دادن",
+                style = MaterialTheme.typography.bodyLarge,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.weight(1f),
+            )
+            androidx.compose.material3.Switch(
+                checked = shakeSpin,
+                onCheckedChange = { viewModel.setShakeSpin(it) },
+            )
+        }
+
         // Sensitivity only matters when the gesture is on — a slider over a
         // disabled feature is noise.
-        if (shakeAdvance) {
+        if (shakeAdvance || shakeSpin) {
             Text(
                 text = "حساسیت",
                 style = MaterialTheme.typography.bodyMedium,

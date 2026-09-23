@@ -35,5 +35,9 @@ class SettingsViewModel(app: Application) : AndroidViewModel(app) {
     fun setVoiceControl(enabled: Boolean) = SettingsStore.setVoiceControl(enabled)
     fun setVoiceReadAloud(enabled: Boolean) = SettingsStore.setVoiceReadAloud(enabled)
     fun setShakeAdvance(enabled: Boolean) = SettingsStore.setShakeAdvance(enabled)
+
+    /** Shake-to-spin the roulette (#123), off by default. */
+    val shakeSpin = SettingsStore.shakeSpin
+    fun setShakeSpin(on: Boolean) = SettingsStore.setShakeSpin(on)
     fun setShakeSensitivity(value: Float) = SettingsStore.setShakeSensitivity(value)
 }
