@@ -354,6 +354,32 @@ fun FoodDetailScreen(
                         Spacer(Modifier.height(12.dp))
                     }
 
+                    // Halal-style flag row (#118): conservative — renders only on
+                    // a positive word match, and the wording says «check» rather
+                    // than claiming any certification.
+                    val halalFlags = remember(f.ingredients) {
+                        com.erfanbagheri.tahdig.util.HalalFlags.flags(f.ingredients)
+                    }
+                    com.erfanbagheri.tahdig.util.HalalFlags.warningText(halalFlags)?.let { text ->
+                        Surface(
+                            color = MaterialTheme.colorScheme.tertiaryContainer,
+                            shape = RoundedCornerShape(8.dp),
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text(
+                                text = text,
+                                style = MaterialTheme.typography.labelLarge,
+                                fontFamily = YekanBakh,
+                                color = MaterialTheme.colorScheme.onTertiaryContainer,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                                textAlign = TextAlign.Center,
+                            )
+                        }
+                        Spacer(Modifier.height(12.dp))
+                    }
+
                     // Cook history for this dish (#124): turns the journal into
                     // learning data — «۳ بار پختی» plus each note, newest first.
                     if (journalEntries.isNotEmpty()) {

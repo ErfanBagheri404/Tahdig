@@ -9,6 +9,7 @@ import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
 import com.erfanbagheri.tahdig.data.prefs.SettingsStore
 import com.erfanbagheri.tahdig.ui.screen.NutritionLabelData
 import com.erfanbagheri.tahdig.util.AllergenDetector
+import com.erfanbagheri.tahdig.util.HalalFlags
 import com.erfanbagheri.tahdig.util.NutriLabel
 import com.erfanbagheri.tahdig.util.MicroNutrients
 import com.erfanbagheri.tahdig.util.NutrientCaps
@@ -142,6 +143,17 @@ class SearchViewModel(app: Application) : AndroidViewModel(app) {
                     fiberG = label.fiberG,
                     sodiumMg = label.saltG.times(1000.0),
                     ironMg = label.ironMg,
+                )
+            }
+        }
+        // Halal strict mode (#118): last, and a no-op while the toggle is off.
+        // Conservative by construction — only positively flagged dishes drop.
+        .combine(SettingsStore.halalStrict) { foods, strict ->
+            if (!strict) foods
+            else foods.filter { food ->
+                !HalalFlags.shouldHide(
+                    strict,
+                    HalalFlags.flags(food.ingredients),
                 )
             }
         }
