@@ -11,6 +11,7 @@ import com.erfanbagheri.tahdig.data.prefs.SettingsStore
 import com.erfanbagheri.tahdig.util.DailyBudget
 import com.erfanbagheri.tahdig.util.NutritionDay
 import com.erfanbagheri.tahdig.util.NutritionLog
+import com.erfanbagheri.tahdig.util.AllergenDetector
 import com.erfanbagheri.tahdig.util.LeftoverMatcher
 import com.erfanbagheri.tahdig.util.MealTimeHelper
 import com.erfanbagheri.tahdig.util.OccasionRegistry
@@ -278,6 +279,17 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
     fun showLeftoversFor(food: FoodEntity) {
         viewModelScope.launch {
             val all = foodDao.observeAll().first()
+            val profile = SettingsStore.allergens.value
+            val hide = SettingsStore.allergenHide.value
+            // Allergen exclusion (#112): when the toggle is on the matcher must
+            // not RANK a conflicting dish — filtering after ranking would let one
+            // slip through when the list is shorter than its top-N.
+            _leftoverSuggestions.value = LeftoverMatcher.findLeftovers(food, all)
+                .filterNot {
+                    AllergenDetector.shouldHide(
+                        hide, profile, AllergenDetector.detect(it.ingredients),
+                    )
+                }
         }
     }
 
