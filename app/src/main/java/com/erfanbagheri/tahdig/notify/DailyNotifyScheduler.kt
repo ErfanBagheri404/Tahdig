@@ -4,11 +4,21 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import java.util.Calendar
+import com.erfanbagheri.tahdig.data.prefs.SettingsStore
+import com.erfanbagheri.tahdig.util.NotifyMath
+import java.time.ZoneId
 
-/** Schedules the daily 11:00 suggestion alarm. The receiver re-arms it after each fire. */
+/**
+ * The ONE owner of the evening reminder alarm (#122).
+ *
+ * It replaces the fixed 11:00 alarm: the trigger hour is the user's pick
+ * (`SettingsStore.notifyHour`) and the receiver decides WHICH notification
+ * — daily suggestion, streak-risk, 24h idle, 7d idle — or none at all.
+ *
+ * Inexact on purpose: exact alarms need SCHEDULE_EXACT_ALARM on API 31+,
+ * and a cooking nudge does not justify it.
+ */
 object DailyNotifyScheduler {
-    const val HOUR = 11
     private const val REQUEST_CODE = 2001
 
     private fun pendingIntent(context: Context): PendingIntent = PendingIntent.getBroadcast(
@@ -18,24 +28,10 @@ object DailyNotifyScheduler {
         PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
     )
 
-    /** Epoch millis of the next [HOUR]:00 local time — always strictly in the future. */
-    fun nextTriggerAt(now: Long = System.currentTimeMillis()): Long {
-        val cal = Calendar.getInstance().apply {
-            timeInMillis = now
-            set(Calendar.HOUR_OF_DAY, HOUR)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-            if (timeInMillis <= now) add(Calendar.DAY_OF_YEAR, 1)
-        }
-        return cal.timeInMillis
-    }
+    /** Epoch millis of the next fire at the user's reminder hour, strictly in the future. */
+    fun nextTriggerAt(now: Long = System.currentTimeMillis()): Long =
+        NotifyMath.nextTriggerAt(now, NotifyMath.reminderHour(SettingsStore.notifyHour.value), ZoneId.systemDefault())
 
-    /**
-     * Schedule (or re-schedule) the daily alarm.
-     * Inexact on purpose: exact alarms need SCHEDULE_EXACT_ALARM on API 31+, overkill for a
-     * cooking suggestion, and inexact alarms survive Doze without that permission.
-     */
     fun schedule(context: Context) {
         val am = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextTriggerAt(), pendingIntent(context))
