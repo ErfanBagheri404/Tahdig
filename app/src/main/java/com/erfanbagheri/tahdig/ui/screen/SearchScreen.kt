@@ -22,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -54,6 +55,7 @@ fun SearchScreen(
     viewModel: SearchViewModel,
     onFoodClick: (Long) -> Unit = {},
     onOpenPantry: () -> Unit = {},
+    onOpenScanner: () -> Unit = {},
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
     val query by viewModel.query.collectAsState()
@@ -80,13 +82,30 @@ fun SearchScreen(
         ) {
             Spacer(Modifier.height(48.dp))
 
-            // Title
-            Text(
-                text = "جستجو",
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onBackground,
+            // Title + scanner entry (#116). The button only exists while the
+            // scanner is enabled in Settings, so disabling it removes the
+            // camera from the app surface entirely, not just the settings row.
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-            )
+                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = "جستجو",
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.weight(1f),
+                )
+                val scannerEnabled by com.erfanbagheri.tahdig.data.prefs.SettingsStore
+                    .scannerEnabled.collectAsState()
+                if (scannerEnabled) {
+                    androidx.compose.material3.IconButton(onClick = onOpenScanner) {
+                        Icon(
+                            Icons.Default.QrCodeScanner,
+                            contentDescription = "اسکنر بارکد",
+                        )
+                    }
+                }
+            }
 
             Spacer(Modifier.height(16.dp))
 
