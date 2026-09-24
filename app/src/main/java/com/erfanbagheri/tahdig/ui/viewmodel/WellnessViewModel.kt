@@ -63,7 +63,7 @@ class WellnessViewModel(app: Application) : AndroidViewModel(app) {
                 // Glass size lives in settings; the VM holds a copy so the
                 // stepper amount is stable between a settings write and a
                 // recomposition.
-                val glass = _glassSizeMl.value
+                val glass = glassSizeMl.value
                 db.waterDao().upsert(
                     WaterLogEntity(
                         epochDay = day,
@@ -85,13 +85,16 @@ class WellnessViewModel(app: Application) : AndroidViewModel(app) {
 
     // --- settings-mirrored state -------------------------------------------
 
-    /** Glass size in ml; loaded from SettingsStore at VM creation. */
-    private val _glassSizeMl = MutableStateFlow(WaterMath.DEFAULT_GLASS_ML)
-    val glassSizeMl: StateFlow<Int> = _glassSizeMl
+    /**
+     * Glass size and manual target come from SettingsStore, not local state:
+     * they must survive a restart and be shared with any Settings screen.
+     * `goalWeightKg` stays VM-local because it is the weight the calorie goal
+     * was computed from, which lives with the goal (#110) rather than here.
+     */
+    val glassSizeMl: StateFlow<Int> = com.erfanbagheri.tahdig.data.prefs.SettingsStore.glassSizeMl
 
     /** User-set target override; null means derive it from weight. */
-    private val _targetOverrideMl = MutableStateFlow<Int?>(null)
-    val targetOverrideMl: StateFlow<Int?> = _targetOverrideMl
+    val targetOverrideMl: StateFlow<Int?> = com.erfanbagheri.tahdig.data.prefs.SettingsStore.waterTargetMl
 
     /** The weight the calorie goal was computed from — for the BMR prompt. */
     private val _goalWeightKg = MutableStateFlow<Double?>(null)
@@ -99,11 +102,11 @@ class WellnessViewModel(app: Application) : AndroidViewModel(app) {
 
     fun setGlassSize(ml: Int) {
         if (ml <= 0 || ml > 2000) return
-        _glassSizeMl.value = ml
+        com.erfanbagheri.tahdig.data.prefs.SettingsStore.setGlassSizeMl(ml)
     }
 
     fun setTargetOverride(ml: Int?) {
-        _targetOverrideMl.value = ml?.takeIf { it >= 0 }
+        com.erfanbagheri.tahdig.data.prefs.SettingsStore.setWaterTargetMl(ml)
     }
 
     fun setGoalWeight(kg: Double?) {
@@ -122,7 +125,7 @@ class WellnessViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Effective target for today. */
     fun targetMl(): Int? =
-        WaterMath.targetMl(latestWeight.value?.kg, _glassSizeMl.value, _targetOverrideMl.value)
+        WaterMath.targetMl(latestWeight.value?.kg, glassSizeMl.value, targetOverrideMl.value)
 
     /** Series for the trend chart. */
     fun trendSeries(): List<WeightTrend.Point> =
