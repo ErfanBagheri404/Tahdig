@@ -32,6 +32,12 @@ class SettingsViewModel(app: Application) : AndroidViewModel(app) {
     val halalStrict = SettingsStore.halalStrict
     fun setHalalStrict(on: Boolean) = SettingsStore.setHalalStrict(on)
 
+    // Pregnancy / breastfeeding mode + caffeine cap (#119).
+    val pregnancyMode = SettingsStore.pregnancyMode
+    val caffeineCap = SettingsStore.caffeineCap
+    fun setPregnancyMode(on: Boolean) = SettingsStore.setPregnancyMode(on)
+    fun setCaffeineCap(mg: Int) = SettingsStore.setCaffeineCap(mg)
+
     // Calorie carry-over (#114): the diary's progress strip reads this flow.
     val carryOver = SettingsStore.carryOver
     fun setCarryOver(on: Boolean) = SettingsStore.setCarryOver(on)

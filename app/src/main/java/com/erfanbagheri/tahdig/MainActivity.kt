@@ -328,9 +328,11 @@ private fun TahdigApp() {
                 selectedTab == 0 -> {
                     val vm: HomeViewModel = viewModel()
                     val wvm: com.erfanbagheri.tahdig.ui.viewmodel.WellnessViewModel = viewModel()
+                    val cvm: com.erfanbagheri.tahdig.ui.viewmodel.CaffeineViewModel = viewModel()
                     HomeScreen(
                         viewModel = vm,
                         wellness = wvm,
+                        caffeine = cvm,
                         onBrowseCategories = { browseCategories = true },
                         onFoodClick = { detailFoodId = it },
                         onOpenLeftover = { showLeftover = true },

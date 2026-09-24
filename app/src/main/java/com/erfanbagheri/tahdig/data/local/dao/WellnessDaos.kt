@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.erfanbagheri.tahdig.data.local.entity.CaffeineLogEntity
 import com.erfanbagheri.tahdig.data.local.entity.WaterLogEntity
 import com.erfanbagheri.tahdig.data.local.entity.WeightLogEntity
 import kotlinx.coroutines.flow.Flow
@@ -20,6 +21,25 @@ interface WaterDao {
     /** Upsert: REPLACE so a step on an existing day overwrites its total. */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(row: WaterLogEntity)
+}
+
+@Dao
+interface CaffeineDao {
+
+    @Query("SELECT * FROM caffeine_log WHERE epochDay >= :fromEpochDay ORDER BY loggedAt DESC")
+    fun observeFrom(fromEpochDay: Long): Flow<List<CaffeineLogEntity>>
+
+    @Query("SELECT * FROM caffeine_log WHERE epochDay = :epochDay ORDER BY loggedAt DESC")
+    fun observeDay(epochDay: Long): Flow<List<CaffeineLogEntity>>
+
+    @Insert
+    suspend fun insert(row: CaffeineLogEntity): Long
+
+    @Query("DELETE FROM caffeine_log WHERE id = :id")
+    suspend fun delete(id: Long)
+
+    @Query("SELECT * FROM caffeine_log WHERE id = :id")
+    suspend fun byId(id: Long): CaffeineLogEntity?
 }
 
 @Dao
