@@ -236,6 +236,18 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
     /** «نه» — don't ask again today (AC: decide again tomorrow). */
     fun declineFreeze() = SettingsStore.declineFreeze(LocalDate.now().toString())
 
+    /**
+     * True once the user has ever COOKED (#122). Keyed on the journal, which
+     * both cook paths stamp, and NOT on history: roll() writes a history row
+     * on every app open, so history would flip this true on the very first
+     * screen — exactly what the AC forbids.
+     */
+    val everCooked: StateFlow<Boolean> = db.journalDao().observeCount()
+        .map { it > 0 }
+        .stateIn(
+            viewModelScope, SharingStarted.Eagerly, false,
+        )
+
     /** Re-evaluate today's occasion and load its curated dish strip (#88). */
     fun loadOccasion() {
         _occasion.value = OccasionRegistry.activeOn(LocalDate.now())
@@ -444,6 +456,9 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
             )
             pendingJournalId = id
             _journalPending.value = foodDao.getById(foodId)
+            // A cook breaks the idle spell: re-arm both idle tiers (#122) so
+            // the NEXT idle period can nudge again.
+            SettingsStore.setIdleTierHours(0.0)
         }
     }
 
