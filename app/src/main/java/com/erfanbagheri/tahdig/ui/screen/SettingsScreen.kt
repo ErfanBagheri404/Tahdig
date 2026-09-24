@@ -614,6 +614,56 @@ fun SettingsScreen(
             }
         }
 
+        // ── کافئین و حالت بارداری (#119) ─────────────────────
+        Spacer(Modifier.height(32.dp))
+        Text(
+            text = "کافئین",
+            style = MaterialTheme.typography.titleMedium,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Spacer(Modifier.height(8.dp))
+
+        // Slider is a convenience only: the cap actually applied is
+        // Caffeine.effectiveCap, which pregnancy mode overrides. The label
+        // shows the MODE's cap when the mode is on, so a 400 slider next to
+        // a 200 line never reads as a bug.
+        val caffeineCap by viewModel.caffeineCap.collectAsState()
+        val pregnancyMode by viewModel.pregnancyMode.collectAsState()
+        val appliedCap = com.erfanbagheri.tahdig.util.Caffeine
+            .effectiveCap(caffeineCap.takeIf { it > 0 }, pregnancyMode)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                "سقف روزانه: " +
+                    com.erfanbagheri.tahdig.util.PersianText.toPersianDigits(appliedCap.toDouble()) +
+                    " میلی‌گرم",
+                fontFamily = YekanBakh,
+            )
+        }
+        androidx.compose.material3.Slider(
+            value = caffeineCap.coerceIn(0, 2000).toFloat(),
+            onValueChange = { viewModel.setCaffeineCap(it.toInt()) },
+            valueRange = 0f..1000f,
+            steps = 19,
+            modifier = Modifier.fillMaxWidth(),
+        )
+
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            androidx.compose.material3.Switch(
+                checked = pregnancyMode,
+                onCheckedChange = { viewModel.setPregnancyMode(it) },
+            )
+            Spacer(Modifier.width(12.dp))
+            Column {
+                Text("حالت بارداری / شیردهی", fontFamily = YekanBakh)
+                Text(
+                    "سقف کافئین ۲۰۰ و هشدار مواد غذایی",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+
         Spacer(Modifier.height(48.dp))
     }
 }

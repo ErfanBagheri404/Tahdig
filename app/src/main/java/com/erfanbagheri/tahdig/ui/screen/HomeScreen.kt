@@ -96,6 +96,7 @@ import com.erfanbagheri.tahdig.ui.viewmodel.WellnessViewModel
 fun HomeScreen(
     viewModel: HomeViewModel,
     wellness: com.erfanbagheri.tahdig.ui.viewmodel.WellnessViewModel? = null,
+    caffeine: com.erfanbagheri.tahdig.ui.viewmodel.CaffeineViewModel? = null,
     onBrowseCategories: () -> Unit = {},
     onFoodClick: (Long) -> Unit = {},
     onOpenLeftover: () -> Unit = {},
@@ -358,6 +359,27 @@ fun HomeScreen(
                     goalStale = wellness.goalStale(),
                     onUpdateGoalPrompt = wellness::setGoalWeightFromLatest,
                     onLog = wellness::logWeight,
+                )
+                Spacer(Modifier.height(16.dp))
+            }
+
+            // Caffeine + pregnancy mode (#119). Optional like `wellness`, so
+            // previews and tests that never build the VM still compile.
+            if (caffeine != null) {
+                val mg by caffeine.todayMg.collectAsState()
+                val cap by caffeine.effectiveCap.collectAsState()
+                val mode by caffeine.pregnancyMode.collectAsState()
+                val rows by caffeine.todayRows.collectAsState()
+                val week by caffeine.weekMg.collectAsState()
+                CaffeineCard(
+                    todayMg = mg,
+                    capMg = cap,
+                    pregnancyMode = mode,
+                    rows = rows,
+                    week = week,
+                    onLogPreset = caffeine::logPreset,
+                    onLogCustom = caffeine::logCustom,
+                    onRemove = caffeine::remove,
                 )
                 Spacer(Modifier.height(16.dp))
             }
