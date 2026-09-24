@@ -35,6 +35,8 @@ object SettingsStore {
     private const val KEY_CAP_PRESET = "cap_preset"              // preset name or "" (#113)
     private const val KEY_CAP_CUSTOM = "cap_custom"              // JSON {NUTRIENT: value} (#113)
     private const val KEY_HALAL_STRICT = "halal_strict"          // hide flagged dishes (#118)
+    private const val KEY_GLASS_ML = "water_glass_ml"              // glass size (#115)
+    private const val KEY_WATER_TARGET = "water_target_ml"          // manual target, -1=auto (#115)
 
     private lateinit var prefs: SharedPreferences
     private val _themeMode = MutableStateFlow(0)
@@ -113,6 +115,17 @@ object SettingsStore {
     private val _scannerEnabled = MutableStateFlow(true)
     val scannerEnabled: StateFlow<Boolean> = _scannerEnabled
 
+    // ── Water + weight (#115) ─────────────────────────────────────
+    // Glass size and the manual target are prefs, not VM-only state: the
+    // stepper must add the same amount tomorrow that it added today, and
+    // the weight-derived target must not overwrite a target the user set.
+    private val _glassSizeMl = MutableStateFlow(200)
+    val glassSizeMl: StateFlow<Int> = _glassSizeMl
+
+    /** null = derive from weight. Stored as -1 so one Int key covers both. */
+    private val _waterTargetMl = MutableStateFlow<Int?>(null)
+    val waterTargetMl: StateFlow<Int?> = _waterTargetMl
+
     // ── Nutrient caps (#113) ─────────────────────────────────────
     // SettingsStore over Room here: no DB migration, no schema, and the issue
     // asks for a prefs-plus-entity approach. One key for the preset, one map
@@ -187,6 +200,8 @@ object SettingsStore {
         _halalStrict.value = prefs.getBoolean(KEY_HALAL_STRICT, false)
         _shakeSpin.value = prefs.getBoolean(KEY_SHAKE_SPIN, false)
         _scannerEnabled.value = prefs.getBoolean(KEY_SCANNER, true)
+        _glassSizeMl.value = prefs.getInt(KEY_GLASS_ML, 200)
+        _waterTargetMl.value = prefs.getInt(KEY_WATER_TARGET, -1).takeIf { it > 0 }
         _capPreset.value = prefs.getString(KEY_CAP_PRESET, "")?.ifBlank { null }
         _capCustom.value = loadDoubleMap(KEY_CAP_CUSTOM)
         grantFreezeIfNeeded()
@@ -241,6 +256,19 @@ object SettingsStore {
     fun setAllergenHide(on: Boolean) {
         prefs.edit().putBoolean(KEY_ALLERGEN_HIDE, on).apply()
         _allergenHide.value = on
+    }
+
+    /** Glass size in ml (#115) — the stepper's step is a multiple of this. */
+    fun setGlassSizeMl(ml: Int) {
+        if (ml <= 0 || ml > 2000) return
+        prefs.edit().putInt(KEY_GLASS_ML, ml).apply()
+        _glassSizeMl.value = ml
+    }
+
+    /** Manual water target (#115); null returns to the weight-derived one. */
+    fun setWaterTargetMl(ml: Int?) {
+        prefs.edit().putInt(KEY_WATER_TARGET, ml ?: -1).apply()
+        _waterTargetMl.value = ml?.takeIf { it > 0 }
     }
 
     /** Barcode scanner (#116), on by default — hiding the search entry point. */
