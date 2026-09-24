@@ -90,10 +90,12 @@ import com.erfanbagheri.tahdig.util.ShakeWatcher
 import kotlin.math.cos
 import kotlin.math.sin
 import com.erfanbagheri.tahdig.ui.viewmodel.HomeViewModel
+import com.erfanbagheri.tahdig.ui.viewmodel.WellnessViewModel
 
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel,
+    wellness: com.erfanbagheri.tahdig.ui.viewmodel.WellnessViewModel? = null,
     onBrowseCategories: () -> Unit = {},
     onFoodClick: (Long) -> Unit = {},
     onOpenLeftover: () -> Unit = {},
@@ -327,6 +329,36 @@ fun HomeScreen(
                     }
                 } ?: MaterialTheme.colorScheme.onSurfaceVariant
                 TodayCard(day, sodiumLine, sodiumColor)
+                Spacer(Modifier.height(16.dp))
+            }
+
+            // Water + weight (#115). `wellness` is optional so callers that
+            // never constructed a WellnessViewModel still compile.
+            if (wellness != null) {
+                val water by wellness.todayWater.collectAsState()
+                val week by wellness.weekWater.collectAsState()
+                val glass by wellness.glassSizeMl.collectAsState()
+                WaterCard(
+                    consumedMl = water,
+                    targetMl = wellness.targetMl(),
+                    week = week,
+                    glassSizeMl = glass,
+                    onAdd = wellness::addWater,
+                )
+                Spacer(Modifier.height(16.dp))
+
+                val weightRows by wellness.weightEntries.collectAsState()
+                WeightTrendCard(
+                    entries = weightRows.map {
+                        com.erfanbagheri.tahdig.util.WeightTrend.Entry(
+                            java.time.LocalDate.ofEpochDay(it.epochDay),
+                            it.kg,
+                        )
+                    },
+                    goalStale = wellness.goalStale(),
+                    onUpdateGoalPrompt = wellness::setGoalWeightFromLatest,
+                    onLog = wellness::logWeight,
+                )
                 Spacer(Modifier.height(16.dp))
             }
 
