@@ -43,8 +43,11 @@ import kotlinx.coroutines.launch
  */
 class DailyNotifyReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
+        if (!SettingsStore.isInitialized()) SettingsStore.init(context)
         // User may have disabled the toggle since the alarm was set.
-        if (!SettingsStore.dailyNotify.value) return
+        if (!SettingsStore.dailyNotify.value) {
+            return
+        }
 
         val pending = goAsync()
         CoroutineScope(Dispatchers.IO).launch {
@@ -59,7 +62,6 @@ class DailyNotifyReceiver : BroadcastReceiver() {
     }
 
     private suspend fun show(context: Context) {
-        // POST_NOTIFICATIONS is runtime-granted on API 33+; skip quietly.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) !=
             PackageManager.PERMISSION_GRANTED
