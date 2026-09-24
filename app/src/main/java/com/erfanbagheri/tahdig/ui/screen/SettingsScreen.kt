@@ -380,6 +380,28 @@ fun SettingsScreen(
 
         Spacer(Modifier.height(32.dp))
 
+        // Barcode scanner (#116) — off removes the camera entirely from the
+        // search screen, so no user is ever asked for the camera again.
+        val scannerEnabled by viewModel.scannerEnabled.collectAsState()
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+        ) {
+            Text(
+                text = "اسکنر بارکد",
+                style = MaterialTheme.typography.bodyLarge,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.weight(1f),
+            )
+            androidx.compose.material3.Switch(
+                checked = scannerEnabled,
+                onCheckedChange = { viewModel.setScannerEnabled(it) },
+            )
+        }
+
+        Spacer(Modifier.height(32.dp))
+
         // Voice control in cook mode (#94)
         Text(
             text = "کنترل صوتی",
