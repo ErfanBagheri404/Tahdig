@@ -28,6 +28,7 @@ object SettingsStore {
     private const val KEY_FREEZE_MONTH = "streak_freeze_month"   // YYYYMM of last grant
     private const val KEY_WEEKLY_FLOOR = "weekly_floor"          // 1..7 cooks/week (#120)
     private const val KEY_FREEZE_DECLINED = "streak_freeze_declined" // ISO day refused (#120)
+    private const val KEY_BADGES_SEEN = "badges_seen"          // JSON set (#121)
     private const val KEY_ALLERGENS = "allergens"              // JSON set (#112)
     private const val KEY_ALLERGEN_HIDE = "allergen_hide"      // search-wide hide toggle (#112)
     private const val KEY_SHAKE_SPIN = "shake_spin"            // shake-to-spin roulette (#123)
@@ -111,6 +112,13 @@ object SettingsStore {
     // ── Allergy profile (#112) ─────────────────────────────────────
     private val _allergens = MutableStateFlow<Set<String>>(emptySet())
     val allergens: StateFlow<Set<String>> = _allergens
+
+    // ── Badges (#121) ──────────────────────────────────────────────
+    // Only the SEEN set is persisted. The unlocked set is recomputed from
+    // history, so a prefs wipe can never lose a badge the user earned, and
+    // a "seen" entry can never claim a badge that was never unlocked.
+    private val _badgesSeen = MutableStateFlow<Set<String>>(emptySet())
+    val badgesSeen: StateFlow<Set<String>> = _badgesSeen
     private val _allergenHide = MutableStateFlow(false)
     val allergenHide: StateFlow<Boolean> = _allergenHide
 
@@ -241,6 +249,7 @@ object SettingsStore {
         _weeklyFloor.value = prefs.getInt(KEY_WEEKLY_FLOOR, 3).coerceIn(1, 7)
         _freezeDeclinedDay.value = prefs.getString(KEY_FREEZE_DECLINED, "") ?: ""
         _allergens.value = loadSet(KEY_ALLERGENS)
+        _badgesSeen.value = loadSet(KEY_BADGES_SEEN)
         _allergenHide.value = prefs.getBoolean(KEY_ALLERGEN_HIDE, false)
         _halalStrict.value = prefs.getBoolean(KEY_HALAL_STRICT, false)
         _carryOver.value = prefs.getBoolean(KEY_CARRY_OVER, false)
@@ -290,6 +299,17 @@ object SettingsStore {
         val v = floor.coerceIn(1, 7)
         prefs.edit().putInt(KEY_WEEKLY_FLOOR, v).apply()
         _weeklyFloor.value = v
+    }
+
+    /** Badge ids the user has already been shown (#121). */
+    fun setBadgesSeen(set: Set<String>) {
+        prefs.edit()
+            .putString(
+                KEY_BADGES_SEEN,
+                js.encodeToString(ListSerializer(String.serializer()), set.toList()),
+            )
+            .apply()
+        _badgesSeen.value = set
     }
 
     /** Allergen multi-select (#112); values come from the seed's own taxonomy. */
