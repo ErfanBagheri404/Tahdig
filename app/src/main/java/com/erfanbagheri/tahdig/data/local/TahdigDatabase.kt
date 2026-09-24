@@ -60,7 +60,7 @@ import com.erfanbagheri.tahdig.data.local.seed.SeedLoader
         WaterLogEntity::class,
         WeightLogEntity::class,
     ],
-    version = 16, // + water_log, weight_log (#115); destructive fallback, pre-release
+    version = 17, // + meal_slot, servings on nutrition_log (#114); destructive fallback
     exportSchema = true,
 )
 abstract class TahdigDatabase : RoomDatabase() {

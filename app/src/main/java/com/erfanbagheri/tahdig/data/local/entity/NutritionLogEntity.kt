@@ -2,6 +2,7 @@ package com.erfanbagheri.tahdig.data.local.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import com.erfanbagheri.tahdig.util.MealTimeHelper
 import androidx.room.PrimaryKey
 
 /**
@@ -33,4 +34,21 @@ data class NutritionLogEntity(
 
     @ColumnInfo(name = "logged_at")
     val loggedAt: Long = System.currentTimeMillis(),
+
+    /**
+     * Meal slot this row was logged into (#114), one of [MealTimeHelper]'s
+     * bucket keys. Assigned from the clock AT LOG TIME and then never
+     * recomputed: a 23:00 dinner stays dinner even when the report runs at
+     * breakfast, and the user can move it afterwards.
+     */
+    @ColumnInfo(name = "meal_slot")
+    val mealSlot: String = MealTimeHelper.currentBucket(),
+
+    /**
+     * Servings as logged (#114), 1.0 for the normal «one serving» stamp.
+     * Re-scaling a row multiplies its macros rather than logging a second
+     * row, so editing servings never inflates the day's log count.
+     */
+    @ColumnInfo(name = "servings")
+    val servings: Double = 1.0,
 )

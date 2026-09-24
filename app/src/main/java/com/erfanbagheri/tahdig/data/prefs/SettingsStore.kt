@@ -37,6 +37,7 @@ object SettingsStore {
     private const val KEY_HALAL_STRICT = "halal_strict"          // hide flagged dishes (#118)
     private const val KEY_GLASS_ML = "water_glass_ml"              // glass size (#115)
     private const val KEY_WATER_TARGET = "water_target_ml"          // manual target, -1=auto (#115)
+    private const val KEY_CARRY_OVER = "calorie_carry_over"        // roll unspent into tomorrow (#114)
 
     private lateinit var prefs: SharedPreferences
     private val _themeMode = MutableStateFlow(0)
@@ -80,6 +81,12 @@ object SettingsStore {
     private val _profile = MutableStateFlow(DailyBudget.Profile())
     val profile: StateFlow<DailyBudget.Profile> = _profile
 
+    // ── Calorie carry-over (#114) ──────────────────────────────────
+    // Off by default: rolling budget across days is a personal choice,
+    // and the default must stay "today's target is today's target".
+    private val _carryOver = MutableStateFlow(false)
+    val carryOver: StateFlow<Boolean> = _carryOver
+
     // ── Cook streak (#120) ─────────────────────────────────────────
     private val _freezes = MutableStateFlow(1)
     val freezes: StateFlow<Int> = _freezes
@@ -103,6 +110,12 @@ object SettingsStore {
     fun setHalalStrict(on: Boolean) {
         _halalStrict.value = on
         if (::prefs.isInitialized) prefs.edit().putBoolean(KEY_HALAL_STRICT, on).apply()
+    }
+
+    /** Roll unspent calories into tomorrow's budget (#114). */
+    fun setCarryOver(on: Boolean) {
+        _carryOver.value = on
+        if (::prefs.isInitialized) prefs.edit().putBoolean(KEY_CARRY_OVER, on).apply()
     }
 
     // ── Shake-to-spin roulette (#123) ──────────────────────────────
@@ -198,6 +211,7 @@ object SettingsStore {
         _allergens.value = loadSet(KEY_ALLERGENS)
         _allergenHide.value = prefs.getBoolean(KEY_ALLERGEN_HIDE, false)
         _halalStrict.value = prefs.getBoolean(KEY_HALAL_STRICT, false)
+        _carryOver.value = prefs.getBoolean(KEY_CARRY_OVER, false)
         _shakeSpin.value = prefs.getBoolean(KEY_SHAKE_SPIN, false)
         _scannerEnabled.value = prefs.getBoolean(KEY_SCANNER, true)
         _glassSizeMl.value = prefs.getInt(KEY_GLASS_ML, 200)
