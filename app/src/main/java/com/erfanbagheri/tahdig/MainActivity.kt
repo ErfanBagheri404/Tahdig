@@ -157,7 +157,16 @@ private fun TahdigApp(
     // Onboarding gate — first launch only
     val onboarded by com.erfanbagheri.tahdig.data.prefs.SettingsStore.onboarded.collectAsState()
     if (!onboarded) {
-        OnboardingPager(onDone = { SettingsStore.setOnboarded() })
+        // #126: onboarding's last stop opens a real seeded dish, so the first
+        // run ends with a dish on screen instead of an empty home.
+        OnboardingPager(
+            onDone = { SettingsStore.setOnboarded() },
+            onOpenDish = { id ->
+                SettingsStore.setOnboarded()
+                SettingsStore.setSamplePick(id)
+                detailFoodId = id
+            },
+        )
         return
     }
     var stepModeFoodId by rememberSaveable { mutableLongStateOf(-1L) }
@@ -395,13 +404,16 @@ private fun TahdigApp(
                         historyViewModel = hvm,
                         journalViewModel = jvm,
                         onFoodClick = { detailFoodId = it },
+                        // #126: every ghost-row CTA needs a way out of the
+                        // empty list it was shown in.
+                        onGoHome = { selectedTab = 0 },
                         startInJournal = startAttachPhoto,
                         onAttachHandled = onAttachHandled,
                     )
                 }
                 selectedTab == 3 -> {
                     val vm: ShoppingViewModel = viewModel()
-                    ShoppingListScreen(viewModel = vm)
+                    ShoppingListScreen(viewModel = vm, onGoHome = { selectedTab = 0 })
                 }
                 selectedTab == 4 -> {
                     val vm: MealPlanViewModel = viewModel()

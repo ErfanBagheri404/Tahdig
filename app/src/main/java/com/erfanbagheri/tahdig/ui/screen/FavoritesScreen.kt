@@ -38,8 +38,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
-import com.erfanbagheri.tahdig.ui.components.EmptyState
+import com.erfanbagheri.tahdig.ui.components.FirstRunTip
+import com.erfanbagheri.tahdig.ui.components.GhostRowsEmptyState
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
+import com.erfanbagheri.tahdig.util.FirstRun
 import com.erfanbagheri.tahdig.ui.viewmodel.FavoritesViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.HistoryViewModel
 
@@ -49,6 +51,8 @@ fun FavoritesScreen(
     historyViewModel: HistoryViewModel,
     journalViewModel: com.erfanbagheri.tahdig.ui.viewmodel.JournalViewModel,
     onFoodClick: (Long) -> Unit = {},
+    // #126: ghost-row CTAs need a way out of an empty list.
+    onGoHome: () -> Unit = {},
     // #125: a photo-prompt notification deep-links here, on the journal tab.
     startInJournal: Boolean = false,
     onAttachHandled: () -> Unit = {},
@@ -94,10 +98,11 @@ fun FavoritesScreen(
 
         when (selectedTab) {
             0 -> {
-                if (favoritedFoods.isEmpty()) EmptyState(
-                    icon = Icons.Filled.FavoriteBorder,
+                if (favoritedFoods.isEmpty()) GhostRowsEmptyState(
                     title = "غذای مورد علاقه‌ای ثبت نشده",
                     subtitle = "روی قلب هر غذا بزن تا اینجا ذخیره بشه",
+                    cta = "برگرد به پیشنهاد امروز",
+                    onCta = onGoHome,
                 )
                 else FavoriteList(
                     foods = favoritedFoods,
@@ -107,10 +112,11 @@ fun FavoritesScreen(
                 )
             }
             1 -> {
-                if (blockedFoods.isEmpty()) EmptyState(
-                    icon = Icons.Filled.Block,
+                if (blockedFoods.isEmpty()) GhostRowsEmptyState(
                     title = "غذای مسدود شده‌ای نیست",
                     subtitle = "غذاها را می‌توانید از پیشنهادها مسدود کنید",
+                    cta = "برگرد به پیشنهاد امروز",
+                    onCta = onGoHome,
                 )
                 else FavoriteList(
                     foods = blockedFoods,
@@ -120,10 +126,11 @@ fun FavoritesScreen(
                 )
             }
             2 -> {
-                if (historyItems.isEmpty()) EmptyState(
-                    icon = Icons.Filled.History,
+                if (historyItems.isEmpty()) GhostRowsEmptyState(
                     title = "تاریخچه‌ای ثبت نشده",
                     subtitle = "غذاهای پیشنهادی قبلی اینجا می‌آیند",
+                    cta = "برگرد به پیشنهاد امروز",
+                    onCta = onGoHome,
                 )
                 else HistoryList(
                     items = historyItems,
@@ -133,6 +140,11 @@ fun FavoritesScreen(
             // خاطرات پخت (#124) — the cook journal, reverse-chronological.
             3 -> {
                 val entries by journalViewModel.entries.collectAsState()
+                // #126: one-line hint on first encounter with the journal.
+                FirstRunTip(
+                    id = FirstRun.Tip.JOURNAL,
+                    text = "هر پخت اینجا ثبت می‌شه؛ عکس و یادداشت رو بعداً هم می‌تونی اضافه کنی.",
+                )
                 // #125: the deep-linked picker, primed once on arrival.
                 // #125: deep-link consumes the single launch param; the launch
                 // code below re-arms per *entry id* so config changes don't
@@ -145,6 +157,7 @@ fun FavoritesScreen(
                     entries = entries,
                     foodName = { id -> historyItems.firstOrNull { it.food.id == id }?.food?.name },
                     onClick = onFoodClick,
+                    onGoHome = onGoHome,
                     attachToId = attachToId,
                     onAttach = { id, uri ->
                         journalViewModel.setPhoto(id, uri)

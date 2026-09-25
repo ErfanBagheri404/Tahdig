@@ -379,6 +379,8 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
     fun toggleFavorite() {
         viewModelScope.launch {
             val food = _suggestion.value ?: return@launch
+            // #126: first save — the start of the first-success story.
+            markWhenFirst(food.id, favorited = true)
             if (isFavorited(food.id)) {
                 favoriteDao.deleteByFoodId(food.id)
                 _isFavorite.value = false
@@ -451,6 +453,8 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
      */
     fun stampCook(foodId: Long) {
         viewModelScope.launch {
+            // #126: first cook looks like a favorite to a first-run user; it is.
+            markWhenFirst(foodId, favorited = false)
             val id = db.journalDao().insert(
                 JournalEntity(foodId = foodId, timestamp = System.currentTimeMillis()),
             )
@@ -490,6 +494,19 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
     /** Dismiss the leftover suggestion card. */
     fun dismissLeftover() {
         _leftoverSuggestions.value = emptyList()
+    }
+
+    /**
+     * Fire the first-success clock (#126) exactly once. Favoriting and cooking
+     * both count — a fresh install does one or the other first, never both, so
+     * waiting for the second would leave the celebration behind for half the
+     * users. The guard lives in the store: the first writer wins.
+     */
+    private suspend fun markWhenFirst(foodId: Long, favorited: Boolean) {
+        val celebrated = SettingsStore.firstSuccessAt.value > 0L
+            || SettingsStore.sampleDone.value
+        if (!celebrated) SettingsStore.markFirstSuccess()
+        if (favorited) SettingsStore.setSamplePick(foodId)
     }
 
     private suspend fun isFavorited(foodId: Long): Boolean =

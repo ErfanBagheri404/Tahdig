@@ -731,6 +731,12 @@ fun SettingsScreen(
         Spacer(Modifier.height(8.dp))
         // Badge collection (#121) — same overlay shape as the weekly report.
         BackupRestoreRow("نشان‌ها", onOpenBadges)
+        // #126: replay onboarding, the starter chips and the hints — one row,
+        // and every marker is cleared together so no tip comes back half-reset.
+        Spacer(Modifier.height(8.dp))
+        BackupRestoreRow("دیدن دوبارهٔ معرفی اولیه") {
+            com.erfanbagheri.tahdig.data.prefs.SettingsStore.resetFirstRun()
+        }
 
         // Carry-over is off by default; the diary reads the same flow
         // through SettingsViewModel, exactly like every other toggle here.
@@ -863,7 +869,7 @@ private fun BackupRestoreRow(label: String, onClick: () -> Unit) {
             .clickable(
                 onClick = onClick,
                 role = androidx.compose.ui.semantics.Role.Button,
-                onClickLabel = "انتخاب تم $label",
+                onClickLabel = "باز کردن $label",
             )
             .padding(vertical = 12.dp),
     )
