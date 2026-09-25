@@ -48,6 +48,8 @@ object SettingsStore {
     private const val KEY_IDLE_TIER = "notify_idle_tier"          // fired idle tier, hours (#122)
     private const val KEY_NOTIF_PRIMED = "notif_primed"           // permission asked once (#122)
     private const val KEY_NOTIF_DENIED = "notif_denied"           // denial remembered (#122)
+    private const val KEY_PHOTO_PROMPT = "photo_prompt_enabled"   // daily lunch photo reminder (#125)
+    private const val KEY_PHOTO_PROMPT_HOUR = "photo_prompt_hour" // 0..23, default 13 (#125)
 
     private lateinit var prefs: SharedPreferences
     private val _themeMode = MutableStateFlow(0)
@@ -126,6 +128,16 @@ object SettingsStore {
 
     private val _notifDenied = MutableStateFlow(false)
     val notifDenied: StateFlow<Boolean> = _notifDenied
+
+    // ── Daily photo prompt (#125) ───────────────────────────────
+    // Off by default and entirely optional: photos are a nice-to-have, and a
+    // nudge about them must never feel like an obligation. Hour defaults to
+    // lunch (13:00) because the issue's copy is «یادآور عکس ناهار».
+    private val _photoPrompt = MutableStateFlow(false)
+    val photoPrompt: StateFlow<Boolean> = _photoPrompt
+
+    private val _photoPromptHour = MutableStateFlow(13)
+    val photoPromptHour: StateFlow<Int> = _photoPromptHour
 
     // ── Calorie carry-over (#114) ──────────────────────────────────
     // Off by default: rolling budget across days is a personal choice,
@@ -294,6 +306,8 @@ object SettingsStore {
         _idleTierHours.value = prefs.getFloat(KEY_IDLE_TIER, 0f).toDouble()
         _notifPrimed.value = prefs.getBoolean(KEY_NOTIF_PRIMED, false)
         _notifDenied.value = prefs.getBoolean(KEY_NOTIF_DENIED, false)
+        _photoPrompt.value = prefs.getBoolean(KEY_PHOTO_PROMPT, false)
+        _photoPromptHour.value = prefs.getInt(KEY_PHOTO_PROMPT_HOUR, 13).let { if (it in 1..23) it else 13 }
         _shakeSpin.value = prefs.getBoolean(KEY_SHAKE_SPIN, false)
         _scannerEnabled.value = prefs.getBoolean(KEY_SCANNER, true)
         _glassSizeMl.value = prefs.getInt(KEY_GLASS_ML, 200)
@@ -391,6 +405,31 @@ object SettingsStore {
             .apply()
         _notifPrimed.value = primed
         _notifDenied.value = primed && !granted
+    }
+
+    /**
+     * The daily lunch photo prompt (#125). Enabling schedules the alarm
+     * immediately so the very first reminder arrives today when possible;
+     * disabling cancels it and stops the receiver re-arming.
+     */
+    fun setPhotoPrompt(context: Context, enabled: Boolean) {
+        prefs.edit().putBoolean(KEY_PHOTO_PROMPT, enabled).apply()
+        _photoPrompt.value = enabled
+        if (enabled) {
+            com.erfanbagheri.tahdig.notify.PhotoPromptScheduler.schedule(context)
+        } else {
+            com.erfanbagheri.tahdig.notify.PhotoPromptScheduler.cancel(context)
+        }
+    }
+
+    /** The reminder's hour, 1..23; changing it re-arms the next fire. */
+    fun setPhotoPromptHour(context: Context, hour: Int) {
+        val v = if (hour in 1..23) hour else 13
+        prefs.edit().putInt(KEY_PHOTO_PROMPT_HOUR, v).apply()
+        _photoPromptHour.value = v
+        if (_photoPrompt.value) {
+            com.erfanbagheri.tahdig.notify.PhotoPromptScheduler.schedule(context)
+        }
     }
 
     /** Allergen multi-select (#112); values come from the seed's own taxonomy. */

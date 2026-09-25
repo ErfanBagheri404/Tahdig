@@ -107,6 +107,7 @@ class BadgeViewModel(app: Application) : AndroidViewModel(app) {
             longestStreak = streak.longest,
             freezesGranted = SettingsStore.freezes.value,
             waterGoalDayStreak = waterGoalStreak(),
+            photoTimestamps = db.journalDao().photoTimestamps(),
         )
     }
 

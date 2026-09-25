@@ -29,6 +29,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -47,11 +49,20 @@ fun FavoritesScreen(
     historyViewModel: HistoryViewModel,
     journalViewModel: com.erfanbagheri.tahdig.ui.viewmodel.JournalViewModel,
     onFoodClick: (Long) -> Unit = {},
+    // #125: a photo-prompt notification deep-links here, on the journal tab.
+    startInJournal: Boolean = false,
+    onAttachHandled: () -> Unit = {},
 ) {
     val favoritedFoods by favoritesViewModel.favoritedFoods.collectAsState()
     val blockedFoods by favoritesViewModel.blockedFoods.collectAsState()
     val historyItems by historyViewModel.historyItems.collectAsState()
-    var selectedTab by rememberSaveable { mutableIntStateOf(0) }
+    var selectedTab by rememberSaveable { mutableIntStateOf(if (startInJournal) 3 else 0) }
+    androidx.compose.runtime.LaunchedEffect(startInJournal) {
+        if (startInJournal) {
+            selectedTab = 3
+            onAttachHandled()
+        }
+    }
 
     val tabs = listOf("علاقه‌مندی‌ها", "مسدود شده‌ها", "تاریخچه", "خاطرات پخت")
 
@@ -122,15 +133,23 @@ fun FavoritesScreen(
             // خاطرات پخت (#124) — the cook journal, reverse-chronological.
             3 -> {
                 val entries by journalViewModel.entries.collectAsState()
-                if (entries.isEmpty()) EmptyState(
-                    icon = Icons.Filled.History,
-                    title = "خاطره‌ای ثبت نشده",
-                    subtitle = "بعد از پختن، عکس و یادداشت اینجا می‌مونه",
-                )
-                else JournalList(
+                // #125: the deep-linked picker, primed once on arrival.
+                // #125: deep-link consumes the single launch param; the launch
+                // code below re-arms per *entry id* so config changes don't
+                // drop the picker (and later entries can't re-trigger it).
+                var attachDone by androidx.compose.runtime.remember { mutableStateOf(false) }
+                val firstTodayId = entries.firstOrNull()?.id
+                val attachToId = if (startInJournal && !attachDone && firstTodayId != null)
+                    firstTodayId else null
+                JournalList(
                     entries = entries,
                     foodName = { id -> historyItems.firstOrNull { it.food.id == id }?.food?.name },
                     onClick = onFoodClick,
+                    attachToId = attachToId,
+                    onAttach = { id, uri ->
+                        journalViewModel.setPhoto(id, uri)
+                        attachDone = true
+                    },
                 )
             }
         }
