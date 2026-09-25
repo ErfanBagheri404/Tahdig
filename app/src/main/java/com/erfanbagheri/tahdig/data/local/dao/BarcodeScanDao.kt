@@ -55,4 +55,12 @@ interface BarcodeScanDao {
 
     @Query("DELETE FROM barcode_scans")
     suspend fun clear()
+
+    /**
+     * Every cached row, for the clear-history undo (#127). The table is both
+     * the scan history and the offline product cache — a bare DELETE makes
+     * every known product look un-scanned and forces a fresh network lookup.
+     */
+    @Query("SELECT * FROM barcode_scans")
+    suspend fun allRows(): List<BarcodeScanEntity>
 }

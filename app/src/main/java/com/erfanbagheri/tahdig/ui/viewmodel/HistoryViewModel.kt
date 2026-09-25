@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import com.erfanbagheri.tahdig.util.UndoHub
 import kotlinx.coroutines.launch
 
 class HistoryViewModel(app: Application) : AndroidViewModel(app) {
@@ -20,7 +21,19 @@ class HistoryViewModel(app: Application) : AndroidViewModel(app) {
     val historyItems: StateFlow<List<HistoryWithFood>> = historyDao.observeHistoryWithFood()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
+    /**
+     * Clear the timeline, restorable for the undo window (#127). History is
+     * the source of the heatmap, streak and coverage meters, so a bare DELETE
+     * silently reset all of them — the inverse puts every row back.
+     */
     fun clearHistory() {
-        viewModelScope.launch { historyDao.clearAll() }
+        viewModelScope.launch {
+            val rows = historyDao.allRows()
+            if (rows.isEmpty()) return@launch
+            historyDao.clearAll()
+            UndoHub.arm("تاریخچه پاک شد") {
+                viewModelScope.launch { rows.forEach { historyDao.insert(it) } }
+            }
+        }
     }
 }

@@ -50,6 +50,8 @@ import com.erfanbagheri.tahdig.ui.screen.FoodDetailScreen
 import com.erfanbagheri.tahdig.data.prefs.SettingsStore
 import com.erfanbagheri.tahdig.ui.screen.HomeScreen
 import com.erfanbagheri.tahdig.ui.screen.LeftoverScreen
+import androidx.compose.ui.Alignment
+import com.erfanbagheri.tahdig.ui.components.UndoSnackbarHost
 import com.erfanbagheri.tahdig.ui.screen.OnboardingPager
 import com.erfanbagheri.tahdig.ui.screen.PantryScreen
 import com.erfanbagheri.tahdig.ui.screen.SearchScreen
@@ -244,6 +246,9 @@ private fun TahdigApp(
         color = MaterialTheme.colorScheme.background,
     ) {
         Box(Modifier.fillMaxSize()) {
+        // #127: one undo host for the whole app. Any ViewModel arms UndoHub
+        // and the snackbar appears here, above every screen.
+        UndoSnackbarHost(modifier = Modifier.align(Alignment.BottomCenter))
         when {
                 stepModeFoodId >= 0 -> {
                     // Captured at composition: onCooked runs outside composable context (#98).

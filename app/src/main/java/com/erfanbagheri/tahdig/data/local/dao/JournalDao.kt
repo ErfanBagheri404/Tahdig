@@ -2,6 +2,7 @@ package com.erfanbagheri.tahdig.data.local.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.erfanbagheri.tahdig.data.local.entity.JournalEntity
 import kotlinx.coroutines.flow.Flow
@@ -48,6 +49,18 @@ interface JournalDao {
 
     @Insert
     suspend fun insert(entry: JournalEntity): Long
+
+    /**
+     * Exact-restore insert for undo (#127). REPLACE, not IGNORE: the row's own
+     * id, timestamp and photo must come back, or an undone delete reorders the
+     * timeline and loses the picture.
+     */
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun restore(entry: JournalEntity)
+
+    /** Capture a row before deleting it, so undo can put it back verbatim. */
+    @Query("SELECT * FROM journal WHERE id = :id LIMIT 1")
+    suspend fun byId(id: Long): JournalEntity?
 
     @Query("UPDATE journal SET note = :note WHERE id = :id")
     suspend fun updateNote(id: Long, note: String)

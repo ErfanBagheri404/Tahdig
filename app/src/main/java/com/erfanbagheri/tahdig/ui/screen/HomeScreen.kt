@@ -215,17 +215,24 @@ fun HomeScreen(
         )
     }
 
+    val homeScroll = rememberScrollState()
     androidx.compose.foundation.layout.Box(Modifier.fillMaxSize()) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background,
     ) {
+        // #127: pull-to-refresh = local re-shuffle. Offline-first, so it never
+        // pretends to fetch — it re-ranks the feed from what is already here.
+        com.erfanbagheri.tahdig.ui.components.LocalPullToRefresh(
+            scrollState = homeScroll,
+            onRefresh = { viewModel.roll(); viewModel.refreshDay() },
+        ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 // The action row (چرخوندن incl.) fell off the bottom once the
                 // nutrition/streak sections stacked up — scroll instead of clipping.
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(homeScroll)
                 .padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -678,8 +685,9 @@ fun HomeScreen(
             }
 
             Spacer(Modifier.height(32.dp))
-        }
-    }
+        }   // Column
+        }   // LocalPullToRefresh
+    }       // Surface
 
         // Badge unlock toast (#121): non-blocking, above the nav bar.
         SnackbarHost(
