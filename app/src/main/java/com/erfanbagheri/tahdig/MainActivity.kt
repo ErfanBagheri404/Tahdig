@@ -2,6 +2,7 @@ package com.erfanbagheri.tahdig
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import android.app.Activity
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -26,10 +27,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
@@ -78,6 +84,9 @@ import com.erfanbagheri.tahdig.ui.viewmodel.RatingViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.SearchViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.SettingsViewModel
 import com.erfanbagheri.tahdig.util.BackupRestore
+import com.erfanbagheri.tahdig.ui.ShareLayoutDialog
+import com.erfanbagheri.tahdig.util.RecipeFile
+import com.erfanbagheri.tahdig.util.RecipeTransfer
 import com.erfanbagheri.tahdig.util.ShareCard
 import com.erfanbagheri.tahdig.ui.viewmodel.ShoppingViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.LeftoverViewModel
@@ -102,6 +111,9 @@ class MainActivity : ComponentActivity() {
     /** Set when the widget asks for one dish's detail (#131). */
     private var pendingDetailId by mutableStateOf<Long?>(null)
 
+    /** The dish whose `.tahdig.json` is being written, held across the SAF picker (#132). */
+    private var pendingExport: FoodEntity? = null
+
     private fun consumeDestination(intent: Intent?) {
         when (intent?.getStringExtra(EXTRA_DESTINATION)) {
             DEST_JOURNAL_PHOTO -> pendingJournalAttach = true
@@ -111,6 +123,40 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    /**
+     * #132 import. Lives here, not in a composable: it needs the DAO, and an
+     * import that parsed but never wrote would be a lie. Nothing is inserted
+     * until the whole file has parsed, so a corrupt file cannot leave a
+     * half-imported recipe behind.
+     */
+    fun importRecipeFrom(uri: android.net.Uri) {
+        val recipes = try {
+            RecipeTransfer.importFrom(this, uri)
+        } catch (e: RecipeFile.InvalidRecipeFile) {
+            toast(e.message ?: "فایل دستور معتبر نیست")
+            return
+        }
+        lifecycleScope.launch {
+            TahdigDatabase.getInstance(this@MainActivity).foodDao()
+                // id = 0 so Room assigns a fresh one: an import must never
+                // overwrite a dish the user already has.
+                .insertAll(recipes.map { RecipeFile.toFood(it, newId = 0) })
+            toast("${recipes.size} دستور اضافه شد")
+        }
+    }
+
+    /** #132 export — a failure must leave the dish list untouched. */
+    fun exportRecipeTo(uri: android.net.Uri) {
+        val food = pendingExport ?: return
+        pendingExport = null
+        runCatching { RecipeTransfer.exportTo(this, uri, listOf(RecipeFile.fromFood(food))) }
+            .onSuccess { toast("فایل دستور ذخیره شد") }
+            .onFailure { toast("ذخیرهٔ فایل ممکن نشد") }
+    }
+
+    private fun toast(msg: String) =
+        Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
@@ -135,6 +181,9 @@ class MainActivity : ComponentActivity() {
                         onAttachHandled = { pendingJournalAttach = false },
                         initialDetailId = pendingDetailId,
                         onDetailHandled = { pendingDetailId = null },
+                        onExportRecipe = ::exportRecipeTo,
+                        onImportRecipe = ::importRecipeFrom,
+                        onStageExport = { pendingExport = it },
                     )
                 }
             }
@@ -148,6 +197,11 @@ private fun TahdigApp(
     onAttachHandled: () -> Unit = {},
     initialDetailId: Long? = null,
     onDetailHandled: () -> Unit = {},
+    /** #132: write/import a `.tahdig.json` through SAF. */
+    onExportRecipe: (android.net.Uri) -> Unit = {},
+    onImportRecipe: (android.net.Uri) -> Unit = {},
+    /** #132: hand the dish to the Activity, which holds it across the picker. */
+    onStageExport: (FoodEntity) -> Unit = {},
 ) {
     // Tab 2 is Favorites/History where the journal tab lives.
     var selectedTab by rememberSaveable { mutableIntStateOf(if (startAttachPhoto) 2 else 0) }
@@ -158,6 +212,9 @@ private fun TahdigApp(
         }
     }
     var detailFoodId by rememberSaveable { mutableLongStateOf(-1L) }
+
+    // #132: one dialog state, so the picker cannot outlive the food it is for.
+    var shareTarget by remember { mutableStateOf<FoodEntity?>(null) }
     // Widget tap (#131) opens a dish straight from the home screen.
     androidx.compose.runtime.LaunchedEffect(initialDetailId) {
         if (initialDetailId != null && initialDetailId > 0) {
@@ -166,10 +223,23 @@ private fun TahdigApp(
         }
     }
     val context = LocalContext.current
+
+    // #132: the dish being exported lives on the Activity, which owns the DB
+    // and the SAF result. One owner, so it cannot get out of step.
+    var exportDish by remember { mutableStateOf<FoodEntity?>(null) }
+
+
     // Backup/restore SAF launchers
     val backupLauncher = androidx.activity.compose.rememberLauncherForActivityResult(
         androidx.activity.result.contract.ActivityResultContracts.CreateDocument("application/octet-stream"),
     ) { uri -> uri?.let { BackupRestore.backup(context, it) } }
+    // #132: write a .tahdig.json through SAF, so no storage permission is needed.
+    val recipeExportLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.CreateDocument(RecipeFile.MIME),
+    ) { uri -> uri?.let { onExportRecipe(it) } }
+    val recipeImportLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocument(),
+    ) { uri -> uri?.let { onImportRecipe(it) } }
     val restoreLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.OpenDocument(),
     ) { uri -> uri?.let {
@@ -327,8 +397,10 @@ private fun TahdigApp(
                             svm.addIngredients(detailFoodId, missing)
                             detailFoodId = -1L
                         },
-                        onShare = { food ->
-                            ShareCard.share(context, food)
+                        onShare = { food -> shareTarget = food },
+                        onExportFile = { food ->
+                            onStageExport(food)
+                            recipeExportLauncher.launch(RecipeTransfer.fileName(food))
                         },
                     )
                 }
@@ -542,6 +614,18 @@ private fun TahdigApp(
                 )
             }
             } // Box (base screen + technique overlays)
+        }
+
+        // #132: pick the card, then share. Kept outside the Box so it survives
+        // the detail screen being popped underneath it.
+        shareTarget?.let { food ->
+            ShareLayoutDialog(
+                onPick = { layout ->
+                    shareTarget = null
+                    ShareCard.share(context, food, layout)
+                },
+                onDismiss = { shareTarget = null },
+            )
         }
     }
 }

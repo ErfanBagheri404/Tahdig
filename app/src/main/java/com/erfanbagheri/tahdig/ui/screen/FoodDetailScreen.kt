@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -79,6 +80,8 @@ fun FoodDetailScreen(
     /** Adds only the pantry gap, so the user isn't told to rebuy what they own. */
     onAddMissing: (String) -> Unit = {},
     onShare: (FoodEntity) -> Unit = {},
+    /** #132: write the recipe to a `.tahdig.json` file via SAF. */
+    onExportFile: (FoodEntity) -> Unit = {},
     /** Mise-en-place checked-state store (#99); null renders rows without checks. */
     milestoneViewModel: com.erfanbagheri.tahdig.ui.viewmodel.MilestoneViewModel? = null,
 ) {
@@ -178,6 +181,12 @@ fun FoodDetailScreen(
                             Icon(
                                 imageVector = Icons.Default.Share,
                                 contentDescription = "اشتراک‌گذاری",
+                            )
+                        }
+                        IconButton(onClick = { onExportFile(food!!) }) {
+                            Icon(
+                                imageVector = Icons.Default.Download,
+                                contentDescription = "ذخیرهٔ فایل دستور",
                             )
                         }
                     }
