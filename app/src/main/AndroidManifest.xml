@@ -58,6 +58,7 @@
         </activity>
 
         <receiver android:name=".notify.DailyNotifyReceiver" android:exported="false" />
+        <receiver android:name=".notify.PhotoPromptReceiver" android:exported="false" />
         <receiver android:name=".notify.TimerReceiver" android:exported="false" />
 
         <receiver

@@ -45,7 +45,20 @@ fun JournalList(
     entries: List<JournalEntity>,
     foodName: (Long) -> String?,
     onClick: (Long) -> Unit,
+    // #125 photo-prompt deep-link: when set, opens the picker for this entry
+    // once the first entry loads (today's cook, or nothing when the list is
+    // empty — then the row is simply absent and the user attaches by hand).
+    attachToId: Long? = null,
+    onAttach: (Long, android.net.Uri) -> Unit = { _, _ -> },
 ) {
+    val picker = androidx.activity.compose.rememberLauncherForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.GetContent(),
+    ) { uri ->
+        if (uri != null && attachToId != null) onAttach(attachToId, uri)
+    }
+    androidx.compose.runtime.LaunchedEffect(attachToId) {
+        if (attachToId != null) picker.launch("image/*")
+    }
     LazyColumn(modifier = Modifier.fillMaxWidth()) {
         items(entries, key = { it.id }) { entry ->
             Column(

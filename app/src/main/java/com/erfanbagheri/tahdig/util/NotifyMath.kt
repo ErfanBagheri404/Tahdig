@@ -106,10 +106,10 @@ object NotifyMath {
     fun reminderHour(userHour: Int, defaultHour: Int = 20): Int =
         if (userHour in 1..23) userHour else defaultHour
 
-    /** Epoch millis of the next fire at [hour]:30 local, strictly in the future. */
-    fun nextTriggerAt(nowMillis: Long, hour: Int, zone: ZoneId): Long {
+    /** Epoch millis of the next fire at [hour]:[minute] local, strictly in the future. */
+    fun nextTriggerAt(nowMillis: Long, hour: Int, zone: ZoneId, minute: Int = 30): Long {
         val local = Instant.ofEpochMilli(nowMillis).atZone(zone).toLocalDateTime()
-        var at = local.withHour(hour).withMinute(30).withSecond(0).withNano(0)
+        var at = local.withHour(hour).withMinute(minute).withSecond(0).withNano(0)
         if (at.atZone(zone).toInstant().toEpochMilli() <= nowMillis) {
             at = at.plusDays(1)
         }
