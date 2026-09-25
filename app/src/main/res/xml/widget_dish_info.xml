@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  One provider, three layouts. The launcher resizes freely and
+  DishOfDayWidget picks the layout from the reported dp size, so the
+  min size only has to allow the smallest useful shape (a 2x2 dish name).
+  targetCellWidth/Height let the launcher offer 4x2 and 4x4 up front (#131).
+-->
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:initialLayout="@layout/widget_dish_of_day"
     android:minWidth="110dp"
     android:minHeight="40dp"
+    android:minResizeWidth="110dp"
+    android:minResizeHeight="40dp"
+    android:targetCellWidth="4"
+    android:targetCellHeight="2"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="86400000"
     android:widgetCategory="home_screen" />

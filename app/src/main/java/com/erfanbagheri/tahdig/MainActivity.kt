@@ -90,24 +90,37 @@ class MainActivity : ComponentActivity() {
         /** Intent extra consumed by [onCreate]/[onNewIntent] to route into a screen. */
         const val EXTRA_DESTINATION = "tahdig.destination"
         const val DEST_JOURNAL_PHOTO = "journal_photo"
+
+        /** Widget tap (#131): open one dish's detail straight away. */
+        const val DEST_DETAIL = "detail"
+        const val EXTRA_FOOD_ID = "tahdig.food_id"
     }
 
     /** Set when a photo-prompt notification fires while the app is already alive. */
     private var pendingJournalAttach = false
 
+    /** Set when the widget asks for one dish's detail (#131). */
+    private var pendingDetailId by mutableStateOf<Long?>(null)
+
+    private fun consumeDestination(intent: Intent?) {
+        when (intent?.getStringExtra(EXTRA_DESTINATION)) {
+            DEST_JOURNAL_PHOTO -> pendingJournalAttach = true
+            DEST_DETAIL -> {
+                val id = intent.getLongExtra(EXTRA_FOOD_ID, -1L)
+                if (id > 0) pendingDetailId = id
+            }
+        }
+    }
+
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        if (intent.getStringExtra(EXTRA_DESTINATION) == DEST_JOURNAL_PHOTO) {
-            pendingJournalAttach = true
-        }
+        consumeDestination(intent)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        if (intent.getStringExtra(EXTRA_DESTINATION) == DEST_JOURNAL_PHOTO) {
-            pendingJournalAttach = true
-        }
+        consumeDestination(intent)
 
         lifecycleScope.launch {
             TahdigDatabase.populateIfEmpty(this@MainActivity)
@@ -117,7 +130,12 @@ class MainActivity : ComponentActivity() {
             // Farsi-only app: force RTL regardless of device locale.
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
                 TahdigTheme {
-                    TahdigApp(startAttachPhoto = pendingJournalAttach, onAttachHandled = { pendingJournalAttach = false })
+                    TahdigApp(
+                        startAttachPhoto = pendingJournalAttach,
+                        onAttachHandled = { pendingJournalAttach = false },
+                        initialDetailId = pendingDetailId,
+                        onDetailHandled = { pendingDetailId = null },
+                    )
                 }
             }
         }
@@ -128,6 +146,8 @@ class MainActivity : ComponentActivity() {
 private fun TahdigApp(
     startAttachPhoto: Boolean = false,
     onAttachHandled: () -> Unit = {},
+    initialDetailId: Long? = null,
+    onDetailHandled: () -> Unit = {},
 ) {
     // Tab 2 is Favorites/History where the journal tab lives.
     var selectedTab by rememberSaveable { mutableIntStateOf(if (startAttachPhoto) 2 else 0) }
@@ -138,6 +158,13 @@ private fun TahdigApp(
         }
     }
     var detailFoodId by rememberSaveable { mutableLongStateOf(-1L) }
+    // Widget tap (#131) opens a dish straight from the home screen.
+    androidx.compose.runtime.LaunchedEffect(initialDetailId) {
+        if (initialDetailId != null && initialDetailId > 0) {
+            detailFoodId = initialDetailId
+            onDetailHandled()
+        }
+    }
     val context = LocalContext.current
     // Backup/restore SAF launchers
     val backupLauncher = androidx.activity.compose.rememberLauncherForActivityResult(
@@ -271,6 +298,8 @@ private fun TahdigApp(
                             // Journal stamp (#124) — same event as the history
                             // and nutrition rows, and the prompt rides Home.
                             homeVm.stampCook(f.id)
+                            // Streak line on the widget moved (#131).
+                            com.erfanbagheri.tahdig.widget.DishOfDayWidget.refreshAll(context)
                             detailFoodId = -1L
                             stepModeFoodId = -1L
                             stepModeResume = false
