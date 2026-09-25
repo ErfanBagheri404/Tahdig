@@ -78,7 +78,10 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import com.erfanbagheri.tahdig.ui.components.FirstRunTip
+import com.erfanbagheri.tahdig.ui.components.FirstSuccessNote
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
+import com.erfanbagheri.tahdig.util.FirstRun
 import com.erfanbagheri.tahdig.ui.components.DishPhoto
 import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
 import com.erfanbagheri.tahdig.util.DietFilter
@@ -308,6 +311,21 @@ fun HomeScreen(
             TextButton(onClick = onOpenLeftover) {
                 Text("غذای مونده دارم", fontFamily = YekanBakh)
             }
+            Spacer(Modifier.height(12.dp))
+
+            // ── First-run hints (#126) ─────────────────────────────────────
+            // One line each, shown until dismissed, never returning after.
+            // Placed below the suggestion so they never push the dish off screen.
+            FirstRunTip(
+                id = FirstRun.Tip.HOME_REROLL,
+                text = "«غذای دیگه» یه انتخاب تازه میاره؛ قلب برای ذخیره، دست برای مسدود کردن.",
+            )
+            FirstRunTip(
+                id = FirstRun.Tip.PANTRY,
+                text = "مواد خونه‌ت رو بگو تا بگیم چی می‌تونی همین حالا بپزی.",
+            )
+            // Post-first-cook done state: a pointer at the next action.
+            FirstSuccessNote()
             Spacer(Modifier.height(24.dp))
 
             // ── Expiry summary (#106) ──────────────────────────────────────

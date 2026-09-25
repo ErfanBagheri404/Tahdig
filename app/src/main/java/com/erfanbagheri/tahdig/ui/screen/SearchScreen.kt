@@ -5,6 +5,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.material3.TextButton
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -45,7 +46,9 @@ import com.erfanbagheri.tahdig.util.DietFilter
 import com.erfanbagheri.tahdig.util.MicroNutrients
 import com.erfanbagheri.tahdig.util.Flavor
 import com.erfanbagheri.tahdig.util.VoiceInput
+import com.erfanbagheri.tahdig.ui.components.FirstRunTip
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
+import com.erfanbagheri.tahdig.util.FirstRun
 import com.erfanbagheri.tahdig.ui.viewmodel.SearchHistory
 import com.erfanbagheri.tahdig.ui.viewmodel.RecentlyViewedViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.SearchViewModel
@@ -70,6 +73,8 @@ fun SearchScreen(
     val flavorCount by viewModel.flavorCount.collectAsState()
     val categories by viewModel.categories.collectAsState()
     val results by viewModel.results.collectAsState()
+    // #126: dishes a relaxed query reaches when the strict one returns none.
+    val relaxedMatches by viewModel.relaxedMatches.collectAsState()
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -306,11 +311,19 @@ fun SearchScreen(
 
             Spacer(Modifier.height(16.dp))
 
+            // #126: one-line hint on first encounter with the chips row.
+            FirstRunTip(
+                id = FirstRun.Tip.SEARCH_CHIPS,
+                text = "اگه دنبال چیز خاصی هستی، تایپ کن؛ وگرنه از پیشنهادها یکی رو بزن.",
+            )
+
             // Search history (shown when query is empty)
             // Hoisted so the same instance is reused across recompositions.
             val history = remember { SearchHistory(context) }
             val historyQueries by history.queries.collectAsState()
-            if (query.isBlank() && historyQueries.isNotEmpty()) {
+            // #126: shown even with no history — the component falls back to
+            // bundled starter chips, so a fresh install has somewhere to start.
+            if (query.isBlank()) {
                 SearchHistoryChips(
                     history = historyQueries,
                     onSelect = { viewModel.onQueryChange(it) },
@@ -339,16 +352,54 @@ fun SearchScreen(
             // Results
             val filtering = query.isNotBlank() || selectedCategoryId != null || diet != null ||
                 ingredients.isNotBlank() || excluded.isNotBlank()
+            // Non-query filters only: the note must not nag someone whose
+            // plain query simply has no match.
+            val hasActiveFilters = selectedCategoryId != null || diet != null ||
+                ingredients.isNotBlank() || excluded.isNotBlank()
             if (results.isEmpty() && filtering) {
-                Text(
-                    text = "نتیجه‌ای یافت نشد",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                // #126 no-match recovery: a dead sentence is a dead end. Offer
+                // the filter reset, plus up to 3 dishes a relaxed query did
+                // reach, so the user always has somewhere to go.
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 48.dp),
-                    textAlign = TextAlign.Center,
-                )
+                        .padding(top = 32.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text(
+                        text = "نتیجه‌ای یافت نشد",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                    )
+                    if (hasActiveFilters) {
+                        Spacer(Modifier.height(4.dp))
+                        Text(
+                            text = "فیلترها رو بردار",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
+                            textAlign = TextAlign.Center,
+                        )
+                        Spacer(Modifier.height(4.dp))
+                        TextButton(onClick = viewModel::clearFilters) {
+                            Text("برداشتن فیلترها", fontFamily = YekanBakh)
+                        }
+                    }
+                    if (relaxedMatches.isNotEmpty()) {
+                        Spacer(Modifier.height(12.dp))
+                        Text(
+                            text = "شاید این‌ها:",
+                            style = MaterialTheme.typography.titleSmall,
+                            fontFamily = YekanBakh,
+                            color = MaterialTheme.colorScheme.onBackground,
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        relaxedMatches.forEach { food ->
+                            SearchResultItem(food = food, onClick = { onFoodClick(food.id) })
+                            Spacer(Modifier.height(8.dp))
+                        }
+                    }
+                }
             } else {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
