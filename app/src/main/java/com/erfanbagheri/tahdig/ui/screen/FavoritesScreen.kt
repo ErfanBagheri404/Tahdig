@@ -158,6 +158,8 @@ fun FavoritesScreen(
                     foodName = { id -> historyItems.firstOrNull { it.food.id == id }?.food?.name },
                     onClick = onFoodClick,
                     onGoHome = onGoHome,
+                    // #127: the delete action behind long-press.
+                    onDelete = { id -> journalViewModel.delete(id) },
                     attachToId = attachToId,
                     onAttach = { id, uri ->
                         journalViewModel.setPhoto(id, uri)
