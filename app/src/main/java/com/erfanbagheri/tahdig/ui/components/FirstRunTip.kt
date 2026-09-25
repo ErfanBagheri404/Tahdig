@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import com.erfanbagheri.tahdig.ui.components.minTouchTarget
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -61,9 +62,13 @@ fun FirstRunTip(
                 modifier = Modifier.weight(1f),
             )
             Spacer(Modifier.width(4.dp))
+            // #129: 28dp is the visual; the hit box is 48dp. Fixed in the
+            // modifier, not the size, so the tip row does not re-space.
             IconButton(
                 onClick = { SettingsStore.dismissTip(id) },
-                modifier = Modifier.size(28.dp),
+                modifier = Modifier
+                    .size(28.dp)
+                    .minTouchTarget(),
             ) {
                 // One label, spoken once: the hint text is the message, the
                 // button only says "understood".

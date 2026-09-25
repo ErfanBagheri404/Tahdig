@@ -1,6 +1,10 @@
 package com.erfanbagheri.tahdig.ui.screen
 
 import androidx.compose.foundation.Image
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.customActions
+import androidx.compose.ui.semantics.CustomAccessibilityAction
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.foundation.background
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
@@ -90,6 +94,18 @@ internal fun JournalList(
             var menuOpen by androidx.compose.runtime.remember(entry.id) {
                 androidx.compose.runtime.mutableStateOf(false)
             }
+            // #129: dish + date + note in one stop. The long-press menu becomes
+            // a custom action so the delete is reachable without a gesture —
+            // same rule as #127's swipe/menu parity.
+            val spoken = buildString {
+                append(foodName(entry.foodId) ?: "غذای حذف‌شده")
+                append("، ")
+                append(jalaliStamp(entry.timestamp))
+                if (entry.note.isNotBlank()) {
+                    append("، ")
+                    append(entry.note)
+                }
+            }
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -99,6 +115,12 @@ internal fun JournalList(
                         onLongClick = { menuOpen = true },
                         onLongClickLabel = "گزینه‌های خاطره",
                     )
+                    .semantics(mergeDescendants = true) {
+                        contentDescription = spoken
+                        customActions = listOf(
+                            CustomAccessibilityAction("حذف خاطره") { onDelete(entry.id); true },
+                        )
+                    }
                     .padding(horizontal = 20.dp, vertical = 12.dp),
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {

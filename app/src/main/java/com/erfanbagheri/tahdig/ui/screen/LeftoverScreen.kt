@@ -4,6 +4,8 @@ import android.app.Activity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.ui.semantics.contentDescription
+import com.erfanbagheri.tahdig.ui.components.minTouchTarget
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -50,6 +52,7 @@ import com.erfanbagheri.tahdig.ui.components.EmptyState
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
 import com.erfanbagheri.tahdig.ui.viewmodel.LeftoverViewModel
 import com.erfanbagheri.tahdig.util.VoiceInput
+import com.erfanbagheri.tahdig.ui.components.oneA11yStop
 
 /**
  * «غذای مونده دارم» (#107) — enter what is already cooked, get dishes that eat it first.
@@ -259,7 +262,7 @@ private fun LeftoverChip(text: String, onRemove: () -> Unit) {
                 fontFamily = YekanBakh,
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
             )
-            IconButton(onClick = onRemove, modifier = Modifier.size(24.dp)) {
+            IconButton(onClick = onRemove, modifier = Modifier.size(24.dp).minTouchTarget()) {
                 Icon(
                     Icons.Default.Close,
                     contentDescription = "حذف",
@@ -278,6 +281,14 @@ private fun LeftoverRow(scored: com.erfanbagheri.tahdig.util.LeftoverRanker.Scor
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
+            // #129: name + "uses X" in one stop — the "uses" line is the whole
+            // reason the dish is ranked here, so it must be spoken.
+            .oneA11yStop(
+                food.name +
+                    if (scored.used.isNotEmpty())
+                        "، استفاده می‌کنه از: ${scored.used.joinToString("، ")}"
+                    else ""
+            )
             .padding(horizontal = 20.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {

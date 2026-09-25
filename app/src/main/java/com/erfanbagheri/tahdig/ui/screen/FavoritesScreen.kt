@@ -1,6 +1,10 @@
 package com.erfanbagheri.tahdig.ui.screen
 
 import androidx.compose.foundation.clickable
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.customActions
+import androidx.compose.ui.semantics.CustomAccessibilityAction
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -44,6 +48,7 @@ import com.erfanbagheri.tahdig.ui.theme.YekanBakh
 import com.erfanbagheri.tahdig.util.FirstRun
 import com.erfanbagheri.tahdig.ui.viewmodel.FavoritesViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.HistoryViewModel
+import com.erfanbagheri.tahdig.ui.components.oneA11yStop
 
 @Composable
 fun FavoritesScreen(
@@ -186,7 +191,14 @@ private fun HistoryList(
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { onClick(item.food.id) },
+                    .clickable { onClick(item.food.id) }
+                    // #129: dish + description + timestamp were three stops.
+                    .oneA11yStop(
+                        item.food.name +
+                            if (item.food.description.isNotBlank())
+                                "، ${item.food.description}"
+                            else ""
+                    ),
                 shape = RoundedCornerShape(10.dp),
                 color = MaterialTheme.colorScheme.surface,
             ) {
@@ -251,9 +263,20 @@ private fun FavoriteList(
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { onClick(food.id) },
-                shape = RoundedCornerShape(12.dp),
-                color = MaterialTheme.colorScheme.surface,
+                    .clickable { onClick(food.id) }
+                    // #129: name + description are ONE stop, but the remove
+                    // button inside stays its own. A blanket mergeDescendants
+                    // would fold it into the row and hide the action, so this
+                    // uses clearAndSetSemantics (no merge) plus an explicit
+                    // custom action for the state-dependent verb.
+                    .clearAndSetSemantics {
+                        contentDescription = food.name
+                        customActions = listOf(
+                            CustomAccessibilityAction(
+                                if (isBlocked) "رفع مسدود" else "حذف از علاقه‌مندی‌ها"
+                            ) { onRemove(food.id); true }
+                        )
+                    },
             ) {
                 Row(
                     modifier = Modifier.padding(16.dp),
@@ -278,6 +301,8 @@ private fun FavoriteList(
                         }
                     }
                     Spacer(Modifier.width(8.dp))
+                    // #129: labelled in the action, not only the glyph, so the
+                    // state ("blocked" vs "favorited") is spoken before the verb.
                     IconButton(onClick = { onRemove(food.id) }) {
                         Icon(
                             imageVector = if (isBlocked) Icons.Default.Block else Icons.Default.FavoriteBorder,

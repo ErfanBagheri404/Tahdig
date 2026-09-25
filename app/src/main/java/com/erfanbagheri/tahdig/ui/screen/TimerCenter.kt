@@ -45,6 +45,7 @@ import com.erfanbagheri.tahdig.ui.theme.YekanBakh
 import com.erfanbagheri.tahdig.util.DurationParser
 import com.erfanbagheri.tahdig.util.PersianText
 import kotlinx.coroutines.delay
+import com.erfanbagheri.tahdig.ui.components.oneA11yStop
 
 /** Wall-clock tick shared by the center and the strip — one clock, no drift between them. */
 @Composable
@@ -77,6 +78,11 @@ fun TimerStrip(onOpen: () -> Unit, modifier: Modifier = Modifier) {
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable(onClick = onOpen)
+                // #129: one tap target that spoke N separate timer rows; joined
+                // so a swipe reads "شام: ۱۲:۰۰، صبحانه: ۱۵:۰۰" in one stop.
+                .oneA11yStop(
+                    timers.joinToString("، ") { "${it.name}: ${it.display(now)}" }
+                )
                 .padding(horizontal = 12.dp, vertical = 6.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically,

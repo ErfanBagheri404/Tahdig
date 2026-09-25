@@ -29,6 +29,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.semantics.CustomAccessibilityAction
+import androidx.compose.ui.semantics.customActions
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
@@ -110,7 +113,23 @@ fun SwipeActionRow(
         pending = null
     }
 
-    Box(modifier = modifier.fillMaxWidth()) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            // #129: the menu IconButton is a fine touch target, but a
+            // screen-reader user swipes THROUGH rows — the overflow would take
+            // one extra stop per row and the actions would be invisible to
+            // anyone who never learns to hunt the button. Custom actions put
+            // the same verbs in the row's own action menu.
+            .semantics {
+                customActions = listOfNotNull(swipeLeft, swipeRight).map { action ->
+                    CustomAccessibilityAction(action.label) {
+                        action.onClick()
+                        true
+                    }
+                }
+            }
+    ) {
         SwipeToDismissBox(
             state = dismissState,
             enableDismissFromStartToEnd = true,

@@ -3,6 +3,7 @@ package com.erfanbagheri.tahdig.ui.screen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import com.erfanbagheri.tahdig.ui.components.minTouchTarget
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -530,7 +531,11 @@ fun HomeScreen(
                                 color = MaterialTheme.colorScheme.onSecondaryContainer,
                                 modifier = Modifier.weight(1f),
                             )
-                            IconButton(onClick = viewModel::dismissLeftover) {
+                            // #129: 48dp hit box on the 18dp glyph (minTouchTarget).
+                            IconButton(
+                                onClick = viewModel::dismissLeftover,
+                                modifier = Modifier.minTouchTarget(),
+                            ) {
                                 Icon(Icons.Default.Close, contentDescription = "بستن",
                                     modifier = Modifier.size(18.dp))
                             }
