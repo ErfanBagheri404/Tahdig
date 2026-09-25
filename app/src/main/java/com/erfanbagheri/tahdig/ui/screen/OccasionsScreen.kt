@@ -1,6 +1,7 @@
 package com.erfanbagheri.tahdig.ui.screen
 
 import androidx.compose.foundation.BorderStroke
+import com.erfanbagheri.tahdig.ui.components.oneA11yStop
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -124,7 +125,11 @@ private fun OccasionSection(
                         shape = RoundedCornerShape(10.dp),
                         color = MaterialTheme.colorScheme.surface,
                         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-                        modifier = Modifier.clickable { onFoodClick(foodId) },
+                        // #129: single-Text chip already reads as one stop; the
+                        // modifier makes that a promise the audit can check.
+                        modifier = Modifier
+                            .clickable { onFoodClick(foodId) }
+                            .oneA11yStop(names[foodId] ?: "غذای حذف‌شده"),
                     ) {
                         Text(
                             text = names[foodId] ?: "#$foodId",

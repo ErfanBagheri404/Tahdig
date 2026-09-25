@@ -1,6 +1,8 @@
 package com.erfanbagheri.tahdig.ui.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.ui.semantics.contentDescription
+import com.erfanbagheri.tahdig.ui.components.minTouchTarget
 import androidx.compose.foundation.clickable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -57,6 +59,7 @@ import com.erfanbagheri.tahdig.util.PersianText
 import com.erfanbagheri.tahdig.ui.components.DishThumb
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
 import com.erfanbagheri.tahdig.ui.viewmodel.PantryViewModel
+import com.erfanbagheri.tahdig.ui.components.oneA11yStop
 
 /**
  * «چی دارم؟» — pantry staples and what they can cook right now.
@@ -282,7 +285,7 @@ private fun PantryChip(label: String, onRemove: () -> Unit) {
                 fontFamily = YekanBakh,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            IconButton(onClick = onRemove, modifier = Modifier.size(28.dp)) {
+            IconButton(onClick = onRemove, modifier = Modifier.size(28.dp).minTouchTarget()) {
                 Icon(
                     Icons.Default.Close,
                     contentDescription = "حذف $label",
@@ -306,6 +309,11 @@ private fun PantryDishRow(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
+            // #129: dish + coverage in one stop. Coverage is the reason the row
+            // is on screen, so it is spoken rather than left to the badge glyph.
+            .oneA11yStop(
+                food.name + if (fullyCovered) "، همهٔ مواد را داری" else ""
+            )
             .padding(vertical = 10.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -422,6 +430,16 @@ private fun ExpiringRow(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable(onClick = onTap)
+                    // #129: item name + expiry were two stops, and the expiry
+                    // is the whole reason the row is in the expiry list.
+                    .oneA11yStop(
+                        item.item + "، " + when {
+                            days == null -> "بدون تاریخ"
+                            days < 0 -> "گذشته"
+                            days == 0 -> "امروز"
+                            else -> "${PersianText.toPersianDigits(days.toString())} روز مانده"
+                        }
+                    )
                     .padding(vertical = 10.dp),
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {

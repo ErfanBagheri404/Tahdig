@@ -1,6 +1,7 @@
 package com.erfanbagheri.tahdig.ui.screen
 
 import androidx.compose.foundation.background
+import com.erfanbagheri.tahdig.ui.components.oneA11yStop
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -62,6 +63,8 @@ private fun TechniqueRow(tech: Technique, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
+            // #129: one stop per technique.
+            .oneA11yStop(tech.name)
             .padding(horizontal = 16.dp, vertical = 14.dp),
     )
 }

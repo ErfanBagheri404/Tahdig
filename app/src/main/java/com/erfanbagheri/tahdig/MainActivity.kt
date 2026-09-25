@@ -444,6 +444,37 @@ private fun TahdigApp(
             // Technique library overlays (#101) — stacked ABOVE the current screen:
             // a technique opened from a step never disposes the step screen, so
             // back lands on the exact step again (acceptance criterion).
+            // #129: the hand-rolled `when` nav ignores the system back key —
+            // without this, pressing back on a detail screen EXITS the app.
+            // This pops in reverse overlay order (mirrors the close buttons),
+            // and no-ops on tabs so the system still exits from Home.
+            val backOpen = detailFoodId >= 0 ||
+                (stepModeFoodId < 0 && (
+                techniqueRoute.isNotEmpty() || regionRoute.isNotEmpty()
+                    || browseOccasions || browseCuisineMap || browseTechniques
+                    || categoryRoute >= 0 || browseCategories || showPantry
+                    || showLeftover || showScanner || showHeatmap || showDiary
+                    || showBadges
+                    )
+                )
+            androidx.activity.compose.BackHandler(enabled = backOpen) {
+                when {
+                    techniqueRoute.isNotEmpty() -> techniqueRoute = ""
+                    regionRoute.isNotEmpty() -> regionRoute = ""
+                    browseOccasions -> browseOccasions = false
+                    browseCuisineMap -> browseCuisineMap = false
+                    browseTechniques -> browseTechniques = false
+                    categoryRoute >= 0 -> categoryRoute = -1L
+                    detailFoodId >= 0 -> detailFoodId = -1L
+                    browseCategories -> browseCategories = false
+                    showPantry -> showPantry = false
+                    showLeftover -> showLeftover = false
+                    showScanner -> showScanner = false
+                    showHeatmap -> showHeatmap = false
+                    showDiary -> showDiary = false
+                    showBadges -> showBadges = false
+                }
+            }
             if (techniqueRoute.isNotEmpty()) {
                 TechniqueDetailScreen(
                     techniqueId = techniqueRoute,

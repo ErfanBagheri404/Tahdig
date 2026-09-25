@@ -4,6 +4,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import android.app.Activity
 import androidx.compose.foundation.background
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.foundation.clickable
 import androidx.compose.material3.TextButton
 import androidx.compose.foundation.layout.Arrangement
@@ -37,6 +38,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -52,6 +54,8 @@ import com.erfanbagheri.tahdig.util.FirstRun
 import com.erfanbagheri.tahdig.ui.viewmodel.SearchHistory
 import com.erfanbagheri.tahdig.ui.viewmodel.RecentlyViewedViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.SearchViewModel
+import androidx.compose.ui.semantics.semantics
+import com.erfanbagheri.tahdig.ui.components.oneA11yStop
 
 @Composable
 fun SearchScreen(
@@ -163,7 +167,10 @@ fun SearchScreen(
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable(onClick = onOpenPantry),
+                    .clickable(onClick = onOpenPantry)
+                    // #129: the 🧺 glyph, the heading and the subcaption were
+                    // three stops for one tile; one sentence is enough.
+                    .oneA11yStop("چی دارم؟ بگو خونه چی داری، غذا پیشنهاد بده"),
                 shape = RoundedCornerShape(12.dp),
                 color = MaterialTheme.colorScheme.secondaryContainer,
             ) {
@@ -429,11 +436,16 @@ private fun CategoryChip(
             MaterialTheme.colorScheme.primary
         else
             MaterialTheme.colorScheme.surfaceVariant,
-        modifier = Modifier.clickable(
-            onClick = onClick,
-            role = androidx.compose.ui.semantics.Role.Button,
-            onClickLabel = "انتخاب $label",
-        ),
+        modifier = Modifier
+            .clickable(
+                onClick = onClick,
+                role = androidx.compose.ui.semantics.Role.Button,
+                onClickLabel = "انتخاب $label",
+            )
+            // #129: a selected chip was only distinguished by colour.
+            .semantics {
+                stateDescription = if (selected) "انتخاب‌شده" else "انتخاب‌نشده"
+            },
     ) {
         Text(
             text = label,
@@ -460,7 +472,9 @@ private fun SearchResultItem(
                 onClick = onClick,
                 role = androidx.compose.ui.semantics.Role.Button,
                 onClickLabel = "نمایش ${food.name}",
-            ),
+            )
+            // #129: result rows were thumb + name + meta = three stops.
+            .oneA11yStop(food.name),
         shape = RoundedCornerShape(12.dp),
         color = MaterialTheme.colorScheme.surface,
     ) {
