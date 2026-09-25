@@ -68,6 +68,12 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
+            <intent-filter>
+                <!-- Shuffle button + external refresh (#131). Explicit, not exported:
+                     the widget's own PendingIntents are the only callers. -->
+                <action android:name="com.erfanbagheri.tahdig.widget.SHUFFLE" />
+                <action android:name="com.erfanbagheri.tahdig.widget.REFRESH" />
+            </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_dish_info" />

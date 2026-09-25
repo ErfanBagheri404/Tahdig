@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:padding="12dp"
+    android:contentDescription="ابزارک ته‌دیگ، لمس برای باز کردن برنامه"
+    android:background="#1F1B16">
+
+    <!-- Dish + header + streak, stacked on the start side (RTL left visual, but start) -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🌟 غذای امروز"
+            android:textColor="#E8C07D"
+            android:textSize="11sp" />
+
+        <TextView
+            android:id="@+id/widget_dish_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="ته‌دیگ"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:maxLines="2"
+            android:ellipsize="end" />
+
+        <TextView
+            android:id="@+id/widget_streak_line"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textColor="#C7C4BF"
+            android:textSize="11sp"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <!-- Shuffle button: one tap to cycle dishes (#131) -->
+    <ImageView
+        android:id="@+id/widget_btn_shuffle"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:padding="8dp"
+        android:src="@drawable/ic_launcher_foreground"
+        android:contentDescription="یک غذای دیگر انتخاب کن"
+        android:background="#2A241C" />
+
+</LinearLayout>
