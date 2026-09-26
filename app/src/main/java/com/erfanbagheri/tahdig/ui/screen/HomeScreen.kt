@@ -844,7 +844,6 @@ fun SuggestionCard(
     food: com.erfanbagheri.tahdig.data.local.entity.FoodEntity,
     modifier: Modifier = Modifier,
 ) {
-    val accent = com.erfanbagheri.tahdig.util.FoodVisuals.accent(food.categoryId)
     val emoji = com.erfanbagheri.tahdig.util.FoodVisuals.emoji(food.categoryId)
 
     Column(

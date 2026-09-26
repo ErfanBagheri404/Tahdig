@@ -41,6 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.erfanbagheri.tahdig.data.prefs.TimerStore
+import com.erfanbagheri.tahdig.ui.theme.LocalHairline
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
 import com.erfanbagheri.tahdig.util.DurationParser
 import com.erfanbagheri.tahdig.util.PersianText
@@ -108,7 +109,7 @@ fun TimerStrip(onOpen: () -> Unit, modifier: Modifier = Modifier) {
                 // Hairline separator between slots, never a card border.
                 Box(
                     Modifier
-                        .size(width = 1.dp, height = 12.dp)
+                        .size(width = LocalHairline.current, height = 12.dp)
                         .background(MaterialTheme.colorScheme.outlineVariant),
                 )
             }

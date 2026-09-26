@@ -1,6 +1,9 @@
 package com.erfanbagheri.tahdig.ui.screen
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -26,7 +30,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import com.erfanbagheri.tahdig.ui.theme.LocalHairline
+import com.erfanbagheri.tahdig.ui.theme.ThemeTokens
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -49,6 +59,7 @@ fun SettingsScreen(
     onOpenBadges: () -> Unit = {},
 ) {
     val themeMode by viewModel.themeMode.collectAsState()
+    val dynamicAvailable = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S
 
     Column(
         modifier = Modifier
@@ -77,9 +88,49 @@ fun SettingsScreen(
 
         Spacer(Modifier.height(8.dp))
 
-        ThemeOption("سیستم", selected = themeMode == 0) { viewModel.setThemeMode(0) }
-        ThemeOption("روشن", selected = themeMode == 1) { viewModel.setThemeMode(1) }
-        ThemeOption("تاریک", selected = themeMode == 2) { viewModel.setThemeMode(2) }
+        ThemeOption("سیستم", selected = themeMode == ThemeTokens.SYSTEM) { viewModel.setThemeMode(ThemeTokens.SYSTEM) }
+        ThemeOption("روشن", selected = themeMode == ThemeTokens.LIGHT) { viewModel.setThemeMode(ThemeTokens.LIGHT) }
+        ThemeOption("تاریک", selected = themeMode == ThemeTokens.DARK) { viewModel.setThemeMode(ThemeTokens.DARK) }
+        ThemeOption(
+            // #128: dynamic is a real mode, so it says so rather than silently
+            // doing nothing when the platform cannot provide a wallpaper color.
+            label = if (dynamicAvailable) "پویا (رنگ تصویر زمینه)" else "پویا (اندروید ۱۲ به بالا)",
+            selected = themeMode == ThemeTokens.DYNAMIC,
+        ) { viewModel.setThemeMode(ThemeTokens.DYNAMIC) }
+
+        Spacer(Modifier.height(20.dp))
+
+        // ── Accent (#128) ──────────────────────────────────────────────
+        // Flat swatches, not a gradient picker: the food is the color in this
+        // app, and a rainbow control competes with it.
+        val accentHex by viewModel.accentHex.collectAsState()
+        Text(
+            text = "رنگ دلخواه",
+            style = MaterialTheme.typography.titleSmall,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Spacer(Modifier.height(8.dp))
+        AccentPicker(
+            selectedHex = accentHex,
+            onPick = { viewModel.setAccentHex(it) },
+        )
+
+        Spacer(Modifier.height(16.dp))
+
+        // ── High contrast (#128) ───────────────────────────────────────
+        val highContrast by viewModel.highContrast.collectAsState()
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            androidx.compose.material3.Switch(
+                checked = highContrast,
+                onCheckedChange = { viewModel.setHighContrast(it) },
+            )
+            Spacer(Modifier.width(12.dp))
+            Text(
+                text = "کنتراست بالا — خطوط ضخیم‌تر در نور آفتاب",
+                fontFamily = YekanBakh,
+            )
+        }
 
         Spacer(Modifier.height(32.dp))
 
@@ -938,6 +989,61 @@ private fun ThemeOption(
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(20.dp),
                 )
+            }
+        }
+    }
+}
+
+/**
+ * Accent swatches (#128) — a flat row, each square toggling the accent; the
+ * selected swatch carries a check. Tapping the selected swatch again returns to
+ * the app default, so no separate "reset" row is needed.
+ *
+ * Custom hex entry is skipped (ponytail: the 8 swatches cover taste; a text
+ * field with live validation is the upgrade path when asked).
+ */
+@Composable
+private fun AccentPicker(
+    selectedHex: String,
+    onPick: (String) -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .horizontalScroll(rememberScrollState()),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        ThemeTokens.ACCENTS.forEach { accent ->
+            val hex = ThemeTokens.toHex(accent.forDarkTheme(false))
+            val selected = selectedHex.equals(hex, ignoreCase = true)
+            val hairline = LocalHairline.current
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(accent.forDarkTheme(false))
+                    .border(
+                        // #128: hairline doubles in high contrast
+                        width = if (selected) hairline else hairline * 2,
+                        color = if (selected) MaterialTheme.colorScheme.primary
+                        else MaterialTheme.colorScheme.outlineVariant,
+                        shape = RoundedCornerShape(8.dp),
+                    )
+                    .clickable {
+                        onPick(if (selected) "" else ThemeTokens.toHex(accent.forDarkTheme(false)))
+                    }
+                    .semantics {
+                        contentDescription = accent.name + if (selected) "، انتخاب‌شده" else ""
+                    },
+            ) {
+                if (selected) {
+                    Icon(
+                        imageVector = Icons.Default.Check,
+                        contentDescription = null,
+                        tint = ThemeTokens.readableOn(accent.forDarkTheme(false), listOf(Color.White, Color.Black)),
+                        modifier = Modifier.align(Alignment.Center).size(20.dp),
+                    )
+                }
             }
         }
     }

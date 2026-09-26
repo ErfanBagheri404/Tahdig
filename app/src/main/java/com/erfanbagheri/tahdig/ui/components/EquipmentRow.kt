@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.erfanbagheri.tahdig.ui.theme.LocalHairline
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
 import com.erfanbagheri.tahdig.util.PersianText
 
@@ -49,7 +50,8 @@ fun EquipmentRow(
                         shape = RoundedCornerShape(8.dp),
                     )
                     .border(
-                        width = 1.dp,
+                        // #128: hairline doubles in high contrast
+                        width = LocalHairline.current,
                         color = if (ready) MaterialTheme.colorScheme.primary
                         else MaterialTheme.colorScheme.outlineVariant,
                         shape = RoundedCornerShape(8.dp),
