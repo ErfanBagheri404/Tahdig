@@ -59,6 +59,7 @@ import com.erfanbagheri.tahdig.ui.screen.LeftoverScreen
 import androidx.compose.ui.Alignment
 import com.erfanbagheri.tahdig.ui.components.UndoSnackbarHost
 import com.erfanbagheri.tahdig.ui.screen.OnboardingPager
+import com.erfanbagheri.tahdig.ui.screen.RecipeImportScreen
 import com.erfanbagheri.tahdig.ui.screen.PantryScreen
 import com.erfanbagheri.tahdig.ui.screen.SearchScreen
 import com.erfanbagheri.tahdig.ui.screen.CookHeatmapScreen
@@ -106,6 +107,10 @@ class MainActivity : ComponentActivity() {
         /** Widget tap (#131): open one dish's detail straight away. */
         const val DEST_DETAIL = "detail"
         const val EXTRA_FOOD_ID = "tahdig.food_id"
+        /** #75: share-sheet / pasted-text import lands on the review screen. */
+        const val DEST_IMPORT = "import"
+        const val EXTRA_IMPORT_TEXT = "tahdig.import_text"
+        const val EXTRA_IMPORT_URI = "tahdig.import_uri"
     }
 
     /** Set when a photo-prompt notification fires while the app is already alive. */
@@ -113,6 +118,9 @@ class MainActivity : ComponentActivity() {
 
     /** Set when the widget asks for one dish's detail (#131). */
     private var pendingDetailId by mutableStateOf<Long?>(null)
+
+    /** #75: a shared blob waiting for the review screen. */
+    private var pendingImport by mutableStateOf<com.erfanbagheri.tahdig.util.RecipeDraft?>(null)
 
     /** The dish whose `.tahdig.json` is being written, held across the SAF picker (#132). */
     private var pendingExport: FoodEntity? = null
@@ -124,6 +132,33 @@ class MainActivity : ComponentActivity() {
                 val id = intent.getLongExtra(EXTRA_FOOD_ID, -1L)
                 if (id > 0) pendingDetailId = id
             }
+            DEST_IMPORT -> {
+                val text = intent.getStringExtra(EXTRA_IMPORT_TEXT)
+                if (!text.isNullOrBlank()) {
+                    pendingImport = com.erfanbagheri.tahdig.util.RecipeTextParser.parseAny(text)
+                }
+            }
+        }
+    }
+
+    /**
+     * #75: normalize the share sheet into one draft.
+     *
+     * ACTION_SEND carries EXTRA_TEXT (a Reels caption, a blob, or a bare URL);
+     * ACTION_SEND_MULTIPLE joins its texts in order. This is the whole entry
+     * point — parsing stays in [com.erfanbagheri.tahdig.util.RecipeTextParser].
+     */
+    private fun consumeShare(intent: Intent?) {
+        if (intent == null) return
+        if (intent.action != Intent.ACTION_SEND && intent.action != Intent.ACTION_SEND_MULTIPLE) return
+        val parts = if (intent.action == Intent.ACTION_SEND) {
+            listOfNotNull(intent.getStringExtra(Intent.EXTRA_TEXT))
+        } else {
+            intent.getStringArrayListExtra(Intent.EXTRA_TEXT).orEmpty()
+        }
+        val text = parts.joinToString("\n\n").trim()
+        if (text.isNotBlank()) {
+            pendingImport = com.erfanbagheri.tahdig.util.RecipeTextParser.parseAny(text)
         }
     }
 
@@ -164,12 +199,14 @@ class MainActivity : ComponentActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         consumeDestination(intent)
+        consumeShare(intent)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         consumeDestination(intent)
+        consumeShare(intent)
 
         lifecycleScope.launch {
             TahdigDatabase.populateIfEmpty(this@MainActivity)
@@ -184,6 +221,16 @@ class MainActivity : ComponentActivity() {
                         onAttachHandled = { pendingJournalAttach = false },
                         initialDetailId = pendingDetailId,
                         onDetailHandled = { pendingDetailId = null },
+                        importDraft = pendingImport,
+                        onImportHandled = { pendingImport = null },
+                        onSaveImport = { recipe ->
+                            lifecycleScope.launch {
+                                TahdigDatabase.getInstance(this@MainActivity).foodDao()
+                                    .insertAll(listOf(recipe.toFood(newId = 0)))
+                                toast("«${recipe.title}» اضافه شد")
+                            }
+                            pendingImport = null
+                        },
                         onExportRecipe = ::exportRecipeTo,
                         onImportRecipe = ::importRecipeFrom,
                         onStageExport = { pendingExport = it },
@@ -200,6 +247,14 @@ private fun TahdigApp(
     onAttachHandled: () -> Unit = {},
     initialDetailId: Long? = null,
     onDetailHandled: () -> Unit = {},
+    /**
+     * #75: the draft shared in, if any. Reading it here rather than in a
+     * composable keeps the onboarding gate intact — a share on first launch
+     * waits for onboarding, then lands on review.
+     */
+    importDraft: com.erfanbagheri.tahdig.util.RecipeDraft? = null,
+    onImportHandled: () -> Unit = {},
+    onSaveImport: (com.erfanbagheri.tahdig.util.RecipeDraft) -> Unit = {},
     /** #132: write/import a `.tahdig.json` through SAF. */
     onExportRecipe: (android.net.Uri) -> Unit = {},
     onImportRecipe: (android.net.Uri) -> Unit = {},
@@ -402,7 +457,17 @@ private fun TahdigApp(
         // and the snackbar appears here, above every screen.
         UndoSnackbarHost(modifier = Modifier.align(Alignment.BottomCenter))
         when {
-                stepModeFoodId >= 0 -> {
+            // #75: share-sheet / pasted-text import owns the screen while a
+            // draft is waiting for review.
+            importDraft != null -> {
+                RecipeImportScreen(
+                    draft = importDraft!!,
+                    onSave = onSaveImport,
+                    onBack = onImportHandled,
+                    modifier = Modifier.fillMaxSize(),
+                )
+            }
+            stepModeFoodId >= 0 -> {
                     // Captured at composition: onCooked runs outside composable context (#98).
                     val homeVm: HomeViewModel = viewModel()
                     StepModeScreen(
