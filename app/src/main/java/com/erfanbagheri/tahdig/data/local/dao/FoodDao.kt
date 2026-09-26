@@ -23,6 +23,14 @@ interface FoodDao {
     @Query("SELECT * FROM foods WHERE id IN (:ids)")
     suspend fun byIds(ids: List<Long>): List<FoodEntity>
 
+    /**
+     * Flow form of [byIds], for composing with another flow (#134 note search).
+     * An empty id list is legal SQL (`IN ()`) and returns nothing, so the caller
+     * does not need a special case.
+     */
+    @Query("SELECT * FROM foods WHERE id IN (:ids)")
+    fun byIdsFlow(ids: List<Long>): Flow<List<FoodEntity>>
+
     @Query("SELECT COUNT(*) FROM foods")
     fun observeCount(): Flow<Int>
 
