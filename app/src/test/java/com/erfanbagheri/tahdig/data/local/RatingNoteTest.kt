@@ -26,6 +26,9 @@ class RatingNoteTest {
     private lateinit var db: TahdigDatabase
     private val dao get() = db.ratingDao()
 
+    /** Fixed clock: the decay input is asserted on, so it must not be 'now'. */
+    private val NOW = 1_700_000_000_000L
+
     @Before
     fun setUp() {
         val ctx = ApplicationProvider.getApplicationContext<android.content.Context>()
@@ -43,7 +46,7 @@ class RatingNoteTest {
         dao.insertIfAbsent(RatingEntity(foodId = 1, stars = 3))
         dao.updateNote(1, "خیلی کم‌زحمت بود، نصف مواد کم بود")
 
-        dao.updateStars(1, 5)
+        dao.updateStars(1, 5, NOW)
 
         assertEquals("خیلی کم‌زحمت بود، نصف مواد کم بود", dao.observe(1).first()!!.note)
         assertEquals(5, dao.observe(1).first()!!.stars)
@@ -60,7 +63,7 @@ class RatingNoteTest {
     fun `stars can be cleared without touching the note`() = runBlocking {
         dao.insertIfAbsent(RatingEntity(foodId = 1, stars = 2))
         dao.updateNote(1, "دفعهٔ بعد کمتر نمک بزن")
-        dao.updateStars(1, 0)
+        dao.updateStars(1, 0, NOW)
         assertEquals("دفعهٔ بعد کمتر نمک بزن", dao.observe(1).first()!!.note)
         assertEquals(0, dao.observe(1).first()!!.stars)
     }
@@ -79,9 +82,9 @@ class RatingNoteTest {
     @Test
     fun `repeated writes do not create a second row`() = runBlocking {
         dao.insertIfAbsent(RatingEntity(foodId = 7, stars = 1))
-        dao.updateStars(7, 2)
+        dao.updateStars(7, 2, NOW)
         dao.updateNote(7, "خوب")
-        dao.updateStars(7, 3)
+        dao.updateStars(7, 3, NOW)
         assertEquals(1, dao.observeNoted().first().size)
     }
 

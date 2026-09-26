@@ -13,6 +13,8 @@ import com.erfanbagheri.tahdig.util.NutritionDay
 import com.erfanbagheri.tahdig.util.NutritionLog
 import com.erfanbagheri.tahdig.util.AllergenDetector
 import com.erfanbagheri.tahdig.util.LeftoverMatcher
+import com.erfanbagheri.tahdig.util.TasteProfile
+import com.erfanbagheri.tahdig.util.TasteScorer
 import com.erfanbagheri.tahdig.data.local.entity.JournalEntity
 import com.erfanbagheri.tahdig.util.DietFilter
 import com.erfanbagheri.tahdig.util.MicroNutrients
@@ -46,6 +48,16 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
     private val historyDao = db.historyDao()
     private val favoriteDao = db.favoriteDao()
     private val categoryDao = db.categoryDao()
+
+    /**
+     * How many same-bucket dishes the taste scorer chooses between (#92).
+     *
+     * 24: enough spread that a well-rated dish is usually in the sample, small
+     * enough that the query stays a single fast index scan on a 1331-row
+     * catalog. The whole catalog scored per roll would also work and would make
+     * every button press noticeably slower.
+     */
+    private val tastePoolSize = 24
 
     // ── current suggestion ──────────────────────────────────────────
     private val _suggestion = MutableStateFlow<FoodEntity?>(null)
@@ -285,13 +297,27 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
                 pick = foodDao.randomAny(1).firstOrNull()
             }
 
-            // Smart weighting: 30% chance favor a favorited dish (skip if already favorited)
-            if (pick != null && !isFavorited(pick.id) && Math.random() < 0.30) {
-                val favPicks = favoriteDao.observeFavoritedFoods().first()
-                    .filter { it.mealTime.contains(bucket, ignoreCase = true) }
-                if (favPicks.isNotEmpty()) {
-                    pick = favPicks.random()
+            // #92: weighted-by-taste instead of a flat 30% favorited coin flip.
+            // Drawn from a widened pool of the same meal-time bucket so the
+            // score has something to choose between, and hidden dishes are
+            // dropped from the pool outright rather than down-weighted.
+            val pool = foodDao.randomByMealTimeMany(bucket, tastePoolSize)
+            if (pool.size > 1) {
+                val now = System.currentTimeMillis()
+                val snapshot = TasteProfile.snapshot(
+                    db,
+                    SettingsStore.tasteResetAt.value,
+                    SettingsStore.preferredCategories.value,
+                )
+                val eligible = pool.filter { candidate ->
+                    // Hidden dishes leave the pool: the rule is absolute, so it
+                    // is applied here rather than left to the score multiplier.
+                    // The snapshot already carries every blocked id — asking the
+                    // DAO per candidate would be 24 queries on every roll.
+                    TasteScorer.pool(disliked = snapshot.isDisliked(candidate.id))
                 }
+                val weighted = TasteScorer.weightedPick(eligible) { snapshot.scoreOf(it, now) }
+                if (weighted != null) pick = weighted
             }
 
             _suggestion.value = pick

@@ -25,8 +25,19 @@ data class RatingEntity(
     @ColumnInfo(name = "food_id") val foodId: Long,
     /** 1-5 stars; 0 = no rating. */
     val stars: Int,
-    /** #134 — the user's private «یادداشت من». "" when never written. */
+    /** #134 — the user's private «یادداشت من». """ when never written. */
     val note: String = "",
+    /**
+     * #92 — when the stars were last set, epoch ms. Drives the scorer's decay:
+     * an opinion from three months ago should count for less than one from
+     * yesterday, and without a timestamp there is no way to tell them apart.
+     *
+     * 0 = never rated (or written before this column existed), which the
+     * scorer treats as fresh rather than ancient — a missing timestamp must
+     * not silently erase a real opinion.
+     */
+    @ColumnInfo(name = "updated_at")
+    val updatedAt: Long = 0L,
 ) {
     companion object {
         /**

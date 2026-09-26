@@ -8,12 +8,25 @@ import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 object SettingsStore {
     private const val PREFS_NAME = "tahdig_settings"
     private const val KEY_THEME_MODE = "theme_mode" // 0=system, 1=light, 2=dark, 3=dynamic
     private const val KEY_ACCENT_HEX = "accent_hex"       // "#RRGGBB", "" = app default (#128)
     private const val KEY_HIGH_CONTRAST = "high_contrast" // 1px->2px hairlines, 7:1 text (#128)
+    /**
+     * #92 «بازنشانی سلیقه» — epoch ms before which ratings/cooks are ignored
+     * when building the taste profile. 0 = never reset.
+     *
+     * A cutoff instead of deleting rows: `history` is also the cook-streak and
+     * journal source, so wiping it to forget a taste would take the streak with
+     * it. The ratings themselves stay too — the user can still see what they
+     * thought, they just stop steering the feed.
+     */
+    private const val KEY_TASTE_RESET_AT = "taste_reset_at"
+    /** #92 — comma-joined category ids from the first-run chip picker. */
+    private const val KEY_PREFERRED_CATEGORIES = "preferred_categories"
     private const val KEY_ONBOARDED = "onboarded"
     private const val KEY_DAILY_NOTIFY = "daily_notify"
     private const val KEY_VOICE_CONTROL = "voice_control"   // hands-free cook mode (#94)
@@ -303,6 +316,8 @@ object SettingsStore {
         _themeMode.value = prefs.getInt(KEY_THEME_MODE, 0).coerceIn(0, 3)
         _accentHex.value = prefs.getString(KEY_ACCENT_HEX, "") ?: ""
         _highContrast.value = prefs.getBoolean(KEY_HIGH_CONTRAST, false)
+        _tasteResetAt.value = prefs.getLong(KEY_TASTE_RESET_AT, 0L)
+        _preferredCategories.value = preferredCategorySet()
         _onboarded.value = prefs.getBoolean(KEY_ONBOARDED, false)
         _dailyNotify.value = prefs.getBoolean(KEY_DAILY_NOTIFY, false)
         _voiceControl.value = prefs.getBoolean(KEY_VOICE_CONTROL, false)
@@ -622,6 +637,65 @@ object SettingsStore {
     }
 
     /** Reset every first-run marker (Settings → «راه‌اندازی مجدد تور»). */
+    // -- #92 taste profile reset -------------------------------------------
+
+    private val _tasteResetAt = MutableStateFlow(0L)
+
+    /**
+     * Ratings and cooks older than this are ignored by the taste profile.
+     * 0 = no reset has ever happened.
+     */
+    val tasteResetAt: StateFlow<Long> = _tasteResetAt.asStateFlow()
+
+    /**
+     * «بازنشانی سلیقه» — stop the old profile steering the feed, keeping the
+     * data.
+     *
+     * Deliberately not a wipe: the ratings are visible to the user in the dish
+     * detail, and `history` is the streak and journal source. Deleting either
+     * would lose real records to satisfy a preference. Going forward, new
+     * signals accumulate from zero, so the feed falls back to neutral picks.
+     */
+    /**
+     * Category ids ticked on the first-run chip picker (#92).
+     *
+     * Empty set is a valid, non-default state: "I skipped the picker" and "I
+     * picked nothing" mean the same thing to the scorer, so neither needs its
+     * own flag.
+     */
+    private fun preferredCategorySet(): Set<Long> =
+        prefs.getString(KEY_PREFERRED_CATEGORIES, "")
+            ?.split(",")
+            ?.mapNotNull { it.trim().toLongOrNull() }
+            ?.toSet()
+            ?: emptySet()
+
+    // Starts empty, not preferredCategorySet(): `prefs` is a lateinit assigned
+    // in init(), so reading it at field-construction time throws
+    // UninitializedPropertyAccessException before the app ever runs. The value
+    // is filled in init() like every other flow here.
+    private val _preferredCategories = MutableStateFlow(emptySet<Long>())
+
+    /** Live view of the picked categories; the picker writes through [setPreferredCategories]. */
+    val preferredCategories: StateFlow<Set<Long>> = _preferredCategories.asStateFlow()
+
+    /**
+     * Store the picker's selection. Idempotent and order-insensitive: the set
+     * is normalized to a sorted, comma-joined string so re-ticking a chip never
+     * rewrites the value and so no ordering churn reaches disk.
+     */
+    fun setPreferredCategories(ids: Set<Long>) {
+        prefs.edit()
+            .putString(KEY_PREFERRED_CATEGORIES, ids.sorted().joinToString(","))
+            .apply()
+        _preferredCategories.value = ids
+    }
+
+    fun resetTasteProfile(now: Long = System.currentTimeMillis()) {
+        prefs.edit().putLong(KEY_TASTE_RESET_AT, now).apply()
+        _tasteResetAt.value = now
+    }
+
     fun resetFirstRun() {
         prefs.edit()
             .putBoolean(KEY_ONBOARDED, false)

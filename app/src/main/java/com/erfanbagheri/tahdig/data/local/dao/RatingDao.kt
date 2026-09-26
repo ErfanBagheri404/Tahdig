@@ -31,8 +31,15 @@ interface RatingDao {
      * UPDATE first, then INSERT if nothing was there: a plain upsert would need
      * the whole row, and this path deliberately does not have it.
      */
-    @Query("UPDATE ratings SET stars = :stars WHERE food_id = :foodId")
-    suspend fun updateStars(foodId: Long, stars: Int): Int
+    /**
+     * Set stars without disturbing the note — and stamp [now] so the #92 decay
+     * knows how fresh the opinion is.
+     *
+     * Still one statement for the rating side: `note` is deliberately absent
+     * from the SET list, which is what keeps a star tap from erasing a note.
+     */
+    @Query("UPDATE ratings SET stars = :stars, updated_at = :now WHERE food_id = :foodId")
+    suspend fun updateStars(foodId: Long, stars: Int, now: Long): Int
 
     @Query("UPDATE ratings SET note = :note WHERE food_id = :foodId")
     suspend fun updateNote(foodId: Long, note: String): Int
@@ -59,4 +66,24 @@ interface RatingDao {
 
     @Query("SELECT COUNT(*) FROM ratings WHERE note != ''")
     suspend fun noteCount(): Int
+
+    // -- #92 taste profile --------------------------------------------------
+
+    /**
+     * Every rating joined to its dish's category, newest first per dish.
+     *
+     * The join is what lets the scorer learn a *category* preference from three
+     * individually rated dishes (#92's acceptance), and `rated_at` is the decay
+     * input — without it every opinion would be treated as brand new.
+     */
+    @Query(
+        """
+        SELECT r.food_id AS foodId, r.stars AS stars, r.updated_at AS ratedAt,
+               f.category_id AS categoryId
+        FROM ratings r
+        JOIN foods f ON f.id = r.food_id
+        ORDER BY r.updated_at DESC
+        """
+    )
+    suspend fun allRatings(): List<RatingSignals>
 }

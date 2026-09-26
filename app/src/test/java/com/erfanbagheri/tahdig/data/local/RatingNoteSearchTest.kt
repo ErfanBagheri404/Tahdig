@@ -32,6 +32,9 @@ class RatingNoteSearchTest {
     private lateinit var foodDao: FoodDao
     private lateinit var ratingDao: RatingDao
 
+    /** Fixed clock for the #92 decay stamp; asserted, so not 'now'. */
+    private val NOW = 1_700_000_000_000L
+
     @Before
     fun setUp() {
         db = Room.inMemoryDatabaseBuilder(
@@ -124,7 +127,7 @@ class RatingNoteSearchTest {
         seedFood()
         ratingDao.insertIfAbsent(RatingEntity(foodId = 102, stars = 4))
         ratingDao.updateNote(102, "لوبیا را از قبل خیس کن")
-        ratingDao.updateStars(102, 2)
+        ratingDao.updateStars(102, 2, NOW)
 
         val row = ratingDao.observe(102).first()!!
         assertEquals(2, row.stars)

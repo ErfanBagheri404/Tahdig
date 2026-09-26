@@ -16,6 +16,12 @@ class SettingsViewModel(app: Application) : AndroidViewModel(app) {
     val accentHex: StateFlow<String> = SettingsStore.accentHex
     val highContrast: StateFlow<Boolean> = SettingsStore.highContrast
 
+    /** #92 — 0 until «بازنشانی سلیقه» is tapped. Drives the row's caption. */
+    val tasteResetAt: StateFlow<Long> = SettingsStore.tasteResetAt
+
+    /** #92 — stop the accumulated taste steering the feed, keeping the data. */
+    fun resetTasteProfile() = SettingsStore.resetTasteProfile()
+
     fun setAccentHex(hex: String) = SettingsStore.setAccentHex(hex)
     fun setHighContrast(on: Boolean) = SettingsStore.setHighContrast(on)
     val dailyNotify: StateFlow<Boolean> = SettingsStore.dailyNotify

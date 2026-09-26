@@ -132,6 +132,34 @@ fun SettingsScreen(
             )
         }
 
+        Spacer(Modifier.height(24.dp))
+
+        // ── Taste profile (#92) ─────────────────────────────────────────
+        // Reset is a cutoff, not a delete: ratings and cook history stay on
+        // disk (the user can still read them) but stop steering the feed.
+        val resetTaste by viewModel.tasteResetAt.collectAsState()
+        Text(
+            text = "سلیقه",
+            style = MaterialTheme.typography.titleMedium,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Spacer(Modifier.height(4.dp))
+        Text(
+            text = if (resetTaste == 0L) {
+                "پیشنهادها بر پایهٔ امتیازها، دفعات پخت و علاقه‌مندی‌هایت مرتب می‌شوند."
+            } else {
+                "از آخرین بازنشانی به بعد ساخته شده — امتیازها و تاریخچه پختت پاک نشده‌اند."
+            },
+            style = MaterialTheme.typography.bodyMedium,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Spacer(Modifier.height(8.dp))
+        TextButton(onClick = { viewModel.resetTasteProfile() }) {
+            Text(text = "بازنشانی سلیقه", fontFamily = YekanBakh)
+        }
+
         Spacer(Modifier.height(32.dp))
 
         // ── Nutrition profile (#110) ───────────────────────────────────
