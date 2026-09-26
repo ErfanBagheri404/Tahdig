@@ -12,6 +12,12 @@
          degrades to inexact rather than crashing. -->
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
 
+    <!-- Weekly meal plan → device calendar (#84). Requested at runtime only on
+         the first export, never on the first screen; the app works fine
+         without a calendar app, so nothing here is required hardware. -->
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
+
     <!-- Dish photos are fetched from Wikimedia. Without this, Coil's OkHttp
          dispatcher throws an uncaught SecurityException and the app crashes. -->
     <uses-permission android:name="android.permission.INTERNET" />

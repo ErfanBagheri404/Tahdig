@@ -55,6 +55,10 @@ class SettingsViewModel(app: Application) : AndroidViewModel(app) {
     val carryOver = SettingsStore.carryOver
     fun setCarryOver(on: Boolean) = SettingsStore.setCarryOver(on)
 
+    // Plan → device calendar sync (#84); off by default, manual export always there.
+    val calendarSync = SettingsStore.calendarSync
+    fun setCalendarSync(on: Boolean) = SettingsStore.setCalendarSync(on)
+
     // Nutrient caps (#113): preset name plus {NUTRIENT: mg/g} overrides.
     val capPreset = SettingsStore.capPreset
     val capCustom = SettingsStore.capCustom

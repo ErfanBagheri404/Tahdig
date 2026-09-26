@@ -808,6 +808,28 @@ fun SettingsScreen(
         BackupRestoreRow("ساخت بستهٔ انتقال", onTransfer)
         BackupRestoreRow("بازیابی بستهٔ انتقال", onRestoreBundle)
 
+        // Meal plan → device calendar sync (#84). Off by default; the export
+        // button on the plan screen is always there and asks permission there.
+        val calendarSync by viewModel.calendarSync.collectAsState()
+        Spacer(Modifier.height(8.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            androidx.compose.material3.Switch(
+                checked = calendarSync,
+                onCheckedChange = { viewModel.setCalendarSync(it) },
+            )
+            Spacer(Modifier.width(12.dp))
+            Column {
+                Text("همگام‌سازی خودکار برنامه با تقویم", fontFamily = YekanBakh)
+                Text(
+                    "با هر تغییر در برنامه، رویدادها به‌روز می‌شوند",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+
+        Spacer(Modifier.height(32.dp))
+
         // Cooking history heatmap
         Spacer(Modifier.height(32.dp))
 
