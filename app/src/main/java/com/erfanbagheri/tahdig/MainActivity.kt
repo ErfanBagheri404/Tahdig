@@ -84,7 +84,10 @@ import com.erfanbagheri.tahdig.ui.viewmodel.RatingViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.SearchViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.SettingsViewModel
 import com.erfanbagheri.tahdig.util.BackupRestore
+import com.erfanbagheri.tahdig.ui.BundlePassphraseDialog
 import com.erfanbagheri.tahdig.ui.ShareLayoutDialog
+import com.erfanbagheri.tahdig.util.BundleCrypto
+import com.erfanbagheri.tahdig.util.LibraryBundle
 import com.erfanbagheri.tahdig.util.RecipeFile
 import com.erfanbagheri.tahdig.util.RecipeTransfer
 import com.erfanbagheri.tahdig.util.ShareCard
@@ -224,9 +227,45 @@ private fun TahdigApp(
     }
     val context = LocalContext.current
 
-    // #132: the dish being exported lives on the Activity, which owns the DB
-    // and the SAF result. One owner, so it cannot get out of step.
-    var exportDish by remember { mutableStateOf<FoodEntity?>(null) }
+    // #133: which bundle action the passphrase is being asked for.
+    // null = no dialog. "export" / "import" = create one, or enter it.
+    var bundleAction by rememberSaveable { mutableStateOf<String?>(null) }
+
+    // The passphrase lives only between the dialog and the SAF result, and is
+    // wiped in both paths. Never stored, never written to disk.
+    var bundlePass by remember { mutableStateOf<CharArray?>(null) }
+
+    fun runBundleExport(uri: android.net.Uri) {
+        val pass = bundlePass?.also { bundlePass = null } ?: return
+        try {
+            LibraryBundle.exportTo(context, uri, pass)
+            Toast.makeText(context, "بستهٔ انتقال ساخته شد", Toast.LENGTH_SHORT).show()
+        } catch (e: BundleCrypto.BundleError) {
+            Toast.makeText(context, e.message ?: "ساخت بسته ممکن نشد", Toast.LENGTH_LONG).show()
+        } finally {
+            pass.fill('\u0000')
+        }
+    }
+
+    fun runBundleImport(uri: android.net.Uri) {
+        val pass = bundlePass?.also { bundlePass = null } ?: return
+        try {
+            LibraryBundle.importFrom(context, uri, pass)
+            Toast.makeText(context, "بسته بازیابی شد", Toast.LENGTH_SHORT).show()
+            // The DB was replaced under the app: restart so every open handle
+            // points at the new file.
+            context.startActivity(
+                context.packageManager.getLaunchIntentForPackage(context.packageName),
+            )
+            (context as? Activity)?.finish()
+        } catch (e: BundleCrypto.BundleError) {
+            Toast.makeText(context, e.message ?: "بازیابی ممکن نشد", Toast.LENGTH_LONG).show()
+        } catch (e: LibraryBundle.BundleFailure) {
+            Toast.makeText(context, e.message ?: "بسته معتبر نیست", Toast.LENGTH_LONG).show()
+        } finally {
+            pass.fill('\u0000')
+        }
+    }
 
 
     // Backup/restore SAF launchers
@@ -240,6 +279,22 @@ private fun TahdigApp(
     val recipeImportLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.OpenDocument(),
     ) { uri -> uri?.let { onImportRecipe(it) } }
+    // #133: the encrypted bundle goes through SAF like everything else.
+    val bundleExportLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.CreateDocument("application/octet-stream"),
+    ) { uri ->
+        // SAF returns null on cancel: wipe the passphrase, it has no job now.
+        if (uri == null) { bundlePass?.fill('\u0000'); bundlePass = null }
+        else runBundleExport(uri)
+    }
+
+    val bundleImportLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocument(),
+    ) { uri ->
+        // SAF returns null on cancel: wipe the passphrase, it has no job now.
+        if (uri == null) { bundlePass?.fill('\u0000'); bundlePass = null }
+        else runBundleImport(uri)
+    }
     val restoreLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.OpenDocument(),
     ) { uri -> uri?.let {
@@ -536,6 +591,8 @@ private fun TahdigApp(
                         viewModel = vm,
                         onBackup = { backupLauncher.launch("tahdig-backup.db") },
                         onRestore = { restoreLauncher.launch(arrayOf("*/*")) },
+                        onTransfer = { bundleAction = "export" },
+                        onRestoreBundle = { bundleAction = "import" },
                         onOpenHeatmap = { showHeatmap = true },
                         onOpenDiary = { showDiary = true },
                         onOpenBadges = { showBadges = true },
@@ -618,6 +675,27 @@ private fun TahdigApp(
 
         // #132: pick the card, then share. Kept outside the Box so it survives
         // the detail screen being popped underneath it.
+        bundleAction?.let { action ->
+            BundlePassphraseDialog(
+                creating = action == "export",
+                onConfirm = { pass ->
+                    val exporting = action == "export"
+                    bundleAction = null
+                    if (exporting) {
+                        // The key exists for this one call and is wiped after.
+                        bundleExportLauncher.launch(
+                            "tahdig-${System.currentTimeMillis()}.${BundleCrypto.EXTENSION}",
+                        )
+                        bundlePass = pass
+                    } else {
+                        bundlePass = pass
+                        bundleImportLauncher.launch(arrayOf("*/*"))
+                    }
+                },
+                onDismiss = { bundleAction = null },
+            )
+        }
+
         shareTarget?.let { food ->
             ShareLayoutDialog(
                 onPick = { layout ->
