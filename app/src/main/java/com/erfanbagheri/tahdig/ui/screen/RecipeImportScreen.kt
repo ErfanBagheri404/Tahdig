@@ -43,6 +43,12 @@ fun RecipeImportScreen(
     onSave: (RecipeDraft) -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
+    // #76: lines the OCR capture flagged as low-confidence. The review shows
+    // them as a warning row so the user can fix shaky lines; raw text stays
+    // editable regardless.
+    lowConfidenceLines: List<String> = emptyList(),
+    // #76: the original card photo, shown collapsed under the steps.
+    provenancePhotoUri: String? = null,
 ) {
     var title by remember(draft) { mutableStateOf(draft.title) }
     var ingredients by remember(draft) { mutableStateOf(draft.ingredients.joinToString("\n")) }
@@ -100,6 +106,52 @@ fun RecipeImportScreen(
         Hairline()
         ImportField("یادداشت", notes) { notes = it }
         Hairline()
+
+        // #76: shaky OCR lines. The text above stays editable regardless —
+        // this row says which lines to look at, it does not gate saving.
+        if (lowConfidenceLines.isNotEmpty()) {
+            Spacer(Modifier.height(8.dp))
+            Text(
+                "خطوط کم‌اعتماد — بازبینی کنید:",
+                fontFamily = YekanBakh,
+                fontSize = 13.sp,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(horizontal = 16.dp),
+            )
+            lowConfidenceLines.forEach { line ->
+                Text(
+                    "• $line",
+                    fontFamily = YekanBakh,
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 1.dp),
+                )
+            }
+        }
+
+        // #76 «کارت اصلی»: the photo is the provenance of a heirloom card —
+        // collapsed under the steps so it never outranks the recipe itself.
+        provenancePhotoUri?.let { uri ->
+            Spacer(Modifier.height(12.dp))
+            val expanded = remember { mutableStateOf(false) }
+            TextButton(onClick = { expanded.value = !expanded.value }) {
+                Text(
+                    if (expanded.value) "پنهان کردن کارت اصلی" else "نمایش کارت اصلی",
+                    fontFamily = YekanBakh,
+                    fontSize = 13.sp,
+                )
+            }
+            if (expanded.value) {
+                coil3.compose.AsyncImage(
+                    model = uri,
+                    contentDescription = "کارت اصلی",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                )
+            }
+        }
+
         Spacer(Modifier.height(32.dp))
     }
 }

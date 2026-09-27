@@ -61,6 +61,7 @@ import com.erfanbagheri.tahdig.ui.components.UndoSnackbarHost
 import com.erfanbagheri.tahdig.ui.screen.OnboardingPager
 import com.erfanbagheri.tahdig.ui.screen.ImportHubScreen
 import com.erfanbagheri.tahdig.ui.screen.RecipeImportScreen
+import com.erfanbagheri.tahdig.ui.screen.rememberOcrLauncher
 import com.erfanbagheri.tahdig.ui.screen.PantryScreen
 import com.erfanbagheri.tahdig.ui.screen.SearchScreen
 import com.erfanbagheri.tahdig.ui.screen.CookHeatmapScreen
@@ -271,6 +272,17 @@ private fun TahdigApp(
     // #75: hub-captured drafts live here, next to the hub flag — the hoisted
     // `importDraft` param is owned by the Activity (share sheet) and is a val.
     var hubDraft by remember { mutableStateOf<com.erfanbagheri.tahdig.util.RecipeDraft?>(null) }
+    // #76: OCR results ride alongside the draft — the flagged lines and the
+    // card photo belong to the review, not to the draft model.
+    var ocrLowConfidence by remember { mutableStateOf<List<String>>(emptyList()) }
+    var ocrPhotoUri by remember { mutableStateOf<String?>(null) }
+    // #76: gallery pick -> bundled ML Kit -> shared parser -> review.
+    val scanLauncher = rememberOcrLauncher { raw, flagged, uri ->
+        hubDraft = com.erfanbagheri.tahdig.util.RecipeTextParser.parse(raw)
+            .copy(photoUrl = uri.toString())
+        ocrLowConfidence = flagged
+        ocrPhotoUri = uri.toString()
+    }
     androidx.compose.runtime.LaunchedEffect(startAttachPhoto) {
         if (startAttachPhoto) {
             selectedTab = 2
@@ -472,7 +484,9 @@ private fun TahdigApp(
                 ImportHubScreen(
                     onDraftReady = { draft -> hubDraft = draft },
                     onBack = { importHubOpen = false },
-                    // #76/#77/#78 wire their sources here; null renders no row.
+                    // #76: gallery pick -> bundled on-device ML Kit -> the
+                    // shared parser. No network, no API key.
+                    onScanPhoto = { scanLauncher() },
                     modifier = Modifier.fillMaxSize(),
                 )
             }
@@ -491,6 +505,8 @@ private fun TahdigApp(
                         hubDraft = null
                         onImportHandled()
                     },
+                    lowConfidenceLines = ocrLowConfidence,
+                    provenancePhotoUri = ocrPhotoUri,
                     modifier = Modifier.fillMaxSize(),
                 )
             }
