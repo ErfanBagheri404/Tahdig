@@ -19,6 +19,7 @@ import com.erfanbagheri.tahdig.util.Flavor
 import com.erfanbagheri.tahdig.util.PersianText
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -28,6 +29,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -37,6 +39,7 @@ class SearchViewModel(app: Application) : AndroidViewModel(app) {
     private val db = TahdigDatabase.getInstance(app)
     private val foodDao = db.foodDao()
     private val categoryDao = db.categoryDao()
+    private val ratingDao = db.ratingDao()
 
     private val _query = MutableStateFlow("")
     val query: StateFlow<String> = _query.asStateFlow()
@@ -86,7 +89,11 @@ class SearchViewModel(app: Application) : AndroidViewModel(app) {
     }
         .debounce(300)
         .flatMapLatest { (q, cat, ingEx) ->
-            foodDao.search(q, cat).map { foods -> filterByIngredients(foods, ingEx.first, ingEx.second) }
+            // #134: the user's own notes are searchable too, merged as extra
+            // rows by food id. Everything downstream already works on
+            // FoodEntity, so the filters below stay untouched.
+            withNotes(q, foodDao.search(q, cat))
+                .map { foods -> filterByIngredients(foods, ingEx.first, ingEx.second) }
         }
         .combine(_diet) { foods, diet ->
             if (diet == null) foods else foods.filter { diet.matches(it.tags) }
@@ -214,6 +221,29 @@ class SearchViewModel(app: Application) : AndroidViewModel(app) {
     fun onNutriAbToggle(on: Boolean) { _nutriAb.value = on }
 
     fun onQueryChange(text: String) { _query.value = text }
+
+    /**
+     * Dish-name results plus dishes whose private note matches (#134).
+     *
+     * Extracted from the pipeline so the combine's types are declared rather
+     * than inferred through three nested operators. Queries under two
+     * characters skip the note lookup: every note would match, which is not a
+     * search.
+     */
+    private fun withNotes(q: String, base: Flow<List<FoodEntity>>): Flow<List<FoodEntity>> {
+        if (q.length < 2) return base
+        val noted: Flow<List<FoodEntity>> = ratingDao.searchNotesFlow(q)
+            .flatMapLatest { rated ->
+                if (rated.isEmpty()) flowOf(emptyList())
+                else foodDao.byIdsFlow(rated.map { it.foodId })
+            }
+        return combine(base, noted) { foods, fromNotes ->
+            if (fromNotes.isEmpty()) return@combine foods
+            val already = foods.map { it.id }.toSet()
+            foods + fromNotes.filter { it.id !in already }
+        }
+    }
+
 
     /** Called on IME search action — persists the query to history. */
     fun onSubmit() {

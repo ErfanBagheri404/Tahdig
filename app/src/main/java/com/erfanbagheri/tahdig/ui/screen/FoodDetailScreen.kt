@@ -214,7 +214,7 @@ fun FoodDetailScreen(
 
                     Spacer(Modifier.height(20.dp))
 
-                    // Star rating
+                    // Star rating + the private note (#134)
                     if (ratingViewModel != null) {
                         val dbStars by ratingViewModel.stars(f.id).collectAsState()
                         // Optimistic local value so rapid taps don't read a stale DB value
@@ -226,6 +226,7 @@ fun FoodDetailScreen(
                                 ratingViewModel.setStars(f.id, it)
                             },
                         )
+                        MyNoteEditor(viewModel = ratingViewModel, foodId = f.id)
                         Spacer(Modifier.height(20.dp))
                     }
 
