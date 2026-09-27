@@ -52,6 +52,15 @@ private val pages = listOf(
 private const val BROCHURE_PAGES = 3
 
 /**
+ * Total onboarding stops: brochure pages, then the #92 taste picker, then the
+ * #126 first-dish handoff. The picker sits last-but-one because it is the
+ * first input the app asks for — asking before explaining the app would be a
+ * wall of chips with no context.
+ */
+private const val TASTE_PICKER_PAGE = BROCHURE_PAGES
+private const val TOTAL_PAGES = BROCHURE_PAGES + 2
+
+/**
  * Last stop of onboarding (#126) — «اولین غذات رو انتخاب کن».
  *
  * The old last page was a dead end: «شروع!» dismissed into an empty app and
@@ -148,7 +157,7 @@ fun OnboardingPager(
     onOpenDish: (Long) -> Unit = {},
 ) {
     // One extra stop after the brochure pages: the seeded first-dish handoff.
-    val pagerState = rememberPagerState(pageCount = { BROCHURE_PAGES + 1 })
+    val pagerState = rememberPagerState(pageCount = { TOTAL_PAGES })
     val scope = rememberCoroutineScope()
 
     Column(
@@ -163,11 +172,15 @@ fun OnboardingPager(
             state = pagerState,
             modifier = Modifier.weight(1f),
         ) { page ->
-            if (page == BROCHURE_PAGES) {
+            if (page == TOTAL_PAGES - 1) {
                 FirstDishHandoff(
                     onPick = { id -> onOpenDish(id) },
                     onSkip = onDone,
                 )
+                return@HorizontalPager
+            }
+            if (page == TASTE_PICKER_PAGE) {
+                TastePickerPage(onDone = { scope.launch { pagerState.animateScrollToPage(TOTAL_PAGES - 1) } })
                 return@HorizontalPager
             }
             val p = pages[page]
@@ -202,7 +215,7 @@ fun OnboardingPager(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.padding(vertical = 16.dp),
         ) {
-            repeat(BROCHURE_PAGES + 1) { i ->
+            repeat(TOTAL_PAGES) { i ->
                 Surface(
                     shape = MaterialTheme.shapes.extraSmall,
                     color = if (i == pagerState.currentPage)
@@ -217,10 +230,12 @@ fun OnboardingPager(
             }
         }
 
-        // Next / Done button
-        Button(
+        // Next / Done button — hidden on the picker stop (#92): that page ships
+        // its own primary button, and showing both would put two stacked
+        // "advance" buttons under the same chips.
+        if (pagerState.currentPage != TASTE_PICKER_PAGE) Button(
             onClick = {
-                if (pagerState.currentPage < BROCHURE_PAGES)
+                if (pagerState.currentPage < TOTAL_PAGES - 1)
                     scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) }
                 else onDone()
             },
@@ -229,7 +244,7 @@ fun OnboardingPager(
                 .padding(top = 16.dp),
         ) {
             Text(
-                text = if (pagerState.currentPage < BROCHURE_PAGES) "بعدی" else "شروع!",
+                text = if (pagerState.currentPage < TOTAL_PAGES - 1) "بعدی" else "شروع!",
                 fontFamily = YekanBakh,
                 fontSize = 16.sp,
             )

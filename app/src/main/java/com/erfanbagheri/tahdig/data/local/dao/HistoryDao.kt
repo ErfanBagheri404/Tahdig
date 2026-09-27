@@ -65,6 +65,15 @@ interface HistoryDao {
     )
     suspend fun distinctCookedDishes(): List<CookedDish>
 
+    /**
+     * How many times each dish was cooked — the taste scorer's frequency
+     * signal (#92). `COUNT(*)`, not the distinct query above: "cooked four
+     * times" is exactly the number that matters here, and a first-cook
+     * timestamp cannot express it.
+     */
+    @Query("SELECT food_id AS foodId, COUNT(*) AS cooks FROM history GROUP BY food_id")
+    suspend fun cookCounts(): List<CookCount>
+
     // ── History list with food details ───────────────────────────
 
     /** Most recent picks, newest first, joined with food rows. */

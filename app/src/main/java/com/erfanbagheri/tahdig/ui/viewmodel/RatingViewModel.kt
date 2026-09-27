@@ -46,8 +46,10 @@ class RatingViewModel(app: Application) : AndroidViewModel(app) {
             // Ensure a row exists, then set only the stars. On a fresh dish the
             // INSERT is what lands; afterwards the UPDATE is. Either way the
             // note column is never touched.
+            val now = System.currentTimeMillis()
             ratingDao.insertIfAbsent(RatingEntity(foodId = foodId, stars = stars))
-            ratingDao.updateStars(foodId, stars)
+            // #92: stamp the time so the taste scorer can decay an old opinion.
+            ratingDao.updateStars(foodId, stars, now)
         }
     }
 

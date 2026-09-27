@@ -63,7 +63,7 @@ import com.erfanbagheri.tahdig.data.local.seed.SeedLoader
         WeightLogEntity::class,
         CaffeineLogEntity::class,
     ],
-    version = 19, // + ratings.note (#134); destructive fallback
+    version = 20, // + ratings.updated_at (#92); destructive fallback
     exportSchema = true,
 )
 abstract class TahdigDatabase : RoomDatabase() {

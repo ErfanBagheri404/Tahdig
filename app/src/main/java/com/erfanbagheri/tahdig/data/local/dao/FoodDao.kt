@@ -62,6 +62,23 @@ interface FoodDao {
     suspend fun randomAny(limit: Int): List<FoodEntity>
 
     /**
+     * A random sample of one meal-time bucket — the taste scorer's pool (#92).
+     *
+     * `ORDER BY RANDOM() LIMIT n` instead of `randomByMealTime` repeated n
+     * times: the weighted pick needs every candidate in one snapshot, and
+     * re-rolling per candidate would both cost N queries and produce
+     * duplicates in the pool.
+     */
+    @Query(
+        """
+        SELECT * FROM foods
+        WHERE is_blocked = 0 AND meal_time LIKE '%' || :mealTime || '%'
+        ORDER BY RANDOM() LIMIT :limit
+        """
+    )
+    suspend fun randomByMealTimeMany(mealTime: String, limit: Int): List<FoodEntity>
+
+    /**
      * Deterministic "dish of the day": the same row for the whole day.
      * OFFSET makes it stable across widget refreshes and app restarts, unlike RANDOM().
      */
