@@ -84,6 +84,31 @@ fun RecipeImportScreen(
         }
         Hairline()
 
+        // #77: a video/web import carries its own thumbnail. Shown read-only —
+        // an editable text field for a URL the user cannot see would be worse
+        // than no preview at all. Replacement is the detail screen's photo flow.
+        draft.photoUrl?.takeIf { it.isNotBlank() }?.let { url ->
+            Spacer(Modifier.height(8.dp))
+            Text(
+                "تصویر دستور",
+                fontFamily = YekanBakh,
+                fontSize = 13.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 16.dp),
+            )
+            Spacer(Modifier.height(4.dp))
+            coil3.compose.AsyncImage(
+                model = url,
+                contentDescription = "تصویر ویدیو",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(160.dp)
+                    .padding(horizontal = 16.dp),
+                contentScale = androidx.compose.ui.layout.ContentScale.Crop,
+            )
+        }
+        Hairline()
+
         ImportField("نام دستور", title, singleLine = true) { title = it }
         Hairline()
         ImportField(

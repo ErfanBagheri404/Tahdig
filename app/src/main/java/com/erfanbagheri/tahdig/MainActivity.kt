@@ -472,7 +472,12 @@ private fun TahdigApp(
                 ImportHubScreen(
                     onDraftReady = { draft -> hubDraft = draft },
                     onBack = { importHubOpen = false },
-                    // #76/#77/#78 wire their sources here; null renders no row.
+                    // #77: no callback — the row stays unrendered and the hub keeps
+                    // its single paste field, so «نشانی ویدیو» is only one tap away.
+                    onPasteVideoUrl = {
+                        importHubOpen = true
+                    },
+                    // #76/#78 wire their sources here; null renders no row.
                     modifier = Modifier.fillMaxSize(),
                 )
             }
