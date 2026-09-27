@@ -48,6 +48,7 @@ import com.erfanbagheri.tahdig.ui.screen.FavoritesScreen
 import com.erfanbagheri.tahdig.ui.screen.FoodDetailScreen
 import com.erfanbagheri.tahdig.data.prefs.SettingsStore
 import com.erfanbagheri.tahdig.ui.screen.HomeScreen
+import com.erfanbagheri.tahdig.ui.screen.LeftoverScreen
 import com.erfanbagheri.tahdig.ui.screen.OnboardingPager
 import com.erfanbagheri.tahdig.ui.screen.PantryScreen
 import com.erfanbagheri.tahdig.ui.screen.SearchScreen
@@ -74,6 +75,7 @@ import com.erfanbagheri.tahdig.ui.viewmodel.SettingsViewModel
 import com.erfanbagheri.tahdig.util.BackupRestore
 import com.erfanbagheri.tahdig.util.ShareCard
 import com.erfanbagheri.tahdig.ui.viewmodel.ShoppingViewModel
+import com.erfanbagheri.tahdig.ui.viewmodel.LeftoverViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.CookHeatmapViewModel
 import kotlinx.coroutines.launch
 
@@ -131,6 +133,7 @@ private fun TahdigApp() {
     var categoryRoute by rememberSaveable { mutableLongStateOf(-1L) }
     var browseCategories by rememberSaveable { mutableStateOf(false) }
     var showPantry by rememberSaveable { mutableStateOf(false) }
+    var showLeftover by rememberSaveable { mutableStateOf(false) }
     var showHeatmap by rememberSaveable { mutableStateOf(false) }
     var browseTechniques by rememberSaveable { mutableStateOf(false) }
     var browseOccasions by rememberSaveable { mutableStateOf(false) }
@@ -264,6 +267,16 @@ private fun TahdigApp() {
                         viewModel = vm,
                         onFoodClick = { detailFoodId = it },
                         onBack = { showPantry = false },
+                        onOpenLeftover = { showPantry = false; showLeftover = true },
+                    )
+                }
+                showLeftover -> {
+                    // #107: single-shot session — closing forgets it (VM has no persistence).
+                    val lvm: LeftoverViewModel = viewModel()
+                    LeftoverScreen(
+                        viewModel = lvm,
+                        onFoodClick = { detailFoodId = it },
+                        onBack = { showLeftover = false },
                     )
                 }
                 showHeatmap -> {
@@ -289,6 +302,7 @@ private fun TahdigApp() {
                         viewModel = vm,
                         onBrowseCategories = { browseCategories = true },
                         onFoodClick = { detailFoodId = it },
+                        onOpenLeftover = { showLeftover = true },
                     )
                 }
                 selectedTab == 1 -> {

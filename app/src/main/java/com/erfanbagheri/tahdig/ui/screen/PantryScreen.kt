@@ -52,6 +52,7 @@ fun PantryScreen(
     viewModel: PantryViewModel,
     onFoodClick: (Long) -> Unit = {},
     onBack: () -> Unit = {},
+    onOpenLeftover: () -> Unit = {},
 ) {
     val draft by viewModel.draft.collectAsState()
     val items by viewModel.items.collectAsState()
@@ -94,6 +95,9 @@ fun PantryScreen(
                             tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
+                }
+                TextButton(onClick = onOpenLeftover) {
+                    Text("غذای مونده دارم", fontFamily = YekanBakh)
                 }
                 TextButton(onClick = onBack) {
                     Text("بازگشت", fontFamily = YekanBakh)

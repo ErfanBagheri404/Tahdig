@@ -58,6 +58,7 @@ fun HomeScreen(
     viewModel: HomeViewModel,
     onBrowseCategories: () -> Unit = {},
     onFoodClick: (Long) -> Unit = {},
+    onOpenLeftover: () -> Unit = {},
 ) {
     val suggestion by viewModel.suggestion.collectAsState()
     val mealLabel by viewModel.mealLabel.collectAsState()
@@ -132,6 +133,10 @@ fun HomeScreen(
             }
             TextButton(onClick = onBrowseCategories) {
                 Text("مرور دسته‌بندی‌ها", fontFamily = YekanBakh)
+            }
+            // #107: the zero-waste daily trigger lives next to the browse entry.
+            TextButton(onClick = onOpenLeftover) {
+                Text("غذای مونده دارم", fontFamily = YekanBakh)
             }
             Spacer(Modifier.height(24.dp))
 
