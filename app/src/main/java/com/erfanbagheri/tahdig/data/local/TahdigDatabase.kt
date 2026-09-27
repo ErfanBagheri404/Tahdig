@@ -73,7 +73,7 @@ import com.erfanbagheri.tahdig.data.local.seed.SeedLoader
         TagEntity::class, // #80
         FoodTagJoin::class, // #80
     ],
-    // #79 + #80: collections and tags; destructive fallback
+    // #79 + #80 + #83: collections, tags, meal-plan week anchor
     version = 21,
     exportSchema = true,
 )
