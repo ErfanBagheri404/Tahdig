@@ -41,6 +41,9 @@ fun SettingsScreen(
     viewModel: SettingsViewModel,
     onBackup: () -> Unit = {},
     onRestore: () -> Unit = {},
+    /** #133: encrypted full-library bundle (passphrase asked at export time). */
+    onTransfer: () -> Unit = {},
+    onRestoreBundle: () -> Unit = {},
     onOpenHeatmap: () -> Unit = {},
     onOpenDiary: () -> Unit = {},
     onOpenBadges: () -> Unit = {},
@@ -704,6 +707,27 @@ fun SettingsScreen(
 
         BackupRestoreRow("ذخیره پشتیبان", onBackup)
         BackupRestoreRow("بازیابی پشتیبان", onRestore)
+
+        // #133 — the migration path. A DB copy is a fallback; this is how a
+        // recipe library actually moves between phones.
+        Spacer(Modifier.height(32.dp))
+        Text(
+            text = "انتقال داده‌ها",
+            style = MaterialTheme.typography.titleMedium,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Spacer(Modifier.height(4.dp))
+        Text(
+            text = "برای جابه‌جایی به گوشی جدید: کتابخانهٔ کامل، با تنظیمات و یادداشت‌ها، " +
+                "به‌صورت رمزگذاری‌شده. فایل را به گوشی جدید بفرستید و همین‌جا بازیابی کنید.",
+            style = MaterialTheme.typography.bodySmall,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Spacer(Modifier.height(8.dp))
+        BackupRestoreRow("ساخت بستهٔ انتقال", onTransfer)
+        BackupRestoreRow("بازیابی بستهٔ انتقال", onRestoreBundle)
 
         // Cooking history heatmap
         Spacer(Modifier.height(32.dp))
