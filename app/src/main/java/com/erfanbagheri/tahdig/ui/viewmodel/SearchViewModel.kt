@@ -7,6 +7,7 @@ import com.erfanbagheri.tahdig.data.local.TahdigDatabase
 import com.erfanbagheri.tahdig.data.local.entity.CategoryEntity
 import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
 import com.erfanbagheri.tahdig.data.prefs.SettingsStore
+import com.erfanbagheri.tahdig.util.AllergenDetector
 import com.erfanbagheri.tahdig.util.DietFilter
 import com.erfanbagheri.tahdig.util.Flavor
 import com.erfanbagheri.tahdig.util.PersianText
@@ -74,6 +75,14 @@ class SearchViewModel(app: Application) : AndroidViewModel(app) {
                 val have = food.flavors.split(',').toSet()
                 selected.all { it.name in have }
             }
+        }
+        // Allergen hide-filter (#112): last in the chain so it composes with
+        // every other filter; no-op while the toggle or profile is empty.
+        .combine(
+            combine(SettingsStore.allergens, SettingsStore.allergenHide) { p, h -> p to h },
+        ) { foods, (profile, hide) ->
+            if (!hide || profile.isEmpty()) foods
+            else foods.filter { !AllergenDetector.shouldHide(hide, profile, AllergenDetector.detect(it.ingredients)) }
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 

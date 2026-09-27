@@ -27,9 +27,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import com.erfanbagheri.tahdig.util.PersianText
 import com.erfanbagheri.tahdig.ui.viewmodel.SettingsViewModel
 
+@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
 @Composable
 fun SettingsScreen(
     viewModel: SettingsViewModel,
@@ -130,6 +133,72 @@ fun SettingsScreen(
                 range = 0..com.erfanbagheri.tahdig.util.DailyBudget.GOALS.lastIndex,
                 labelFor = { GOAL_LABELS.getOrElse(it) { "" } },
                 onChange = { viewModel.setProfile(profile.copy(goal = it)) },
+            )
+        }
+
+        Spacer(Modifier.height(32.dp))
+
+        // ── Allergy profile (#112) ───────────────────────────────────
+        // Options come from the seed's own allergen taxonomy, so every chip
+        // can actually match a dish. Detection is conservative: unknown
+        // ingredients never warn.
+        val allergens by viewModel.allergens.collectAsState()
+        val allergenHide by viewModel.allergenHide.collectAsState()
+        Text(
+            text = "آلرژی‌ها",
+            style = MaterialTheme.typography.titleMedium,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Spacer(Modifier.height(4.dp))
+        if (allergens.isEmpty()) {
+            Text(
+                text = "چیزی انتخاب نشده — تشخیصی انجام نمی‌شه",
+                style = MaterialTheme.typography.bodySmall,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Spacer(Modifier.height(8.dp))
+        androidx.compose.foundation.layout.FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            com.erfanbagheri.tahdig.util.AllergenDetector.PROFILE_OPTIONS.forEach { option ->
+                val on = option in allergens
+                Text(
+                    text = option,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontFamily = YekanBakh,
+                    color = if (on) MaterialTheme.colorScheme.onPrimaryContainer
+                    else MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier
+                        .padding(bottom = 4.dp)
+                        .background(
+                            color = if (on) MaterialTheme.colorScheme.primaryContainer
+                            else MaterialTheme.colorScheme.surfaceVariant,
+                            shape = RoundedCornerShape(8.dp),
+                        )
+                        .clickable {
+                            viewModel.setAllergens(
+                                allergens.toMutableSet().apply {
+                                    if (!remove(option)) add(option)
+                                },
+                            )
+                        }
+                        .padding(horizontal = 14.dp, vertical = 8.dp),
+                )
+            }
+        }
+        Spacer(Modifier.height(8.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            androidx.compose.material3.Switch(
+                checked = allergenHide,
+                onCheckedChange = { viewModel.setAllergenHide(it) },
+            )
+            Spacer(Modifier.width(12.dp))
+            Text(
+                "پنهان‌سازی غذاهای آلرژن‌دار",
+                fontFamily = YekanBakh,
             )
         }
 

@@ -317,6 +317,38 @@ fun FoodDetailScreen(
                         ?.let { "${Math.round(it * scaleFactor)}g" } ?: s
                     Spacer(Modifier.height(16.dp))
 
+                    // Allergen warning band (#112): profile vs this dish's
+                    // ingredients. Shows regardless of the hide toggle — seeing
+                    // the dish with its warning is the point of the toggle.
+                    val allergenProfile by com.erfanbagheri.tahdig.data.prefs.SettingsStore
+                        .allergens.collectAsState()
+                    val allergenHits = remember(f.ingredients) {
+                        com.erfanbagheri.tahdig.util.AllergenDetector.detect(f.ingredients)
+                    }
+                    if (com.erfanbagheri.tahdig.util.AllergenDetector
+                            .conflicts(allergenProfile, allergenHits)
+                    ) {
+                        Surface(
+                            color = MaterialTheme.colorScheme.errorContainer,
+                            shape = RoundedCornerShape(8.dp),
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text(
+                                text = "حاوی " +
+                                    allergenHits.filter { it in allergenProfile }
+                                        .joinToString("، "),
+                                style = MaterialTheme.typography.labelLarge,
+                                fontFamily = YekanBakh,
+                                color = MaterialTheme.colorScheme.onErrorContainer,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                                textAlign = TextAlign.Center,
+                            )
+                        }
+                        Spacer(Modifier.height(12.dp))
+                    }
+
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically,
