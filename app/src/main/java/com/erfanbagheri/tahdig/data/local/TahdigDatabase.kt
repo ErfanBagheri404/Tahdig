@@ -45,7 +45,7 @@ import com.erfanbagheri.tahdig.data.local.seed.SeedLoader
         CookSessionEntity::class,
         ShoppingTripEntity::class,
     ],
-    version = 11, // + shopping_trips table (#108); destructive fallback, pre-release
+    version = 12, // + pantry.quantity (#109); destructive fallback, pre-release
     exportSchema = true,
 )
 abstract class TahdigDatabase : RoomDatabase() {

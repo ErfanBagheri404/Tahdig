@@ -29,4 +29,14 @@ interface PantryDao {
     /** Optional expiry edit per item — «tap -> edit date» (#106). */
     @Query("UPDATE pantry SET expires_at = :expiresAt WHERE id = :id")
     suspend fun setExpiry(id: Long, expiresAt: Long?)
+
+    @Query("UPDATE pantry SET quantity = :quantity WHERE id = :id")
+    suspend fun setQuantity(id: Long, quantity: Int)
+
+    @Query("UPDATE pantry SET quantity = 1")
+    suspend fun fillAll()
+
+    /** Restore exactly what a bulk clear snapshotted, ids included (#109 undo). */
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(items: List<PantryItemEntity>)
 }
