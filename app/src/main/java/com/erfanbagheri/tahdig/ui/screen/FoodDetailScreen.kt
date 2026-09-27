@@ -380,6 +380,50 @@ fun FoodDetailScreen(
                         Spacer(Modifier.height(12.dp))
                     }
 
+                    // Pregnancy-mode food-safety row (#119): same conservative
+                    // shape as the halal row above — a positive keyword match
+                    // only, and the wording names the risk instead of claiming
+                    // the dish is safe. Hidden entirely when the mode is off.
+                    val pregnancyMode by com.erfanbagheri.tahdig.data.prefs.SettingsStore
+                        .pregnancyMode.collectAsState()
+                    if (pregnancyMode) {
+                        val safety = remember(f.ingredients) {
+                            com.erfanbagheri.tahdig.util.Caffeine.safetyFlags(f.ingredients)
+                        }
+                        com.erfanbagheri.tahdig.util.Caffeine.warningText(safety)?.let { text ->
+                            Surface(
+                                color = MaterialTheme.colorScheme.errorContainer,
+                                shape = RoundedCornerShape(8.dp),
+                                modifier = Modifier.fillMaxWidth(),
+                            ) {
+                                Column(
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                                ) {
+                                    Text(
+                                        text = text,
+                                        style = MaterialTheme.typography.labelLarge,
+                                        fontFamily = YekanBakh,
+                                        color = MaterialTheme.colorScheme.onErrorContainer,
+                                        textAlign = TextAlign.Center,
+                                    )
+                                    // The «why» for each flag, so the user can
+                                    // judge rather than just obey.
+                                    safety.forEach { flag ->
+                                        Text(
+                                            text = "• " + flag.category + ": " + flag.why,
+                                            style = MaterialTheme.typography.bodySmall,
+                                            fontFamily = YekanBakh,
+                                            color = MaterialTheme.colorScheme.onErrorContainer,
+                                        )
+                                    }
+                                }
+                            }
+                            Spacer(Modifier.height(12.dp))
+                        }
+                    }
+
                     // Cook history for this dish (#124): turns the journal into
                     // learning data — «۳ بار پختی» plus each note, newest first.
                     if (journalEntries.isNotEmpty()) {

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.erfanbagheri.tahdig.data.local.dao.CaffeineDao
 import com.erfanbagheri.tahdig.data.local.dao.CategoryDao
 import com.erfanbagheri.tahdig.data.local.dao.CookSessionDao
 import com.erfanbagheri.tahdig.data.local.dao.FavoriteDao
@@ -31,6 +32,7 @@ import com.erfanbagheri.tahdig.data.local.entity.BarcodeScanEntity
 import com.erfanbagheri.tahdig.data.local.entity.NutritionLogEntity
 import com.erfanbagheri.tahdig.data.local.entity.MealPlanEntity
 import com.erfanbagheri.tahdig.data.local.entity.MilestoneCheckEntity
+import com.erfanbagheri.tahdig.data.local.entity.CaffeineLogEntity
 import com.erfanbagheri.tahdig.data.local.entity.WaterLogEntity
 import com.erfanbagheri.tahdig.data.local.entity.WeightLogEntity
 import com.erfanbagheri.tahdig.data.local.entity.PantryItemEntity
@@ -59,8 +61,9 @@ import com.erfanbagheri.tahdig.data.local.seed.SeedLoader
         BarcodeScanEntity::class,
         WaterLogEntity::class,
         WeightLogEntity::class,
+        CaffeineLogEntity::class,
     ],
-    version = 17, // + meal_slot, servings on nutrition_log (#114); destructive fallback
+    version = 18, // + caffeine_log (#119); destructive fallback
     exportSchema = true,
 )
 abstract class TahdigDatabase : RoomDatabase() {
@@ -86,6 +89,9 @@ abstract class TahdigDatabase : RoomDatabase() {
     abstract fun barcodeScanDao(): BarcodeScanDao
     abstract fun waterDao(): WaterDao
     abstract fun weightDao(): WeightDao
+
+    /** Caffeine log (#119). */
+    abstract fun caffeineDao(): CaffeineDao
 
     companion object {
         private const val DB_NAME = "tahdig.db"

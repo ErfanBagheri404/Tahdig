@@ -38,6 +38,8 @@ object SettingsStore {
     private const val KEY_GLASS_ML = "water_glass_ml"              // glass size (#115)
     private const val KEY_WATER_TARGET = "water_target_ml"          // manual target, -1=auto (#115)
     private const val KEY_CARRY_OVER = "calorie_carry_over"        // roll unspent into tomorrow (#114)
+    private const val KEY_PREGNANCY = "pregnancy_mode"                 // pregnancy/breastfeeding mode (#119)
+    private const val KEY_CAFFEINE_CAP = "caffeine_cap_mg"             // manual cap, 0 = default (#119)
 
     private lateinit var prefs: SharedPreferences
     private val _themeMode = MutableStateFlow(0)
@@ -81,6 +83,17 @@ object SettingsStore {
     private val _profile = MutableStateFlow(DailyBudget.Profile())
     val profile: StateFlow<DailyBudget.Profile> = _profile
 
+    // ── Pregnancy mode + caffeine cap (#119) ───────────────────────
+    // Off by default: the safety warnings and the tighter cap only apply
+    // when the user opts in. Single toggle — separate submodes for
+    // pregnancy vs breastfeeding carry the same caps and warnings.
+    private val _pregnancyMode = MutableStateFlow(false)
+    val pregnancyMode: StateFlow<Boolean> = _pregnancyMode
+
+    /** Manual caffeine cap in mg; 0 = default (400, or 200 in the mode). */
+    private val _caffeineCap = MutableStateFlow(0)
+    val caffeineCap: StateFlow<Int> = _caffeineCap
+
     // ── Calorie carry-over (#114) ──────────────────────────────────
     // Off by default: rolling budget across days is a personal choice,
     // and the default must stay "today's target is today's target".
@@ -110,6 +123,25 @@ object SettingsStore {
     fun setHalalStrict(on: Boolean) {
         _halalStrict.value = on
         if (::prefs.isInitialized) prefs.edit().putBoolean(KEY_HALAL_STRICT, on).apply()
+    }
+
+    // Pregnancy / breastfeeding mode (#119): the tighter 200 mg cap and
+    // the food-safety warnings read this same flow.
+    fun setPregnancyMode(on: Boolean) {
+        _pregnancyMode.value = on
+        if (::prefs.isInitialized) prefs.edit().putBoolean(KEY_PREGNANCY, on).apply()
+    }
+
+    /**
+     * Manual caffeine cap in mg (#119). 0 restores the default. Note the
+     * UI's slider is a convenience, not the source of truth: the cap
+     * actually applied is [Caffeine.effectiveCap], which lets pregnancy
+     * mode override whatever is stored here.
+     */
+    fun setCaffeineCap(mg: Int) {
+        val v = mg.coerceIn(0, 2000)
+        _caffeineCap.value = v
+        if (::prefs.isInitialized) prefs.edit().putInt(KEY_CAFFEINE_CAP, v).apply()
     }
 
     /** Roll unspent calories into tomorrow's budget (#114). */
@@ -212,6 +244,8 @@ object SettingsStore {
         _allergenHide.value = prefs.getBoolean(KEY_ALLERGEN_HIDE, false)
         _halalStrict.value = prefs.getBoolean(KEY_HALAL_STRICT, false)
         _carryOver.value = prefs.getBoolean(KEY_CARRY_OVER, false)
+        _pregnancyMode.value = prefs.getBoolean(KEY_PREGNANCY, false)
+        _caffeineCap.value = prefs.getInt(KEY_CAFFEINE_CAP, 0).coerceIn(0, 2000)
         _shakeSpin.value = prefs.getBoolean(KEY_SHAKE_SPIN, false)
         _scannerEnabled.value = prefs.getBoolean(KEY_SCANNER, true)
         _glassSizeMl.value = prefs.getInt(KEY_GLASS_ML, 200)

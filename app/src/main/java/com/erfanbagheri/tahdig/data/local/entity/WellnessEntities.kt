@@ -23,3 +23,20 @@ data class WeightLogEntity(
     @PrimaryKey val epochDay: Long,
     val kg: Double,
 )
+
+/**
+ * One caffeine hit (#119) — an append-only log, NOT a daily total: three
+ * coffees are three rows, so the history chart and the undo both work.
+ * A daily sum would make a 20 mg custom entry impossible to remove.
+ */
+@Entity(tableName = "caffeine_log")
+data class CaffeineLogEntity(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    /** Local date as epochDay — the key the accumulation buckets on. */
+    val epochDay: Long,
+    /** Milligrams for this hit; 0 is allowed (a decaf tap still happened). */
+    val mg: Int,
+    /** Chip label («چای») or «سفارشی» for a typed amount. */
+    val label: String,
+    val loggedAt: Long = System.currentTimeMillis(),
+)
