@@ -21,6 +21,10 @@ interface WaterDao {
     /** Upsert: REPLACE so a step on an existing day overwrites its total. */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(row: WaterLogEntity)
+
+    /** All day totals — the water-goal streak reads history, not today. */
+    @Query("SELECT * FROM water_log ORDER BY epochDay DESC")
+    suspend fun allTotals(): List<WaterLogEntity>
 }
 
 @Dao
@@ -50,6 +54,10 @@ interface WeightDao {
 
     @Query("SELECT * FROM weight_log ORDER BY epochDay DESC LIMIT 1")
     fun observeLatest(): Flow<WeightLogEntity?>
+
+    /** Suspend read for one-off consumers (the badge engine's water target). */
+    @Query("SELECT * FROM weight_log ORDER BY epochDay DESC LIMIT 1")
+    suspend fun latest(): WeightLogEntity?
 
     /** One weight per day: logging again the same day replaces it. */
     @Insert(onConflict = OnConflictStrategy.REPLACE)

@@ -42,6 +42,7 @@ fun SettingsScreen(
     onRestore: () -> Unit = {},
     onOpenHeatmap: () -> Unit = {},
     onOpenDiary: () -> Unit = {},
+    onOpenBadges: () -> Unit = {},
 ) {
     val themeMode by viewModel.themeMode.collectAsState()
 
@@ -593,6 +594,9 @@ fun SettingsScreen(
         )
         Spacer(Modifier.height(8.dp))
         BackupRestoreRow("گزارش هفتگی", onOpenDiary)
+        Spacer(Modifier.height(8.dp))
+        // Badge collection (#121) — same overlay shape as the weekly report.
+        BackupRestoreRow("نشان‌ها", onOpenBadges)
 
         // Carry-over is off by default; the diary reads the same flow
         // through SettingsViewModel, exactly like every other toggle here.

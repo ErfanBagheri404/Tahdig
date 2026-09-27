@@ -34,6 +34,30 @@ interface HistoryDao {
     @Query("SELECT timestamp FROM history ORDER BY timestamp")
     suspend fun allTimestamps(): List<Long>
 
+    /**
+     * Every cook as (dish, time) — the badge engine's source (#121). Columns
+     * alias to camelCase because the engine keys prep times by food id.
+     */
+    @Query("SELECT food_id AS foodId, timestamp FROM history")
+    suspend fun allCookRows(): List<CookRow>
+
+    /**
+     * One row per distinct dish ever cooked, with the fields the badge engine
+     * needs to judge category / cuisine coverage and the prep-time record
+     * (#121). `MIN(timestamp)` is the FIRST cook of that dish — "every dish in
+     * this category" is a distinct-id question, so a dish cooked five times
+     * must not count as five dishes.
+     */
+    @Query(
+        """
+        SELECT f.id AS id, f.category_id AS category_id, f.cuisine AS cuisine,
+               f.prep_time_min AS prep_time_min, MIN(h.timestamp) AS first_cook_at
+        FROM history h JOIN foods f ON f.id = h.food_id
+        GROUP BY f.id
+        """
+    )
+    suspend fun distinctCookedDishes(): List<CookedDish>
+
     // ── History list with food details ───────────────────────────
 
     /** Most recent picks, newest first, joined with food rows. */

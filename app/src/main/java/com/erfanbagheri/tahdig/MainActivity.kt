@@ -55,6 +55,7 @@ import com.erfanbagheri.tahdig.ui.screen.PantryScreen
 import com.erfanbagheri.tahdig.ui.screen.SearchScreen
 import com.erfanbagheri.tahdig.ui.screen.CookHeatmapScreen
 import com.erfanbagheri.tahdig.ui.screen.DiaryScreen
+import com.erfanbagheri.tahdig.ui.screen.BadgesScreen
 import com.erfanbagheri.tahdig.ui.screen.SettingsScreen
 import com.erfanbagheri.tahdig.ui.screen.StepModeScreen
 import com.erfanbagheri.tahdig.ui.screen.ShoppingListScreen
@@ -139,6 +140,7 @@ private fun TahdigApp() {
     var showScanner by rememberSaveable { mutableStateOf(false) }
     var showHeatmap by rememberSaveable { mutableStateOf(false) }
     var showDiary by rememberSaveable { mutableStateOf(false) }
+    var showBadges by rememberSaveable { mutableStateOf(false) }
     var browseTechniques by rememberSaveable { mutableStateOf(false) }
     var browseOccasions by rememberSaveable { mutableStateOf(false) }
     var browseCuisineMap by rememberSaveable { mutableStateOf(false) }
@@ -315,6 +317,10 @@ private fun TahdigApp() {
                     val vm: com.erfanbagheri.tahdig.ui.viewmodel.DiaryViewModel = viewModel()
                     DiaryScreen(vm = vm, onBack = { showDiary = false })
                 }
+                showBadges -> {
+                    val bvm: com.erfanbagheri.tahdig.ui.viewmodel.BadgeViewModel = viewModel()
+                    BadgesScreen(vm = bvm, onBack = { showBadges = false })
+                }
                 categoryRoute >= 0 -> {
                     val cm = viewModel<CategoryViewModel>()
                     CategoryDishesScreen(
@@ -329,10 +335,12 @@ private fun TahdigApp() {
                     val vm: HomeViewModel = viewModel()
                     val wvm: com.erfanbagheri.tahdig.ui.viewmodel.WellnessViewModel = viewModel()
                     val cvm: com.erfanbagheri.tahdig.ui.viewmodel.CaffeineViewModel = viewModel()
+                    val bvm: com.erfanbagheri.tahdig.ui.viewmodel.BadgeViewModel = viewModel()
                     HomeScreen(
                         viewModel = vm,
                         wellness = wvm,
                         caffeine = cvm,
+                        badges = bvm,
                         onBrowseCategories = { browseCategories = true },
                         onFoodClick = { detailFoodId = it },
                         onOpenLeftover = { showLeftover = true },
@@ -380,6 +388,7 @@ private fun TahdigApp() {
                         onRestore = { restoreLauncher.launch(arrayOf("*/*")) },
                         onOpenHeatmap = { showHeatmap = true },
                         onOpenDiary = { showDiary = true },
+                        onOpenBadges = { showBadges = true },
                     )
                 }
             }

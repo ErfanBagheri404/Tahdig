@@ -81,6 +81,9 @@ import com.erfanbagheri.tahdig.ui.theme.YekanBakh
 import com.erfanbagheri.tahdig.ui.components.DishPhoto
 import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
 import com.erfanbagheri.tahdig.util.DietFilter
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import kotlinx.coroutines.flow.MutableStateFlow
 import com.erfanbagheri.tahdig.util.Haptics
 import com.erfanbagheri.tahdig.util.MealTimeHelper
 import com.erfanbagheri.tahdig.util.PersianText
@@ -97,6 +100,7 @@ fun HomeScreen(
     viewModel: HomeViewModel,
     wellness: com.erfanbagheri.tahdig.ui.viewmodel.WellnessViewModel? = null,
     caffeine: com.erfanbagheri.tahdig.ui.viewmodel.CaffeineViewModel? = null,
+    badges: com.erfanbagheri.tahdig.ui.viewmodel.BadgeViewModel? = null,
     onBrowseCategories: () -> Unit = {},
     onFoodClick: (Long) -> Unit = {},
     onOpenLeftover: () -> Unit = {},
@@ -124,6 +128,21 @@ fun HomeScreen(
     val journalPending by viewModel.journalPending.collectAsState()
     val shakeSpin by viewModel.shakeSpin.collectAsState()
     val shakeSensitivity by viewModel.shakeSensitivity.collectAsState()
+
+    // Badge unlocks (#121): a non-blocking snackbar, never a push notification.
+    // The issue is explicit that streak-at-risk owns the nudges — a badge is
+    // a reward for something already done, so it must not interrupt later.
+    val badgeHostState = remember { SnackbarHostState() }
+    val newBadges by (badges?.newlyUnlocked ?: remember {
+        MutableStateFlow(emptyList())
+    }).collectAsState()
+    LaunchedEffect(newBadges) {
+        val first = newBadges.firstOrNull() ?: return@LaunchedEffect
+        Haptics.confirm(view)
+        val more = if (newBadges.size > 1) " (+${newBadges.size - 1})" else ""
+        badgeHostState.showSnackbar("نشان جدید: ${first.title}$more")
+        badges?.acknowledge()
+    }
 
     // Shake-to-spin (#123): the watcher only lives while this screen does —
     // entering cook mode disposes it, so the two gestures can't collide.
@@ -192,6 +211,7 @@ fun HomeScreen(
         )
     }
 
+    androidx.compose.foundation.layout.Box(Modifier.fillMaxSize()) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background,
@@ -561,6 +581,9 @@ fun HomeScreen(
                     onClick = {
                         Haptics.confirm(view)
                         viewModel.markCooked()
+                        // Re-evaluate badges right after the cook, which is the
+                        // only moment a badge can newly unlock.
+                        badges?.refresh()
                     },
                     enabled = suggestion != null,
                 ) {
@@ -624,6 +647,15 @@ fun HomeScreen(
 
             Spacer(Modifier.height(32.dp))
         }
+    }
+
+        // Badge unlock toast (#121): non-blocking, above the nav bar.
+        SnackbarHost(
+            hostState = badgeHostState,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 96.dp, start = 16.dp, end = 16.dp),
+        )
     }
 }
 
