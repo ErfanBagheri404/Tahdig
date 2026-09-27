@@ -43,6 +43,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -51,6 +54,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -114,6 +118,7 @@ fun HomeScreen(
     val spinToken by viewModel.spinToken.collectAsState()
     val spinBucket by viewModel.spinBucket.collectAsState()
     val spinDiet by viewModel.spinDiet.collectAsState()
+    val journalPending by viewModel.journalPending.collectAsState()
     val shakeSpin by viewModel.shakeSpin.collectAsState()
     val shakeSensitivity by viewModel.shakeSensitivity.collectAsState()
 
@@ -167,6 +172,20 @@ fun HomeScreen(
                     Text("نه", fontFamily = YekanBakh)
                 }
             },
+        )
+    }
+
+    // Journal capture (#124): after «پختم». Both fields optional and the
+    // dialog is dismissible — the memory is already stamped either way.
+    journalPending?.let { cooked ->
+        JournalCaptureDialog(
+            dishName = cooked.name,
+            onPhoto = { uri -> viewModel.attachJournalPhoto(uri) },
+            onSave = { note ->
+                viewModel.attachJournalNote(note)
+                viewModel.dismissJournalPrompt()
+            },
+            onDismiss = viewModel::dismissJournalPrompt,
         )
     }
 

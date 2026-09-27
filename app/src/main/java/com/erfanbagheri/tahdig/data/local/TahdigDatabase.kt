@@ -20,8 +20,10 @@ import com.erfanbagheri.tahdig.data.local.entity.CategoryEntity
 import com.erfanbagheri.tahdig.data.local.entity.CookSessionEntity
 import com.erfanbagheri.tahdig.data.local.entity.FavoriteEntity
 import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
+import com.erfanbagheri.tahdig.data.local.dao.JournalDao
 import com.erfanbagheri.tahdig.data.local.dao.NutritionLogDao
 import com.erfanbagheri.tahdig.data.local.entity.HistoryEntity
+import com.erfanbagheri.tahdig.data.local.entity.JournalEntity
 import com.erfanbagheri.tahdig.data.local.entity.NutritionLogEntity
 import com.erfanbagheri.tahdig.data.local.entity.MealPlanEntity
 import com.erfanbagheri.tahdig.data.local.entity.MilestoneCheckEntity
@@ -47,8 +49,9 @@ import com.erfanbagheri.tahdig.data.local.seed.SeedLoader
         CookSessionEntity::class,
         NutritionLogEntity::class,
         ShoppingTripEntity::class,
+        JournalEntity::class,
     ],
-    version = 13, // + nutrition_log (#110); destructive fallback, pre-release
+    version = 14, // + journal (#124); destructive fallback, pre-release
     exportSchema = true,
 )
 abstract class TahdigDatabase : RoomDatabase() {
@@ -68,6 +71,9 @@ abstract class TahdigDatabase : RoomDatabase() {
 
     /** Per-day nutrition log (#110). */
     abstract fun nutritionLogDao(): NutritionLogDao
+
+    /** Cooking journal (#124). */
+    abstract fun journalDao(): JournalDao
 
     companion object {
         private const val DB_NAME = "tahdig.db"

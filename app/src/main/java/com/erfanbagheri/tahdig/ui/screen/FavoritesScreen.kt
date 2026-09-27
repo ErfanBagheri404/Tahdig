@@ -45,6 +45,7 @@ import com.erfanbagheri.tahdig.ui.viewmodel.HistoryViewModel
 fun FavoritesScreen(
     favoritesViewModel: FavoritesViewModel,
     historyViewModel: HistoryViewModel,
+    journalViewModel: com.erfanbagheri.tahdig.ui.viewmodel.JournalViewModel,
     onFoodClick: (Long) -> Unit = {},
 ) {
     val favoritedFoods by favoritesViewModel.favoritedFoods.collectAsState()
@@ -52,7 +53,7 @@ fun FavoritesScreen(
     val historyItems by historyViewModel.historyItems.collectAsState()
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
 
-    val tabs = listOf("علاقه‌مندی‌ها", "مسدود شده‌ها", "تاریخچه")
+    val tabs = listOf("علاقه‌مندی‌ها", "مسدود شده‌ها", "تاریخچه", "خاطرات پخت")
 
     Column(modifier = Modifier.fillMaxSize()) {
         Spacer(Modifier.height(48.dp))
@@ -115,6 +116,20 @@ fun FavoritesScreen(
                 )
                 else HistoryList(
                     items = historyItems,
+                    onClick = onFoodClick,
+                )
+            }
+            // خاطرات پخت (#124) — the cook journal, reverse-chronological.
+            3 -> {
+                val entries by journalViewModel.entries.collectAsState()
+                if (entries.isEmpty()) EmptyState(
+                    icon = Icons.Filled.History,
+                    title = "خاطره‌ای ثبت نشده",
+                    subtitle = "بعد از پختن، عکس و یادداشت اینجا می‌مونه",
+                )
+                else JournalList(
+                    entries = entries,
+                    foodName = { id -> historyItems.firstOrNull { it.food.id == id }?.food?.name },
                     onClick = onFoodClick,
                 )
             }

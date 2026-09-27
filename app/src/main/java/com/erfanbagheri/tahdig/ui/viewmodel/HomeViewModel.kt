@@ -13,7 +13,9 @@ import com.erfanbagheri.tahdig.util.NutritionDay
 import com.erfanbagheri.tahdig.util.NutritionLog
 import com.erfanbagheri.tahdig.util.AllergenDetector
 import com.erfanbagheri.tahdig.util.LeftoverMatcher
+import com.erfanbagheri.tahdig.data.local.entity.JournalEntity
 import com.erfanbagheri.tahdig.util.DietFilter
+import com.erfanbagheri.tahdig.util.JournalPhoto
 import com.erfanbagheri.tahdig.util.MealTimeHelper
 import com.erfanbagheri.tahdig.util.RouletteMath
 import com.erfanbagheri.tahdig.util.OccasionRegistry
@@ -23,7 +25,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import com.erfanbagheri.tahdig.util.ExpiryMath
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
@@ -368,8 +372,59 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
         _suggestion.value?.let { food ->
             showLeftoversFor(food)
             NutritionLog.logCooked(db, food, viewModelScope)
+            stampCook(food.id)
         }
         roll()
+    }
+
+    // ── Cooking journal (#124) ──────────────────────────────────────
+    /** Cook awaiting a photo/note; null hides the capture prompt. */
+    private val _journalPending = MutableStateFlow<FoodEntity?>(null)
+    val journalPending: StateFlow<FoodEntity?> = _journalPending
+    /** The journal row the prompt writes into — never "the newest row". */
+    private var pendingJournalId = 0L
+
+    /**
+     * Stamp a cook into the journal and arm the capture prompt.
+     *
+     * Called by BOTH cook paths (step-mode «پختم» and Home's markCooked) so a
+     * dish logged from either place shows up in خاطرات پخت. The row is written
+     * immediately with no photo/note: skipping the prompt must still leave the
+     * memory behind.
+     */
+    fun stampCook(foodId: Long) {
+        viewModelScope.launch {
+            val id = db.journalDao().insert(
+                JournalEntity(foodId = foodId, timestamp = System.currentTimeMillis()),
+            )
+            pendingJournalId = id
+            _journalPending.value = foodDao.getById(foodId)
+        }
+    }
+
+    /** Attach the (already downscaled) photo to the pending cook. */
+    fun attachJournalPhoto(uri: android.net.Uri) {
+        val id = pendingJournalId
+        if (id == 0L) return
+        viewModelScope.launch {
+            val bytes = withContext(Dispatchers.IO) {
+                JournalPhoto.read(getApplication(), uri)
+            }
+            if (bytes != null) db.journalDao().updatePhoto(id, bytes)
+        }
+    }
+
+    /** Attach the one-line memory to the pending cook. */
+    fun attachJournalNote(note: String) {
+        val id = pendingJournalId
+        if (id == 0L || note.isBlank()) return
+        viewModelScope.launch { db.journalDao().updateNote(id, note.trim()) }
+    }
+
+    /** Prompt dismissed — the stamped row stays, photo/note stay empty. */
+    fun dismissJournalPrompt() {
+        _journalPending.value = null
+        pendingJournalId = 0L
     }
 
     /** Dismiss the leftover suggestion card. */
