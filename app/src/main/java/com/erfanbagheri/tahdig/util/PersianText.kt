@@ -59,6 +59,16 @@ object PersianText {
 
     fun toPersianDigits(value: Int): String = toPersianDigits(value.toString())
 
+    /**
+     * Display a number: Persian digits, Arabic decimal separator (۱٫۵) — the
+     * form Persian readers expect for scaled quantities (#103).
+     */
+    fun toPersianDigits(value: Double): String {
+        val ascii = if (value == value.toInt().toDouble()) value.toInt().toString()
+        else (Math.round(value * 10) / 10.0).toString()
+        return toPersianDigits(ascii).replace('.', '\u066B')
+    }
+
     /** Convert Persian or Arabic-Indic digits back to ASCII (for input parsing). */
     fun toAsciiDigits(value: String): String = buildString(value.length) {
         for (ch in value) {

@@ -34,11 +34,25 @@ object MisePlace {
     /** One checklist row ready for the UI: display text at [servings], stable [hash]. */
     data class Row(val display: String, val hash: String)
 
-    /** Build UI rows for [parsed] scaled to [servings] — hashes never change with servings. */
-    fun rowsFor(parsed: List<IngredientParser.Parsed>, servings: Int): List<Row> =
+    /** Build UI rows for [parsed] scaled by [factor] — hashes never change with scale (#103). */
+    fun rowsFor(parsed: List<IngredientParser.Parsed>, factor: Double): List<Row> =
         parsed.map { p ->
-            val display = if (servings <= 1) p.display()
-            else ServingScaler.scale(p.display(), servings.toDouble())
+            val base = p.display()
+            val display = if (factor == 1.0) base
+            else faQty(ServingScaler.scale(base, factor))
             Row(display = display, hash = hashOf(p.item, p.unit))
         }
+
+    /**
+     * Scaled quantity display: Persian digits, and ٫ as the decimal separator
+     * only when the dot belongs to the LEADING number — a dot inside an item
+     * name («گوجه.فرنگی») is text, not a decimal (#103 AC: ۱٫۵ پیمانه).
+     */
+    private fun faQty(s: String): String {
+        val fa = PersianText.toPersianDigits(s)
+        val dot = fa.indexOf('.')
+        val space = fa.indexOf(' ')
+        return if (dot < 0 || (space in 0 until dot)) fa
+        else fa.replaceRange(dot, dot + 1, "٫")
+    }
 }
