@@ -18,4 +18,8 @@ interface RatingDao {
 
     @Query("SELECT * FROM ratings WHERE food_id = :foodId LIMIT 1")
     fun observe(foodId: Long): Flow<RatingEntity?>
+
+    /** All ratings, mapped to foodId -> stars for sorting search results. */
+    @Query("SELECT * FROM ratings")
+    suspend fun allRatings(): List<RatingEntity>
 }
