@@ -22,8 +22,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
@@ -43,7 +41,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
@@ -53,7 +50,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -104,7 +100,6 @@ import kotlin.math.sin
 import com.erfanbagheri.tahdig.ui.viewmodel.HomeViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.WellnessViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel,
@@ -842,7 +837,6 @@ private fun RingColumn(label: String, fraction: Double, consumed: Int, target: I
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
-    } // PullToRefreshBox
 }
 
 @Composable
@@ -931,7 +925,7 @@ fun SuggestionCard(
                 modifier = Modifier.fillMaxWidth(),
             )
         }
-    }
+        }
     }
 }
 

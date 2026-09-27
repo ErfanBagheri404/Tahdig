@@ -422,7 +422,7 @@ private fun TahdigApp(
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         // One undo affordance for every destructive action, above all screens.
-        snackbarHost = { com.erfanbagheri.tahdig.ui.components.UndoSnackbarHost() },
+        snackbarHost = {},
         bottomBar = {
             // Fullscreen cook-along (#93): no bottom nav while the mode owns the screen.
             if (detailFoodId < 0 && stepModeFoodId < 0) {

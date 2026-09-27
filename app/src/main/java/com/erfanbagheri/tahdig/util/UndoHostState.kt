@@ -30,10 +30,13 @@ object UndoHostState {
      * push-then-show pair they could desynchronize.
      */
     fun push(label: String, undo: () -> Unit) {
-        UndoBuffer.push(label, undo)
+        UndoHub.arm(label, undo)
         _label.value = label
     }
 
     /** The snackbar has resolved (acted on or dismissed); drop the label. */
-    fun clear() { _label.value = null }
+    fun clear() {
+        UndoHub.clear()
+        _label.value = null
+    }
 }

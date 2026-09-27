@@ -9,6 +9,7 @@ import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
 import com.erfanbagheri.tahdig.data.prefs.SettingsStore
 import com.erfanbagheri.tahdig.ui.screen.NutritionLabelData
 import com.erfanbagheri.tahdig.util.AllergenDetector
+import com.erfanbagheri.tahdig.util.DifficultyFilter
 import com.erfanbagheri.tahdig.util.HalalFlags
 import com.erfanbagheri.tahdig.util.NutriLabel
 import com.erfanbagheri.tahdig.util.MicroNutrients
@@ -43,6 +44,9 @@ class SearchViewModel(app: Application) : AndroidViewModel(app) {
     private val foodDao = db.foodDao()
     private val categoryDao = db.categoryDao()
     private val ratingDao = db.ratingDao()
+
+    /** Filter state persists across restarts (acceptance for #86). */
+    private val filterPrefs = app.getSharedPreferences("tahdig_search_filters", 0)
 
     private val _query = MutableStateFlow("")
     val query: StateFlow<String> = _query.asStateFlow()
@@ -148,6 +152,24 @@ class SearchViewModel(app: Application) : AndroidViewModel(app) {
         .map { foods -> foods.map { it.cuisine }.distinct().sorted() }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
+    /**
+     * One snapshot of every reactive input feeding [results] (#86).
+     *
+     * Carried as a data class rather than a tuple because the #136 filter axes
+     * (time / difficulty / cuisine / sort) join the #134 search inputs, and an
+     * 8-element destructure is where argument-order bugs hide.
+     */
+    private data class FilterState(
+        val q: String,
+        val cat: Long?,
+        val ing: String,
+        val ex: String,
+        val time: TimeBucket,
+        val diff: DifficultyFilter,
+        val cuisine: String?,
+        val sort: SortOrder,
+    )
+
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     val results: StateFlow<List<FoodEntity>> = combine(
         _query, _selectedCategoryId, _ingredients, _excluded,
@@ -166,12 +188,29 @@ class SearchViewModel(app: Application) : AndroidViewModel(app) {
         )
     }
         .debounce(300)
-        .flatMapLatest { (q, cat, ingEx) ->
+        .flatMapLatest { s ->
             // #134: the user's own notes are searchable too, merged as extra
-            // rows by food id. Everything downstream already works on
-            // FoodEntity, so the filters below stay untouched.
-            withNotes(q, foodDao.search(q, cat))
-                .map { foods -> filterByIngredients(foods, ingEx.first, ingEx.second) }
+            // rows by food id. The #136 axes (time / difficulty / cuisine /
+            // sort) then apply in ONE pure pass over the merged list — they are
+            // list-level filters, not query inputs, so they must run after
+            // withNotes has added its rows or a noted dish would dodge them.
+            withNotes(s.q, foodDao.search(s.q, s.cat))
+                .map { foods ->
+                    SearchFilters.apply(
+                        foods = filterByIngredients(foods, s.ing, s.ex),
+                        time = s.time,
+                        difficulty = s.diff,
+                        cuisine = s.cuisine,
+                        sort = s.sort,
+                        // Stars only when the chosen order needs them: the read
+                        // is a full-table scan otherwise.
+                        ratings = if (s.sort == SortOrder.RATING_DESC) {
+                            ratingDao.allRatings().associate { it.foodId to it.stars }
+                        } else {
+                            emptyMap()
+                        },
+                    )
+                }
         }
         .combine(_diet) { foods, diet ->
             if (diet == null) foods else foods.filter { diet.matches(it.tags) }
@@ -303,6 +342,30 @@ class SearchViewModel(app: Application) : AndroidViewModel(app) {
         _nutriAb.value = false
         _withinCaps.value = false
         _badge.value = null
+        _timeBucket.value = TimeBucket.ANY
+        _difficultyFilter.value = DifficultyFilter.ANY
+        _cuisine.value = null
+        filterPrefs.edit().remove("time").remove("difficulty").remove("cuisine").apply()
+    }
+
+    fun onTimeSelect(bucket: TimeBucket) {
+        _timeBucket.value = if (_timeBucket.value == bucket) TimeBucket.ANY else bucket
+        filterPrefs.edit().putString("time", _timeBucket.value.name).apply()
+    }
+
+    fun onDifficultySelect(filter: DifficultyFilter) {
+        _difficultyFilter.value = if (_difficultyFilter.value == filter) DifficultyFilter.ANY else filter
+        filterPrefs.edit().putString("difficulty", _difficultyFilter.value.name).apply()
+    }
+
+    fun onCuisineSelect(code: String?) {
+        _cuisine.value = if (_cuisine.value == code) null else code
+        filterPrefs.edit().putString("cuisine", _cuisine.value).apply()
+    }
+
+    fun onSortSelect(sort: SortOrder) {
+        _sortOrder.value = sort
+        filterPrefs.edit().putString("sort", sort.name).apply()
     }
 
     /** Nutri-Score A-B chip (#111); off by default. */

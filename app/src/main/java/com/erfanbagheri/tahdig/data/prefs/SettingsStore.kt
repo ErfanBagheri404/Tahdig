@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.asStateFlow
 object SettingsStore {
     private const val PREFS_NAME = "tahdig_settings"
     private const val KEY_THEME_MODE = "theme_mode" // 0=system, 1=light, 2=dark, 3=dynamic
+    private const val KEY_HAPTIC_LEVEL = "haptic_level" // 0=off, 1=light, 2=normal (#135)
     private const val KEY_ACCENT_HEX = "accent_hex"       // "#RRGGBB", "" = app default (#128)
     private const val KEY_HIGH_CONTRAST = "high_contrast" // 1px->2px hairlines, 7:1 text (#128)
     /**
@@ -74,6 +75,12 @@ object SettingsStore {
     private lateinit var prefs: SharedPreferences
     private val _themeMode = MutableStateFlow(0)
     val themeMode: StateFlow<Int> = _themeMode
+
+    private val _hapticLevel = MutableStateFlow(2)
+    val hapticLevel: StateFlow<Int> = _hapticLevel
+
+    /** Non-suspending read safe before [init] (Haptics is called from view code paths). */
+    fun hapticLevelOrNormal(): Int = if (isInitialized()) _hapticLevel.value else 2
 
     // ── Theme (#128) ─────────────────────────────────────────────
     /** "" = the app's default saffron; otherwise "#RRGGBB" from the picker. */
@@ -323,9 +330,16 @@ object SettingsStore {
 
     fun isInitialized(): Boolean = ::prefs.isInitialized
 
+    /** 0=off, 1=light, 2=normal. Gates every call into [com.erfanbagheri.tahdig.util.Haptics]. */
+    fun setHapticLevel(level: Int) {
+        prefs.edit().putInt(KEY_HAPTIC_LEVEL, level).apply()
+        _hapticLevel.value = level
+    }
+
     fun init(context: Context) {
         prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         _themeMode.value = prefs.getInt(KEY_THEME_MODE, 0).coerceIn(0, 3)
+        _hapticLevel.value = prefs.getInt(KEY_HAPTIC_LEVEL, 2)
         _accentHex.value = prefs.getString(KEY_ACCENT_HEX, "") ?: ""
         _highContrast.value = prefs.getBoolean(KEY_HIGH_CONTRAST, false)
         _tasteResetAt.value = prefs.getLong(KEY_TASTE_RESET_AT, 0L)

@@ -51,6 +51,9 @@ import com.erfanbagheri.tahdig.util.DietFilter
 import com.erfanbagheri.tahdig.util.MicroNutrients
 import com.erfanbagheri.tahdig.util.Flavor
 import com.erfanbagheri.tahdig.util.VoiceInput
+import com.erfanbagheri.tahdig.util.TimeBucket
+import com.erfanbagheri.tahdig.util.DifficultyFilter
+import com.erfanbagheri.tahdig.util.SortOrder
 import com.erfanbagheri.tahdig.ui.components.FirstRunTip
 import com.erfanbagheri.tahdig.ui.components.TagSheet
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
@@ -414,6 +417,7 @@ fun SearchScreen(
             val sortOrder by viewModel.sortOrder.collectAsState()
             val activeFilterCount by viewModel.activeFilterCount.collectAsState()
             val cuisines by viewModel.cuisines.collectAsState()
+            val cuisine by viewModel.cuisine.collectAsState()
 
             // Time chips
             LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {

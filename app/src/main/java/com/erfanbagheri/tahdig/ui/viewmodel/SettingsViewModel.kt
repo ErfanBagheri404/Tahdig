@@ -72,6 +72,8 @@ class SettingsViewModel(app: Application) : AndroidViewModel(app) {
 
     fun setHapticLevel(level: Int) = SettingsStore.setHapticLevel(level)
 
+    val hapticLevel: StateFlow<Int> = SettingsStore.hapticLevel
+
     fun setDailyNotify(context: android.content.Context, enabled: Boolean) =
         SettingsStore.setDailyNotify(context, enabled)
 
