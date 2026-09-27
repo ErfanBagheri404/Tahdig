@@ -16,6 +16,8 @@ import com.erfanbagheri.tahdig.data.local.dao.RatingDao
 import com.erfanbagheri.tahdig.data.local.dao.RecentViewDao
 import com.erfanbagheri.tahdig.data.local.dao.ShoppingDao
 import com.erfanbagheri.tahdig.data.local.dao.ShoppingTripDao
+import com.erfanbagheri.tahdig.data.local.dao.WaterDao
+import com.erfanbagheri.tahdig.data.local.dao.WeightDao
 import com.erfanbagheri.tahdig.data.local.entity.CategoryEntity
 import com.erfanbagheri.tahdig.data.local.entity.CookSessionEntity
 import com.erfanbagheri.tahdig.data.local.entity.FavoriteEntity
@@ -29,6 +31,8 @@ import com.erfanbagheri.tahdig.data.local.entity.BarcodeScanEntity
 import com.erfanbagheri.tahdig.data.local.entity.NutritionLogEntity
 import com.erfanbagheri.tahdig.data.local.entity.MealPlanEntity
 import com.erfanbagheri.tahdig.data.local.entity.MilestoneCheckEntity
+import com.erfanbagheri.tahdig.data.local.entity.WaterLogEntity
+import com.erfanbagheri.tahdig.data.local.entity.WeightLogEntity
 import com.erfanbagheri.tahdig.data.local.entity.PantryItemEntity
 import com.erfanbagheri.tahdig.data.local.entity.RatingEntity
 import com.erfanbagheri.tahdig.data.local.entity.RecentViewEntity
@@ -53,8 +57,10 @@ import com.erfanbagheri.tahdig.data.local.seed.SeedLoader
         ShoppingTripEntity::class,
         JournalEntity::class,
         BarcodeScanEntity::class,
+        WaterLogEntity::class,
+        WeightLogEntity::class,
     ],
-    version = 15, // + barcode_scans (#116); destructive fallback, pre-release
+    version = 16, // + water_log, weight_log (#115); destructive fallback, pre-release
     exportSchema = true,
 )
 abstract class TahdigDatabase : RoomDatabase() {
@@ -78,6 +84,8 @@ abstract class TahdigDatabase : RoomDatabase() {
     /** Cooking journal (#124). */
     abstract fun journalDao(): JournalDao
     abstract fun barcodeScanDao(): BarcodeScanDao
+    abstract fun waterDao(): WaterDao
+    abstract fun weightDao(): WeightDao
 
     companion object {
         private const val DB_NAME = "tahdig.db"
