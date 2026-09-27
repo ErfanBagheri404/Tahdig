@@ -41,6 +41,7 @@ fun SettingsScreen(
     onBackup: () -> Unit = {},
     onRestore: () -> Unit = {},
     onOpenHeatmap: () -> Unit = {},
+    onOpenDiary: () -> Unit = {},
 ) {
     val themeMode by viewModel.themeMode.collectAsState()
 
@@ -581,6 +582,37 @@ fun SettingsScreen(
         Spacer(Modifier.height(8.dp))
 
         BackupRestoreRow("تقویم پخت", onOpenHeatmap)
+
+        // Meal diary + weekly report (#114)
+        Spacer(Modifier.height(24.dp))
+        Text(
+            text = "دفترچه وعده‌ها",
+            style = MaterialTheme.typography.titleMedium,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Spacer(Modifier.height(8.dp))
+        BackupRestoreRow("گزارش هفتگی", onOpenDiary)
+
+        // Carry-over is off by default; the diary reads the same flow
+        // through SettingsViewModel, exactly like every other toggle here.
+        val carryOver by viewModel.carryOver.collectAsState()
+        Spacer(Modifier.height(8.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            androidx.compose.material3.Switch(
+                checked = carryOver,
+                onCheckedChange = { viewModel.setCarryOver(it) },
+            )
+            Spacer(Modifier.width(12.dp))
+            Column {
+                Text("انتقال کالری باقی‌مانده", fontFamily = YekanBakh)
+                Text(
+                    "کالری خرج‌نشدهٔ امروز به فردا اضافه شود",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
 
         Spacer(Modifier.height(48.dp))
     }

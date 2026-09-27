@@ -15,8 +15,20 @@ import java.time.LocalDate
  */
 object NutritionLog {
 
-    /** Local calendar day key, matching the DAO's `day` column. */
-    fun dayKey(at: Long = System.currentTimeMillis()): String = LocalDate.now().toString()
+    /**
+     * Local calendar day key, matching the DAO's `day` column.
+     *
+     * [at] is the LOG time, not the current clock: the diary's ±15m shift
+     * moves [NutritionLogEntity.loggedAt] on one row, and a day key derived
+     * from "now" would keep the row in the old day's bucket after an edit.
+     * Callers that stamp a shifted row pass that row's instant; everything
+     * else omits it and gets today.
+     */
+    fun dayKey(at: Long = System.currentTimeMillis()): String =
+        java.time.Instant.ofEpochMilli(at)
+            .atZone(java.time.ZoneId.systemDefault())
+            .toLocalDate()
+            .toString()
 
     /** Parse the «۱۲g» strings [NutritionEstimate] produces. */
     internal fun grams(text: String): Int = text.filter { it.isDigit() }.toIntOrNull() ?: 0

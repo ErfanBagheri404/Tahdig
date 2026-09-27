@@ -66,4 +66,20 @@ object MealTimeHelper {
         LIGHT_DINNER  -> LIGHT_DINNER_FA
         else          -> SNACK_FA
     }
+
+    /** Alias used by the diary UI (#114). */
+    fun farsiLabel(bucket: String): String = labelFor(bucket)
+
+    /**
+     * Next bucket in display order — the diary's slot chip cycles through
+     * them. LIGHT_DINNER is folded into SNACK rather than given its own
+     * stop: it is a clock artefact, not something a user picks.
+     */
+    fun nextSlot(bucket: String): String = when (bucket) {
+        BREAKFAST -> LUNCH
+        LUNCH -> SNACK
+        SNACK -> DINNER
+        DINNER, LIGHT_DINNER -> BREAKFAST
+        else -> BREAKFAST
+    }
 }

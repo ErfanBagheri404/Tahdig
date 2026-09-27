@@ -32,6 +32,10 @@ class SettingsViewModel(app: Application) : AndroidViewModel(app) {
     val halalStrict = SettingsStore.halalStrict
     fun setHalalStrict(on: Boolean) = SettingsStore.setHalalStrict(on)
 
+    // Calorie carry-over (#114): the diary's progress strip reads this flow.
+    val carryOver = SettingsStore.carryOver
+    fun setCarryOver(on: Boolean) = SettingsStore.setCarryOver(on)
+
     // Nutrient caps (#113): preset name plus {NUTRIENT: mg/g} overrides.
     val capPreset = SettingsStore.capPreset
     val capCustom = SettingsStore.capCustom

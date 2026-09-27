@@ -54,6 +54,7 @@ import com.erfanbagheri.tahdig.ui.screen.OnboardingPager
 import com.erfanbagheri.tahdig.ui.screen.PantryScreen
 import com.erfanbagheri.tahdig.ui.screen.SearchScreen
 import com.erfanbagheri.tahdig.ui.screen.CookHeatmapScreen
+import com.erfanbagheri.tahdig.ui.screen.DiaryScreen
 import com.erfanbagheri.tahdig.ui.screen.SettingsScreen
 import com.erfanbagheri.tahdig.ui.screen.StepModeScreen
 import com.erfanbagheri.tahdig.ui.screen.ShoppingListScreen
@@ -137,6 +138,7 @@ private fun TahdigApp() {
     var showLeftover by rememberSaveable { mutableStateOf(false) }
     var showScanner by rememberSaveable { mutableStateOf(false) }
     var showHeatmap by rememberSaveable { mutableStateOf(false) }
+    var showDiary by rememberSaveable { mutableStateOf(false) }
     var browseTechniques by rememberSaveable { mutableStateOf(false) }
     var browseOccasions by rememberSaveable { mutableStateOf(false) }
     var browseCuisineMap by rememberSaveable { mutableStateOf(false) }
@@ -309,6 +311,10 @@ private fun TahdigApp() {
                         onBack = { showHeatmap = false },
                     )
                 }
+                showDiary -> {
+                    val vm: com.erfanbagheri.tahdig.ui.viewmodel.DiaryViewModel = viewModel()
+                    DiaryScreen(vm = vm, onBack = { showDiary = false })
+                }
                 categoryRoute >= 0 -> {
                     val cm = viewModel<CategoryViewModel>()
                     CategoryDishesScreen(
@@ -371,6 +377,7 @@ private fun TahdigApp() {
                         onBackup = { backupLauncher.launch("tahdig-backup.db") },
                         onRestore = { restoreLauncher.launch(arrayOf("*/*")) },
                         onOpenHeatmap = { showHeatmap = true },
+                        onOpenDiary = { showDiary = true },
                     )
                 }
             }
