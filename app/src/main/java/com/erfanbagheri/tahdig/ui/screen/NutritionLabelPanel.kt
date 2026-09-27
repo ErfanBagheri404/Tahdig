@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
+import com.erfanbagheri.tahdig.util.MicroNutrients
 import com.erfanbagheri.tahdig.util.NutriLabel
 import com.erfanbagheri.tahdig.util.PersianText
 
@@ -100,6 +101,38 @@ fun NutritionLabelPanel(
             )
         }
 
+        // ── micro table (#117) ───────────────────────────────────────
+        // Only on real data. Absent nutrients are rendered «—», never
+        // imputed — a zero would claim "none present", which is a different
+        // claim from "unknown".
+        if (!label.estimated) {
+            // Raw nullables, no takeIf: a zero-or-absent value renders «—»
+            // through the null contract, and must not be laundered to null
+            // selectively only some of the time.
+            val micro = MicroNutrients.rows(
+                fiberG = label.fiberG,
+                sodiumMg = label.saltG.times(1000.0),
+                potassiumMg = label.potassiumMg,
+                calciumMg = label.calciumMg,
+                ironMg = label.ironMg,
+                vitDUg = label.vitaminDUg,
+                b12Ug = label.b12Ug,
+            )
+            if (micro.isNotEmpty()) {
+                Spacer(Modifier.height(10.dp))
+                LabelHairline()
+                Spacer(Modifier.height(6.dp))
+                Text(
+                    text = "ریزمغذی‌ها",
+                    style = MaterialTheme.typography.titleSmall,
+                    fontFamily = YekanBakh,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                Spacer(Modifier.height(4.dp))
+                micro.forEach { row -> LabelMicroRow(row) }
+            }
+        }
+
         Spacer(Modifier.height(10.dp))
         LabelHairline()
         Spacer(Modifier.height(8.dp))
@@ -124,8 +157,69 @@ fun NutritionLabelPanel(
 }
 
 /** One label row: name, grams, and the %DV bar when a reference exists. */
+/**
+ * A micro row. A null amount renders «—» with no bar: the AC is explicit that
+ * missing data is never imputed, so the row stays visible with a dash rather
+ * than disappearing or showing a zero.
+ */
 @Composable
-private fun LabelMacroRow(name: String, grams: Double, dvPercent: Int?, dim: Float) {
+private fun LabelMicroRow(row: MicroNutrients.Row) {
+    Column(modifier = Modifier.padding(vertical = 4.dp)) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Text(
+                text = row.label,
+                style = MaterialTheme.typography.bodyMedium,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            Text(
+                text = row.amount?.let {
+                    PersianText.toPersianDigits(it.round1()) + " " + row.unit +
+                        (row.dvPercent?.let { p -> "  ·  " + PersianText.toPersianDigits("$p") + "٪" } ?: "")
+                } ?: "—",
+                style = MaterialTheme.typography.bodySmall,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        if (row.dvPercent != null && row.dvPercent > 0) {
+            Spacer(Modifier.height(3.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(3.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.outlineVariant,
+                        shape = RoundedCornerShape(2.dp),
+                    ),
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(fraction = (row.dvPercent / 100f).coerceIn(0f, 1f))
+                        .height(3.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.primary,
+                            shape = RoundedCornerShape(2.dp),
+                        ),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun LabelMacroRow(
+    name: String,
+    grams: Double,
+    dvPercent: Int?,
+    dim: Float,
+    // Micro rows (#117) carry mg/µg, so the unit is a parameter. Macro rows
+    // keep the gram default and their call sites stay unchanged.
+    unit: String = "گرم",
+) {
     Column(modifier = Modifier.padding(vertical = 4.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -138,7 +232,7 @@ private fun LabelMacroRow(name: String, grams: Double, dvPercent: Int?, dim: Flo
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = dim),
             )
             Text(
-                text = PersianText.toPersianDigits(grams.round1()) + " گرم" +
+                text = PersianText.toPersianDigits(grams.round1()) + " " + unit +
                     (dvPercent?.let { "  ·  " + PersianText.toPersianDigits("$it") + "٪" } ?: ""),
                 style = MaterialTheme.typography.bodySmall,
                 fontFamily = YekanBakh,

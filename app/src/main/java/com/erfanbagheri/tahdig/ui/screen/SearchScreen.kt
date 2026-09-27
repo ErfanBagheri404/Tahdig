@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.erfanbagheri.tahdig.util.DietFilter
+import com.erfanbagheri.tahdig.util.MicroNutrients
 import com.erfanbagheri.tahdig.util.Flavor
 import com.erfanbagheri.tahdig.util.VoiceInput
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
@@ -62,6 +63,7 @@ fun SearchScreen(
     val excluded by viewModel.excluded.collectAsState()
     val nutriAb by viewModel.nutriAb.collectAsState()
     val withinCaps by viewModel.withinCaps.collectAsState()
+    val badge by viewModel.badge.collectAsState()
     val flavors by viewModel.flavors.collectAsState()
     val flavorCount by viewModel.flavorCount.collectAsState()
     val categories by viewModel.categories.collectAsState()
@@ -243,6 +245,16 @@ fun SearchScreen(
                         label = "در محدوده من",
                         selected = withinCaps,
                         onClick = { viewModel.onWithinCapsToggle(!withinCaps) },
+                    )
+                }
+                // Threshold badges (#117). One at a time: the filters compose,
+                // but a single badge row keeps the chips readable and the
+                // empty-result case obvious.
+                items(MicroNutrients.Badge.entries.toList()) { b ->
+                    CategoryChip(
+                        label = b.label,
+                        selected = badge == b,
+                        onClick = { viewModel.onBadgeSelect(if (badge == b) null else b) },
                     )
                 }
             }

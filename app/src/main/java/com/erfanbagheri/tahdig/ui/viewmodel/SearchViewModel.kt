@@ -10,6 +10,7 @@ import com.erfanbagheri.tahdig.data.prefs.SettingsStore
 import com.erfanbagheri.tahdig.ui.screen.NutritionLabelData
 import com.erfanbagheri.tahdig.util.AllergenDetector
 import com.erfanbagheri.tahdig.util.NutriLabel
+import com.erfanbagheri.tahdig.util.MicroNutrients
 import com.erfanbagheri.tahdig.util.NutrientCaps
 import com.erfanbagheri.tahdig.util.DietFilter
 import com.erfanbagheri.tahdig.util.Flavor
@@ -56,6 +57,11 @@ class SearchViewModel(app: Application) : AndroidViewModel(app) {
     private val _withinCaps = MutableStateFlow(false)
     val withinCaps: StateFlow<Boolean> = _withinCaps.asStateFlow()
     fun onWithinCapsToggle(on: Boolean) { _withinCaps.value = on }
+
+    /** Threshold-badge filter (#117); off by default. */
+    private val _badge = MutableStateFlow<MicroNutrients.Badge?>(null)
+    val badge: StateFlow<MicroNutrients.Badge?> = _badge.asStateFlow()
+    fun onBadgeSelect(b: MicroNutrients.Badge?) { _badge.value = b }
     private val _flavors = MutableStateFlow<Set<Flavor>>(emptySet())
     val flavors: StateFlow<Set<Flavor>> = _flavors.asStateFlow()
 
@@ -123,6 +129,20 @@ class SearchViewModel(app: Application) : AndroidViewModel(app) {
                 val label = NutritionLabelData.of(food.name, food.tags, food.ingredients)
                 if (label.estimated) false
                 else NutrientCaps.allWithin(caps, NutritionLabelData.amounts(label))
+            }
+        }
+        // Threshold badges (#117): last, and a no-op while no badge is picked.
+        // Needs real micro data, so estimates never carry a badge.
+        .combine(_badge) { foods, b ->
+            if (b == null) foods
+            else foods.filter { food ->
+                val label = NutritionLabelData.of(food.name, food.tags, food.ingredients)
+                if (label.estimated) false
+                else b in MicroNutrients.badges(
+                    fiberG = label.fiberG,
+                    sodiumMg = label.saltG.times(1000.0),
+                    ironMg = label.ironMg,
+                )
             }
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())

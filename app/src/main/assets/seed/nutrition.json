@@ -1,9 +1,12 @@
 {
  "all purpose flour": {
+  "b12": 0.0,
+  "calcium": 15.0,
   "calories": 364,
   "carbs": 76.3,
   "fat": 1.0,
   "fiber": 2.7,
+  "iron": 4.64,
   "kj": 1520.0,
   "phosphorus": 108.0,
   "potassium": 107.0,
@@ -11,13 +14,17 @@
   "salt": 0.005,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 0.3
+  "sugars": 0.3,
+  "vitaminD": 0.0
  },
  "all-purpose flour": {
+  "b12": 0.0,
+  "calcium": 15.0,
   "calories": 364,
   "carbs": 76.3,
   "fat": 1.0,
   "fiber": 2.7,
+  "iron": 4.64,
   "kj": 1520.0,
   "phosphorus": 108.0,
   "potassium": 107.0,
@@ -25,13 +32,17 @@
   "salt": 0.005,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 0.3
+  "sugars": 0.3,
+  "vitaminD": 0.0
  },
  "almond": {
+  "b12": 0.0,
+  "calcium": 269.0,
   "calories": 579,
   "carbs": 21.6,
   "fat": 49.9,
   "fiber": 12.5,
+  "iron": 3.71,
   "kj": 2420.0,
   "phosphorus": 481.0,
   "potassium": 733.0,
@@ -39,13 +50,17 @@
   "salt": 0.003,
   "sat_fat": 3.8,
   "src": "USDA SR Legacy",
-  "sugars": 4.3
+  "sugars": 4.3,
+  "vitaminD": 0.0
  },
  "almond extract": {
+  "b12": 0.0,
+  "calcium": 269.0,
   "calories": 579,
   "carbs": 21.6,
   "fat": 49.9,
   "fiber": 12.5,
+  "iron": 3.71,
   "kj": 2420.0,
   "phosphorus": 481.0,
   "potassium": 733.0,
@@ -53,13 +68,17 @@
   "salt": 0.003,
   "sat_fat": 3.8,
   "src": "USDA SR Legacy",
-  "sugars": 4.3
+  "sugars": 4.3,
+  "vitaminD": 0.0
  },
  "almonds": {
+  "b12": 0.0,
+  "calcium": 269.0,
   "calories": 579,
   "carbs": 21.6,
   "fat": 49.9,
   "fiber": 12.5,
+  "iron": 3.71,
   "kj": 2420.0,
   "phosphorus": 481.0,
   "potassium": 733.0,
@@ -67,13 +86,17 @@
   "salt": 0.003,
   "sat_fat": 3.8,
   "src": "USDA SR Legacy",
-  "sugars": 4.3
+  "sugars": 4.3,
+  "vitaminD": 0.0
  },
  "apple": {
+  "b12": 0.0,
+  "calcium": 6.0,
   "calories": 52,
   "carbs": 13.8,
   "fat": 0.2,
   "fiber": 2.4,
+  "iron": 0.12,
   "kj": 218.0,
   "phosphorus": 11.0,
   "potassium": 107.0,
@@ -81,13 +104,17 @@
   "salt": 0.003,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 10.4
+  "sugars": 10.4,
+  "vitaminD": 0.0
  },
  "apple juice": {
+  "b12": 0.0,
+  "calcium": 6.0,
   "calories": 52,
   "carbs": 13.8,
   "fat": 0.2,
   "fiber": 2.4,
+  "iron": 0.12,
   "kj": 218.0,
   "phosphorus": 11.0,
   "potassium": 107.0,
@@ -95,13 +122,17 @@
   "salt": 0.003,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 10.4
+  "sugars": 10.4,
+  "vitaminD": 0.0
  },
  "apples": {
+  "b12": 0.0,
+  "calcium": 6.0,
   "calories": 52,
   "carbs": 13.8,
   "fat": 0.2,
   "fiber": 2.4,
+  "iron": 0.12,
   "kj": 218.0,
   "phosphorus": 11.0,
   "potassium": 107.0,
@@ -109,13 +140,17 @@
   "salt": 0.003,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 10.4
+  "sugars": 10.4,
+  "vitaminD": 0.0
  },
  "aubergine": {
+  "b12": 0.0,
+  "calcium": 9.0,
   "calories": 25,
   "carbs": 5.9,
   "fat": 0.2,
   "fiber": 3.0,
+  "iron": 0.23,
   "kj": 104.0,
   "phosphorus": 24.0,
   "potassium": 229.0,
@@ -123,13 +158,17 @@
   "salt": 0.005,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 3.5
+  "sugars": 3.5,
+  "vitaminD": 0.0
  },
  "aubergines": {
+  "b12": 0.0,
+  "calcium": 9.0,
   "calories": 25,
   "carbs": 5.9,
   "fat": 0.2,
   "fiber": 3.0,
+  "iron": 0.23,
   "kj": 104.0,
   "phosphorus": 24.0,
   "potassium": 229.0,
@@ -137,13 +176,17 @@
   "salt": 0.005,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 3.5
+  "sugars": 3.5,
+  "vitaminD": 0.0
  },
  "baby spinach": {
+  "b12": 0.0,
+  "calcium": 99.0,
   "calories": 23,
   "carbs": 3.6,
   "fat": 0.4,
   "fiber": 2.2,
+  "iron": 2.71,
   "kj": 97.0,
   "phosphorus": 49.0,
   "potassium": 558.0,
@@ -151,13 +194,17 @@
   "salt": 0.198,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 0.4
+  "sugars": 0.4,
+  "vitaminD": 0.0
  },
  "baked beans": {
+  "b12": 0.0,
+  "calcium": 83.0,
   "calories": 337,
   "carbs": 61.3,
   "fat": 1.1,
   "fiber": 15.2,
+  "iron": 6.69,
   "kj": 1410.0,
   "phosphorus": 406.0,
   "potassium": 1360.0,
@@ -165,13 +212,17 @@
   "salt": 0.03,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 2.1
+  "sugars": 2.1,
+  "vitaminD": 0.0
  },
  "balsamic vinegar": {
+  "b12": 0.0,
+  "calcium": 7.0,
   "calories": 21,
   "carbs": 0.9,
   "fat": 0.0,
   "fiber": 0.0,
+  "iron": 0.2,
   "kj": 90.0,
   "phosphorus": 8.0,
   "potassium": 73.0,
@@ -179,13 +230,17 @@
   "salt": 0.013,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.4
+  "sugars": 0.4,
+  "vitaminD": 0.0
  },
  "banana": {
+  "b12": 0.0,
+  "calcium": 5.0,
   "calories": 89,
   "carbs": 22.8,
   "fat": 0.3,
   "fiber": 2.6,
+  "iron": 0.26,
   "kj": 371.0,
   "phosphorus": 22.0,
   "potassium": 358.0,
@@ -193,13 +248,17 @@
   "salt": 0.003,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 12.2
+  "sugars": 12.2,
+  "vitaminD": 0.0
  },
  "bananas": {
+  "b12": 0.0,
+  "calcium": 5.0,
   "calories": 89,
   "carbs": 22.8,
   "fat": 0.3,
   "fiber": 2.6,
+  "iron": 0.26,
   "kj": 371.0,
   "phosphorus": 22.0,
   "potassium": 358.0,
@@ -207,13 +266,17 @@
   "salt": 0.003,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 12.2
+  "sugars": 12.2,
+  "vitaminD": 0.0
  },
  "barley": {
+  "b12": 0.0,
+  "calcium": 29.0,
   "calories": 352,
   "carbs": 77.7,
   "fat": 1.2,
   "fiber": 15.6,
+  "iron": 2.5,
   "kj": 1470.0,
   "phosphorus": 221.0,
   "potassium": 280.0,
@@ -221,13 +284,17 @@
   "salt": 0.022,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 0.8
+  "sugars": 0.8,
+  "vitaminD": 0.0
  },
  "basil": {
+  "b12": 0.0,
+  "calcium": 177.0,
   "calories": 23,
   "carbs": 2.6,
   "fat": 0.6,
   "fiber": 1.6,
+  "iron": 3.17,
   "kj": 94.0,
   "phosphorus": 56.0,
   "potassium": 295.0,
@@ -235,13 +302,17 @@
   "salt": 0.01,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.3
+  "sugars": 0.3,
+  "vitaminD": 0.0
  },
  "basmati rice": {
+  "b12": 0.0,
+  "calcium": 28.0,
   "calories": 365,
   "carbs": 80.0,
   "fat": 0.7,
   "fiber": 1.3,
+  "iron": 0.8,
   "kj": 1530.0,
   "phosphorus": 115.0,
   "potassium": 115.0,
@@ -249,13 +320,17 @@
   "salt": 0.013,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 0.1
+  "sugars": 0.1,
+  "vitaminD": 0.0
  },
  "bay leaf": {
+  "b12": 0.0,
+  "calcium": 177.0,
   "calories": 23,
   "carbs": 2.6,
   "fat": 0.6,
   "fiber": 1.6,
+  "iron": 3.17,
   "kj": 94.0,
   "phosphorus": 56.0,
   "potassium": 295.0,
@@ -263,13 +338,17 @@
   "salt": 0.01,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.3
+  "sugars": 0.3,
+  "vitaminD": 0.0
  },
  "bay leaves": {
+  "b12": 0.0,
+  "calcium": 177.0,
   "calories": 23,
   "carbs": 2.6,
   "fat": 0.6,
   "fiber": 1.6,
+  "iron": 3.17,
   "kj": 94.0,
   "phosphorus": 56.0,
   "potassium": 295.0,
@@ -277,13 +356,17 @@
   "salt": 0.01,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.3
+  "sugars": 0.3,
+  "vitaminD": 0.0
  },
  "beans": {
+  "b12": 0.0,
+  "calcium": 83.0,
   "calories": 337,
   "carbs": 61.3,
   "fat": 1.1,
   "fiber": 15.2,
+  "iron": 6.69,
   "kj": 1410.0,
   "phosphorus": 406.0,
   "potassium": 1360.0,
@@ -291,13 +374,17 @@
   "salt": 0.03,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 2.1
+  "sugars": 2.1,
+  "vitaminD": 0.0
  },
  "beaten egg": {
+  "b12": 0.89,
+  "calcium": 56.0,
   "calories": 143,
   "carbs": 0.7,
   "fat": 9.5,
   "fiber": 0.0,
+  "iron": 1.75,
   "kj": 599.0,
   "phosphorus": 198.0,
   "potassium": 138.0,
@@ -305,13 +392,17 @@
   "salt": 0.355,
   "sat_fat": 3.1,
   "src": "USDA SR Legacy",
-  "sugars": 0.4
+  "sugars": 0.4,
+  "vitaminD": 2.0
  },
  "beef": {
+  "b12": 2.17,
+  "calcium": 15.0,
   "calories": 215,
   "carbs": 0.0,
   "fat": 15.0,
   "fiber": 0.0,
+  "iron": 2.09,
   "kj": 898.0,
   "phosphorus": 171.0,
   "potassium": 295.0,
@@ -319,13 +410,17 @@
   "salt": 0.165,
   "sat_fat": 5.7,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.1
  },
  "beef mince": {
+  "b12": 2.17,
+  "calcium": 15.0,
   "calories": 215,
   "carbs": 0.0,
   "fat": 15.0,
   "fiber": 0.0,
+  "iron": 2.09,
   "kj": 898.0,
   "phosphorus": 171.0,
   "potassium": 295.0,
@@ -333,13 +428,17 @@
   "salt": 0.165,
   "sat_fat": 5.7,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.1
  },
  "beef stock": {
+  "b12": 2.17,
+  "calcium": 15.0,
   "calories": 215,
   "carbs": 0.0,
   "fat": 15.0,
   "fiber": 0.0,
+  "iron": 2.09,
   "kj": 898.0,
   "phosphorus": 171.0,
   "potassium": 295.0,
@@ -347,13 +446,17 @@
   "salt": 0.165,
   "sat_fat": 5.7,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.1
  },
  "beef stock cube": {
+  "b12": 2.17,
+  "calcium": 15.0,
   "calories": 215,
   "carbs": 0.0,
   "fat": 15.0,
   "fiber": 0.0,
+  "iron": 2.09,
   "kj": 898.0,
   "phosphorus": 171.0,
   "potassium": 295.0,
@@ -361,13 +464,17 @@
   "salt": 0.165,
   "sat_fat": 5.7,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.1
  },
  "beefsteak": {
+  "b12": 2.17,
+  "calcium": 15.0,
   "calories": 215,
   "carbs": 0.0,
   "fat": 15.0,
   "fiber": 0.0,
+  "iron": 2.09,
   "kj": 898.0,
   "phosphorus": 171.0,
   "potassium": 295.0,
@@ -375,13 +482,17 @@
   "salt": 0.165,
   "sat_fat": 5.7,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.1
  },
  "beet": {
+  "b12": 0.0,
+  "calcium": 16.0,
   "calories": 43,
   "carbs": 9.6,
   "fat": 0.2,
   "fiber": 2.8,
+  "iron": 0.8,
   "kj": 180.0,
   "phosphorus": 40.0,
   "potassium": 325.0,
@@ -389,13 +500,17 @@
   "salt": 0.195,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 6.8
+  "sugars": 6.8,
+  "vitaminD": 0.0
  },
  "beetroot": {
+  "b12": 0.0,
+  "calcium": 16.0,
   "calories": 43,
   "carbs": 9.6,
   "fat": 0.2,
   "fiber": 2.8,
+  "iron": 0.8,
   "kj": 180.0,
   "phosphorus": 40.0,
   "potassium": 325.0,
@@ -403,13 +518,17 @@
   "salt": 0.195,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 6.8
+  "sugars": 6.8,
+  "vitaminD": 0.0
  },
  "bell pepper": {
+  "b12": 0.0,
+  "calcium": 10.0,
   "calories": 20,
   "carbs": 4.6,
   "fat": 0.2,
   "fiber": 1.7,
+  "iron": 0.34,
   "kj": 84.0,
   "phosphorus": 20.0,
   "potassium": 175.0,
@@ -417,13 +536,17 @@
   "salt": 0.007,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 2.4
+  "sugars": 2.4,
+  "vitaminD": 0.0
  },
  "berries": {
+  "b12": 0.0,
+  "calcium": 16.0,
   "calories": 32,
   "carbs": 7.7,
   "fat": 0.3,
   "fiber": 2.0,
+  "iron": 0.41,
   "kj": 136.0,
   "phosphorus": 24.0,
   "potassium": 153.0,
@@ -431,13 +554,17 @@
   "salt": 0.003,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 4.9
+  "sugars": 4.9,
+  "vitaminD": 0.0
  },
  "black beans": {
+  "b12": 0.0,
+  "calcium": 83.0,
   "calories": 337,
   "carbs": 61.3,
   "fat": 1.1,
   "fiber": 15.2,
+  "iron": 6.69,
   "kj": 1410.0,
   "phosphorus": 406.0,
   "potassium": 1360.0,
@@ -445,13 +572,17 @@
   "salt": 0.03,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 2.1
+  "sugars": 2.1,
+  "vitaminD": 0.0
  },
  "blackberries": {
+  "b12": 0.0,
+  "calcium": 16.0,
   "calories": 32,
   "carbs": 7.7,
   "fat": 0.3,
   "fiber": 2.0,
+  "iron": 0.41,
   "kj": 136.0,
   "phosphorus": 24.0,
   "potassium": 153.0,
@@ -459,13 +590,17 @@
   "salt": 0.003,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 4.9
+  "sugars": 4.9,
+  "vitaminD": 0.0
  },
  "blueberries": {
+  "b12": 0.0,
+  "calcium": 16.0,
   "calories": 32,
   "carbs": 7.7,
   "fat": 0.3,
   "fiber": 2.0,
+  "iron": 0.41,
   "kj": 136.0,
   "phosphorus": 24.0,
   "potassium": 153.0,
@@ -473,13 +608,17 @@
   "salt": 0.003,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 4.9
+  "sugars": 4.9,
+  "vitaminD": 0.0
  },
  "bread flour": {
+  "b12": 0.0,
+  "calcium": 15.0,
   "calories": 364,
   "carbs": 76.3,
   "fat": 1.0,
   "fiber": 2.7,
+  "iron": 4.64,
   "kj": 1520.0,
   "phosphorus": 108.0,
   "potassium": 107.0,
@@ -487,13 +626,17 @@
   "salt": 0.005,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 0.3
+  "sugars": 0.3,
+  "vitaminD": 0.0
  },
  "brown onion": {
+  "b12": 0.0,
+  "calcium": 23.0,
   "calories": 40,
   "carbs": 9.3,
   "fat": 0.1,
   "fiber": 1.7,
+  "iron": 0.21,
   "kj": 166.0,
   "phosphorus": 29.0,
   "potassium": 146.0,
@@ -501,13 +644,17 @@
   "salt": 0.01,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 4.2
+  "sugars": 4.2,
+  "vitaminD": 0.0
  },
  "brown sugar": {
+  "b12": 0.0,
+  "calcium": 1.0,
   "calories": 387,
   "carbs": 100.0,
   "fat": 0.0,
   "fiber": 0.0,
+  "iron": 0.05,
   "kj": 1620.0,
   "phosphorus": 0.0,
   "potassium": 2.0,
@@ -515,13 +662,17 @@
   "salt": 0.003,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 99.8
+  "sugars": 99.8,
+  "vitaminD": 0.0
  },
  "bulghur": {
+  "b12": 0.0,
+  "calcium": 35.0,
   "calories": 342,
   "carbs": 75.9,
   "fat": 1.3,
   "fiber": 12.5,
+  "iron": 2.46,
   "kj": 1430.0,
   "phosphorus": 300.0,
   "potassium": 410.0,
@@ -529,13 +680,17 @@
   "salt": 0.043,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 0.4
+  "sugars": 0.4,
+  "vitaminD": 0.0
  },
  "bulgur": {
+  "b12": 0.0,
+  "calcium": 35.0,
   "calories": 342,
   "carbs": 75.9,
   "fat": 1.3,
   "fiber": 12.5,
+  "iron": 2.46,
   "kj": 1430.0,
   "phosphorus": 300.0,
   "potassium": 410.0,
@@ -543,13 +698,17 @@
   "salt": 0.043,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 0.4
+  "sugars": 0.4,
+  "vitaminD": 0.0
  },
  "butter": {
+  "b12": 0.17,
+  "calcium": 24.0,
   "calories": 717,
   "carbs": 0.1,
   "fat": 81.1,
   "fiber": 0.0,
+  "iron": 0.02,
   "kj": 3000.0,
   "phosphorus": 24.0,
   "potassium": 24.0,
@@ -557,13 +716,17 @@
   "salt": 0.027,
   "sat_fat": 50.5,
   "src": "USDA SR Legacy",
-  "sugars": 0.1
+  "sugars": 0.1,
+  "vitaminD": 0.0
  },
  "butternut squash": {
+  "b12": 0.0,
+  "calcium": 21.0,
   "calories": 26,
   "carbs": 6.5,
   "fat": 0.1,
   "fiber": 0.5,
+  "iron": 0.8,
   "kj": 109.0,
   "phosphorus": 44.0,
   "potassium": 340.0,
@@ -571,13 +734,17 @@
   "salt": 0.003,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 2.8
+  "sugars": 2.8,
+  "vitaminD": 0.0
  },
  "button mushrooms": {
+  "b12": 0.04,
+  "calcium": 3.0,
   "calories": 22,
   "carbs": 3.3,
   "fat": 0.3,
   "fiber": 1.0,
+  "iron": 0.5,
   "kj": 93.0,
   "phosphorus": 86.0,
   "potassium": 318.0,
@@ -585,13 +752,17 @@
   "salt": 0.013,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 2.0
+  "sugars": 2.0,
+  "vitaminD": 0.2
  },
  "cabbage": {
+  "b12": 0.0,
+  "calcium": 40.0,
   "calories": 25,
   "carbs": 5.8,
   "fat": 0.1,
   "fiber": 2.5,
+  "iron": 0.47,
   "kj": 103.0,
   "phosphorus": 26.0,
   "potassium": 170.0,
@@ -599,13 +770,17 @@
   "salt": 0.045,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 3.2
+  "sugars": 3.2,
+  "vitaminD": 0.0
  },
  "cacao": {
+  "b12": 0.0,
+  "calcium": 128.0,
   "calories": 228,
   "carbs": 57.9,
   "fat": 13.7,
   "fiber": 37.0,
+  "iron": 13.9,
   "kj": 952.0,
   "phosphorus": 734.0,
   "potassium": 1520.0,
@@ -613,13 +788,17 @@
   "salt": 0.053,
   "sat_fat": 8.1,
   "src": "USDA SR Legacy",
-  "sugars": 1.8
+  "sugars": 1.8,
+  "vitaminD": 0.0
  },
  "cannellini beans": {
+  "b12": 0.0,
+  "calcium": 83.0,
   "calories": 337,
   "carbs": 61.3,
   "fat": 1.1,
   "fiber": 15.2,
+  "iron": 6.69,
   "kj": 1410.0,
   "phosphorus": 406.0,
   "potassium": 1360.0,
@@ -627,13 +806,17 @@
   "salt": 0.03,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 2.1
+  "sugars": 2.1,
+  "vitaminD": 0.0
  },
  "carrot": {
+  "b12": 0.0,
+  "calcium": 33.0,
   "calories": 41,
   "carbs": 9.6,
   "fat": 0.2,
   "fiber": 2.8,
+  "iron": 0.3,
   "kj": 173.0,
   "phosphorus": 35.0,
   "potassium": 320.0,
@@ -641,13 +824,17 @@
   "salt": 0.173,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 4.7
+  "sugars": 4.7,
+  "vitaminD": 0.0
  },
  "carrots": {
+  "b12": 0.0,
+  "calcium": 33.0,
   "calories": 41,
   "carbs": 9.6,
   "fat": 0.2,
   "fiber": 2.8,
+  "iron": 0.3,
   "kj": 173.0,
   "phosphorus": 35.0,
   "potassium": 320.0,
@@ -655,13 +842,17 @@
   "salt": 0.173,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 4.7
+  "sugars": 4.7,
+  "vitaminD": 0.0
  },
  "caster sugar": {
+  "b12": 0.0,
+  "calcium": 1.0,
   "calories": 387,
   "carbs": 100.0,
   "fat": 0.0,
   "fiber": 0.0,
+  "iron": 0.05,
   "kj": 1620.0,
   "phosphorus": 0.0,
   "potassium": 2.0,
@@ -669,13 +860,17 @@
   "salt": 0.003,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 99.8
+  "sugars": 99.8,
+  "vitaminD": 0.0
  },
  "chana dal": {
+  "b12": 0.0,
+  "calcium": 57.0,
   "calories": 378,
   "carbs": 63.0,
   "fat": 6.0,
   "fiber": 12.2,
+  "iron": 4.31,
   "kj": 1580.0,
   "phosphorus": 252.0,
   "potassium": 718.0,
@@ -683,13 +878,17 @@
   "salt": 0.06,
   "sat_fat": 0.6,
   "src": "USDA SR Legacy",
-  "sugars": 10.7
+  "sugars": 10.7,
+  "vitaminD": 0.0
  },
  "cheddar": {
+  "b12": 0.88,
+  "calcium": 711.0,
   "calories": 410,
   "carbs": 2.1,
   "fat": 33.8,
   "fiber": 0.0,
+  "iron": 0.16,
   "kj": 1720.0,
   "phosphorus": 460.0,
   "potassium": 76.0,
@@ -697,13 +896,17 @@
   "salt": 1.61,
   "sat_fat": 19.4,
   "src": "USDA SR Legacy",
-  "sugars": 0.3
+  "sugars": 0.3,
+  "vitaminD": 1.0
  },
  "cheese": {
+  "b12": 0.88,
+  "calcium": 711.0,
   "calories": 410,
   "carbs": 2.1,
   "fat": 33.8,
   "fiber": 0.0,
+  "iron": 0.16,
   "kj": 1720.0,
   "phosphorus": 460.0,
   "potassium": 76.0,
@@ -711,13 +914,17 @@
   "salt": 1.61,
   "sat_fat": 19.4,
   "src": "USDA SR Legacy",
-  "sugars": 0.3
+  "sugars": 0.3,
+  "vitaminD": 1.0
  },
  "cherry tomatoes": {
+  "b12": 0.0,
+  "calcium": 10.0,
   "calories": 18,
   "carbs": 3.9,
   "fat": 0.2,
   "fiber": 1.2,
+  "iron": 0.27,
   "kj": 74.0,
   "phosphorus": 24.0,
   "potassium": 237.0,
@@ -725,13 +932,17 @@
   "salt": 0.013,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 2.6
+  "sugars": 2.6,
+  "vitaminD": 0.0
  },
  "chestnut mushrooms": {
+  "b12": 0.04,
+  "calcium": 3.0,
   "calories": 22,
   "carbs": 3.3,
   "fat": 0.3,
   "fiber": 1.0,
+  "iron": 0.5,
   "kj": 93.0,
   "phosphorus": 86.0,
   "potassium": 318.0,
@@ -739,13 +950,17 @@
   "salt": 0.013,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 2.0
+  "sugars": 2.0,
+  "vitaminD": 0.2
  },
  "chicken": {
+  "b12": 0.21,
+  "calcium": 5.0,
   "calories": 120,
   "carbs": 0.0,
   "fat": 2.6,
   "fiber": 0.0,
+  "iron": 0.37,
   "kj": 501.0,
   "phosphorus": 213.0,
   "potassium": 334.0,
@@ -753,13 +968,17 @@
   "salt": 0.112,
   "sat_fat": 0.6,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "chicken breast": {
+  "b12": 0.21,
+  "calcium": 5.0,
   "calories": 120,
   "carbs": 0.0,
   "fat": 2.6,
   "fiber": 0.0,
+  "iron": 0.37,
   "kj": 501.0,
   "phosphorus": 213.0,
   "potassium": 334.0,
@@ -767,13 +986,17 @@
   "salt": 0.112,
   "sat_fat": 0.6,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "chicken breasts": {
+  "b12": 0.21,
+  "calcium": 5.0,
   "calories": 120,
   "carbs": 0.0,
   "fat": 2.6,
   "fiber": 0.0,
+  "iron": 0.37,
   "kj": 501.0,
   "phosphorus": 213.0,
   "potassium": 334.0,
@@ -781,13 +1004,17 @@
   "salt": 0.112,
   "sat_fat": 0.6,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "chicken legs": {
+  "b12": 0.21,
+  "calcium": 5.0,
   "calories": 120,
   "carbs": 0.0,
   "fat": 2.6,
   "fiber": 0.0,
+  "iron": 0.37,
   "kj": 501.0,
   "phosphorus": 213.0,
   "potassium": 334.0,
@@ -795,13 +1022,17 @@
   "salt": 0.112,
   "sat_fat": 0.6,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "chicken stock": {
+  "b12": 0.21,
+  "calcium": 5.0,
   "calories": 120,
   "carbs": 0.0,
   "fat": 2.6,
   "fiber": 0.0,
+  "iron": 0.37,
   "kj": 501.0,
   "phosphorus": 213.0,
   "potassium": 334.0,
@@ -809,13 +1040,17 @@
   "salt": 0.112,
   "sat_fat": 0.6,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "chicken stock cube": {
+  "b12": 0.21,
+  "calcium": 5.0,
   "calories": 120,
   "carbs": 0.0,
   "fat": 2.6,
   "fiber": 0.0,
+  "iron": 0.37,
   "kj": 501.0,
   "phosphorus": 213.0,
   "potassium": 334.0,
@@ -823,13 +1058,17 @@
   "salt": 0.112,
   "sat_fat": 0.6,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "chicken thighs": {
+  "b12": 0.21,
+  "calcium": 5.0,
   "calories": 120,
   "carbs": 0.0,
   "fat": 2.6,
   "fiber": 0.0,
+  "iron": 0.37,
   "kj": 501.0,
   "phosphorus": 213.0,
   "potassium": 334.0,
@@ -837,13 +1076,17 @@
   "salt": 0.112,
   "sat_fat": 0.6,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "chickpea": {
+  "b12": 0.0,
+  "calcium": 57.0,
   "calories": 378,
   "carbs": 63.0,
   "fat": 6.0,
   "fiber": 12.2,
+  "iron": 4.31,
   "kj": 1580.0,
   "phosphorus": 252.0,
   "potassium": 718.0,
@@ -851,13 +1094,17 @@
   "salt": 0.06,
   "sat_fat": 0.6,
   "src": "USDA SR Legacy",
-  "sugars": 10.7
+  "sugars": 10.7,
+  "vitaminD": 0.0
  },
  "chickpeas": {
+  "b12": 0.0,
+  "calcium": 57.0,
   "calories": 378,
   "carbs": 63.0,
   "fat": 6.0,
   "fiber": 12.2,
+  "iron": 4.31,
   "kj": 1580.0,
   "phosphorus": 252.0,
   "potassium": 718.0,
@@ -865,13 +1112,17 @@
   "salt": 0.06,
   "sat_fat": 0.6,
   "src": "USDA SR Legacy",
-  "sugars": 10.7
+  "sugars": 10.7,
+  "vitaminD": 0.0
  },
  "chili": {
+  "b12": 0.0,
+  "calcium": 10.0,
   "calories": 20,
   "carbs": 4.6,
   "fat": 0.2,
   "fiber": 1.7,
+  "iron": 0.34,
   "kj": 84.0,
   "phosphorus": 20.0,
   "potassium": 175.0,
@@ -879,13 +1130,17 @@
   "salt": 0.007,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 2.4
+  "sugars": 2.4,
+  "vitaminD": 0.0
  },
  "chilli": {
+  "b12": 0.0,
+  "calcium": 10.0,
   "calories": 20,
   "carbs": 4.6,
   "fat": 0.2,
   "fiber": 1.7,
+  "iron": 0.34,
   "kj": 84.0,
   "phosphorus": 20.0,
   "potassium": 175.0,
@@ -893,13 +1148,17 @@
   "salt": 0.007,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 2.4
+  "sugars": 2.4,
+  "vitaminD": 0.0
  },
  "chilli flakes": {
+  "b12": 0.0,
+  "calcium": 10.0,
   "calories": 20,
   "carbs": 4.6,
   "fat": 0.2,
   "fiber": 1.7,
+  "iron": 0.34,
   "kj": 84.0,
   "phosphorus": 20.0,
   "potassium": 175.0,
@@ -907,13 +1166,17 @@
   "salt": 0.007,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 2.4
+  "sugars": 2.4,
+  "vitaminD": 0.0
  },
  "chilli powder": {
+  "b12": 0.0,
+  "calcium": 10.0,
   "calories": 20,
   "carbs": 4.6,
   "fat": 0.2,
   "fiber": 1.7,
+  "iron": 0.34,
   "kj": 84.0,
   "phosphorus": 20.0,
   "potassium": 175.0,
@@ -921,13 +1184,17 @@
   "salt": 0.007,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 2.4
+  "sugars": 2.4,
+  "vitaminD": 0.0
  },
  "chocolate": {
+  "b12": 0.28,
+  "calcium": 73.0,
   "calories": 598,
   "carbs": 45.9,
   "fat": 42.6,
   "fiber": 10.9,
+  "iron": 11.9,
   "kj": 2500.0,
   "phosphorus": 308.0,
   "potassium": 715.0,
@@ -935,13 +1202,17 @@
   "salt": 0.05,
   "sat_fat": 24.5,
   "src": "USDA SR Legacy",
-  "sugars": 24.0
+  "sugars": 24.0,
+  "vitaminD": 0.0
  },
  "chocolate chips": {
+  "b12": 0.28,
+  "calcium": 73.0,
   "calories": 598,
   "carbs": 45.9,
   "fat": 42.6,
   "fiber": 10.9,
+  "iron": 11.9,
   "kj": 2500.0,
   "phosphorus": 308.0,
   "potassium": 715.0,
@@ -949,13 +1220,17 @@
   "salt": 0.05,
   "sat_fat": 24.5,
   "src": "USDA SR Legacy",
-  "sugars": 24.0
+  "sugars": 24.0,
+  "vitaminD": 0.0
  },
  "chopped garlic": {
+  "b12": 0.0,
+  "calcium": 181.0,
   "calories": 149,
   "carbs": 33.1,
   "fat": 0.5,
   "fiber": 2.1,
+  "iron": 1.7,
   "kj": 623.0,
   "phosphorus": 153.0,
   "potassium": 401.0,
@@ -963,13 +1238,17 @@
   "salt": 0.043,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 1.0
+  "sugars": 1.0,
+  "vitaminD": 0.0
  },
  "chopped onion": {
+  "b12": 0.0,
+  "calcium": 23.0,
   "calories": 40,
   "carbs": 9.3,
   "fat": 0.1,
   "fiber": 1.7,
+  "iron": 0.21,
   "kj": 166.0,
   "phosphorus": 29.0,
   "potassium": 146.0,
@@ -977,13 +1256,17 @@
   "salt": 0.01,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 4.2
+  "sugars": 4.2,
+  "vitaminD": 0.0
  },
  "chopped tomatoes": {
+  "b12": 0.0,
+  "calcium": 10.0,
   "calories": 18,
   "carbs": 3.9,
   "fat": 0.2,
   "fiber": 1.2,
+  "iron": 0.27,
   "kj": 74.0,
   "phosphorus": 24.0,
   "potassium": 237.0,
@@ -991,13 +1274,17 @@
   "salt": 0.013,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 2.6
+  "sugars": 2.6,
+  "vitaminD": 0.0
  },
  "cider vinegar": {
+  "b12": 0.0,
+  "calcium": 7.0,
   "calories": 21,
   "carbs": 0.9,
   "fat": 0.0,
   "fiber": 0.0,
+  "iron": 0.2,
   "kj": 90.0,
   "phosphorus": 8.0,
   "potassium": 73.0,
@@ -1005,13 +1292,17 @@
   "salt": 0.013,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.4
+  "sugars": 0.4,
+  "vitaminD": 0.0
  },
  "cilantro": {
+  "b12": 0.0,
+  "calcium": 138.0,
   "calories": 36,
   "carbs": 6.3,
   "fat": 0.8,
   "fiber": 3.3,
+  "iron": 6.2,
   "kj": 151.0,
   "phosphorus": 58.0,
   "potassium": 554.0,
@@ -1019,13 +1310,17 @@
   "salt": 0.14,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 0.8
+  "sugars": 0.8,
+  "vitaminD": 0.0
  },
  "cinnamon": {
+  "b12": 0.0,
+  "calcium": 1000.0,
   "calories": 247,
   "carbs": 80.6,
   "fat": 1.2,
   "fiber": 53.1,
+  "iron": 8.32,
   "kj": 1040.0,
   "phosphorus": 64.0,
   "potassium": 431.0,
@@ -1033,13 +1328,17 @@
   "salt": 0.025,
   "sat_fat": 0.3,
   "src": "USDA SR Legacy",
-  "sugars": 2.2
+  "sugars": 2.2,
+  "vitaminD": 0.0
  },
  "cinnamon stick": {
+  "b12": 0.0,
+  "calcium": 1000.0,
   "calories": 247,
   "carbs": 80.6,
   "fat": 1.2,
   "fiber": 53.1,
+  "iron": 8.32,
   "kj": 1040.0,
   "phosphorus": 64.0,
   "potassium": 431.0,
@@ -1047,13 +1346,17 @@
   "salt": 0.025,
   "sat_fat": 0.3,
   "src": "USDA SR Legacy",
-  "sugars": 2.2
+  "sugars": 2.2,
+  "vitaminD": 0.0
  },
  "clear honey": {
+  "b12": 0.0,
+  "calcium": 6.0,
   "calories": 304,
   "carbs": 82.4,
   "fat": 0.0,
   "fiber": 0.2,
+  "iron": 0.42,
   "kj": 1270.0,
   "phosphorus": 4.0,
   "potassium": 52.0,
@@ -1061,13 +1364,17 @@
   "salt": 0.01,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 82.1
+  "sugars": 82.1,
+  "vitaminD": 0.0
  },
  "cloves garlic": {
+  "b12": 0.0,
+  "calcium": 181.0,
   "calories": 149,
   "carbs": 33.1,
   "fat": 0.5,
   "fiber": 2.1,
+  "iron": 1.7,
   "kj": 623.0,
   "phosphorus": 153.0,
   "potassium": 401.0,
@@ -1075,13 +1382,17 @@
   "salt": 0.043,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 1.0
+  "sugars": 1.0,
+  "vitaminD": 0.0
  },
  "cocoa": {
+  "b12": 0.0,
+  "calcium": 128.0,
   "calories": 228,
   "carbs": 57.9,
   "fat": 13.7,
   "fiber": 37.0,
+  "iron": 13.9,
   "kj": 952.0,
   "phosphorus": 734.0,
   "potassium": 1520.0,
@@ -1089,13 +1400,17 @@
   "salt": 0.053,
   "sat_fat": 8.1,
   "src": "USDA SR Legacy",
-  "sugars": 1.8
+  "sugars": 1.8,
+  "vitaminD": 0.0
  },
  "cocoa powder": {
+  "b12": 0.0,
+  "calcium": 128.0,
   "calories": 228,
   "carbs": 57.9,
   "fat": 13.7,
   "fiber": 37.0,
+  "iron": 13.9,
   "kj": 952.0,
   "phosphorus": 734.0,
   "potassium": 1520.0,
@@ -1103,13 +1418,17 @@
   "salt": 0.053,
   "sat_fat": 8.1,
   "src": "USDA SR Legacy",
-  "sugars": 1.8
+  "sugars": 1.8,
+  "vitaminD": 0.0
  },
  "cocoa solids": {
+  "b12": 0.28,
+  "calcium": 73.0,
   "calories": 598,
   "carbs": 45.9,
   "fat": 42.6,
   "fiber": 10.9,
+  "iron": 11.9,
   "kj": 2500.0,
   "phosphorus": 308.0,
   "potassium": 715.0,
@@ -1117,13 +1436,17 @@
   "salt": 0.05,
   "sat_fat": 24.5,
   "src": "USDA SR Legacy",
-  "sugars": 24.0
+  "sugars": 24.0,
+  "vitaminD": 0.0
  },
  "coconut": {
+  "b12": 0.0,
+  "calcium": 14.0,
   "calories": 354,
   "carbs": 15.2,
   "fat": 33.5,
   "fiber": 9.0,
+  "iron": 2.43,
   "kj": 1480.0,
   "phosphorus": 113.0,
   "potassium": 356.0,
@@ -1131,13 +1454,17 @@
   "salt": 0.05,
   "sat_fat": 29.7,
   "src": "USDA SR Legacy",
-  "sugars": 6.2
+  "sugars": 6.2,
+  "vitaminD": 0.0
  },
  "coconut cream": {
+  "b12": 0.0,
+  "calcium": 14.0,
   "calories": 354,
   "carbs": 15.2,
   "fat": 33.5,
   "fiber": 9.0,
+  "iron": 2.43,
   "kj": 1480.0,
   "phosphorus": 113.0,
   "potassium": 356.0,
@@ -1145,13 +1472,17 @@
   "salt": 0.05,
   "sat_fat": 29.7,
   "src": "USDA SR Legacy",
-  "sugars": 6.2
+  "sugars": 6.2,
+  "vitaminD": 0.0
  },
  "coconut milk": {
+  "b12": 0.0,
+  "calcium": 14.0,
   "calories": 354,
   "carbs": 15.2,
   "fat": 33.5,
   "fiber": 9.0,
+  "iron": 2.43,
   "kj": 1480.0,
   "phosphorus": 113.0,
   "potassium": 356.0,
@@ -1159,13 +1490,17 @@
   "salt": 0.05,
   "sat_fat": 29.7,
   "src": "USDA SR Legacy",
-  "sugars": 6.2
+  "sugars": 6.2,
+  "vitaminD": 0.0
  },
  "coconut oil": {
+  "b12": 0.0,
+  "calcium": 14.0,
   "calories": 354,
   "carbs": 15.2,
   "fat": 33.5,
   "fiber": 9.0,
+  "iron": 2.43,
   "kj": 1480.0,
   "phosphorus": 113.0,
   "potassium": 356.0,
@@ -1173,13 +1508,17 @@
   "salt": 0.05,
   "sat_fat": 29.7,
   "src": "USDA SR Legacy",
-  "sugars": 6.2
+  "sugars": 6.2,
+  "vitaminD": 0.0
  },
  "cod": {
+  "b12": 3.18,
+  "calcium": 12.0,
   "calories": 142,
   "carbs": 0.0,
   "fat": 6.3,
   "fiber": 0.0,
+  "iron": 0.8,
   "kj": 594.0,
   "phosphorus": 200.0,
   "potassium": 490.0,
@@ -1187,13 +1526,17 @@
   "salt": 0.11,
   "sat_fat": 1.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "confectioners sugar": {
+  "b12": 0.0,
+  "calcium": 1.0,
   "calories": 387,
   "carbs": 100.0,
   "fat": 0.0,
   "fiber": 0.0,
+  "iron": 0.05,
   "kj": 1620.0,
   "phosphorus": 0.0,
   "potassium": 2.0,
@@ -1201,13 +1544,17 @@
   "salt": 0.003,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 99.8
+  "sugars": 99.8,
+  "vitaminD": 0.0
  },
  "cooking apple": {
+  "b12": 0.0,
+  "calcium": 6.0,
   "calories": 52,
   "carbs": 13.8,
   "fat": 0.2,
   "fiber": 2.4,
+  "iron": 0.12,
   "kj": 218.0,
   "phosphorus": 11.0,
   "potassium": 107.0,
@@ -1215,13 +1562,17 @@
   "salt": 0.003,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 10.4
+  "sugars": 10.4,
+  "vitaminD": 0.0
  },
  "coriander": {
+  "b12": 0.0,
+  "calcium": 138.0,
   "calories": 36,
   "carbs": 6.3,
   "fat": 0.8,
   "fiber": 3.3,
+  "iron": 6.2,
   "kj": 151.0,
   "phosphorus": 58.0,
   "potassium": 554.0,
@@ -1229,13 +1580,17 @@
   "salt": 0.14,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 0.8
+  "sugars": 0.8,
+  "vitaminD": 0.0
  },
  "coriander seeds": {
+  "b12": 0.0,
+  "calcium": 138.0,
   "calories": 36,
   "carbs": 6.3,
   "fat": 0.8,
   "fiber": 3.3,
+  "iron": 6.2,
   "kj": 151.0,
   "phosphorus": 58.0,
   "potassium": 554.0,
@@ -1243,13 +1598,17 @@
   "salt": 0.14,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 0.8
+  "sugars": 0.8,
+  "vitaminD": 0.0
  },
  "courgette": {
+  "b12": 0.0,
+  "calcium": 16.0,
   "calories": 17,
   "carbs": 3.1,
   "fat": 0.3,
   "fiber": 1.0,
+  "iron": 0.37,
   "kj": 70.0,
   "phosphorus": 38.0,
   "potassium": 261.0,
@@ -1257,13 +1616,17 @@
   "salt": 0.02,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 2.5
+  "sugars": 2.5,
+  "vitaminD": 0.0
  },
  "courgettes": {
+  "b12": 0.0,
+  "calcium": 16.0,
   "calories": 17,
   "carbs": 3.1,
   "fat": 0.3,
   "fiber": 1.0,
+  "iron": 0.37,
   "kj": 70.0,
   "phosphorus": 38.0,
   "potassium": 261.0,
@@ -1271,13 +1634,17 @@
   "salt": 0.02,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 2.5
+  "sugars": 2.5,
+  "vitaminD": 0.0
  },
  "couscous": {
+  "b12": 0.0,
+  "calcium": 35.0,
   "calories": 342,
   "carbs": 75.9,
   "fat": 1.3,
   "fiber": 12.5,
+  "iron": 2.46,
   "kj": 1430.0,
   "phosphorus": 300.0,
   "potassium": 410.0,
@@ -1285,13 +1652,17 @@
   "salt": 0.043,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 0.4
+  "sugars": 0.4,
+  "vitaminD": 0.0
  },
  "cream": {
+  "b12": 0.16,
+  "calcium": 66.0,
   "calories": 340,
   "carbs": 2.8,
   "fat": 36.1,
   "fiber": 0.0,
+  "iron": 0.1,
   "kj": 1420.0,
   "phosphorus": 58.0,
   "potassium": 95.0,
@@ -1299,13 +1670,17 @@
   "salt": 0.068,
   "sat_fat": 23.0,
   "src": "USDA SR Legacy",
-  "sugars": 2.9
+  "sugars": 2.9,
+  "vitaminD": 1.6
  },
  "cream cheese": {
+  "b12": 0.88,
+  "calcium": 711.0,
   "calories": 410,
   "carbs": 2.1,
   "fat": 33.8,
   "fiber": 0.0,
+  "iron": 0.16,
   "kj": 1720.0,
   "phosphorus": 460.0,
   "potassium": 76.0,
@@ -1313,13 +1688,17 @@
   "salt": 1.61,
   "sat_fat": 19.4,
   "src": "USDA SR Legacy",
-  "sugars": 0.3
+  "sugars": 0.3,
+  "vitaminD": 1.0
  },
  "creamed coconut": {
+  "b12": 0.0,
+  "calcium": 14.0,
   "calories": 354,
   "carbs": 15.2,
   "fat": 33.5,
   "fiber": 9.0,
+  "iron": 2.43,
   "kj": 1480.0,
   "phosphorus": 113.0,
   "potassium": 356.0,
@@ -1327,13 +1706,17 @@
   "salt": 0.05,
   "sat_fat": 29.7,
   "src": "USDA SR Legacy",
-  "sugars": 6.2
+  "sugars": 6.2,
+  "vitaminD": 0.0
  },
  "creme fraiche": {
+  "b12": 0.16,
+  "calcium": 66.0,
   "calories": 340,
   "carbs": 2.8,
   "fat": 36.1,
   "fiber": 0.0,
+  "iron": 0.1,
   "kj": 1420.0,
   "phosphorus": 58.0,
   "potassium": 95.0,
@@ -1341,13 +1724,17 @@
   "salt": 0.068,
   "sat_fat": 23.0,
   "src": "USDA SR Legacy",
-  "sugars": 2.9
+  "sugars": 2.9,
+  "vitaminD": 1.6
  },
  "crushed garlic": {
+  "b12": 0.0,
+  "calcium": 181.0,
   "calories": 149,
   "carbs": 33.1,
   "fat": 0.5,
   "fiber": 2.1,
+  "iron": 1.7,
   "kj": 623.0,
   "phosphorus": 153.0,
   "potassium": 401.0,
@@ -1355,13 +1742,17 @@
   "salt": 0.043,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 1.0
+  "sugars": 1.0,
+  "vitaminD": 0.0
  },
  "cucumber": {
+  "b12": 0.0,
+  "calcium": 16.0,
   "calories": 15,
   "carbs": 3.6,
   "fat": 0.1,
   "fiber": 0.5,
+  "iron": 0.28,
   "kj": 65.0,
   "phosphorus": 24.0,
   "potassium": 147.0,
@@ -1369,13 +1760,17 @@
   "salt": 0.005,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 1.7
+  "sugars": 1.7,
+  "vitaminD": 0.0
  },
  "cucumbers": {
+  "b12": 0.0,
+  "calcium": 16.0,
   "calories": 15,
   "carbs": 3.6,
   "fat": 0.1,
   "fiber": 0.5,
+  "iron": 0.28,
   "kj": 65.0,
   "phosphorus": 24.0,
   "potassium": 147.0,
@@ -1383,13 +1778,17 @@
   "salt": 0.005,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 1.7
+  "sugars": 1.7,
+  "vitaminD": 0.0
  },
  "currants": {
+  "b12": 0.0,
+  "calcium": 62.0,
   "calories": 299,
   "carbs": 79.3,
   "fat": 0.2,
   "fiber": 4.5,
+  "iron": 1.79,
   "kj": 1250.0,
   "phosphorus": 98.0,
   "potassium": 744.0,
@@ -1397,13 +1796,17 @@
   "salt": 0.065,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 65.2
+  "sugars": 65.2,
+  "vitaminD": 0.0
  },
  "dark chocolate": {
+  "b12": 0.28,
+  "calcium": 73.0,
   "calories": 598,
   "carbs": 45.9,
   "fat": 42.6,
   "fiber": 10.9,
+  "iron": 11.9,
   "kj": 2500.0,
   "phosphorus": 308.0,
   "potassium": 715.0,
@@ -1411,13 +1814,17 @@
   "salt": 0.05,
   "sat_fat": 24.5,
   "src": "USDA SR Legacy",
-  "sugars": 24.0
+  "sugars": 24.0,
+  "vitaminD": 0.0
  },
  "date": {
+  "b12": 0.0,
+  "calcium": 39.0,
   "calories": 282,
   "carbs": 75.0,
   "fat": 0.4,
   "fiber": 8.0,
+  "iron": 1.02,
   "kj": 1180.0,
   "phosphorus": 62.0,
   "potassium": 656.0,
@@ -1425,13 +1832,17 @@
   "salt": 0.005,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 63.4
+  "sugars": 63.4,
+  "vitaminD": 0.0
  },
  "dates": {
+  "b12": 0.0,
+  "calcium": 39.0,
   "calories": 282,
   "carbs": 75.0,
   "fat": 0.4,
   "fiber": 8.0,
+  "iron": 1.02,
   "kj": 1180.0,
   "phosphorus": 62.0,
   "potassium": 656.0,
@@ -1439,13 +1850,17 @@
   "salt": 0.005,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 63.4
+  "sugars": 63.4,
+  "vitaminD": 0.0
  },
  "desiccated coconut": {
+  "b12": 0.0,
+  "calcium": 14.0,
   "calories": 354,
   "carbs": 15.2,
   "fat": 33.5,
   "fiber": 9.0,
+  "iron": 2.43,
   "kj": 1480.0,
   "phosphorus": 113.0,
   "potassium": 356.0,
@@ -1453,13 +1868,17 @@
   "salt": 0.05,
   "sat_fat": 29.7,
   "src": "USDA SR Legacy",
-  "sugars": 6.2
+  "sugars": 6.2,
+  "vitaminD": 0.0
  },
  "dill": {
+  "b12": 0.0,
+  "calcium": 208.0,
   "calories": 43,
   "carbs": 7.0,
   "fat": 1.1,
   "fiber": 2.1,
+  "iron": 6.59,
   "kj": 180.0,
   "phosphorus": 66.0,
   "potassium": 738.0,
@@ -1467,13 +1886,17 @@
   "salt": 0.152,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "dill weed": {
+  "b12": 0.0,
+  "calcium": 208.0,
   "calories": 43,
   "carbs": 7.0,
   "fat": 1.1,
   "fiber": 2.1,
+  "iron": 6.59,
   "kj": 180.0,
   "phosphorus": 66.0,
   "potassium": 738.0,
@@ -1481,13 +1904,17 @@
   "salt": 0.152,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "double cream": {
+  "b12": 0.16,
+  "calcium": 66.0,
   "calories": 340,
   "carbs": 2.8,
   "fat": 36.1,
   "fiber": 0.0,
+  "iron": 0.1,
   "kj": 1420.0,
   "phosphorus": 58.0,
   "potassium": 95.0,
@@ -1495,13 +1922,17 @@
   "salt": 0.068,
   "sat_fat": 23.0,
   "src": "USDA SR Legacy",
-  "sugars": 2.9
+  "sugars": 2.9,
+  "vitaminD": 1.6
  },
  "dried herbs": {
+  "b12": 0.0,
+  "calcium": 177.0,
   "calories": 23,
   "carbs": 2.6,
   "fat": 0.6,
   "fiber": 1.6,
+  "iron": 3.17,
   "kj": 94.0,
   "phosphorus": 56.0,
   "potassium": 295.0,
@@ -1509,13 +1940,17 @@
   "salt": 0.01,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.3
+  "sugars": 0.3,
+  "vitaminD": 0.0
  },
  "egg": {
+  "b12": 0.89,
+  "calcium": 56.0,
   "calories": 143,
   "carbs": 0.7,
   "fat": 9.5,
   "fiber": 0.0,
+  "iron": 1.75,
   "kj": 599.0,
   "phosphorus": 198.0,
   "potassium": 138.0,
@@ -1523,13 +1958,17 @@
   "salt": 0.355,
   "sat_fat": 3.1,
   "src": "USDA SR Legacy",
-  "sugars": 0.4
+  "sugars": 0.4,
+  "vitaminD": 2.0
  },
  "egg yolk": {
+  "b12": 0.89,
+  "calcium": 56.0,
   "calories": 143,
   "carbs": 0.7,
   "fat": 9.5,
   "fiber": 0.0,
+  "iron": 1.75,
   "kj": 599.0,
   "phosphorus": 198.0,
   "potassium": 138.0,
@@ -1537,13 +1976,17 @@
   "salt": 0.355,
   "sat_fat": 3.1,
   "src": "USDA SR Legacy",
-  "sugars": 0.4
+  "sugars": 0.4,
+  "vitaminD": 2.0
  },
  "egg yolks": {
+  "b12": 0.89,
+  "calcium": 56.0,
   "calories": 143,
   "carbs": 0.7,
   "fat": 9.5,
   "fiber": 0.0,
+  "iron": 1.75,
   "kj": 599.0,
   "phosphorus": 198.0,
   "potassium": 138.0,
@@ -1551,13 +1994,17 @@
   "salt": 0.355,
   "sat_fat": 3.1,
   "src": "USDA SR Legacy",
-  "sugars": 0.4
+  "sugars": 0.4,
+  "vitaminD": 2.0
  },
  "eggplant": {
+  "b12": 0.0,
+  "calcium": 9.0,
   "calories": 25,
   "carbs": 5.9,
   "fat": 0.2,
   "fiber": 3.0,
+  "iron": 0.23,
   "kj": 104.0,
   "phosphorus": 24.0,
   "potassium": 229.0,
@@ -1565,13 +2012,17 @@
   "salt": 0.005,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 3.5
+  "sugars": 3.5,
+  "vitaminD": 0.0
  },
  "eggs": {
+  "b12": 0.89,
+  "calcium": 56.0,
   "calories": 143,
   "carbs": 0.7,
   "fat": 9.5,
   "fiber": 0.0,
+  "iron": 1.75,
   "kj": 599.0,
   "phosphorus": 198.0,
   "potassium": 138.0,
@@ -1579,13 +2030,17 @@
   "salt": 0.355,
   "sat_fat": 3.1,
   "src": "USDA SR Legacy",
-  "sugars": 0.4
+  "sugars": 0.4,
+  "vitaminD": 2.0
  },
  "extra virgin olive oil": {
+  "b12": 0.0,
+  "calcium": 1.0,
   "calories": 884,
   "carbs": 0.0,
   "fat": 100.0,
   "fiber": 0.0,
+  "iron": 0.56,
   "kj": 3700.0,
   "phosphorus": 0.0,
   "potassium": 1.0,
@@ -1593,13 +2048,17 @@
   "salt": 0.005,
   "sat_fat": 13.8,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "fennel": {
+  "b12": 0.0,
+  "calcium": 208.0,
   "calories": 43,
   "carbs": 7.0,
   "fat": 1.1,
   "fiber": 2.1,
+  "iron": 6.59,
   "kj": 180.0,
   "phosphorus": 66.0,
   "potassium": 738.0,
@@ -1607,13 +2066,17 @@
   "salt": 0.152,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "fennel seeds": {
+  "b12": 0.0,
+  "calcium": 208.0,
   "calories": 43,
   "carbs": 7.0,
   "fat": 1.1,
   "fiber": 2.1,
+  "iron": 6.59,
   "kj": 180.0,
   "phosphorus": 66.0,
   "potassium": 738.0,
@@ -1621,13 +2084,17 @@
   "salt": 0.152,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "feta": {
+  "b12": 0.88,
+  "calcium": 711.0,
   "calories": 410,
   "carbs": 2.1,
   "fat": 33.8,
   "fiber": 0.0,
+  "iron": 0.16,
   "kj": 1720.0,
   "phosphorus": 460.0,
   "potassium": 76.0,
@@ -1635,13 +2102,17 @@
   "salt": 1.61,
   "sat_fat": 19.4,
   "src": "USDA SR Legacy",
-  "sugars": 0.3
+  "sugars": 0.3,
+  "vitaminD": 1.0
  },
  "fish": {
+  "b12": 3.18,
+  "calcium": 12.0,
   "calories": 142,
   "carbs": 0.0,
   "fat": 6.3,
   "fiber": 0.0,
+  "iron": 0.8,
   "kj": 594.0,
   "phosphorus": 200.0,
   "potassium": 490.0,
@@ -1649,13 +2120,17 @@
   "salt": 0.11,
   "sat_fat": 1.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "fish sauce": {
+  "b12": 3.18,
+  "calcium": 12.0,
   "calories": 142,
   "carbs": 0.0,
   "fat": 6.3,
   "fiber": 0.0,
+  "iron": 0.8,
   "kj": 594.0,
   "phosphorus": 200.0,
   "potassium": 490.0,
@@ -1663,13 +2138,17 @@
   "salt": 0.11,
   "sat_fat": 1.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "fish stock": {
+  "b12": 3.18,
+  "calcium": 12.0,
   "calories": 142,
   "carbs": 0.0,
   "fat": 6.3,
   "fiber": 0.0,
+  "iron": 0.8,
   "kj": 594.0,
   "phosphorus": 200.0,
   "potassium": 490.0,
@@ -1677,13 +2156,17 @@
   "salt": 0.11,
   "sat_fat": 1.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "flaked almonds": {
+  "b12": 0.0,
+  "calcium": 269.0,
   "calories": 579,
   "carbs": 21.6,
   "fat": 49.9,
   "fiber": 12.5,
+  "iron": 3.71,
   "kj": 2420.0,
   "phosphorus": 481.0,
   "potassium": 733.0,
@@ -1691,13 +2174,17 @@
   "salt": 0.003,
   "sat_fat": 3.8,
   "src": "USDA SR Legacy",
-  "sugars": 4.3
+  "sugars": 4.3,
+  "vitaminD": 0.0
  },
  "flat leaf parsley": {
+  "b12": 0.0,
+  "calcium": 138.0,
   "calories": 36,
   "carbs": 6.3,
   "fat": 0.8,
   "fiber": 3.3,
+  "iron": 6.2,
   "kj": 151.0,
   "phosphorus": 58.0,
   "potassium": 554.0,
@@ -1705,13 +2192,17 @@
   "salt": 0.14,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 0.8
+  "sugars": 0.8,
+  "vitaminD": 0.0
  },
  "flour": {
+  "b12": 0.0,
+  "calcium": 15.0,
   "calories": 364,
   "carbs": 76.3,
   "fat": 1.0,
   "fiber": 2.7,
+  "iron": 4.64,
   "kj": 1520.0,
   "phosphorus": 108.0,
   "potassium": 107.0,
@@ -1719,13 +2210,17 @@
   "salt": 0.005,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 0.3
+  "sugars": 0.3,
+  "vitaminD": 0.0
  },
  "free range egg": {
+  "b12": 0.89,
+  "calcium": 56.0,
   "calories": 143,
   "carbs": 0.7,
   "fat": 9.5,
   "fiber": 0.0,
+  "iron": 1.75,
   "kj": 599.0,
   "phosphorus": 198.0,
   "potassium": 138.0,
@@ -1733,13 +2228,17 @@
   "salt": 0.355,
   "sat_fat": 3.1,
   "src": "USDA SR Legacy",
-  "sugars": 0.4
+  "sugars": 0.4,
+  "vitaminD": 2.0
  },
  "fresh basil": {
+  "b12": 0.0,
+  "calcium": 177.0,
   "calories": 23,
   "carbs": 2.6,
   "fat": 0.6,
   "fiber": 1.6,
+  "iron": 3.17,
   "kj": 94.0,
   "phosphorus": 56.0,
   "potassium": 295.0,
@@ -1747,13 +2246,17 @@
   "salt": 0.01,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.3
+  "sugars": 0.3,
+  "vitaminD": 0.0
  },
  "fresh dill": {
+  "b12": 0.0,
+  "calcium": 208.0,
   "calories": 43,
   "carbs": 7.0,
   "fat": 1.1,
   "fiber": 2.1,
+  "iron": 6.59,
   "kj": 180.0,
   "phosphorus": 66.0,
   "potassium": 738.0,
@@ -1761,13 +2264,17 @@
   "salt": 0.152,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "fresh mint": {
+  "b12": 0.0,
+  "calcium": 243.0,
   "calories": 70,
   "carbs": 14.9,
   "fat": 0.9,
   "fiber": 8.0,
+  "iron": 5.08,
   "kj": 293.0,
   "phosphorus": 73.0,
   "potassium": 569.0,
@@ -1775,13 +2282,17 @@
   "salt": 0.077,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "fresh parsley": {
+  "b12": 0.0,
+  "calcium": 138.0,
   "calories": 36,
   "carbs": 6.3,
   "fat": 0.8,
   "fiber": 3.3,
+  "iron": 6.2,
   "kj": 151.0,
   "phosphorus": 58.0,
   "potassium": 554.0,
@@ -1789,13 +2300,17 @@
   "salt": 0.14,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 0.8
+  "sugars": 0.8,
+  "vitaminD": 0.0
  },
  "garbanzo beans": {
+  "b12": 0.0,
+  "calcium": 57.0,
   "calories": 378,
   "carbs": 63.0,
   "fat": 6.0,
   "fiber": 12.2,
+  "iron": 4.31,
   "kj": 1580.0,
   "phosphorus": 252.0,
   "potassium": 718.0,
@@ -1803,13 +2318,17 @@
   "salt": 0.06,
   "sat_fat": 0.6,
   "src": "USDA SR Legacy",
-  "sugars": 10.7
+  "sugars": 10.7,
+  "vitaminD": 0.0
  },
  "garlic": {
+  "b12": 0.0,
+  "calcium": 181.0,
   "calories": 149,
   "carbs": 33.1,
   "fat": 0.5,
   "fiber": 2.1,
+  "iron": 1.7,
   "kj": 623.0,
   "phosphorus": 153.0,
   "potassium": 401.0,
@@ -1817,13 +2336,17 @@
   "salt": 0.043,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 1.0
+  "sugars": 1.0,
+  "vitaminD": 0.0
  },
  "garlic clove": {
+  "b12": 0.0,
+  "calcium": 181.0,
   "calories": 149,
   "carbs": 33.1,
   "fat": 0.5,
   "fiber": 2.1,
+  "iron": 1.7,
   "kj": 623.0,
   "phosphorus": 153.0,
   "potassium": 401.0,
@@ -1831,13 +2354,17 @@
   "salt": 0.043,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 1.0
+  "sugars": 1.0,
+  "vitaminD": 0.0
  },
  "garlic cloves": {
+  "b12": 0.0,
+  "calcium": 181.0,
   "calories": 149,
   "carbs": 33.1,
   "fat": 0.5,
   "fiber": 2.1,
+  "iron": 1.7,
   "kj": 623.0,
   "phosphorus": 153.0,
   "potassium": 401.0,
@@ -1845,13 +2372,17 @@
   "salt": 0.043,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 1.0
+  "sugars": 1.0,
+  "vitaminD": 0.0
  },
  "granulated sugar": {
+  "b12": 0.0,
+  "calcium": 1.0,
   "calories": 387,
   "carbs": 100.0,
   "fat": 0.0,
   "fiber": 0.0,
+  "iron": 0.05,
   "kj": 1620.0,
   "phosphorus": 0.0,
   "potassium": 2.0,
@@ -1859,13 +2390,17 @@
   "salt": 0.003,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 99.8
+  "sugars": 99.8,
+  "vitaminD": 0.0
  },
  "grape": {
+  "b12": 0.0,
+  "calcium": 10.0,
   "calories": 69,
   "carbs": 18.1,
   "fat": 0.2,
   "fiber": 0.9,
+  "iron": 0.36,
   "kj": 288.0,
   "phosphorus": 20.0,
   "potassium": 191.0,
@@ -1873,13 +2408,17 @@
   "salt": 0.005,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 15.5
+  "sugars": 15.5,
+  "vitaminD": 0.0
  },
  "grapes": {
+  "b12": 0.0,
+  "calcium": 10.0,
   "calories": 69,
   "carbs": 18.1,
   "fat": 0.2,
   "fiber": 0.9,
+  "iron": 0.36,
   "kj": 288.0,
   "phosphorus": 20.0,
   "potassium": 191.0,
@@ -1887,13 +2426,17 @@
   "salt": 0.005,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 15.5
+  "sugars": 15.5,
+  "vitaminD": 0.0
  },
  "greek yogurt": {
+  "b12": 0.37,
+  "calcium": 121.0,
   "calories": 61,
   "carbs": 4.7,
   "fat": 3.2,
   "fiber": 0.0,
+  "iron": 0.05,
   "kj": 257.0,
   "phosphorus": 95.0,
   "potassium": 155.0,
@@ -1901,13 +2444,17 @@
   "salt": 0.115,
   "sat_fat": 2.1,
   "src": "USDA SR Legacy",
-  "sugars": 4.7
+  "sugars": 4.7,
+  "vitaminD": 0.1
  },
  "green lentils": {
+  "b12": 0.0,
+  "calcium": 35.0,
   "calories": 352,
   "carbs": 63.4,
   "fat": 1.1,
   "fiber": 10.7,
+  "iron": 6.51,
   "kj": 1470.0,
   "phosphorus": 281.0,
   "potassium": 677.0,
@@ -1915,13 +2462,17 @@
   "salt": 0.015,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 2.0
+  "sugars": 2.0,
+  "vitaminD": 0.0
  },
  "green pepper": {
+  "b12": 0.0,
+  "calcium": 10.0,
   "calories": 20,
   "carbs": 4.6,
   "fat": 0.2,
   "fiber": 1.7,
+  "iron": 0.34,
   "kj": 84.0,
   "phosphorus": 20.0,
   "potassium": 175.0,
@@ -1929,13 +2480,17 @@
   "salt": 0.007,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 2.4
+  "sugars": 2.4,
+  "vitaminD": 0.0
  },
  "ground almonds": {
+  "b12": 0.0,
+  "calcium": 269.0,
   "calories": 579,
   "carbs": 21.6,
   "fat": 49.9,
   "fiber": 12.5,
+  "iron": 3.71,
   "kj": 2420.0,
   "phosphorus": 481.0,
   "potassium": 733.0,
@@ -1943,13 +2498,17 @@
   "salt": 0.003,
   "sat_fat": 3.8,
   "src": "USDA SR Legacy",
-  "sugars": 4.3
+  "sugars": 4.3,
+  "vitaminD": 0.0
  },
  "ground beef": {
+  "b12": 2.17,
+  "calcium": 15.0,
   "calories": 215,
   "carbs": 0.0,
   "fat": 15.0,
   "fiber": 0.0,
+  "iron": 2.09,
   "kj": 898.0,
   "phosphorus": 171.0,
   "potassium": 295.0,
@@ -1957,13 +2516,17 @@
   "salt": 0.165,
   "sat_fat": 5.7,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.1
  },
  "ground cinnamon": {
+  "b12": 0.0,
+  "calcium": 1000.0,
   "calories": 247,
   "carbs": 80.6,
   "fat": 1.2,
   "fiber": 53.1,
+  "iron": 8.32,
   "kj": 1040.0,
   "phosphorus": 64.0,
   "potassium": 431.0,
@@ -1971,13 +2534,17 @@
   "salt": 0.025,
   "sat_fat": 0.3,
   "src": "USDA SR Legacy",
-  "sugars": 2.2
+  "sugars": 2.2,
+  "vitaminD": 0.0
  },
  "ground coriander": {
+  "b12": 0.0,
+  "calcium": 138.0,
   "calories": 36,
   "carbs": 6.3,
   "fat": 0.8,
   "fiber": 3.3,
+  "iron": 6.2,
   "kj": 151.0,
   "phosphorus": 58.0,
   "potassium": 554.0,
@@ -1985,13 +2552,17 @@
   "salt": 0.14,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 0.8
+  "sugars": 0.8,
+  "vitaminD": 0.0
  },
  "ground turmeric": {
+  "b12": 0.0,
+  "calcium": 168.0,
   "calories": 312,
   "carbs": 67.1,
   "fat": 3.2,
   "fiber": 22.7,
+  "iron": 55.0,
   "kj": 1300.0,
   "phosphorus": 299.0,
   "potassium": 2080.0,
@@ -1999,13 +2570,17 @@
   "salt": 0.068,
   "sat_fat": 1.8,
   "src": "USDA SR Legacy",
-  "sugars": 3.2
+  "sugars": 3.2,
+  "vitaminD": 0.0
  },
  "haddock": {
+  "b12": 3.18,
+  "calcium": 12.0,
   "calories": 142,
   "carbs": 0.0,
   "fat": 6.3,
   "fiber": 0.0,
+  "iron": 0.8,
   "kj": 594.0,
   "phosphorus": 200.0,
   "potassium": 490.0,
@@ -2013,13 +2588,17 @@
   "salt": 0.11,
   "sat_fat": 1.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "haricot beans": {
+  "b12": 0.0,
+  "calcium": 83.0,
   "calories": 337,
   "carbs": 61.3,
   "fat": 1.1,
   "fiber": 15.2,
+  "iron": 6.69,
   "kj": 1410.0,
   "phosphorus": 406.0,
   "potassium": 1360.0,
@@ -2027,13 +2606,17 @@
   "salt": 0.03,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 2.1
+  "sugars": 2.1,
+  "vitaminD": 0.0
  },
  "heavy cream": {
+  "b12": 0.16,
+  "calcium": 66.0,
   "calories": 340,
   "carbs": 2.8,
   "fat": 36.1,
   "fiber": 0.0,
+  "iron": 0.1,
   "kj": 1420.0,
   "phosphorus": 58.0,
   "potassium": 95.0,
@@ -2041,13 +2624,17 @@
   "salt": 0.068,
   "sat_fat": 23.0,
   "src": "USDA SR Legacy",
-  "sugars": 2.9
+  "sugars": 2.9,
+  "vitaminD": 1.6
  },
  "herbs": {
+  "b12": 0.0,
+  "calcium": 177.0,
   "calories": 23,
   "carbs": 2.6,
   "fat": 0.6,
   "fiber": 1.6,
+  "iron": 3.17,
   "kj": 94.0,
   "phosphorus": 56.0,
   "potassium": 295.0,
@@ -2055,13 +2642,17 @@
   "salt": 0.01,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.3
+  "sugars": 0.3,
+  "vitaminD": 0.0
  },
  "honey": {
+  "b12": 0.0,
+  "calcium": 6.0,
   "calories": 304,
   "carbs": 82.4,
   "fat": 0.0,
   "fiber": 0.2,
+  "iron": 0.42,
   "kj": 1270.0,
   "phosphorus": 4.0,
   "potassium": 52.0,
@@ -2069,13 +2660,17 @@
   "salt": 0.01,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 82.1
+  "sugars": 82.1,
+  "vitaminD": 0.0
  },
  "icing sugar": {
+  "b12": 0.0,
+  "calcium": 1.0,
   "calories": 387,
   "carbs": 100.0,
   "fat": 0.0,
   "fiber": 0.0,
+  "iron": 0.05,
   "kj": 1620.0,
   "phosphorus": 0.0,
   "potassium": 2.0,
@@ -2083,13 +2678,17 @@
   "salt": 0.003,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 99.8
+  "sugars": 99.8,
+  "vitaminD": 0.0
  },
  "jalapeno": {
+  "b12": 0.0,
+  "calcium": 10.0,
   "calories": 20,
   "carbs": 4.6,
   "fat": 0.2,
   "fiber": 1.7,
+  "iron": 0.34,
   "kj": 84.0,
   "phosphorus": 20.0,
   "potassium": 175.0,
@@ -2097,13 +2696,17 @@
   "salt": 0.007,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 2.4
+  "sugars": 2.4,
+  "vitaminD": 0.0
  },
  "kidney beans": {
+  "b12": 0.0,
+  "calcium": 83.0,
   "calories": 337,
   "carbs": 61.3,
   "fat": 1.1,
   "fiber": 15.2,
+  "iron": 6.69,
   "kj": 1410.0,
   "phosphorus": 406.0,
   "potassium": 1360.0,
@@ -2111,13 +2714,17 @@
   "salt": 0.03,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 2.1
+  "sugars": 2.1,
+  "vitaminD": 0.0
  },
  "kosher salt": {
+  "b12": 0.0,
+  "calcium": 24.0,
   "calories": 0,
   "carbs": 0.0,
   "fat": 0.0,
   "fiber": 0.0,
+  "iron": 0.33,
   "kj": 0.0,
   "phosphorus": 0.0,
   "potassium": 8.0,
@@ -2125,13 +2732,17 @@
   "salt": 97.0,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "lamb": {
+  "b12": 2.39,
+  "calcium": 12.0,
   "calories": 267,
   "carbs": 0.0,
   "fat": 21.6,
   "fiber": 0.0,
+  "iron": 1.57,
   "kj": 1120.0,
   "phosphorus": 160.0,
   "potassium": 230.0,
@@ -2139,13 +2750,17 @@
   "salt": 0.145,
   "sat_fat": 9.5,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "lamb mince": {
+  "b12": 2.39,
+  "calcium": 12.0,
   "calories": 267,
   "carbs": 0.0,
   "fat": 21.6,
   "fiber": 0.0,
+  "iron": 1.57,
   "kj": 1120.0,
   "phosphorus": 160.0,
   "potassium": 230.0,
@@ -2153,13 +2768,17 @@
   "salt": 0.145,
   "sat_fat": 9.5,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "lamb shank": {
+  "b12": 2.39,
+  "calcium": 12.0,
   "calories": 267,
   "carbs": 0.0,
   "fat": 21.6,
   "fiber": 0.0,
+  "iron": 1.57,
   "kj": 1120.0,
   "phosphorus": 160.0,
   "potassium": 230.0,
@@ -2167,13 +2786,17 @@
   "salt": 0.145,
   "sat_fat": 9.5,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "large egg": {
+  "b12": 0.89,
+  "calcium": 56.0,
   "calories": 143,
   "carbs": 0.7,
   "fat": 9.5,
   "fiber": 0.0,
+  "iron": 1.75,
   "kj": 599.0,
   "phosphorus": 198.0,
   "potassium": 138.0,
@@ -2181,13 +2804,17 @@
   "salt": 0.355,
   "sat_fat": 3.1,
   "src": "USDA SR Legacy",
-  "sugars": 0.4
+  "sugars": 0.4,
+  "vitaminD": 2.0
  },
  "leek": {
+  "b12": 0.0,
+  "calcium": 23.0,
   "calories": 40,
   "carbs": 9.3,
   "fat": 0.1,
   "fiber": 1.7,
+  "iron": 0.21,
   "kj": 166.0,
   "phosphorus": 29.0,
   "potassium": 146.0,
@@ -2195,13 +2822,17 @@
   "salt": 0.01,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 4.2
+  "sugars": 4.2,
+  "vitaminD": 0.0
  },
  "leeks": {
+  "b12": 0.0,
+  "calcium": 23.0,
   "calories": 40,
   "carbs": 9.3,
   "fat": 0.1,
   "fiber": 1.7,
+  "iron": 0.21,
   "kj": 166.0,
   "phosphorus": 29.0,
   "potassium": 146.0,
@@ -2209,13 +2840,17 @@
   "salt": 0.01,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 4.2
+  "sugars": 4.2,
+  "vitaminD": 0.0
  },
  "leg of lamb": {
+  "b12": 2.39,
+  "calcium": 12.0,
   "calories": 267,
   "carbs": 0.0,
   "fat": 21.6,
   "fiber": 0.0,
+  "iron": 1.57,
   "kj": 1120.0,
   "phosphorus": 160.0,
   "potassium": 230.0,
@@ -2223,13 +2858,17 @@
   "salt": 0.145,
   "sat_fat": 9.5,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "lemon": {
+  "b12": 0.0,
+  "calcium": 6.0,
   "calories": 22,
   "carbs": 6.9,
   "fat": 0.2,
   "fiber": 0.3,
+  "iron": 0.08,
   "kj": 91.0,
   "phosphorus": 8.0,
   "potassium": 103.0,
@@ -2237,13 +2876,17 @@
   "salt": 0.003,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 2.5
+  "sugars": 2.5,
+  "vitaminD": 0.0
  },
  "lemon juice": {
+  "b12": 0.0,
+  "calcium": 6.0,
   "calories": 22,
   "carbs": 6.9,
   "fat": 0.2,
   "fiber": 0.3,
+  "iron": 0.08,
   "kj": 91.0,
   "phosphorus": 8.0,
   "potassium": 103.0,
@@ -2251,13 +2894,17 @@
   "salt": 0.003,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 2.5
+  "sugars": 2.5,
+  "vitaminD": 0.0
  },
  "lemon zest": {
+  "b12": 0.0,
+  "calcium": 6.0,
   "calories": 22,
   "carbs": 6.9,
   "fat": 0.2,
   "fiber": 0.3,
+  "iron": 0.08,
   "kj": 91.0,
   "phosphorus": 8.0,
   "potassium": 103.0,
@@ -2265,13 +2912,17 @@
   "salt": 0.003,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 2.5
+  "sugars": 2.5,
+  "vitaminD": 0.0
  },
  "lemons": {
+  "b12": 0.0,
+  "calcium": 6.0,
   "calories": 22,
   "carbs": 6.9,
   "fat": 0.2,
   "fiber": 0.3,
+  "iron": 0.08,
   "kj": 91.0,
   "phosphorus": 8.0,
   "potassium": 103.0,
@@ -2279,13 +2930,17 @@
   "salt": 0.003,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 2.5
+  "sugars": 2.5,
+  "vitaminD": 0.0
  },
  "lentil": {
+  "b12": 0.0,
+  "calcium": 35.0,
   "calories": 352,
   "carbs": 63.4,
   "fat": 1.1,
   "fiber": 10.7,
+  "iron": 6.51,
   "kj": 1470.0,
   "phosphorus": 281.0,
   "potassium": 677.0,
@@ -2293,13 +2948,17 @@
   "salt": 0.015,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 2.0
+  "sugars": 2.0,
+  "vitaminD": 0.0
  },
  "lentils": {
+  "b12": 0.0,
+  "calcium": 35.0,
   "calories": 352,
   "carbs": 63.4,
   "fat": 1.1,
   "fiber": 10.7,
+  "iron": 6.51,
   "kj": 1470.0,
   "phosphorus": 281.0,
   "potassium": 677.0,
@@ -2307,13 +2966,17 @@
   "salt": 0.015,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 2.0
+  "sugars": 2.0,
+  "vitaminD": 0.0
  },
  "lime": {
+  "b12": 0.0,
+  "calcium": 6.0,
   "calories": 22,
   "carbs": 6.9,
   "fat": 0.2,
   "fiber": 0.3,
+  "iron": 0.08,
   "kj": 91.0,
   "phosphorus": 8.0,
   "potassium": 103.0,
@@ -2321,13 +2984,17 @@
   "salt": 0.003,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 2.5
+  "sugars": 2.5,
+  "vitaminD": 0.0
  },
  "lime juice": {
+  "b12": 0.0,
+  "calcium": 6.0,
   "calories": 22,
   "carbs": 6.9,
   "fat": 0.2,
   "fiber": 0.3,
+  "iron": 0.08,
   "kj": 91.0,
   "phosphorus": 8.0,
   "potassium": 103.0,
@@ -2335,13 +3002,17 @@
   "salt": 0.003,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 2.5
+  "sugars": 2.5,
+  "vitaminD": 0.0
  },
  "lime zest": {
+  "b12": 0.0,
+  "calcium": 6.0,
   "calories": 22,
   "carbs": 6.9,
   "fat": 0.2,
   "fiber": 0.3,
+  "iron": 0.08,
   "kj": 91.0,
   "phosphorus": 8.0,
   "potassium": 103.0,
@@ -2349,13 +3020,17 @@
   "salt": 0.003,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 2.5
+  "sugars": 2.5,
+  "vitaminD": 0.0
  },
  "limes": {
+  "b12": 0.0,
+  "calcium": 6.0,
   "calories": 22,
   "carbs": 6.9,
   "fat": 0.2,
   "fiber": 0.3,
+  "iron": 0.08,
   "kj": 91.0,
   "phosphorus": 8.0,
   "potassium": 103.0,
@@ -2363,13 +3038,17 @@
   "salt": 0.003,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 2.5
+  "sugars": 2.5,
+  "vitaminD": 0.0
  },
  "long grain rice": {
+  "b12": 0.0,
+  "calcium": 28.0,
   "calories": 365,
   "carbs": 80.0,
   "fat": 0.7,
   "fiber": 1.3,
+  "iron": 0.8,
   "kj": 1530.0,
   "phosphorus": 115.0,
   "potassium": 115.0,
@@ -2377,13 +3056,17 @@
   "salt": 0.013,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 0.1
+  "sugars": 0.1,
+  "vitaminD": 0.0
  },
  "malt vinegar": {
+  "b12": 0.0,
+  "calcium": 7.0,
   "calories": 21,
   "carbs": 0.9,
   "fat": 0.0,
   "fiber": 0.0,
+  "iron": 0.2,
   "kj": 90.0,
   "phosphorus": 8.0,
   "potassium": 73.0,
@@ -2391,13 +3074,17 @@
   "salt": 0.013,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.4
+  "sugars": 0.4,
+  "vitaminD": 0.0
  },
  "margarine": {
+  "b12": 0.17,
+  "calcium": 24.0,
   "calories": 717,
   "carbs": 0.1,
   "fat": 81.1,
   "fiber": 0.0,
+  "iron": 0.02,
   "kj": 3000.0,
   "phosphorus": 24.0,
   "potassium": 24.0,
@@ -2405,13 +3092,17 @@
   "salt": 0.027,
   "sat_fat": 50.5,
   "src": "USDA SR Legacy",
-  "sugars": 0.1
+  "sugars": 0.1,
+  "vitaminD": 0.0
  },
  "maris piper": {
+  "b12": 0.0,
+  "calcium": 12.0,
   "calories": 77,
   "carbs": 17.5,
   "fat": 0.1,
   "fiber": 2.1,
+  "iron": 0.81,
   "kj": 322.0,
   "phosphorus": 57.0,
   "potassium": 425.0,
@@ -2419,13 +3110,17 @@
   "salt": 0.015,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.8
+  "sugars": 0.8,
+  "vitaminD": 0.0
  },
  "medjool dates": {
+  "b12": 0.0,
+  "calcium": 39.0,
   "calories": 282,
   "carbs": 75.0,
   "fat": 0.4,
   "fiber": 8.0,
+  "iron": 1.02,
   "kj": 1180.0,
   "phosphorus": 62.0,
   "potassium": 656.0,
@@ -2433,13 +3128,17 @@
   "salt": 0.005,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 63.4
+  "sugars": 63.4,
+  "vitaminD": 0.0
  },
  "milk": {
+  "b12": 0.45,
+  "calcium": 113.0,
   "calories": 61,
   "carbs": 4.8,
   "fat": 3.2,
   "fiber": 0.0,
+  "iron": 0.03,
   "kj": 254.0,
   "phosphorus": 84.0,
   "potassium": 132.0,
@@ -2447,13 +3146,17 @@
   "salt": 0.107,
   "sat_fat": 1.9,
   "src": "USDA SR Legacy",
-  "sugars": 5.0
+  "sugars": 5.0,
+  "vitaminD": 1.3
  },
  "milk chocolate": {
+  "b12": 0.28,
+  "calcium": 73.0,
   "calories": 598,
   "carbs": 45.9,
   "fat": 42.6,
   "fiber": 10.9,
+  "iron": 11.9,
   "kj": 2500.0,
   "phosphorus": 308.0,
   "potassium": 715.0,
@@ -2461,13 +3164,17 @@
   "salt": 0.05,
   "sat_fat": 24.5,
   "src": "USDA SR Legacy",
-  "sugars": 24.0
+  "sugars": 24.0,
+  "vitaminD": 0.0
  },
  "minced beef": {
+  "b12": 2.17,
+  "calcium": 15.0,
   "calories": 215,
   "carbs": 0.0,
   "fat": 15.0,
   "fiber": 0.0,
+  "iron": 2.09,
   "kj": 898.0,
   "phosphorus": 171.0,
   "potassium": 295.0,
@@ -2475,13 +3182,17 @@
   "salt": 0.165,
   "sat_fat": 5.7,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.1
  },
  "minced garlic": {
+  "b12": 0.0,
+  "calcium": 181.0,
   "calories": 149,
   "carbs": 33.1,
   "fat": 0.5,
   "fiber": 2.1,
+  "iron": 1.7,
   "kj": 623.0,
   "phosphorus": 153.0,
   "potassium": 401.0,
@@ -2489,13 +3200,17 @@
   "salt": 0.043,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 1.0
+  "sugars": 1.0,
+  "vitaminD": 0.0
  },
  "minced lamb": {
+  "b12": 2.39,
+  "calcium": 12.0,
   "calories": 267,
   "carbs": 0.0,
   "fat": 21.6,
   "fiber": 0.0,
+  "iron": 1.57,
   "kj": 1120.0,
   "phosphorus": 160.0,
   "potassium": 230.0,
@@ -2503,13 +3218,17 @@
   "salt": 0.145,
   "sat_fat": 9.5,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "mint": {
+  "b12": 0.0,
+  "calcium": 243.0,
   "calories": 70,
   "carbs": 14.9,
   "fat": 0.9,
   "fiber": 8.0,
+  "iron": 5.08,
   "kj": 293.0,
   "phosphorus": 73.0,
   "potassium": 569.0,
@@ -2517,13 +3236,17 @@
   "salt": 0.077,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "mint leaves": {
+  "b12": 0.0,
+  "calcium": 243.0,
   "calories": 70,
   "carbs": 14.9,
   "fat": 0.9,
   "fiber": 8.0,
+  "iron": 5.08,
   "kj": 293.0,
   "phosphorus": 73.0,
   "potassium": 569.0,
@@ -2531,13 +3254,17 @@
   "salt": 0.077,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "mixed berries": {
+  "b12": 0.0,
+  "calcium": 16.0,
   "calories": 32,
   "carbs": 7.7,
   "fat": 0.3,
   "fiber": 2.0,
+  "iron": 0.41,
   "kj": 136.0,
   "phosphorus": 24.0,
   "potassium": 153.0,
@@ -2545,13 +3272,17 @@
   "salt": 0.003,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 4.9
+  "sugars": 4.9,
+  "vitaminD": 0.0
  },
  "mixed herbs": {
+  "b12": 0.0,
+  "calcium": 177.0,
   "calories": 23,
   "carbs": 2.6,
   "fat": 0.6,
   "fiber": 1.6,
+  "iron": 3.17,
   "kj": 94.0,
   "phosphorus": 56.0,
   "potassium": 295.0,
@@ -2559,13 +3290,17 @@
   "salt": 0.01,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.3
+  "sugars": 0.3,
+  "vitaminD": 0.0
  },
  "mozzarella": {
+  "b12": 0.88,
+  "calcium": 711.0,
   "calories": 410,
   "carbs": 2.1,
   "fat": 33.8,
   "fiber": 0.0,
+  "iron": 0.16,
   "kj": 1720.0,
   "phosphorus": 460.0,
   "potassium": 76.0,
@@ -2573,13 +3308,17 @@
   "salt": 1.61,
   "sat_fat": 19.4,
   "src": "USDA SR Legacy",
-  "sugars": 0.3
+  "sugars": 0.3,
+  "vitaminD": 1.0
  },
  "mushroom": {
+  "b12": 0.04,
+  "calcium": 3.0,
   "calories": 22,
   "carbs": 3.3,
   "fat": 0.3,
   "fiber": 1.0,
+  "iron": 0.5,
   "kj": 93.0,
   "phosphorus": 86.0,
   "potassium": 318.0,
@@ -2587,13 +3326,17 @@
   "salt": 0.013,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 2.0
+  "sugars": 2.0,
+  "vitaminD": 0.2
  },
  "mushrooms": {
+  "b12": 0.04,
+  "calcium": 3.0,
   "calories": 22,
   "carbs": 3.3,
   "fat": 0.3,
   "fiber": 1.0,
+  "iron": 0.5,
   "kj": 93.0,
   "phosphorus": 86.0,
   "potassium": 318.0,
@@ -2601,13 +3344,17 @@
   "salt": 0.013,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 2.0
+  "sugars": 2.0,
+  "vitaminD": 0.2
  },
  "natural yogurt": {
+  "b12": 0.37,
+  "calcium": 121.0,
   "calories": 61,
   "carbs": 4.7,
   "fat": 3.2,
   "fiber": 0.0,
+  "iron": 0.05,
   "kj": 257.0,
   "phosphorus": 95.0,
   "potassium": 155.0,
@@ -2615,13 +3362,17 @@
   "salt": 0.115,
   "sat_fat": 2.1,
   "src": "USDA SR Legacy",
-  "sugars": 4.7
+  "sugars": 4.7,
+  "vitaminD": 0.1
  },
  "new potatoes": {
+  "b12": 0.0,
+  "calcium": 12.0,
   "calories": 77,
   "carbs": 17.5,
   "fat": 0.1,
   "fiber": 2.1,
+  "iron": 0.81,
   "kj": 322.0,
   "phosphorus": 57.0,
   "potassium": 425.0,
@@ -2629,13 +3380,17 @@
   "salt": 0.015,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.8
+  "sugars": 0.8,
+  "vitaminD": 0.0
  },
  "olive oil": {
+  "b12": 0.0,
+  "calcium": 1.0,
   "calories": 884,
   "carbs": 0.0,
   "fat": 100.0,
   "fiber": 0.0,
+  "iron": 0.56,
   "kj": 3700.0,
   "phosphorus": 0.0,
   "potassium": 1.0,
@@ -2643,13 +3398,17 @@
   "salt": 0.005,
   "sat_fat": 13.8,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "onion": {
+  "b12": 0.0,
+  "calcium": 23.0,
   "calories": 40,
   "carbs": 9.3,
   "fat": 0.1,
   "fiber": 1.7,
+  "iron": 0.21,
   "kj": 166.0,
   "phosphorus": 29.0,
   "potassium": 146.0,
@@ -2657,13 +3416,17 @@
   "salt": 0.01,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 4.2
+  "sugars": 4.2,
+  "vitaminD": 0.0
  },
  "onions": {
+  "b12": 0.0,
+  "calcium": 23.0,
   "calories": 40,
   "carbs": 9.3,
   "fat": 0.1,
   "fiber": 1.7,
+  "iron": 0.21,
   "kj": 166.0,
   "phosphorus": 29.0,
   "potassium": 146.0,
@@ -2671,13 +3434,17 @@
   "salt": 0.01,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 4.2
+  "sugars": 4.2,
+  "vitaminD": 0.0
  },
  "orange": {
+  "b12": 0.0,
+  "calcium": 40.0,
   "calories": 47,
   "carbs": 11.8,
   "fat": 0.1,
   "fiber": 2.4,
+  "iron": 0.1,
   "kj": 197.0,
   "phosphorus": 14.0,
   "potassium": 181.0,
@@ -2685,13 +3452,17 @@
   "salt": 0.0,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 9.3
+  "sugars": 9.3,
+  "vitaminD": 0.0
  },
  "orange juice": {
+  "b12": 0.0,
+  "calcium": 40.0,
   "calories": 47,
   "carbs": 11.8,
   "fat": 0.1,
   "fiber": 2.4,
+  "iron": 0.1,
   "kj": 197.0,
   "phosphorus": 14.0,
   "potassium": 181.0,
@@ -2699,13 +3470,17 @@
   "salt": 0.0,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 9.3
+  "sugars": 9.3,
+  "vitaminD": 0.0
  },
  "orange zest": {
+  "b12": 0.0,
+  "calcium": 40.0,
   "calories": 47,
   "carbs": 11.8,
   "fat": 0.1,
   "fiber": 2.4,
+  "iron": 0.1,
   "kj": 197.0,
   "phosphorus": 14.0,
   "potassium": 181.0,
@@ -2713,13 +3488,17 @@
   "salt": 0.0,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 9.3
+  "sugars": 9.3,
+  "vitaminD": 0.0
  },
  "oranges": {
+  "b12": 0.0,
+  "calcium": 40.0,
   "calories": 47,
   "carbs": 11.8,
   "fat": 0.1,
   "fiber": 2.4,
+  "iron": 0.1,
   "kj": 197.0,
   "phosphorus": 14.0,
   "potassium": 181.0,
@@ -2727,13 +3506,17 @@
   "salt": 0.0,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 9.3
+  "sugars": 9.3,
+  "vitaminD": 0.0
  },
  "oregano": {
+  "b12": 0.0,
+  "calcium": 177.0,
   "calories": 23,
   "carbs": 2.6,
   "fat": 0.6,
   "fiber": 1.6,
+  "iron": 3.17,
   "kj": 94.0,
   "phosphorus": 56.0,
   "potassium": 295.0,
@@ -2741,13 +3524,17 @@
   "salt": 0.01,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.3
+  "sugars": 0.3,
+  "vitaminD": 0.0
  },
  "parmesan": {
+  "b12": 0.88,
+  "calcium": 711.0,
   "calories": 410,
   "carbs": 2.1,
   "fat": 33.8,
   "fiber": 0.0,
+  "iron": 0.16,
   "kj": 1720.0,
   "phosphorus": 460.0,
   "potassium": 76.0,
@@ -2755,13 +3542,17 @@
   "salt": 1.61,
   "sat_fat": 19.4,
   "src": "USDA SR Legacy",
-  "sugars": 0.3
+  "sugars": 0.3,
+  "vitaminD": 1.0
  },
  "parsley": {
+  "b12": 0.0,
+  "calcium": 138.0,
   "calories": 36,
   "carbs": 6.3,
   "fat": 0.8,
   "fiber": 3.3,
+  "iron": 6.2,
   "kj": 151.0,
   "phosphorus": 58.0,
   "potassium": 554.0,
@@ -2769,13 +3560,17 @@
   "salt": 0.14,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 0.8
+  "sugars": 0.8,
+  "vitaminD": 0.0
  },
  "passata": {
+  "b12": 0.0,
+  "calcium": 36.0,
   "calories": 82,
   "carbs": 18.9,
   "fat": 0.5,
   "fiber": 4.1,
+  "iron": 2.98,
   "kj": 343.0,
   "phosphorus": 83.0,
   "potassium": 1010.0,
@@ -2783,13 +3578,17 @@
   "salt": 0.147,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 12.2
+  "sugars": 12.2,
+  "vitaminD": 0.0
  },
  "pearl barley": {
+  "b12": 0.0,
+  "calcium": 29.0,
   "calories": 352,
   "carbs": 77.7,
   "fat": 1.2,
   "fiber": 15.6,
+  "iron": 2.5,
   "kj": 1470.0,
   "phosphorus": 221.0,
   "potassium": 280.0,
@@ -2797,13 +3596,17 @@
   "salt": 0.022,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 0.8
+  "sugars": 0.8,
+  "vitaminD": 0.0
  },
  "pepper": {
+  "b12": 0.0,
+  "calcium": 10.0,
   "calories": 20,
   "carbs": 4.6,
   "fat": 0.2,
   "fiber": 1.7,
+  "iron": 0.34,
   "kj": 84.0,
   "phosphorus": 20.0,
   "potassium": 175.0,
@@ -2811,13 +3614,17 @@
   "salt": 0.007,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 2.4
+  "sugars": 2.4,
+  "vitaminD": 0.0
  },
  "peppermint": {
+  "b12": 0.0,
+  "calcium": 243.0,
   "calories": 70,
   "carbs": 14.9,
   "fat": 0.9,
   "fiber": 8.0,
+  "iron": 5.08,
   "kj": 293.0,
   "phosphorus": 73.0,
   "potassium": 569.0,
@@ -2825,13 +3632,17 @@
   "salt": 0.077,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "peppers": {
+  "b12": 0.0,
+  "calcium": 10.0,
   "calories": 20,
   "carbs": 4.6,
   "fat": 0.2,
   "fiber": 1.7,
+  "iron": 0.34,
   "kj": 84.0,
   "phosphorus": 20.0,
   "potassium": 175.0,
@@ -2839,13 +3650,17 @@
   "salt": 0.007,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 2.4
+  "sugars": 2.4,
+  "vitaminD": 0.0
  },
  "pinch salt": {
+  "b12": 0.0,
+  "calcium": 24.0,
   "calories": 0,
   "carbs": 0.0,
   "fat": 0.0,
   "fiber": 0.0,
+  "iron": 0.33,
   "kj": 0.0,
   "phosphorus": 0.0,
   "potassium": 8.0,
@@ -2853,13 +3668,17 @@
   "salt": 97.0,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "pine nuts": {
+  "b12": 0.0,
+  "calcium": 78.0,
   "calories": 584,
   "carbs": 20.0,
   "fat": 51.5,
   "fiber": 8.6,
+  "iron": 5.25,
   "kj": 2440.0,
   "phosphorus": 660.0,
   "potassium": 645.0,
@@ -2867,13 +3686,17 @@
   "salt": 0.022,
   "sat_fat": 4.5,
   "src": "USDA SR Legacy",
-  "sugars": 2.6
+  "sugars": 2.6,
+  "vitaminD": 0.0
  },
  "pinto beans": {
+  "b12": 0.0,
+  "calcium": 83.0,
   "calories": 337,
   "carbs": 61.3,
   "fat": 1.1,
   "fiber": 15.2,
+  "iron": 6.69,
   "kj": 1410.0,
   "phosphorus": 406.0,
   "potassium": 1360.0,
@@ -2881,13 +3704,17 @@
   "salt": 0.03,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 2.1
+  "sugars": 2.1,
+  "vitaminD": 0.0
  },
  "pistachio": {
+  "b12": 0.0,
+  "calcium": 105.0,
   "calories": 560,
   "carbs": 27.2,
   "fat": 45.3,
   "fiber": 10.6,
+  "iron": 3.92,
   "kj": 2340.0,
   "phosphorus": 490.0,
   "potassium": 1020.0,
@@ -2895,13 +3722,17 @@
   "salt": 0.003,
   "sat_fat": 5.9,
   "src": "USDA SR Legacy",
-  "sugars": 7.7
+  "sugars": 7.7,
+  "vitaminD": 0.0
  },
  "pistachios": {
+  "b12": 0.0,
+  "calcium": 105.0,
   "calories": 560,
   "carbs": 27.2,
   "fat": 45.3,
   "fiber": 10.6,
+  "iron": 3.92,
   "kj": 2340.0,
   "phosphorus": 490.0,
   "potassium": 1020.0,
@@ -2909,13 +3740,17 @@
   "salt": 0.003,
   "sat_fat": 5.9,
   "src": "USDA SR Legacy",
-  "sugars": 7.7
+  "sugars": 7.7,
+  "vitaminD": 0.0
  },
  "plain flour": {
+  "b12": 0.0,
+  "calcium": 15.0,
   "calories": 364,
   "carbs": 76.3,
   "fat": 1.0,
   "fiber": 2.7,
+  "iron": 4.64,
   "kj": 1520.0,
   "phosphorus": 108.0,
   "potassium": 107.0,
@@ -2923,13 +3758,17 @@
   "salt": 0.005,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 0.3
+  "sugars": 0.3,
+  "vitaminD": 0.0
  },
  "plain yogurt": {
+  "b12": 0.37,
+  "calcium": 121.0,
   "calories": 61,
   "carbs": 4.7,
   "fat": 3.2,
   "fiber": 0.0,
+  "iron": 0.05,
   "kj": 257.0,
   "phosphorus": 95.0,
   "potassium": 155.0,
@@ -2937,13 +3776,17 @@
   "salt": 0.115,
   "sat_fat": 2.1,
   "src": "USDA SR Legacy",
-  "sugars": 4.7
+  "sugars": 4.7,
+  "vitaminD": 0.1
  },
  "plum tomatoes": {
+  "b12": 0.0,
+  "calcium": 10.0,
   "calories": 18,
   "carbs": 3.9,
   "fat": 0.2,
   "fiber": 1.2,
+  "iron": 0.27,
   "kj": 74.0,
   "phosphorus": 24.0,
   "potassium": 237.0,
@@ -2951,13 +3794,17 @@
   "salt": 0.013,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 2.6
+  "sugars": 2.6,
+  "vitaminD": 0.0
  },
  "potato": {
+  "b12": 0.0,
+  "calcium": 12.0,
   "calories": 77,
   "carbs": 17.5,
   "fat": 0.1,
   "fiber": 2.1,
+  "iron": 0.81,
   "kj": 322.0,
   "phosphorus": 57.0,
   "potassium": 425.0,
@@ -2965,13 +3812,17 @@
   "salt": 0.015,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.8
+  "sugars": 0.8,
+  "vitaminD": 0.0
  },
  "potatoes": {
+  "b12": 0.0,
+  "calcium": 12.0,
   "calories": 77,
   "carbs": 17.5,
   "fat": 0.1,
   "fiber": 2.1,
+  "iron": 0.81,
   "kj": 322.0,
   "phosphorus": 57.0,
   "potassium": 425.0,
@@ -2979,13 +3830,17 @@
   "salt": 0.015,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.8
+  "sugars": 0.8,
+  "vitaminD": 0.0
  },
  "prawn": {
+  "b12": 3.18,
+  "calcium": 12.0,
   "calories": 142,
   "carbs": 0.0,
   "fat": 6.3,
   "fiber": 0.0,
+  "iron": 0.8,
   "kj": 594.0,
   "phosphorus": 200.0,
   "potassium": 490.0,
@@ -2993,13 +3848,17 @@
   "salt": 0.11,
   "sat_fat": 1.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "prawns": {
+  "b12": 3.18,
+  "calcium": 12.0,
   "calories": 142,
   "carbs": 0.0,
   "fat": 6.3,
   "fiber": 0.0,
+  "iron": 0.8,
   "kj": 594.0,
   "phosphorus": 200.0,
   "potassium": 490.0,
@@ -3007,13 +3866,17 @@
   "salt": 0.11,
   "sat_fat": 1.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "pumpkin": {
+  "b12": 0.0,
+  "calcium": 21.0,
   "calories": 26,
   "carbs": 6.5,
   "fat": 0.1,
   "fiber": 0.5,
+  "iron": 0.8,
   "kj": 109.0,
   "phosphorus": 44.0,
   "potassium": 340.0,
@@ -3021,13 +3884,17 @@
   "salt": 0.003,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 2.8
+  "sugars": 2.8,
+  "vitaminD": 0.0
  },
  "puy lentils": {
+  "b12": 0.0,
+  "calcium": 35.0,
   "calories": 352,
   "carbs": 63.4,
   "fat": 1.1,
   "fiber": 10.7,
+  "iron": 6.51,
   "kj": 1470.0,
   "phosphorus": 281.0,
   "potassium": 677.0,
@@ -3035,13 +3902,17 @@
   "salt": 0.015,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 2.0
+  "sugars": 2.0,
+  "vitaminD": 0.0
  },
  "radish": {
+  "b12": 0.0,
+  "calcium": 25.0,
   "calories": 16,
   "carbs": 3.4,
   "fat": 0.1,
   "fiber": 1.6,
+  "iron": 0.34,
   "kj": 66.0,
   "phosphorus": 20.0,
   "potassium": 233.0,
@@ -3049,13 +3920,17 @@
   "salt": 0.098,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 1.9
+  "sugars": 1.9,
+  "vitaminD": 0.0
  },
  "radishes": {
+  "b12": 0.0,
+  "calcium": 25.0,
   "calories": 16,
   "carbs": 3.4,
   "fat": 0.1,
   "fiber": 1.6,
+  "iron": 0.34,
   "kj": 66.0,
   "phosphorus": 20.0,
   "potassium": 233.0,
@@ -3063,13 +3938,17 @@
   "salt": 0.098,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 1.9
+  "sugars": 1.9,
+  "vitaminD": 0.0
  },
  "raisin": {
+  "b12": 0.0,
+  "calcium": 62.0,
   "calories": 299,
   "carbs": 79.3,
   "fat": 0.2,
   "fiber": 4.5,
+  "iron": 1.79,
   "kj": 1250.0,
   "phosphorus": 98.0,
   "potassium": 744.0,
@@ -3077,13 +3956,17 @@
   "salt": 0.065,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 65.2
+  "sugars": 65.2,
+  "vitaminD": 0.0
  },
  "raisins": {
+  "b12": 0.0,
+  "calcium": 62.0,
   "calories": 299,
   "carbs": 79.3,
   "fat": 0.2,
   "fiber": 4.5,
+  "iron": 1.79,
   "kj": 1250.0,
   "phosphorus": 98.0,
   "potassium": 744.0,
@@ -3091,13 +3974,17 @@
   "salt": 0.065,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 65.2
+  "sugars": 65.2,
+  "vitaminD": 0.0
  },
  "raspberries": {
+  "b12": 0.0,
+  "calcium": 16.0,
   "calories": 32,
   "carbs": 7.7,
   "fat": 0.3,
   "fiber": 2.0,
+  "iron": 0.41,
   "kj": 136.0,
   "phosphorus": 24.0,
   "potassium": 153.0,
@@ -3105,13 +3992,17 @@
   "salt": 0.003,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 4.9
+  "sugars": 4.9,
+  "vitaminD": 0.0
  },
  "red cabbage": {
+  "b12": 0.0,
+  "calcium": 40.0,
   "calories": 25,
   "carbs": 5.8,
   "fat": 0.1,
   "fiber": 2.5,
+  "iron": 0.47,
   "kj": 103.0,
   "phosphorus": 26.0,
   "potassium": 170.0,
@@ -3119,13 +4010,17 @@
   "salt": 0.045,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 3.2
+  "sugars": 3.2,
+  "vitaminD": 0.0
  },
  "red chilli": {
+  "b12": 0.0,
+  "calcium": 10.0,
   "calories": 20,
   "carbs": 4.6,
   "fat": 0.2,
   "fiber": 1.7,
+  "iron": 0.34,
   "kj": 84.0,
   "phosphorus": 20.0,
   "potassium": 175.0,
@@ -3133,13 +4028,17 @@
   "salt": 0.007,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 2.4
+  "sugars": 2.4,
+  "vitaminD": 0.0
  },
  "red lentils": {
+  "b12": 0.0,
+  "calcium": 35.0,
   "calories": 352,
   "carbs": 63.4,
   "fat": 1.1,
   "fiber": 10.7,
+  "iron": 6.51,
   "kj": 1470.0,
   "phosphorus": 281.0,
   "potassium": 677.0,
@@ -3147,13 +4046,17 @@
   "salt": 0.015,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 2.0
+  "sugars": 2.0,
+  "vitaminD": 0.0
  },
  "red onion": {
+  "b12": 0.0,
+  "calcium": 23.0,
   "calories": 40,
   "carbs": 9.3,
   "fat": 0.1,
   "fiber": 1.7,
+  "iron": 0.21,
   "kj": 166.0,
   "phosphorus": 29.0,
   "potassium": 146.0,
@@ -3161,13 +4064,17 @@
   "salt": 0.01,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 4.2
+  "sugars": 4.2,
+  "vitaminD": 0.0
  },
  "red pepper": {
+  "b12": 0.0,
+  "calcium": 10.0,
   "calories": 20,
   "carbs": 4.6,
   "fat": 0.2,
   "fiber": 1.7,
+  "iron": 0.34,
   "kj": 84.0,
   "phosphorus": 20.0,
   "potassium": 175.0,
@@ -3175,13 +4082,17 @@
   "salt": 0.007,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 2.4
+  "sugars": 2.4,
+  "vitaminD": 0.0
  },
  "red wine vinegar": {
+  "b12": 0.0,
+  "calcium": 7.0,
   "calories": 21,
   "carbs": 0.9,
   "fat": 0.0,
   "fiber": 0.0,
+  "iron": 0.2,
   "kj": 90.0,
   "phosphorus": 8.0,
   "potassium": 73.0,
@@ -3189,13 +4100,17 @@
   "salt": 0.013,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.4
+  "sugars": 0.4,
+  "vitaminD": 0.0
  },
  "rice": {
+  "b12": 0.0,
+  "calcium": 28.0,
   "calories": 365,
   "carbs": 80.0,
   "fat": 0.7,
   "fiber": 1.3,
+  "iron": 0.8,
   "kj": 1530.0,
   "phosphorus": 115.0,
   "potassium": 115.0,
@@ -3203,13 +4118,17 @@
   "salt": 0.013,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 0.1
+  "sugars": 0.1,
+  "vitaminD": 0.0
  },
  "rice vinegar": {
+  "b12": 0.0,
+  "calcium": 7.0,
   "calories": 21,
   "carbs": 0.9,
   "fat": 0.0,
   "fiber": 0.0,
+  "iron": 0.2,
   "kj": 90.0,
   "phosphorus": 8.0,
   "potassium": 73.0,
@@ -3217,13 +4136,17 @@
   "salt": 0.013,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.4
+  "sugars": 0.4,
+  "vitaminD": 0.0
  },
  "ripe banana": {
+  "b12": 0.0,
+  "calcium": 5.0,
   "calories": 89,
   "carbs": 22.8,
   "fat": 0.3,
   "fiber": 2.6,
+  "iron": 0.26,
   "kj": 371.0,
   "phosphorus": 22.0,
   "potassium": 358.0,
@@ -3231,13 +4154,17 @@
   "salt": 0.003,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 12.2
+  "sugars": 12.2,
+  "vitaminD": 0.0
  },
  "risotto rice": {
+  "b12": 0.0,
+  "calcium": 28.0,
   "calories": 365,
   "carbs": 80.0,
   "fat": 0.7,
   "fiber": 1.3,
+  "iron": 0.8,
   "kj": 1530.0,
   "phosphorus": 115.0,
   "potassium": 115.0,
@@ -3245,13 +4172,17 @@
   "salt": 0.013,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 0.1
+  "sugars": 0.1,
+  "vitaminD": 0.0
  },
  "rock salt": {
+  "b12": 0.0,
+  "calcium": 24.0,
   "calories": 0,
   "carbs": 0.0,
   "fat": 0.0,
   "fiber": 0.0,
+  "iron": 0.33,
   "kj": 0.0,
   "phosphorus": 0.0,
   "potassium": 8.0,
@@ -3259,13 +4190,17 @@
   "salt": 97.0,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "rosemary": {
+  "b12": 0.0,
+  "calcium": 177.0,
   "calories": 23,
   "carbs": 2.6,
   "fat": 0.6,
   "fiber": 1.6,
+  "iron": 3.17,
   "kj": 94.0,
   "phosphorus": 56.0,
   "potassium": 295.0,
@@ -3273,13 +4208,17 @@
   "salt": 0.01,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.3
+  "sugars": 0.3,
+  "vitaminD": 0.0
  },
  "runny honey": {
+  "b12": 0.0,
+  "calcium": 6.0,
   "calories": 304,
   "carbs": 82.4,
   "fat": 0.0,
   "fiber": 0.2,
+  "iron": 0.42,
   "kj": 1270.0,
   "phosphorus": 4.0,
   "potassium": 52.0,
@@ -3287,13 +4226,17 @@
   "salt": 0.01,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 82.1
+  "sugars": 82.1,
+  "vitaminD": 0.0
  },
  "saffron": {
+  "b12": 0.0,
+  "calcium": 111.0,
   "calories": 310,
   "carbs": 65.4,
   "fat": 5.8,
   "fiber": 3.9,
+  "iron": 11.1,
   "kj": 1300.0,
   "phosphorus": 252.0,
   "potassium": 1720.0,
@@ -3301,13 +4244,17 @@
   "salt": 0.37,
   "sat_fat": 1.6,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "saffron threads": {
+  "b12": 0.0,
+  "calcium": 111.0,
   "calories": 310,
   "carbs": 65.4,
   "fat": 5.8,
   "fiber": 3.9,
+  "iron": 11.1,
   "kj": 1300.0,
   "phosphorus": 252.0,
   "potassium": 1720.0,
@@ -3315,13 +4262,17 @@
   "salt": 0.37,
   "sat_fat": 1.6,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "sage": {
+  "b12": 0.0,
+  "calcium": 177.0,
   "calories": 23,
   "carbs": 2.6,
   "fat": 0.6,
   "fiber": 1.6,
+  "iron": 3.17,
   "kj": 94.0,
   "phosphorus": 56.0,
   "potassium": 295.0,
@@ -3329,13 +4280,17 @@
   "salt": 0.01,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.3
+  "sugars": 0.3,
+  "vitaminD": 0.0
  },
  "salmon": {
+  "b12": 3.18,
+  "calcium": 12.0,
   "calories": 142,
   "carbs": 0.0,
   "fat": 6.3,
   "fiber": 0.0,
+  "iron": 0.8,
   "kj": 594.0,
   "phosphorus": 200.0,
   "potassium": 490.0,
@@ -3343,13 +4298,17 @@
   "salt": 0.11,
   "sat_fat": 1.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "salt": {
+  "b12": 0.0,
+  "calcium": 24.0,
   "calories": 0,
   "carbs": 0.0,
   "fat": 0.0,
   "fiber": 0.0,
+  "iron": 0.33,
   "kj": 0.0,
   "phosphorus": 0.0,
   "potassium": 8.0,
@@ -3357,13 +4316,17 @@
   "salt": 97.0,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "salted butter": {
+  "b12": 0.17,
+  "calcium": 24.0,
   "calories": 717,
   "carbs": 0.1,
   "fat": 81.1,
   "fiber": 0.0,
+  "iron": 0.02,
   "kj": 3000.0,
   "phosphorus": 24.0,
   "potassium": 24.0,
@@ -3371,13 +4334,17 @@
   "salt": 0.027,
   "sat_fat": 50.5,
   "src": "USDA SR Legacy",
-  "sugars": 0.1
+  "sugars": 0.1,
+  "vitaminD": 0.0
  },
  "sea salt": {
+  "b12": 0.0,
+  "calcium": 24.0,
   "calories": 0,
   "carbs": 0.0,
   "fat": 0.0,
   "fiber": 0.0,
+  "iron": 0.33,
   "kj": 0.0,
   "phosphorus": 0.0,
   "potassium": 8.0,
@@ -3385,13 +4352,17 @@
   "salt": 97.0,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "self-raising flour": {
+  "b12": 0.0,
+  "calcium": 15.0,
   "calories": 364,
   "carbs": 76.3,
   "fat": 1.0,
   "fiber": 2.7,
+  "iron": 4.64,
   "kj": 1520.0,
   "phosphorus": 108.0,
   "potassium": 107.0,
@@ -3399,13 +4370,17 @@
   "salt": 0.005,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 0.3
+  "sugars": 0.3,
+  "vitaminD": 0.0
  },
  "semi skimmed milk": {
+  "b12": 0.45,
+  "calcium": 113.0,
   "calories": 61,
   "carbs": 4.8,
   "fat": 3.2,
   "fiber": 0.0,
+  "iron": 0.03,
   "kj": 254.0,
   "phosphorus": 84.0,
   "potassium": 132.0,
@@ -3413,13 +4388,17 @@
   "salt": 0.107,
   "sat_fat": 1.9,
   "src": "USDA SR Legacy",
-  "sugars": 5.0
+  "sugars": 5.0,
+  "vitaminD": 1.3
  },
  "sesame": {
+  "b12": 0.0,
+  "calcium": 975.0,
   "calories": 573,
   "carbs": 23.4,
   "fat": 49.7,
   "fiber": 11.8,
+  "iron": 14.6,
   "kj": 2400.0,
   "phosphorus": 629.0,
   "potassium": 468.0,
@@ -3427,13 +4406,17 @@
   "salt": 0.027,
   "sat_fat": 7.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.3
+  "sugars": 0.3,
+  "vitaminD": 0.0
  },
  "sesame oil": {
+  "b12": 0.0,
+  "calcium": 975.0,
   "calories": 573,
   "carbs": 23.4,
   "fat": 49.7,
   "fiber": 11.8,
+  "iron": 14.6,
   "kj": 2400.0,
   "phosphorus": 629.0,
   "potassium": 468.0,
@@ -3441,13 +4424,17 @@
   "salt": 0.027,
   "sat_fat": 7.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.3
+  "sugars": 0.3,
+  "vitaminD": 0.0
  },
  "sesame seeds": {
+  "b12": 0.0,
+  "calcium": 975.0,
   "calories": 573,
   "carbs": 23.4,
   "fat": 49.7,
   "fiber": 11.8,
+  "iron": 14.6,
   "kj": 2400.0,
   "phosphorus": 629.0,
   "potassium": 468.0,
@@ -3455,13 +4442,17 @@
   "salt": 0.027,
   "sat_fat": 7.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.3
+  "sugars": 0.3,
+  "vitaminD": 0.0
  },
  "shallot": {
+  "b12": 0.0,
+  "calcium": 23.0,
   "calories": 40,
   "carbs": 9.3,
   "fat": 0.1,
   "fiber": 1.7,
+  "iron": 0.21,
   "kj": 166.0,
   "phosphorus": 29.0,
   "potassium": 146.0,
@@ -3469,13 +4460,17 @@
   "salt": 0.01,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 4.2
+  "sugars": 4.2,
+  "vitaminD": 0.0
  },
  "shallots": {
+  "b12": 0.0,
+  "calcium": 23.0,
   "calories": 40,
   "carbs": 9.3,
   "fat": 0.1,
   "fiber": 1.7,
+  "iron": 0.21,
   "kj": 166.0,
   "phosphorus": 29.0,
   "potassium": 146.0,
@@ -3483,13 +4478,17 @@
   "salt": 0.01,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 4.2
+  "sugars": 4.2,
+  "vitaminD": 0.0
  },
  "shrimp": {
+  "b12": 0.0,
+  "calcium": 64.0,
   "calories": 85,
   "carbs": 0.0,
   "fat": 0.5,
   "fiber": 0.0,
+  "iron": 0.52,
   "kj": 356.0,
   "phosphorus": 214.0,
   "potassium": 264.0,
@@ -3497,13 +4496,17 @@
   "salt": 0.297,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "single cream": {
+  "b12": 0.16,
+  "calcium": 66.0,
   "calories": 340,
   "carbs": 2.8,
   "fat": 36.1,
   "fiber": 0.0,
+  "iron": 0.1,
   "kj": 1420.0,
   "phosphorus": 58.0,
   "potassium": 95.0,
@@ -3511,13 +4514,17 @@
   "salt": 0.068,
   "sat_fat": 23.0,
   "src": "USDA SR Legacy",
-  "sugars": 2.9
+  "sugars": 2.9,
+  "vitaminD": 1.6
  },
  "skimmed milk": {
+  "b12": 0.45,
+  "calcium": 113.0,
   "calories": 61,
   "carbs": 4.8,
   "fat": 3.2,
   "fiber": 0.0,
+  "iron": 0.03,
   "kj": 254.0,
   "phosphorus": 84.0,
   "potassium": 132.0,
@@ -3525,13 +4532,17 @@
   "salt": 0.107,
   "sat_fat": 1.9,
   "src": "USDA SR Legacy",
-  "sugars": 5.0
+  "sugars": 5.0,
+  "vitaminD": 1.3
  },
  "sour cream": {
+  "b12": 0.16,
+  "calcium": 66.0,
   "calories": 340,
   "carbs": 2.8,
   "fat": 36.1,
   "fiber": 0.0,
+  "iron": 0.1,
   "kj": 1420.0,
   "phosphorus": 58.0,
   "potassium": 95.0,
@@ -3539,13 +4550,17 @@
   "salt": 0.068,
   "sat_fat": 23.0,
   "src": "USDA SR Legacy",
-  "sugars": 2.9
+  "sugars": 2.9,
+  "vitaminD": 1.6
  },
  "spinach": {
+  "b12": 0.0,
+  "calcium": 99.0,
   "calories": 23,
   "carbs": 3.6,
   "fat": 0.4,
   "fiber": 2.2,
+  "iron": 2.71,
   "kj": 97.0,
   "phosphorus": 49.0,
   "potassium": 558.0,
@@ -3553,13 +4568,17 @@
   "salt": 0.198,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 0.4
+  "sugars": 0.4,
+  "vitaminD": 0.0
  },
  "spring greens": {
+  "b12": 0.0,
+  "calcium": 40.0,
   "calories": 25,
   "carbs": 5.8,
   "fat": 0.1,
   "fiber": 2.5,
+  "iron": 0.47,
   "kj": 103.0,
   "phosphorus": 26.0,
   "potassium": 170.0,
@@ -3567,13 +4586,17 @@
   "salt": 0.045,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 3.2
+  "sugars": 3.2,
+  "vitaminD": 0.0
  },
  "spring onions": {
+  "b12": 0.0,
+  "calcium": 23.0,
   "calories": 40,
   "carbs": 9.3,
   "fat": 0.1,
   "fiber": 1.7,
+  "iron": 0.21,
   "kj": 166.0,
   "phosphorus": 29.0,
   "potassium": 146.0,
@@ -3581,13 +4604,17 @@
   "salt": 0.01,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 4.2
+  "sugars": 4.2,
+  "vitaminD": 0.0
  },
  "squash": {
+  "b12": 0.0,
+  "calcium": 21.0,
   "calories": 26,
   "carbs": 6.5,
   "fat": 0.1,
   "fiber": 0.5,
+  "iron": 0.8,
   "kj": 109.0,
   "phosphorus": 44.0,
   "potassium": 340.0,
@@ -3595,13 +4622,17 @@
   "salt": 0.003,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 2.8
+  "sugars": 2.8,
+  "vitaminD": 0.0
  },
  "steak": {
+  "b12": 2.17,
+  "calcium": 15.0,
   "calories": 215,
   "carbs": 0.0,
   "fat": 15.0,
   "fiber": 0.0,
+  "iron": 2.09,
   "kj": 898.0,
   "phosphorus": 171.0,
   "potassium": 295.0,
@@ -3609,13 +4640,17 @@
   "salt": 0.165,
   "sat_fat": 5.7,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.1
  },
  "stewing beef": {
+  "b12": 2.17,
+  "calcium": 15.0,
   "calories": 215,
   "carbs": 0.0,
   "fat": 15.0,
   "fiber": 0.0,
+  "iron": 2.09,
   "kj": 898.0,
   "phosphorus": 171.0,
   "potassium": 295.0,
@@ -3623,13 +4658,17 @@
   "salt": 0.165,
   "sat_fat": 5.7,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.1
  },
  "strawberries": {
+  "b12": 0.0,
+  "calcium": 16.0,
   "calories": 32,
   "carbs": 7.7,
   "fat": 0.3,
   "fiber": 2.0,
+  "iron": 0.41,
   "kj": 136.0,
   "phosphorus": 24.0,
   "potassium": 153.0,
@@ -3637,13 +4676,17 @@
   "salt": 0.003,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 4.9
+  "sugars": 4.9,
+  "vitaminD": 0.0
  },
  "strawberry": {
+  "b12": 0.0,
+  "calcium": 16.0,
   "calories": 32,
   "carbs": 7.7,
   "fat": 0.3,
   "fiber": 2.0,
+  "iron": 0.41,
   "kj": 136.0,
   "phosphorus": 24.0,
   "potassium": 153.0,
@@ -3651,13 +4694,17 @@
   "salt": 0.003,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 4.9
+  "sugars": 4.9,
+  "vitaminD": 0.0
  },
  "sugar": {
+  "b12": 0.0,
+  "calcium": 1.0,
   "calories": 387,
   "carbs": 100.0,
   "fat": 0.0,
   "fiber": 0.0,
+  "iron": 0.05,
   "kj": 1620.0,
   "phosphorus": 0.0,
   "potassium": 2.0,
@@ -3665,13 +4712,17 @@
   "salt": 0.003,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 99.8
+  "sugars": 99.8,
+  "vitaminD": 0.0
  },
  "sultanas": {
+  "b12": 0.0,
+  "calcium": 62.0,
   "calories": 299,
   "carbs": 79.3,
   "fat": 0.2,
   "fiber": 4.5,
+  "iron": 1.79,
   "kj": 1250.0,
   "phosphorus": 98.0,
   "potassium": 744.0,
@@ -3679,13 +4730,17 @@
   "salt": 0.065,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 65.2
+  "sugars": 65.2,
+  "vitaminD": 0.0
  },
  "sun dried tomato paste": {
+  "b12": 0.0,
+  "calcium": 36.0,
   "calories": 82,
   "carbs": 18.9,
   "fat": 0.5,
   "fiber": 4.1,
+  "iron": 2.98,
   "kj": 343.0,
   "phosphorus": 83.0,
   "potassium": 1010.0,
@@ -3693,13 +4748,17 @@
   "salt": 0.147,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 12.2
+  "sugars": 12.2,
+  "vitaminD": 0.0
  },
  "sun dried tomatoes": {
+  "b12": 0.0,
+  "calcium": 10.0,
   "calories": 18,
   "carbs": 3.9,
   "fat": 0.2,
   "fiber": 1.2,
+  "iron": 0.27,
   "kj": 74.0,
   "phosphorus": 24.0,
   "potassium": 237.0,
@@ -3707,13 +4766,17 @@
   "salt": 0.013,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 2.6
+  "sugars": 2.6,
+  "vitaminD": 0.0
  },
  "sunflower": {
+  "b12": 0.0,
+  "calcium": 78.0,
   "calories": 584,
   "carbs": 20.0,
   "fat": 51.5,
   "fiber": 8.6,
+  "iron": 5.25,
   "kj": 2440.0,
   "phosphorus": 660.0,
   "potassium": 645.0,
@@ -3721,13 +4784,17 @@
   "salt": 0.022,
   "sat_fat": 4.5,
   "src": "USDA SR Legacy",
-  "sugars": 2.6
+  "sugars": 2.6,
+  "vitaminD": 0.0
  },
  "sunflower oil": {
+  "b12": 0.0,
+  "calcium": 78.0,
   "calories": 584,
   "carbs": 20.0,
   "fat": 51.5,
   "fiber": 8.6,
+  "iron": 5.25,
   "kj": 2440.0,
   "phosphorus": 660.0,
   "potassium": 645.0,
@@ -3735,13 +4802,17 @@
   "salt": 0.022,
   "sat_fat": 4.5,
   "src": "USDA SR Legacy",
-  "sugars": 2.6
+  "sugars": 2.6,
+  "vitaminD": 0.0
  },
  "sunflower seeds": {
+  "b12": 0.0,
+  "calcium": 78.0,
   "calories": 584,
   "carbs": 20.0,
   "fat": 51.5,
   "fiber": 8.6,
+  "iron": 5.25,
   "kj": 2440.0,
   "phosphorus": 660.0,
   "potassium": 645.0,
@@ -3749,13 +4820,17 @@
   "salt": 0.022,
   "sat_fat": 4.5,
   "src": "USDA SR Legacy",
-  "sugars": 2.6
+  "sugars": 2.6,
+  "vitaminD": 0.0
  },
  "sweet potato": {
+  "b12": 0.0,
+  "calcium": 12.0,
   "calories": 77,
   "carbs": 17.5,
   "fat": 0.1,
   "fiber": 2.1,
+  "iron": 0.81,
   "kj": 322.0,
   "phosphorus": 57.0,
   "potassium": 425.0,
@@ -3763,13 +4838,17 @@
   "salt": 0.015,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.8
+  "sugars": 0.8,
+  "vitaminD": 0.0
  },
  "table salt": {
+  "b12": 0.0,
+  "calcium": 24.0,
   "calories": 0,
   "carbs": 0.0,
   "fat": 0.0,
   "fiber": 0.0,
+  "iron": 0.33,
   "kj": 0.0,
   "phosphorus": 0.0,
   "potassium": 8.0,
@@ -3777,13 +4856,17 @@
   "salt": 97.0,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "tablespoons olive oil": {
+  "b12": 0.0,
+  "calcium": 1.0,
   "calories": 884,
   "carbs": 0.0,
   "fat": 100.0,
   "fiber": 0.0,
+  "iron": 0.56,
   "kj": 3700.0,
   "phosphorus": 0.0,
   "potassium": 1.0,
@@ -3791,13 +4874,17 @@
   "salt": 0.005,
   "sat_fat": 13.8,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "tahini": {
+  "b12": 0.0,
+  "calcium": 975.0,
   "calories": 573,
   "carbs": 23.4,
   "fat": 49.7,
   "fiber": 11.8,
+  "iron": 14.6,
   "kj": 2400.0,
   "phosphorus": 629.0,
   "potassium": 468.0,
@@ -3805,13 +4892,17 @@
   "salt": 0.027,
   "sat_fat": 7.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.3
+  "sugars": 0.3,
+  "vitaminD": 0.0
  },
  "thyme": {
+  "b12": 0.0,
+  "calcium": 177.0,
   "calories": 23,
   "carbs": 2.6,
   "fat": 0.6,
   "fiber": 1.6,
+  "iron": 3.17,
   "kj": 94.0,
   "phosphorus": 56.0,
   "potassium": 295.0,
@@ -3819,13 +4910,17 @@
   "salt": 0.01,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.3
+  "sugars": 0.3,
+  "vitaminD": 0.0
  },
  "tinned tomatoes": {
+  "b12": 0.0,
+  "calcium": 10.0,
   "calories": 18,
   "carbs": 3.9,
   "fat": 0.2,
   "fiber": 1.2,
+  "iron": 0.27,
   "kj": 74.0,
   "phosphorus": 24.0,
   "potassium": 237.0,
@@ -3833,13 +4928,17 @@
   "salt": 0.013,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 2.6
+  "sugars": 2.6,
+  "vitaminD": 0.0
  },
  "to taste salt": {
+  "b12": 0.0,
+  "calcium": 24.0,
   "calories": 0,
   "carbs": 0.0,
   "fat": 0.0,
   "fiber": 0.0,
+  "iron": 0.33,
   "kj": 0.0,
   "phosphorus": 0.0,
   "potassium": 8.0,
@@ -3847,13 +4946,17 @@
   "salt": 97.0,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "tomato": {
+  "b12": 0.0,
+  "calcium": 10.0,
   "calories": 18,
   "carbs": 3.9,
   "fat": 0.2,
   "fiber": 1.2,
+  "iron": 0.27,
   "kj": 74.0,
   "phosphorus": 24.0,
   "potassium": 237.0,
@@ -3861,13 +4964,17 @@
   "salt": 0.013,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 2.6
+  "sugars": 2.6,
+  "vitaminD": 0.0
  },
  "tomato ketchup": {
+  "b12": 0.0,
+  "calcium": 36.0,
   "calories": 82,
   "carbs": 18.9,
   "fat": 0.5,
   "fiber": 4.1,
+  "iron": 2.98,
   "kj": 343.0,
   "phosphorus": 83.0,
   "potassium": 1010.0,
@@ -3875,13 +4982,17 @@
   "salt": 0.147,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 12.2
+  "sugars": 12.2,
+  "vitaminD": 0.0
  },
  "tomato paste": {
+  "b12": 0.0,
+  "calcium": 36.0,
   "calories": 82,
   "carbs": 18.9,
   "fat": 0.5,
   "fiber": 4.1,
+  "iron": 2.98,
   "kj": 343.0,
   "phosphorus": 83.0,
   "potassium": 1010.0,
@@ -3889,13 +5000,17 @@
   "salt": 0.147,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 12.2
+  "sugars": 12.2,
+  "vitaminD": 0.0
  },
  "tomato puree": {
+  "b12": 0.0,
+  "calcium": 36.0,
   "calories": 82,
   "carbs": 18.9,
   "fat": 0.5,
   "fiber": 4.1,
+  "iron": 2.98,
   "kj": 343.0,
   "phosphorus": 83.0,
   "potassium": 1010.0,
@@ -3903,13 +5018,17 @@
   "salt": 0.147,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 12.2
+  "sugars": 12.2,
+  "vitaminD": 0.0
  },
  "tomatoes": {
+  "b12": 0.0,
+  "calcium": 10.0,
   "calories": 18,
   "carbs": 3.9,
   "fat": 0.2,
   "fiber": 1.2,
+  "iron": 0.27,
   "kj": 74.0,
   "phosphorus": 24.0,
   "potassium": 237.0,
@@ -3917,13 +5036,17 @@
   "salt": 0.013,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 2.6
+  "sugars": 2.6,
+  "vitaminD": 0.0
  },
  "tuna": {
+  "b12": 3.18,
+  "calcium": 12.0,
   "calories": 142,
   "carbs": 0.0,
   "fat": 6.3,
   "fiber": 0.0,
+  "iron": 0.8,
   "kj": 594.0,
   "phosphorus": 200.0,
   "potassium": 490.0,
@@ -3931,13 +5054,17 @@
   "salt": 0.11,
   "sat_fat": 1.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "turkey": {
+  "b12": 0.21,
+  "calcium": 5.0,
   "calories": 120,
   "carbs": 0.0,
   "fat": 2.6,
   "fiber": 0.0,
+  "iron": 0.37,
   "kj": 501.0,
   "phosphorus": 213.0,
   "potassium": 334.0,
@@ -3945,13 +5072,17 @@
   "salt": 0.112,
   "sat_fat": 0.6,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "turmeric": {
+  "b12": 0.0,
+  "calcium": 168.0,
   "calories": 312,
   "carbs": 67.1,
   "fat": 3.2,
   "fiber": 22.7,
+  "iron": 55.0,
   "kj": 1300.0,
   "phosphorus": 299.0,
   "potassium": 2080.0,
@@ -3959,13 +5090,17 @@
   "salt": 0.068,
   "sat_fat": 1.8,
   "src": "USDA SR Legacy",
-  "sugars": 3.2
+  "sugars": 3.2,
+  "vitaminD": 0.0
  },
  "unsalted butter": {
+  "b12": 0.17,
+  "calcium": 24.0,
   "calories": 717,
   "carbs": 0.1,
   "fat": 81.1,
   "fiber": 0.0,
+  "iron": 0.02,
   "kj": 3000.0,
   "phosphorus": 24.0,
   "potassium": 24.0,
@@ -3973,13 +5108,17 @@
   "salt": 0.027,
   "sat_fat": 50.5,
   "src": "USDA SR Legacy",
-  "sugars": 0.1
+  "sugars": 0.1,
+  "vitaminD": 0.0
  },
  "vinegar": {
+  "b12": 0.0,
+  "calcium": 7.0,
   "calories": 21,
   "carbs": 0.9,
   "fat": 0.0,
   "fiber": 0.0,
+  "iron": 0.2,
   "kj": 90.0,
   "phosphorus": 8.0,
   "potassium": 73.0,
@@ -3987,13 +5126,17 @@
   "salt": 0.013,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.4
+  "sugars": 0.4,
+  "vitaminD": 0.0
  },
  "walnut": {
+  "b12": 0.0,
+  "calcium": 98.0,
   "calories": 654,
   "carbs": 13.7,
   "fat": 65.2,
   "fiber": 6.7,
+  "iron": 2.91,
   "kj": 2740.0,
   "phosphorus": 346.0,
   "potassium": 441.0,
@@ -4001,13 +5144,17 @@
   "salt": 0.005,
   "sat_fat": 6.1,
   "src": "USDA SR Legacy",
-  "sugars": 2.6
+  "sugars": 2.6,
+  "vitaminD": 0.0
  },
  "walnut halves": {
+  "b12": 0.0,
+  "calcium": 98.0,
   "calories": 654,
   "carbs": 13.7,
   "fat": 65.2,
   "fiber": 6.7,
+  "iron": 2.91,
   "kj": 2740.0,
   "phosphorus": 346.0,
   "potassium": 441.0,
@@ -4015,13 +5162,17 @@
   "salt": 0.005,
   "sat_fat": 6.1,
   "src": "USDA SR Legacy",
-  "sugars": 2.6
+  "sugars": 2.6,
+  "vitaminD": 0.0
  },
  "walnuts": {
+  "b12": 0.0,
+  "calcium": 98.0,
   "calories": 654,
   "carbs": 13.7,
   "fat": 65.2,
   "fiber": 6.7,
+  "iron": 2.91,
   "kj": 2740.0,
   "phosphorus": 346.0,
   "potassium": 441.0,
@@ -4029,13 +5180,17 @@
   "salt": 0.005,
   "sat_fat": 6.1,
   "src": "USDA SR Legacy",
-  "sugars": 2.6
+  "sugars": 2.6,
+  "vitaminD": 0.0
  },
  "watermelon": {
+  "b12": 0.0,
+  "calcium": 7.0,
   "calories": 30,
   "carbs": 7.5,
   "fat": 0.1,
   "fiber": 0.4,
+  "iron": 0.24,
   "kj": 127.0,
   "phosphorus": 11.0,
   "potassium": 112.0,
@@ -4043,13 +5198,17 @@
   "salt": 0.003,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 6.2
+  "sugars": 6.2,
+  "vitaminD": 0.0
  },
  "whipping cream": {
+  "b12": 0.16,
+  "calcium": 66.0,
   "calories": 340,
   "carbs": 2.8,
   "fat": 36.1,
   "fiber": 0.0,
+  "iron": 0.1,
   "kj": 1420.0,
   "phosphorus": 58.0,
   "potassium": 95.0,
@@ -4057,13 +5216,17 @@
   "salt": 0.068,
   "sat_fat": 23.0,
   "src": "USDA SR Legacy",
-  "sugars": 2.9
+  "sugars": 2.9,
+  "vitaminD": 1.6
  },
  "white cabbage": {
+  "b12": 0.0,
+  "calcium": 40.0,
   "calories": 25,
   "carbs": 5.8,
   "fat": 0.1,
   "fiber": 2.5,
+  "iron": 0.47,
   "kj": 103.0,
   "phosphorus": 26.0,
   "potassium": 170.0,
@@ -4071,13 +5234,17 @@
   "salt": 0.045,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 3.2
+  "sugars": 3.2,
+  "vitaminD": 0.0
  },
  "white fish": {
+  "b12": 3.18,
+  "calcium": 12.0,
   "calories": 142,
   "carbs": 0.0,
   "fat": 6.3,
   "fiber": 0.0,
+  "iron": 0.8,
   "kj": 594.0,
   "phosphorus": 200.0,
   "potassium": 490.0,
@@ -4085,13 +5252,17 @@
   "salt": 0.11,
   "sat_fat": 1.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "white onion": {
+  "b12": 0.0,
+  "calcium": 23.0,
   "calories": 40,
   "carbs": 9.3,
   "fat": 0.1,
   "fiber": 1.7,
+  "iron": 0.21,
   "kj": 166.0,
   "phosphorus": 29.0,
   "potassium": 146.0,
@@ -4099,13 +5270,17 @@
   "salt": 0.01,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 4.2
+  "sugars": 4.2,
+  "vitaminD": 0.0
  },
  "white rice": {
+  "b12": 0.0,
+  "calcium": 28.0,
   "calories": 365,
   "carbs": 80.0,
   "fat": 0.7,
   "fiber": 1.3,
+  "iron": 0.8,
   "kj": 1530.0,
   "phosphorus": 115.0,
   "potassium": 115.0,
@@ -4113,13 +5288,17 @@
   "salt": 0.013,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 0.1
+  "sugars": 0.1,
+  "vitaminD": 0.0
  },
  "white sugar": {
+  "b12": 0.0,
+  "calcium": 1.0,
   "calories": 387,
   "carbs": 100.0,
   "fat": 0.0,
   "fiber": 0.0,
+  "iron": 0.05,
   "kj": 1620.0,
   "phosphorus": 0.0,
   "potassium": 2.0,
@@ -4127,13 +5306,17 @@
   "salt": 0.003,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 99.8
+  "sugars": 99.8,
+  "vitaminD": 0.0
  },
  "white wine vinegar": {
+  "b12": 0.0,
+  "calcium": 7.0,
   "calories": 21,
   "carbs": 0.9,
   "fat": 0.0,
   "fiber": 0.0,
+  "iron": 0.2,
   "kj": 90.0,
   "phosphorus": 8.0,
   "potassium": 73.0,
@@ -4141,13 +5324,17 @@
   "salt": 0.013,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.4
+  "sugars": 0.4,
+  "vitaminD": 0.0
  },
  "whole milk": {
+  "b12": 0.45,
+  "calcium": 113.0,
   "calories": 61,
   "carbs": 4.8,
   "fat": 3.2,
   "fiber": 0.0,
+  "iron": 0.03,
   "kj": 254.0,
   "phosphorus": 84.0,
   "potassium": 132.0,
@@ -4155,13 +5342,17 @@
   "salt": 0.107,
   "sat_fat": 1.9,
   "src": "USDA SR Legacy",
-  "sugars": 5.0
+  "sugars": 5.0,
+  "vitaminD": 1.3
  },
  "whole wheat": {
+  "b12": 0.0,
+  "calcium": 34.0,
   "calories": 340,
   "carbs": 72.0,
   "fat": 2.5,
   "fiber": 10.7,
+  "iron": 3.6,
   "kj": 1420.0,
   "phosphorus": 357.0,
   "potassium": 363.0,
@@ -4169,13 +5360,17 @@
   "salt": 0.005,
   "sat_fat": 0.4,
   "src": "USDA SR Legacy",
-  "sugars": 0.4
+  "sugars": 0.4,
+  "vitaminD": 0.0
  },
  "wholegrain flour": {
+  "b12": 0.0,
+  "calcium": 34.0,
   "calories": 340,
   "carbs": 72.0,
   "fat": 2.5,
   "fiber": 10.7,
+  "iron": 3.6,
   "kj": 1420.0,
   "phosphorus": 357.0,
   "potassium": 363.0,
@@ -4183,13 +5378,17 @@
   "salt": 0.005,
   "sat_fat": 0.4,
   "src": "USDA SR Legacy",
-  "sugars": 0.4
+  "sugars": 0.4,
+  "vitaminD": 0.0
  },
  "wholemeal": {
+  "b12": 0.0,
+  "calcium": 34.0,
   "calories": 340,
   "carbs": 72.0,
   "fat": 2.5,
   "fiber": 10.7,
+  "iron": 3.6,
   "kj": 1420.0,
   "phosphorus": 357.0,
   "potassium": 363.0,
@@ -4197,13 +5396,17 @@
   "salt": 0.005,
   "sat_fat": 0.4,
   "src": "USDA SR Legacy",
-  "sugars": 0.4
+  "sugars": 0.4,
+  "vitaminD": 0.0
  },
  "wholemeal flour": {
+  "b12": 0.0,
+  "calcium": 15.0,
   "calories": 364,
   "carbs": 76.3,
   "fat": 1.0,
   "fiber": 2.7,
+  "iron": 4.64,
   "kj": 1520.0,
   "phosphorus": 108.0,
   "potassium": 107.0,
@@ -4211,13 +5414,17 @@
   "salt": 0.005,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 0.3
+  "sugars": 0.3,
+  "vitaminD": 0.0
  },
  "yellow pepper": {
+  "b12": 0.0,
+  "calcium": 10.0,
   "calories": 20,
   "carbs": 4.6,
   "fat": 0.2,
   "fiber": 1.7,
+  "iron": 0.34,
   "kj": 84.0,
   "phosphorus": 20.0,
   "potassium": 175.0,
@@ -4225,13 +5432,17 @@
   "salt": 0.007,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 2.4
+  "sugars": 2.4,
+  "vitaminD": 0.0
  },
  "yoghurt": {
+  "b12": 0.37,
+  "calcium": 121.0,
   "calories": 61,
   "carbs": 4.7,
   "fat": 3.2,
   "fiber": 0.0,
+  "iron": 0.05,
   "kj": 257.0,
   "phosphorus": 95.0,
   "potassium": 155.0,
@@ -4239,13 +5450,17 @@
   "salt": 0.115,
   "sat_fat": 2.1,
   "src": "USDA SR Legacy",
-  "sugars": 4.7
+  "sugars": 4.7,
+  "vitaminD": 0.1
  },
  "yogurt": {
+  "b12": 0.37,
+  "calcium": 121.0,
   "calories": 61,
   "carbs": 4.7,
   "fat": 3.2,
   "fiber": 0.0,
+  "iron": 0.05,
   "kj": 257.0,
   "phosphorus": 95.0,
   "potassium": 155.0,
@@ -4253,13 +5468,17 @@
   "salt": 0.115,
   "sat_fat": 2.1,
   "src": "USDA SR Legacy",
-  "sugars": 4.7
+  "sugars": 4.7,
+  "vitaminD": 0.1
  },
  "zucchini": {
+  "b12": 0.0,
+  "calcium": 16.0,
   "calories": 17,
   "carbs": 3.1,
   "fat": 0.3,
   "fiber": 1.0,
+  "iron": 0.37,
   "kj": 70.0,
   "phosphorus": 38.0,
   "potassium": 261.0,
@@ -4267,13 +5486,17 @@
   "salt": 0.02,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 2.5
+  "sugars": 2.5,
+  "vitaminD": 0.0
  },
  "آرد": {
+  "b12": 0.0,
+  "calcium": 15.0,
   "calories": 364,
   "carbs": 76.3,
   "fat": 1.0,
   "fiber": 2.7,
+  "iron": 4.64,
   "kj": 1520.0,
   "phosphorus": 108.0,
   "potassium": 107.0,
@@ -4281,13 +5504,17 @@
   "salt": 0.005,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 0.3
+  "sugars": 0.3,
+  "vitaminD": 0.0
  },
  "آفتابگردان": {
+  "b12": 0.0,
+  "calcium": 78.0,
   "calories": 584,
   "carbs": 20.0,
   "fat": 51.5,
   "fiber": 8.6,
+  "iron": 5.25,
   "kj": 2440.0,
   "phosphorus": 660.0,
   "potassium": 645.0,
@@ -4295,13 +5522,17 @@
   "salt": 0.022,
   "sat_fat": 4.5,
   "src": "USDA SR Legacy",
-  "sugars": 2.6
+  "sugars": 2.6,
+  "vitaminD": 0.0
  },
  "اسفناج": {
+  "b12": 0.0,
+  "calcium": 99.0,
   "calories": 23,
   "carbs": 3.6,
   "fat": 0.4,
   "fiber": 2.2,
+  "iron": 2.71,
   "kj": 97.0,
   "phosphorus": 49.0,
   "potassium": 558.0,
@@ -4309,13 +5540,17 @@
   "salt": 0.198,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 0.4
+  "sugars": 0.4,
+  "vitaminD": 0.0
  },
  "انار": {
+  "b12": 0.0,
+  "calcium": 11.0,
   "calories": 54,
   "carbs": 13.1,
   "fat": 0.3,
   "fiber": 0.1,
+  "iron": 0.1,
   "kj": 228.0,
   "phosphorus": 11.0,
   "potassium": 214.0,
@@ -4323,13 +5558,17 @@
   "salt": 0.022,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 12.6
+  "sugars": 12.6,
+  "vitaminD": 0.0
  },
  "انگور": {
+  "b12": 0.0,
+  "calcium": 10.0,
   "calories": 69,
   "carbs": 18.1,
   "fat": 0.2,
   "fiber": 0.9,
+  "iron": 0.36,
   "kj": 288.0,
   "phosphorus": 20.0,
   "potassium": 191.0,
@@ -4337,13 +5576,17 @@
   "salt": 0.005,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 15.5
+  "sugars": 15.5,
+  "vitaminD": 0.0
  },
  "بادام": {
+  "b12": 0.0,
+  "calcium": 269.0,
   "calories": 579,
   "carbs": 21.6,
   "fat": 49.9,
   "fiber": 12.5,
+  "iron": 3.71,
   "kj": 2420.0,
   "phosphorus": 481.0,
   "potassium": 733.0,
@@ -4351,13 +5594,17 @@
   "salt": 0.003,
   "sat_fat": 3.8,
   "src": "USDA SR Legacy",
-  "sugars": 4.3
+  "sugars": 4.3,
+  "vitaminD": 0.0
  },
  "بادمجان": {
+  "b12": 0.0,
+  "calcium": 9.0,
   "calories": 25,
   "carbs": 5.9,
   "fat": 0.2,
   "fiber": 3.0,
+  "iron": 0.23,
   "kj": 104.0,
   "phosphorus": 24.0,
   "potassium": 229.0,
@@ -4365,13 +5612,17 @@
   "salt": 0.005,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 3.5
+  "sugars": 3.5,
+  "vitaminD": 0.0
  },
  "برنج": {
+  "b12": 0.0,
+  "calcium": 28.0,
   "calories": 365,
   "carbs": 80.0,
   "fat": 0.7,
   "fiber": 1.3,
+  "iron": 0.8,
   "kj": 1530.0,
   "phosphorus": 115.0,
   "potassium": 115.0,
@@ -4379,13 +5630,17 @@
   "salt": 0.013,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 0.1
+  "sugars": 0.1,
+  "vitaminD": 0.0
  },
  "بلغور": {
+  "b12": 0.0,
+  "calcium": 35.0,
   "calories": 342,
   "carbs": 75.9,
   "fat": 1.3,
   "fiber": 12.5,
+  "iron": 2.46,
   "kj": 1430.0,
   "phosphorus": 300.0,
   "potassium": 410.0,
@@ -4393,13 +5648,17 @@
   "salt": 0.043,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 0.4
+  "sugars": 0.4,
+  "vitaminD": 0.0
  },
  "تخم مرغ": {
+  "b12": 0.89,
+  "calcium": 56.0,
   "calories": 143,
   "carbs": 0.7,
   "fat": 9.5,
   "fiber": 0.0,
+  "iron": 1.75,
   "kj": 599.0,
   "phosphorus": 198.0,
   "potassium": 138.0,
@@ -4407,13 +5666,17 @@
   "salt": 0.355,
   "sat_fat": 3.1,
   "src": "USDA SR Legacy",
-  "sugars": 0.4
+  "sugars": 0.4,
+  "vitaminD": 2.0
  },
  "تربچه": {
+  "b12": 0.0,
+  "calcium": 25.0,
   "calories": 16,
   "carbs": 3.4,
   "fat": 0.1,
   "fiber": 1.6,
+  "iron": 0.34,
   "kj": 66.0,
   "phosphorus": 20.0,
   "potassium": 233.0,
@@ -4421,13 +5684,17 @@
   "salt": 0.098,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 1.9
+  "sugars": 1.9,
+  "vitaminD": 0.0
  },
  "توت فرنگی": {
+  "b12": 0.0,
+  "calcium": 16.0,
   "calories": 32,
   "carbs": 7.7,
   "fat": 0.3,
   "fiber": 2.0,
+  "iron": 0.41,
   "kj": 136.0,
   "phosphorus": 24.0,
   "potassium": 153.0,
@@ -4435,13 +5702,17 @@
   "salt": 0.003,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 4.9
+  "sugars": 4.9,
+  "vitaminD": 0.0
  },
  "جعفری": {
+  "b12": 0.0,
+  "calcium": 138.0,
   "calories": 36,
   "carbs": 6.3,
   "fat": 0.8,
   "fiber": 3.3,
+  "iron": 6.2,
   "kj": 151.0,
   "phosphorus": 58.0,
   "potassium": 554.0,
@@ -4449,13 +5720,17 @@
   "salt": 0.14,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 0.8
+  "sugars": 0.8,
+  "vitaminD": 0.0
  },
  "جو": {
+  "b12": 0.0,
+  "calcium": 29.0,
   "calories": 352,
   "carbs": 77.7,
   "fat": 1.2,
   "fiber": 15.6,
+  "iron": 2.5,
   "kj": 1470.0,
   "phosphorus": 221.0,
   "potassium": 280.0,
@@ -4463,13 +5738,17 @@
   "salt": 0.022,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 0.8
+  "sugars": 0.8,
+  "vitaminD": 0.0
  },
  "خامه": {
+  "b12": 0.16,
+  "calcium": 66.0,
   "calories": 340,
   "carbs": 2.8,
   "fat": 36.1,
   "fiber": 0.0,
+  "iron": 0.1,
   "kj": 1420.0,
   "phosphorus": 58.0,
   "potassium": 95.0,
@@ -4477,13 +5756,17 @@
   "salt": 0.068,
   "sat_fat": 23.0,
   "src": "USDA SR Legacy",
-  "sugars": 2.9
+  "sugars": 2.9,
+  "vitaminD": 1.6
  },
  "خرما": {
+  "b12": 0.0,
+  "calcium": 39.0,
   "calories": 282,
   "carbs": 75.0,
   "fat": 0.4,
   "fiber": 8.0,
+  "iron": 1.02,
   "kj": 1180.0,
   "phosphorus": 62.0,
   "potassium": 656.0,
@@ -4491,13 +5774,17 @@
   "salt": 0.005,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 63.4
+  "sugars": 63.4,
+  "vitaminD": 0.0
  },
  "خیار": {
+  "b12": 0.0,
+  "calcium": 16.0,
   "calories": 15,
   "carbs": 3.6,
   "fat": 0.1,
   "fiber": 0.5,
+  "iron": 0.28,
   "kj": 65.0,
   "phosphorus": 24.0,
   "potassium": 147.0,
@@ -4505,13 +5792,17 @@
   "salt": 0.005,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 1.7
+  "sugars": 1.7,
+  "vitaminD": 0.0
  },
  "دارچین": {
+  "b12": 0.0,
+  "calcium": 1000.0,
   "calories": 247,
   "carbs": 80.6,
   "fat": 1.2,
   "fiber": 53.1,
+  "iron": 8.32,
   "kj": 1040.0,
   "phosphorus": 64.0,
   "potassium": 431.0,
@@ -4519,13 +5810,17 @@
   "salt": 0.025,
   "sat_fat": 0.3,
   "src": "USDA SR Legacy",
-  "sugars": 2.2
+  "sugars": 2.2,
+  "vitaminD": 0.0
  },
  "رب گوجه": {
+  "b12": 0.0,
+  "calcium": 36.0,
   "calories": 82,
   "carbs": 18.9,
   "fat": 0.5,
   "fiber": 4.1,
+  "iron": 2.98,
   "kj": 343.0,
   "phosphorus": 83.0,
   "potassium": 1010.0,
@@ -4533,13 +5828,17 @@
   "salt": 0.147,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 12.2
+  "sugars": 12.2,
+  "vitaminD": 0.0
  },
  "روغن زیتون": {
+  "b12": 0.0,
+  "calcium": 1.0,
   "calories": 884,
   "carbs": 0.0,
   "fat": 100.0,
   "fiber": 0.0,
+  "iron": 0.56,
   "kj": 3700.0,
   "phosphorus": 0.0,
   "potassium": 1.0,
@@ -4547,13 +5846,17 @@
   "salt": 0.005,
   "sat_fat": 13.8,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "ریحان": {
+  "b12": 0.0,
+  "calcium": 177.0,
   "calories": 23,
   "carbs": 2.6,
   "fat": 0.6,
   "fiber": 1.6,
+  "iron": 3.17,
   "kj": 94.0,
   "phosphorus": 56.0,
   "potassium": 295.0,
@@ -4561,13 +5864,17 @@
   "salt": 0.01,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.3
+  "sugars": 0.3,
+  "vitaminD": 0.0
  },
  "زردچوبه": {
+  "b12": 0.0,
+  "calcium": 168.0,
   "calories": 312,
   "carbs": 67.1,
   "fat": 3.2,
   "fiber": 22.7,
+  "iron": 55.0,
   "kj": 1300.0,
   "phosphorus": 299.0,
   "potassium": 2080.0,
@@ -4575,13 +5882,17 @@
   "salt": 0.068,
   "sat_fat": 1.8,
   "src": "USDA SR Legacy",
-  "sugars": 3.2
+  "sugars": 3.2,
+  "vitaminD": 0.0
  },
  "زعفران": {
+  "b12": 0.0,
+  "calcium": 111.0,
   "calories": 310,
   "carbs": 65.4,
   "fat": 5.8,
   "fiber": 3.9,
+  "iron": 11.1,
   "kj": 1300.0,
   "phosphorus": 252.0,
   "potassium": 1720.0,
@@ -4589,13 +5900,17 @@
   "salt": 0.37,
   "sat_fat": 1.6,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "سرکه": {
+  "b12": 0.0,
+  "calcium": 7.0,
   "calories": 21,
   "carbs": 0.9,
   "fat": 0.0,
   "fiber": 0.0,
+  "iron": 0.2,
   "kj": 90.0,
   "phosphorus": 8.0,
   "potassium": 73.0,
@@ -4603,13 +5918,17 @@
   "salt": 0.013,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.4
+  "sugars": 0.4,
+  "vitaminD": 0.0
  },
  "سیب": {
+  "b12": 0.0,
+  "calcium": 6.0,
   "calories": 52,
   "carbs": 13.8,
   "fat": 0.2,
   "fiber": 2.4,
+  "iron": 0.12,
   "kj": 218.0,
   "phosphorus": 11.0,
   "potassium": 107.0,
@@ -4617,13 +5936,17 @@
   "salt": 0.003,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 10.4
+  "sugars": 10.4,
+  "vitaminD": 0.0
  },
  "سیب زمینی": {
+  "b12": 0.0,
+  "calcium": 12.0,
   "calories": 77,
   "carbs": 17.5,
   "fat": 0.1,
   "fiber": 2.1,
+  "iron": 0.81,
   "kj": 322.0,
   "phosphorus": 57.0,
   "potassium": 425.0,
@@ -4631,13 +5954,17 @@
   "salt": 0.015,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.8
+  "sugars": 0.8,
+  "vitaminD": 0.0
  },
  "سیر": {
+  "b12": 0.0,
+  "calcium": 181.0,
   "calories": 149,
   "carbs": 33.1,
   "fat": 0.5,
   "fiber": 2.1,
+  "iron": 1.7,
   "kj": 623.0,
   "phosphorus": 153.0,
   "potassium": 401.0,
@@ -4645,13 +5972,17 @@
   "salt": 0.043,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 1.0
+  "sugars": 1.0,
+  "vitaminD": 0.0
  },
  "شوید": {
+  "b12": 0.0,
+  "calcium": 208.0,
   "calories": 43,
   "carbs": 7.0,
   "fat": 1.1,
   "fiber": 2.1,
+  "iron": 6.59,
   "kj": 180.0,
   "phosphorus": 66.0,
   "potassium": 738.0,
@@ -4659,13 +5990,17 @@
   "salt": 0.152,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "شکر": {
+  "b12": 0.0,
+  "calcium": 1.0,
   "calories": 387,
   "carbs": 100.0,
   "fat": 0.0,
   "fiber": 0.0,
+  "iron": 0.05,
   "kj": 1620.0,
   "phosphorus": 0.0,
   "potassium": 2.0,
@@ -4673,13 +6008,17 @@
   "salt": 0.003,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 99.8
+  "sugars": 99.8,
+  "vitaminD": 0.0
  },
  "شکلات": {
+  "b12": 0.28,
+  "calcium": 73.0,
   "calories": 598,
   "carbs": 45.9,
   "fat": 42.6,
   "fiber": 10.9,
+  "iron": 11.9,
   "kj": 2500.0,
   "phosphorus": 308.0,
   "potassium": 715.0,
@@ -4687,13 +6026,17 @@
   "salt": 0.05,
   "sat_fat": 24.5,
   "src": "USDA SR Legacy",
-  "sugars": 24.0
+  "sugars": 24.0,
+  "vitaminD": 0.0
  },
  "شیر": {
+  "b12": 0.45,
+  "calcium": 113.0,
   "calories": 61,
   "carbs": 4.8,
   "fat": 3.2,
   "fiber": 0.0,
+  "iron": 0.03,
   "kj": 254.0,
   "phosphorus": 84.0,
   "potassium": 132.0,
@@ -4701,13 +6044,17 @@
   "salt": 0.107,
   "sat_fat": 1.9,
   "src": "USDA SR Legacy",
-  "sugars": 5.0
+  "sugars": 5.0,
+  "vitaminD": 1.3
  },
  "عدس": {
+  "b12": 0.0,
+  "calcium": 35.0,
   "calories": 352,
   "carbs": 63.4,
   "fat": 1.1,
   "fiber": 10.7,
+  "iron": 6.51,
   "kj": 1470.0,
   "phosphorus": 281.0,
   "potassium": 677.0,
@@ -4715,13 +6062,17 @@
   "salt": 0.015,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 2.0
+  "sugars": 2.0,
+  "vitaminD": 0.0
  },
  "عسل": {
+  "b12": 0.0,
+  "calcium": 6.0,
   "calories": 304,
   "carbs": 82.4,
   "fat": 0.0,
   "fiber": 0.2,
+  "iron": 0.42,
   "kj": 1270.0,
   "phosphorus": 4.0,
   "potassium": 52.0,
@@ -4729,13 +6080,17 @@
   "salt": 0.01,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 82.1
+  "sugars": 82.1,
+  "vitaminD": 0.0
  },
  "فلفل دلمه": {
+  "b12": 0.0,
+  "calcium": 10.0,
   "calories": 20,
   "carbs": 4.6,
   "fat": 0.2,
   "fiber": 1.7,
+  "iron": 0.34,
   "kj": 84.0,
   "phosphorus": 20.0,
   "potassium": 175.0,
@@ -4743,13 +6098,17 @@
   "salt": 0.007,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 2.4
+  "sugars": 2.4,
+  "vitaminD": 0.0
  },
  "قارچ": {
+  "b12": 0.04,
+  "calcium": 3.0,
   "calories": 22,
   "carbs": 3.3,
   "fat": 0.3,
   "fiber": 1.0,
+  "iron": 0.5,
   "kj": 93.0,
   "phosphorus": 86.0,
   "potassium": 318.0,
@@ -4757,13 +6116,17 @@
   "salt": 0.013,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 2.0
+  "sugars": 2.0,
+  "vitaminD": 0.2
  },
  "لوبیا": {
+  "b12": 0.0,
+  "calcium": 83.0,
   "calories": 337,
   "carbs": 61.3,
   "fat": 1.1,
   "fiber": 15.2,
+  "iron": 6.69,
   "kj": 1410.0,
   "phosphorus": 406.0,
   "potassium": 1360.0,
@@ -4771,13 +6134,17 @@
   "salt": 0.03,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 2.1
+  "sugars": 2.1,
+  "vitaminD": 0.0
  },
  "لیمو": {
+  "b12": 0.0,
+  "calcium": 6.0,
   "calories": 22,
   "carbs": 6.9,
   "fat": 0.2,
   "fiber": 0.3,
+  "iron": 0.08,
   "kj": 91.0,
   "phosphorus": 8.0,
   "potassium": 103.0,
@@ -4785,13 +6152,17 @@
   "salt": 0.003,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 2.5
+  "sugars": 2.5,
+  "vitaminD": 0.0
  },
  "ماست": {
+  "b12": 0.37,
+  "calcium": 121.0,
   "calories": 61,
   "carbs": 4.7,
   "fat": 3.2,
   "fiber": 0.0,
+  "iron": 0.05,
   "kj": 257.0,
   "phosphorus": 95.0,
   "potassium": 155.0,
@@ -4799,13 +6170,17 @@
   "salt": 0.115,
   "sat_fat": 2.1,
   "src": "USDA SR Legacy",
-  "sugars": 4.7
+  "sugars": 4.7,
+  "vitaminD": 0.1
  },
  "ماهی": {
+  "b12": 3.18,
+  "calcium": 12.0,
   "calories": 142,
   "carbs": 0.0,
   "fat": 6.3,
   "fiber": 0.0,
+  "iron": 0.8,
   "kj": 594.0,
   "phosphorus": 200.0,
   "potassium": 490.0,
@@ -4813,13 +6188,17 @@
   "salt": 0.11,
   "sat_fat": 1.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "مرغ": {
+  "b12": 0.21,
+  "calcium": 5.0,
   "calories": 120,
   "carbs": 0.0,
   "fat": 2.6,
   "fiber": 0.0,
+  "iron": 0.37,
   "kj": 501.0,
   "phosphorus": 213.0,
   "potassium": 334.0,
@@ -4827,13 +6206,17 @@
   "salt": 0.112,
   "sat_fat": 0.6,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "موز": {
+  "b12": 0.0,
+  "calcium": 5.0,
   "calories": 89,
   "carbs": 22.8,
   "fat": 0.3,
   "fiber": 2.6,
+  "iron": 0.26,
   "kj": 371.0,
   "phosphorus": 22.0,
   "potassium": 358.0,
@@ -4841,13 +6224,17 @@
   "salt": 0.003,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 12.2
+  "sugars": 12.2,
+  "vitaminD": 0.0
  },
  "میگو": {
+  "b12": 0.0,
+  "calcium": 64.0,
   "calories": 85,
   "carbs": 0.0,
   "fat": 0.5,
   "fiber": 0.0,
+  "iron": 0.52,
   "kj": 356.0,
   "phosphorus": 214.0,
   "potassium": 264.0,
@@ -4855,13 +6242,17 @@
   "salt": 0.297,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "نارگیل": {
+  "b12": 0.0,
+  "calcium": 14.0,
   "calories": 354,
   "carbs": 15.2,
   "fat": 33.5,
   "fiber": 9.0,
+  "iron": 2.43,
   "kj": 1480.0,
   "phosphorus": 113.0,
   "potassium": 356.0,
@@ -4869,13 +6260,17 @@
   "salt": 0.05,
   "sat_fat": 29.7,
   "src": "USDA SR Legacy",
-  "sugars": 6.2
+  "sugars": 6.2,
+  "vitaminD": 0.0
  },
  "نخود": {
+  "b12": 0.0,
+  "calcium": 57.0,
   "calories": 378,
   "carbs": 63.0,
   "fat": 6.0,
   "fiber": 12.2,
+  "iron": 4.31,
   "kj": 1580.0,
   "phosphorus": 252.0,
   "potassium": 718.0,
@@ -4883,13 +6278,17 @@
   "salt": 0.06,
   "sat_fat": 0.6,
   "src": "USDA SR Legacy",
-  "sugars": 10.7
+  "sugars": 10.7,
+  "vitaminD": 0.0
  },
  "نعنا": {
+  "b12": 0.0,
+  "calcium": 243.0,
   "calories": 70,
   "carbs": 14.9,
   "fat": 0.9,
   "fiber": 8.0,
+  "iron": 5.08,
   "kj": 293.0,
   "phosphorus": 73.0,
   "potassium": 569.0,
@@ -4897,13 +6296,17 @@
   "salt": 0.077,
   "sat_fat": 0.2,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "نمک": {
+  "b12": 0.0,
+  "calcium": 24.0,
   "calories": 0,
   "carbs": 0.0,
   "fat": 0.0,
   "fiber": 0.0,
+  "iron": 0.33,
   "kj": 0.0,
   "phosphorus": 0.0,
   "potassium": 8.0,
@@ -4911,13 +6314,17 @@
   "salt": 97.0,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  },
  "هندوانه": {
+  "b12": 0.0,
+  "calcium": 7.0,
   "calories": 30,
   "carbs": 7.5,
   "fat": 0.1,
   "fiber": 0.4,
+  "iron": 0.24,
   "kj": 127.0,
   "phosphorus": 11.0,
   "potassium": 112.0,
@@ -4925,13 +6332,17 @@
   "salt": 0.003,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 6.2
+  "sugars": 6.2,
+  "vitaminD": 0.0
  },
  "هویج": {
+  "b12": 0.0,
+  "calcium": 33.0,
   "calories": 41,
   "carbs": 9.6,
   "fat": 0.2,
   "fiber": 2.8,
+  "iron": 0.3,
   "kj": 173.0,
   "phosphorus": 35.0,
   "potassium": 320.0,
@@ -4939,13 +6350,17 @@
   "salt": 0.173,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 4.7
+  "sugars": 4.7,
+  "vitaminD": 0.0
  },
  "پرتقال": {
+  "b12": 0.0,
+  "calcium": 40.0,
   "calories": 47,
   "carbs": 11.8,
   "fat": 0.1,
   "fiber": 2.4,
+  "iron": 0.1,
   "kj": 197.0,
   "phosphorus": 14.0,
   "potassium": 181.0,
@@ -4953,13 +6368,17 @@
   "salt": 0.0,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 9.3
+  "sugars": 9.3,
+  "vitaminD": 0.0
  },
  "پسته": {
+  "b12": 0.0,
+  "calcium": 105.0,
   "calories": 560,
   "carbs": 27.2,
   "fat": 45.3,
   "fiber": 10.6,
+  "iron": 3.92,
   "kj": 2340.0,
   "phosphorus": 490.0,
   "potassium": 1020.0,
@@ -4967,13 +6386,17 @@
   "salt": 0.003,
   "sat_fat": 5.9,
   "src": "USDA SR Legacy",
-  "sugars": 7.7
+  "sugars": 7.7,
+  "vitaminD": 0.0
  },
  "پنیر": {
+  "b12": 0.88,
+  "calcium": 711.0,
   "calories": 410,
   "carbs": 2.1,
   "fat": 33.8,
   "fiber": 0.0,
+  "iron": 0.16,
   "kj": 1720.0,
   "phosphorus": 460.0,
   "potassium": 76.0,
@@ -4981,13 +6404,17 @@
   "salt": 1.61,
   "sat_fat": 19.4,
   "src": "USDA SR Legacy",
-  "sugars": 0.3
+  "sugars": 0.3,
+  "vitaminD": 1.0
  },
  "پیاز": {
+  "b12": 0.0,
+  "calcium": 23.0,
   "calories": 40,
   "carbs": 9.3,
   "fat": 0.1,
   "fiber": 1.7,
+  "iron": 0.21,
   "kj": 166.0,
   "phosphorus": 29.0,
   "potassium": 146.0,
@@ -4995,13 +6422,17 @@
   "salt": 0.01,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 4.2
+  "sugars": 4.2,
+  "vitaminD": 0.0
  },
  "چغندر": {
+  "b12": 0.0,
+  "calcium": 16.0,
   "calories": 43,
   "carbs": 9.6,
   "fat": 0.2,
   "fiber": 2.8,
+  "iron": 0.8,
   "kj": 180.0,
   "phosphorus": 40.0,
   "potassium": 325.0,
@@ -5009,13 +6440,17 @@
   "salt": 0.195,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 6.8
+  "sugars": 6.8,
+  "vitaminD": 0.0
  },
  "کاکائو": {
+  "b12": 0.0,
+  "calcium": 128.0,
   "calories": 228,
   "carbs": 57.9,
   "fat": 13.7,
   "fiber": 37.0,
+  "iron": 13.9,
   "kj": 952.0,
   "phosphorus": 734.0,
   "potassium": 1520.0,
@@ -5023,13 +6458,17 @@
   "salt": 0.053,
   "sat_fat": 8.1,
   "src": "USDA SR Legacy",
-  "sugars": 1.8
+  "sugars": 1.8,
+  "vitaminD": 0.0
  },
  "کدو": {
+  "b12": 0.0,
+  "calcium": 16.0,
   "calories": 17,
   "carbs": 3.1,
   "fat": 0.3,
   "fiber": 1.0,
+  "iron": 0.37,
   "kj": 70.0,
   "phosphorus": 38.0,
   "potassium": 261.0,
@@ -5037,13 +6476,17 @@
   "salt": 0.02,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 2.5
+  "sugars": 2.5,
+  "vitaminD": 0.0
  },
  "کدو حلوایی": {
+  "b12": 0.0,
+  "calcium": 21.0,
   "calories": 26,
   "carbs": 6.5,
   "fat": 0.1,
   "fiber": 0.5,
+  "iron": 0.8,
   "kj": 109.0,
   "phosphorus": 44.0,
   "potassium": 340.0,
@@ -5051,13 +6494,17 @@
   "salt": 0.003,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 2.8
+  "sugars": 2.8,
+  "vitaminD": 0.0
  },
  "کره": {
+  "b12": 0.17,
+  "calcium": 24.0,
   "calories": 717,
   "carbs": 0.1,
   "fat": 81.1,
   "fiber": 0.0,
+  "iron": 0.02,
   "kj": 3000.0,
   "phosphorus": 24.0,
   "potassium": 24.0,
@@ -5065,13 +6512,17 @@
   "salt": 0.027,
   "sat_fat": 50.5,
   "src": "USDA SR Legacy",
-  "sugars": 0.1
+  "sugars": 0.1,
+  "vitaminD": 0.0
  },
  "کشمش": {
+  "b12": 0.0,
+  "calcium": 62.0,
   "calories": 299,
   "carbs": 79.3,
   "fat": 0.2,
   "fiber": 4.5,
+  "iron": 1.79,
   "kj": 1250.0,
   "phosphorus": 98.0,
   "potassium": 744.0,
@@ -5079,13 +6530,17 @@
   "salt": 0.065,
   "sat_fat": 0.1,
   "src": "USDA SR Legacy",
-  "sugars": 65.2
+  "sugars": 65.2,
+  "vitaminD": 0.0
  },
  "کلم": {
+  "b12": 0.0,
+  "calcium": 40.0,
   "calories": 25,
   "carbs": 5.8,
   "fat": 0.1,
   "fiber": 2.5,
+  "iron": 0.47,
   "kj": 103.0,
   "phosphorus": 26.0,
   "potassium": 170.0,
@@ -5093,13 +6548,17 @@
   "salt": 0.045,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 3.2
+  "sugars": 3.2,
+  "vitaminD": 0.0
  },
  "کنجد": {
+  "b12": 0.0,
+  "calcium": 975.0,
   "calories": 573,
   "carbs": 23.4,
   "fat": 49.7,
   "fiber": 11.8,
+  "iron": 14.6,
   "kj": 2400.0,
   "phosphorus": 629.0,
   "potassium": 468.0,
@@ -5107,13 +6566,17 @@
   "salt": 0.027,
   "sat_fat": 7.0,
   "src": "USDA SR Legacy",
-  "sugars": 0.3
+  "sugars": 0.3,
+  "vitaminD": 0.0
  },
  "گردو": {
+  "b12": 0.0,
+  "calcium": 98.0,
   "calories": 654,
   "carbs": 13.7,
   "fat": 65.2,
   "fiber": 6.7,
+  "iron": 2.91,
   "kj": 2740.0,
   "phosphorus": 346.0,
   "potassium": 441.0,
@@ -5121,13 +6584,17 @@
   "salt": 0.005,
   "sat_fat": 6.1,
   "src": "USDA SR Legacy",
-  "sugars": 2.6
+  "sugars": 2.6,
+  "vitaminD": 0.0
  },
  "گندم": {
+  "b12": 0.0,
+  "calcium": 34.0,
   "calories": 340,
   "carbs": 72.0,
   "fat": 2.5,
   "fiber": 10.7,
+  "iron": 3.6,
   "kj": 1420.0,
   "phosphorus": 357.0,
   "potassium": 363.0,
@@ -5135,13 +6602,17 @@
   "salt": 0.005,
   "sat_fat": 0.4,
   "src": "USDA SR Legacy",
-  "sugars": 0.4
+  "sugars": 0.4,
+  "vitaminD": 0.0
  },
  "گوجه": {
+  "b12": 0.0,
+  "calcium": 10.0,
   "calories": 18,
   "carbs": 3.9,
   "fat": 0.2,
   "fiber": 1.2,
+  "iron": 0.27,
   "kj": 74.0,
   "phosphorus": 24.0,
   "potassium": 237.0,
@@ -5149,13 +6620,17 @@
   "salt": 0.013,
   "sat_fat": 0.0,
   "src": "USDA SR Legacy",
-  "sugars": 2.6
+  "sugars": 2.6,
+  "vitaminD": 0.0
  },
  "گوشت گاو": {
+  "b12": 2.17,
+  "calcium": 15.0,
   "calories": 215,
   "carbs": 0.0,
   "fat": 15.0,
   "fiber": 0.0,
+  "iron": 2.09,
   "kj": 898.0,
   "phosphorus": 171.0,
   "potassium": 295.0,
@@ -5163,13 +6638,17 @@
   "salt": 0.165,
   "sat_fat": 5.7,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.1
  },
  "گوشت گوسفند": {
+  "b12": 2.39,
+  "calcium": 12.0,
   "calories": 267,
   "carbs": 0.0,
   "fat": 21.6,
   "fiber": 0.0,
+  "iron": 1.57,
   "kj": 1120.0,
   "phosphorus": 160.0,
   "potassium": 230.0,
@@ -5177,6 +6656,7 @@
   "salt": 0.145,
   "sat_fat": 9.5,
   "src": "USDA SR Legacy",
-  "sugars": 0.0
+  "sugars": 0.0,
+  "vitaminD": 0.0
  }
 }

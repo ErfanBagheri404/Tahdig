@@ -15,6 +15,11 @@ import com.erfanbagheri.tahdig.util.AllergenDetector
 import com.erfanbagheri.tahdig.util.LeftoverMatcher
 import com.erfanbagheri.tahdig.data.local.entity.JournalEntity
 import com.erfanbagheri.tahdig.util.DietFilter
+import com.erfanbagheri.tahdig.util.MicroNutrients
+import com.erfanbagheri.tahdig.util.NutrientCaps
+import com.erfanbagheri.tahdig.ui.screen.NutritionLabelData
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import com.erfanbagheri.tahdig.util.JournalPhoto
 import com.erfanbagheri.tahdig.util.MealTimeHelper
 import com.erfanbagheri.tahdig.util.RouletteMath
@@ -142,6 +147,46 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), NutritionDay())
 
     fun loadNutritionDay() { _dayTick.value = NutritionLog.dayKey() }
+
+    /**
+     * Today's sodium against the cap (#117). Derived from the day's logged
+     * food IDs rather than a new column: the log already records which dish
+     * was eaten, and re-resolving the label gives the sodium for free with no
+     * DB migration. -1.0 means "nothing measurable" — the card says so rather
+     * than showing a healthy-looking zero.
+     */
+    @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
+    val dailySodium: StateFlow<Double> = _dayTick.flatMapLatest { day ->
+        db.nutritionLogDao().observeDay(day).map { logs ->
+            if (logs.isEmpty()) return@map -1.0
+            val byId = foodDao.byIds(logs.map { it.foodId }).associateBy { it.id }
+            val meals = logs.mapNotNull { log ->
+                val food = byId[log.foodId] ?: return@mapNotNull null
+                val label = NutritionLabelData.of(food.name, food.tags, food.ingredients)
+                if (label.estimated) null
+                else NutritionLabelData.amounts(label)[NutrientCaps.Nutrient.SODIUM]
+            }
+            MicroNutrients.dailyTotal(meals.map { mapOf(NutrientCaps.Nutrient.SODIUM to it) },
+                NutrientCaps.Nutrient.SODIUM)
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), -1.0)
+
+    /**
+     * The user's current sodium cap (#113 merged caps), or null when unset.
+     * The today card (#117) reads this so a sodium line appears only when the
+     * cap exists — an accumulator without a ceiling is clutter.
+     */
+    val sodiumCap: StateFlow<Double?> = combine(
+        SettingsStore.capPreset,
+        SettingsStore.capCustom,
+    ) { presetName, custom ->
+        NutrientCaps.merge(
+            NutrientCaps.Preset.entries.firstOrNull { it.name == presetName },
+            custom.mapNotNull { (k, v) ->
+                NutrientCaps.Nutrient.entries.firstOrNull { it.name == k }?.let { it to v }
+            }.toMap(),
+        )[NutrientCaps.Nutrient.SODIUM]
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
     /** UI bundle for #120: streak state plus whether the freeze prompt shows. */
     data class StreakUi(
