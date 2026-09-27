@@ -48,7 +48,10 @@ class SettingsViewModel(app: Application) : AndroidViewModel(app) {
     fun setCapPreset(name: String?) = SettingsStore.setCapPreset(name)
     fun setCapCustom(nutrient: String, value: Double) = SettingsStore.setCapCustom(nutrient, value)
 
-    fun setThemeMode(mode: Int) = SettingsStore.setThemeMode(mode)
+    fun setThemeMode(mode: Int) {
+        SettingsStore.setThemeMode(mode)
+        com.erfanbagheri.tahdig.widget.DishOfDayWidget.refreshAll(getApplication())
+    }
 
     fun setDailyNotify(context: android.content.Context, enabled: Boolean) =
         SettingsStore.setDailyNotify(context, enabled)
