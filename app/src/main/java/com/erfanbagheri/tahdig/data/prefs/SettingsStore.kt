@@ -69,6 +69,7 @@ object SettingsStore {
     private const val KEY_SAMPLE_PICK = "sample_pick"          // onboarding sample dish id (#126)
     private const val KEY_SAMPLE_DONE = "sample_done"          // celebration acknowledged (#126)
     private const val KEY_SAMPLE_FIRED = "sample_fired"        // 0, else epoch ms of first save/cook (#126)
+    private const val KEY_CAL_SYNC = "calendar_plan_sync"     // auto plan→calendar (#84), off by default
 
     private lateinit var prefs: SharedPreferences
     private val _themeMode = MutableStateFlow(0)
@@ -183,6 +184,17 @@ object SettingsStore {
     // and the default must stay "today's target is today's target".
     private val _carryOver = MutableStateFlow(false)
     val carryOver: StateFlow<Boolean> = _carryOver
+
+    // ── Plan → calendar sync (#84) ─────────────────────────────────
+    // Off by default: writing to the device calendar is a side effect the
+    // user opts into, and the manual export button is always available.
+    private val _calendarSync = MutableStateFlow(false)
+    val calendarSync: StateFlow<Boolean> = _calendarSync
+
+    fun setCalendarSync(on: Boolean) {
+        _calendarSync.value = on
+        if (::prefs.isInitialized) prefs.edit().putBoolean(KEY_CAL_SYNC, on).apply()
+    }
 
     // ── Cook streak (#120) ─────────────────────────────────────────
     private val _freezes = MutableStateFlow(1)
@@ -340,6 +352,7 @@ object SettingsStore {
         _allergenHide.value = prefs.getBoolean(KEY_ALLERGEN_HIDE, false)
         _halalStrict.value = prefs.getBoolean(KEY_HALAL_STRICT, false)
         _carryOver.value = prefs.getBoolean(KEY_CARRY_OVER, false)
+        _calendarSync.value = prefs.getBoolean(KEY_CAL_SYNC, false)
         _pregnancyMode.value = prefs.getBoolean(KEY_PREGNANCY, false)
         _caffeineCap.value = prefs.getInt(KEY_CAFFEINE_CAP, 0).coerceIn(0, 2000)
         _notifyHour.value = prefs.getInt(KEY_NOTIFY_HOUR, 0).let { if (it in 1..23) it else 0 }

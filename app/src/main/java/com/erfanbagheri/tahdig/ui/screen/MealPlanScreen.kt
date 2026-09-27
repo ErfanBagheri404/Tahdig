@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
@@ -33,6 +34,12 @@ import com.erfanbagheri.tahdig.ui.theme.YekanBakh
 import com.erfanbagheri.tahdig.ui.viewmodel.MealPlanViewModel
 import androidx.compose.ui.semantics.semantics
 import com.erfanbagheri.tahdig.ui.components.oneA11yStop
+import androidx.compose.ui.platform.LocalContext
+import com.erfanbagheri.tahdig.data.CalendarExport
+import com.erfanbagheri.tahdig.util.PersianText
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 private val DAYS = listOf("شنبه", "یکشنبه", "دوشنبه", "سه‌شنبه", "چهارشنبه", "پنجشنبه", "جمعه")
 private val MEALS = listOf("صبحانه", "ناهار", "شام")
@@ -48,6 +55,62 @@ fun MealPlanScreen(
     val foods by viewModel.foods.collectAsState()
     val pickerSlotState = androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf<String?>(null) }
     val pickerSlot = pickerSlotState.value
+
+    // #84: export the whole plan to the device calendar. WRITE_CALENDAR is
+    // asked HERE, on the first export — never on the first screen.
+    val context = LocalContext.current
+    val week by viewModel.week.collectAsState()
+    val scope = androidx.compose.runtime.rememberCoroutineScope()
+
+    fun exportMessage(ctx: android.content.Context, msg: String) {
+        android.widget.Toast.makeText(ctx, msg, android.widget.Toast.LENGTH_LONG).show()
+    }
+    suspend fun runExport(
+        ctx: android.content.Context,
+        vm: MealPlanViewModel,
+        plan: List<com.erfanbagheri.tahdig.data.local.entity.MealPlanEntity>,
+    ) {
+        val foodMap = vm.foods.value.associateBy { it.id }
+        val items = plan.mapNotNull { row ->
+            foodMap[row.foodId]?.let { CalendarExport.Item(row.dayIndex, row.mealSlot, it.name) }
+        }
+        if (items.isEmpty()) {
+            exportMessage(ctx, "اول برای چند وعده غذا انتخاب کن.")
+            return
+        }
+        val outcome = withContext(Dispatchers.IO) { CalendarExport.exportWeek(ctx, items) }
+        exportMessage(
+            ctx,
+            when (outcome) {
+                is CalendarExport.Outcome.Done ->
+                    "${PersianText.toPersianDigits(outcome.written)} وعده در تقویم ثبت شد"
+                CalendarExport.Outcome.NoPermission ->
+                    "اجازهٔ تقویم داده نشد — از تنظیمات گوشی می‌توانی بدهی."
+                is CalendarExport.Outcome.Failed -> outcome.reason
+            }
+        )
+    }
+    val permissionLauncher = androidx.activity.compose.rememberLauncherForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions(),
+    ) { granted ->
+        if (granted.values.any { it }) scope.launch { runExport(context, viewModel, week) }
+        else exportMessage(
+            context,
+            "برای نوشتن در تقویم باید اجازهٔ دسترسی بدهی — از تنظیمات گوشی می‌شود دوباره پرسید.",
+        )
+    }
+    fun requestExport() {
+        if (CalendarExport.hasPermission(context)) {
+            scope.launch { runExport(context, viewModel, week) }
+        } else {
+            permissionLauncher.launch(
+                arrayOf(
+                    android.Manifest.permission.READ_CALENDAR,
+                    android.Manifest.permission.WRITE_CALENDAR,
+                )
+            )
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -76,6 +139,21 @@ fun MealPlanScreen(
             )
             Spacer(Modifier.width(8.dp))
             Text("افزودن کل هفته به لیست خرید", fontFamily = YekanBakh)
+        }
+
+        // #84: same week, one tap, into the device calendar. Permission is
+        // asked here on first use — with a Farsi reason, never a silent no-op.
+        TextButton(
+            onClick = { requestExport() },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Icon(
+                Icons.Default.DateRange,
+                contentDescription = null,
+                modifier = Modifier.size(18.dp),
+            )
+            Spacer(Modifier.width(8.dp))
+            Text("افزودن کل هفته به تقویم گوشی", fontFamily = YekanBakh)
         }
 
         Spacer(Modifier.height(8.dp))
