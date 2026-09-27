@@ -22,6 +22,10 @@ interface FavoriteDao {
     @Query("DELETE FROM favorites WHERE food_id = :foodId")
     suspend fun deleteByFoodId(foodId: Long)
 
+    /** Every blocked row, for the clear-blocked undo (#127). */
+    @Query("SELECT * FROM favorites WHERE is_blocked = 1")
+    suspend fun blockedRows(): List<FavoriteEntity>
+
     @Query("SELECT COUNT(*) FROM favorites WHERE is_blocked = 1")
     fun observeBlockedCount(): Flow<Int>
 

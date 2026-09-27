@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.erfanbagheri.tahdig.data.local.TahdigDatabase
 import com.erfanbagheri.tahdig.data.local.entity.JournalEntity
 import com.erfanbagheri.tahdig.util.JournalPhoto
+import com.erfanbagheri.tahdig.util.UndoHub
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -54,7 +55,18 @@ class JournalViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /**
+     * Delete a journal row, restorable for the undo window (#127). A row can
+     * carry a photo and a note, so the inverse must restore the whole entity —
+     * not just re-insert the dish, which would drop both.
+     */
     fun delete(id: Long) {
-        viewModelScope.launch { journalDao.delete(id) }
+        viewModelScope.launch {
+            val row = journalDao.byId(id) ?: return@launch
+            journalDao.delete(id)
+            UndoHub.arm("خاطرهٔ پخت حذف شد") {
+                viewModelScope.launch { journalDao.restore(row) }
+            }
+        }
     }
 }

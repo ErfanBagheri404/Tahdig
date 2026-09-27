@@ -17,6 +17,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
@@ -140,12 +141,29 @@ fun ShoppingListScreen(
                         )
                     }
                     items(rows, key = { it.id }) { item ->
-                        ShoppingRow(
-                            item = item,
-                            inPantry = viewModel.inPantry(item.item, pantryNames),
-                            onToggle = { checked -> viewModel.setChecked(item.id, checked) },
-                            onDelete = { viewModel.remove(item.id) },
-                        )
+                        // #127: swipe right = tick off, swipe left = delete —
+                        // and both are labelled entries in the row's menu, so
+                        // the gesture is never the only way to reach them.
+                        com.erfanbagheri.tahdig.ui.components.SwipeActionRow(
+                            swipeLeft = com.erfanbagheri.tahdig.ui.components.RowAction(
+                                label = if (item.isChecked) "برگردون به نخریده" else "خریدم",
+                                icon = Icons.Default.Check,
+                                onClick = { viewModel.setChecked(item.id, !item.isChecked) },
+                            ),
+                            swipeRight = com.erfanbagheri.tahdig.ui.components.RowAction(
+                                label = "حذف",
+                                icon = Icons.Default.Delete,
+                                onClick = { viewModel.remove(item.id) },
+                                destructive = true,
+                            ),
+                        ) {
+                            ShoppingRow(
+                                item = item,
+                                inPantry = viewModel.inPantry(item.item, pantryNames),
+                                onToggle = { checked -> viewModel.setChecked(item.id, checked) },
+                                onDelete = { viewModel.remove(item.id) },
+                            )
+                        }
                     }
                 }
             }
@@ -222,15 +240,10 @@ private fun ShoppingRow(
                         onToggle(!checked)
                     },
             )
+            // #127: the delete button moved into the row's overflow menu, so
+            // the gesture and the menu share one labelled path instead of
+            // showing a bare trash icon with no way back.
             Spacer(Modifier.width(4.dp))
-            IconButton(onClick = onDelete) {
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = "حذف",
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(20.dp),
-                )
-            }
         }
     }
 }

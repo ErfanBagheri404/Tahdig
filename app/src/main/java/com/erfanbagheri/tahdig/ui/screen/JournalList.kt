@@ -2,7 +2,9 @@ package com.erfanbagheri.tahdig.ui.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,10 +16,17 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,7 +50,8 @@ import java.time.ZoneId
  * journal is that the cook happened, not that it was documented.
  */
 @Composable
-fun JournalList(
+@OptIn(ExperimentalFoundationApi::class)
+internal fun JournalList(
     entries: List<JournalEntity>,
     foodName: (Long) -> String?,
     onClick: (Long) -> Unit,
@@ -50,6 +60,9 @@ fun JournalList(
     // empty — then the row is simply absent and the user attaches by hand).
     attachToId: Long? = null,
     onAttach: (Long, android.net.Uri) -> Unit = { _, _ -> },
+    // #127: long-press menu action — the only path to delete, so the row
+    // never needs a destructive swipe over a photo.
+    onDelete: (Long) -> Unit = {},
     // #126: ghost-row CTA when the journal is empty.
     onGoHome: () -> Unit = {},
 ) {
@@ -74,10 +87,18 @@ fun JournalList(
     }
     LazyColumn(modifier = Modifier.fillMaxWidth()) {
         items(entries, key = { it.id }) { entry ->
+            var menuOpen by androidx.compose.runtime.remember(entry.id) {
+                androidx.compose.runtime.mutableStateOf(false)
+            }
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { onClick(entry.foodId) }
+                    .combinedClickable(
+                        onClick = { onClick(entry.foodId) },
+                        onLongClick = { menuOpen = true },
+                        onLongClickLabel = "گزینه‌های خاطره",
+                    )
                     .padding(horizontal = 20.dp, vertical = 12.dp),
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -107,6 +128,33 @@ fun JournalList(
                         style = MaterialTheme.typography.bodyMedium,
                         fontFamily = YekanBakh,
                         color = MaterialTheme.colorScheme.onSurface,
+                    )
+                }
+                // #127: long-press menu. Anchored to the row, not a floating
+                // dialog, so the target stays visually attached to the entry.
+                DropdownMenu(
+                    expanded = menuOpen,
+                    onDismissRequest = { menuOpen = false },
+                ) {
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                "حذف خاطره",
+                                fontFamily = YekanBakh,
+                                color = MaterialTheme.colorScheme.error,
+                            )
+                        },
+                        leadingIcon = {
+                            Icon(
+                                Icons.Default.Delete,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.error,
+                            )
+                        },
+                        onClick = {
+                            menuOpen = false
+                            onDelete(entry.id)
+                        },
                     )
                 }
             }

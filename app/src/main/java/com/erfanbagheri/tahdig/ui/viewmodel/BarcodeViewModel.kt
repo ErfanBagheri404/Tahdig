@@ -8,6 +8,7 @@ import com.erfanbagheri.tahdig.data.local.entity.BarcodeScanEntity
 import com.erfanbagheri.tahdig.data.prefs.SettingsStore
 import com.erfanbagheri.tahdig.util.OffClient
 import com.erfanbagheri.tahdig.util.ScanHistory
+import com.erfanbagheri.tahdig.util.UndoHub
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -98,9 +99,23 @@ class BarcodeViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    /** Forget the whole history and cache. */
+    /**
+     * Forget the whole history and cache, restorable for the undo window
+     * (#127). This table is also the offline product cache, so the inverse
+     * puts the rows back rather than costing the user every lookup.
+     */
     fun clearHistory() {
-        viewModelScope.launch { withContext(Dispatchers.IO) { db.barcodeScanDao().clear() } }
+        viewModelScope.launch {
+            val dao = db.barcodeScanDao()
+            val rows = withContext(Dispatchers.IO) { dao.allRows() }
+            if (rows.isEmpty()) return@launch
+            withContext(Dispatchers.IO) { dao.clear() }
+            UndoHub.arm("تاریخچهٔ اسکن پاک شد") {
+                viewModelScope.launch {
+                    withContext(Dispatchers.IO) { rows.forEach { dao.upsert(it) } }
+                }
+            }
+        }
     }
 
     private fun now() = System.currentTimeMillis()

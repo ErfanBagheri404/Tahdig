@@ -11,6 +11,7 @@ import com.erfanbagheri.tahdig.data.prefs.SettingsStore
 import com.erfanbagheri.tahdig.util.AislePlanner
 import com.erfanbagheri.tahdig.util.IngredientRegistry
 import com.erfanbagheri.tahdig.util.MissingDiff
+import com.erfanbagheri.tahdig.util.UndoHub
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.coroutines.flow.StateFlow
@@ -46,16 +47,47 @@ class ShoppingViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch { shoppingDao.setChecked(id, checked) }
     }
 
+    /**
+     * Delete a row, keeping it restorable for the undo window (#127).
+     * The whole row is captured first — the inverse re-inserts it with its
+     * original id and created_at, so undo restores the list exactly.
+     */
     fun remove(id: Long) {
-        viewModelScope.launch { shoppingDao.deleteById(id) }
+        viewModelScope.launch {
+            val row = shoppingDao.byId(id) ?: return@launch
+            shoppingDao.deleteById(id)
+            UndoHub.arm("«${row.item}» از لیست خرید حذف شد") {
+                viewModelScope.launch { restore(row) }
+            }
+        }
     }
 
+    private suspend fun restore(row: ShoppingItemEntity) {
+        shoppingDao.restore(row)
+    }
+
+    /** Drop checked rows only; the exact rows return on undo (#127). */
     fun clearChecked() {
-        viewModelScope.launch { shoppingDao.clearChecked() }
+        viewModelScope.launch {
+            val done = shoppingDao.allRows().filter { it.isChecked }
+            if (done.isEmpty()) return@launch
+            shoppingDao.clearChecked()
+            UndoHub.arm("${done.size} قلم خریده‌شده حذف شد") {
+                viewModelScope.launch { done.forEach { shoppingDao.restore(it) } }
+            }
+        }
     }
 
+    /** Clear the whole list; the exact rows return on undo (#127). */
     fun clearAll() {
-        viewModelScope.launch { shoppingDao.clearAll() }
+        viewModelScope.launch {
+            val rows = shoppingDao.allRows()
+            if (rows.isEmpty()) return@launch
+            shoppingDao.clearAll()
+            UndoHub.arm("لیست خرید پاک شد") {
+                viewModelScope.launch { rows.forEach { shoppingDao.restore(it) } }
+            }
+        }
     }
 
     // ── Aisle manager (#108) ─────────────────────────────────────────

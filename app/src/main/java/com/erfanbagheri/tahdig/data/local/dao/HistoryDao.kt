@@ -30,6 +30,13 @@ interface HistoryDao {
     @Query("DELETE FROM history")
     suspend fun clearAll()
 
+    /**
+     * Every row, for the clear-history undo (#127). Ordered by time so a
+     * restore puts the timeline back in the order the user saw it.
+     */
+    @Query("SELECT * FROM history ORDER BY timestamp")
+    suspend fun allRows(): List<HistoryEntity>
+
     /** Raw timestamps for heatmap aggregation — a few hundred rows, fits in memory. */
     @Query("SELECT timestamp FROM history ORDER BY timestamp")
     suspend fun allTimestamps(): List<Long>
