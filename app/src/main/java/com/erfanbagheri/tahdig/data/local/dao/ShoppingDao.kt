@@ -30,6 +30,10 @@ interface ShoppingDao {
     @Query("DELETE FROM shopping_list")
     suspend fun clearAll()
 
+    /** Checked rows as entities, so a clear can be undone by re-inserting them. */
+    @Query("SELECT * FROM shopping_list WHERE is_checked = 1")
+    suspend fun checkedRows(): List<ShoppingItemEntity>
+
     @Query("SELECT COUNT(*) FROM shopping_list WHERE food_id = :foodId")
     suspend fun countForFood(foodId: Long): Int
 

@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.erfanbagheri.tahdig.data.local.TahdigDatabase
 import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
+import com.erfanbagheri.tahdig.util.UndoHostState
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -21,7 +22,13 @@ class FavoritesViewModel(app: Application) : AndroidViewModel(app) {
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     fun removeFavorite(foodId: Long) {
-        viewModelScope.launch { favoriteDao.deleteByFoodId(foodId) }
+        viewModelScope.launch {
+            val row = favoriteDao.getByFoodId(foodId) ?: return@launch
+            favoriteDao.deleteByFoodId(foodId)
+            UndoHostState.push("از علاقه‌مندی‌ها حذف شد") {
+                viewModelScope.launch { favoriteDao.upsert(row) }
+            }
+        }
     }
 
     fun unblock(foodId: Long) {

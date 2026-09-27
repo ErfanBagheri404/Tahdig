@@ -26,6 +26,13 @@ interface HistoryDao {
     @Query("DELETE FROM history")
     suspend fun clearAll()
 
+    /** Every row, so a clear can be undone by re-inserting them. */
+    @Query("SELECT * FROM history")
+    suspend fun allRows(): List<HistoryEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(entries: List<HistoryEntity>)
+
     /** Raw timestamps for heatmap aggregation — a few hundred rows, fits in memory. */
     @Query("SELECT timestamp FROM history ORDER BY timestamp")
     suspend fun allTimestamps(): List<Long>

@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.erfanbagheri.tahdig.data.local.TahdigDatabase
 import com.erfanbagheri.tahdig.data.local.entity.ShoppingItemEntity
 import com.erfanbagheri.tahdig.util.IngredientParser
+import com.erfanbagheri.tahdig.util.UndoHostState
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -25,15 +26,35 @@ class ShoppingViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun remove(id: Long) {
-        viewModelScope.launch { shoppingDao.deleteById(id) }
+        viewModelScope.launch {
+            val row = shoppingDao.allRows().firstOrNull { it.id == id } ?: return@launch
+            shoppingDao.deleteById(id)
+            UndoHostState.push("«${row.item}» حذف شد") {
+                viewModelScope.launch { shoppingDao.insertAll(listOf(row.copy(id = 0))) }
+            }
+        }
     }
 
     fun clearChecked() {
-        viewModelScope.launch { shoppingDao.clearChecked() }
+        viewModelScope.launch {
+            val rows = shoppingDao.checkedRows()
+            if (rows.isEmpty()) return@launch
+            shoppingDao.clearChecked()
+            UndoHostState.push("انجام‌شده‌ها حذف شد") {
+                viewModelScope.launch { shoppingDao.insertAll(rows.map { it.copy(id = 0) }) }
+            }
+        }
     }
 
     fun clearAll() {
-        viewModelScope.launch { shoppingDao.clearAll() }
+        viewModelScope.launch {
+            val rows = shoppingDao.allRows()
+            if (rows.isEmpty()) return@launch
+            shoppingDao.clearAll()
+            UndoHostState.push("لیست خرید پاک شد") {
+                viewModelScope.launch { shoppingDao.insertAll(rows.map { it.copy(id = 0) }) }
+            }
+        }
     }
 
     /** Add every ingredient of [ingredients] (comma/،-separated) as a list item. */
