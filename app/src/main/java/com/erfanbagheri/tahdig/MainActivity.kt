@@ -60,6 +60,7 @@ import androidx.compose.ui.Alignment
 import com.erfanbagheri.tahdig.ui.components.UndoSnackbarHost
 import com.erfanbagheri.tahdig.ui.screen.OnboardingPager
 import com.erfanbagheri.tahdig.ui.screen.ImportHubScreen
+import com.erfanbagheri.tahdig.ui.screen.RecipeReaderScreen
 import com.erfanbagheri.tahdig.ui.screen.RecipeImportScreen
 import com.erfanbagheri.tahdig.ui.screen.PantryScreen
 import com.erfanbagheri.tahdig.ui.screen.SearchScreen
@@ -268,6 +269,9 @@ private fun TahdigApp(
     // transient capture flow, and hoisting it would force the Activity to track
     // a second import flag alongside `pendingImport`.
     var importHubOpen by remember { mutableStateOf(false) }
+    // #78: the reader holds its own route so reader->save->review works,
+    // and reader back returns to the still-open hub below it.
+    var readerUrl by remember { mutableStateOf<String?>(null) }
     // #75: hub-captured drafts live here, next to the hub flag — the hoisted
     // `importDraft` param is owned by the Activity (share sheet) and is a val.
     var hubDraft by remember { mutableStateOf<com.erfanbagheri.tahdig.util.RecipeDraft?>(null) }
@@ -472,8 +476,17 @@ private fun TahdigApp(
                 ImportHubScreen(
                     onDraftReady = { draft -> hubDraft = draft },
                     onBack = { importHubOpen = false },
-                    // #76/#77/#78 wire their sources here; null renders no row.
+                    // #78: the reader owns its own route above the review one.
+                    onOpenWebReader = { url -> readerUrl = url },
+                    // #76/#77 wire their sources here; null renders no row.
                     modifier = Modifier.fillMaxSize(),
+                )
+            }
+            readerUrl != null -> {
+                RecipeReaderScreen(
+                    url = readerUrl!!,
+                    onSave = { draft -> hubDraft = draft },
+                    onBack = { readerUrl = null },
                 )
             }
             // Hub-captured drafts (#75) and share-sheet drafts (#75) share the

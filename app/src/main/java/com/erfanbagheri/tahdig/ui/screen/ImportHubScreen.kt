@@ -48,13 +48,21 @@ fun ImportHubScreen(
     /** Provided by #76 (OCR camera), #77 (video) and #78 (web reader). */
     onScanPhoto: (() -> Unit)? = null,
     onPasteVideoUrl: (() -> Unit)? = null,
-    onOpenWebReader: (() -> Unit)? = null,
+    onOpenWebReader: ((String) -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
     var input by remember { mutableStateOf("") }
+    // #78: survives the reader round-trip — back from the reader restores it.
+    var lastUrl by remember { mutableStateOf<String?>(null) }
 
     fun analyse() {
         if (input.isBlank()) return
+        // A bare URL goes to the reader (#78), not the stub draft parser.
+        if (RecipeTextParser.looksLikeUrlOnly(input)) {
+            lastUrl = input.trim()
+            onOpenWebReader?.invoke(lastUrl!!)
+            return
+        }
         onDraftReady(RecipeTextParser.parseAny(input))
     }
 
@@ -131,7 +139,9 @@ fun ImportHubScreen(
                 SourceRow(label = "نشانی ویدیو (یوتیوب، اینستاگرام)", onClick = onPasteVideoUrl)
             }
             if (onOpenWebReader != null) {
-                SourceRow(label = "باز کردن یک صفحهٔ وب", onClick = onOpenWebReader)
+                // analyse() routes a bare URL to the reader and guards blanks —
+                // one route, no second half-baked path here.
+                SourceRow(label = "باز کردن یک صفحهٔ وب", onClick = { analyse() })
             }
         }
 
