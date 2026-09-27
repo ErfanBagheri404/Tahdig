@@ -137,6 +137,8 @@ dependencies {
     implementation(libs.camera.lifecycle)
     implementation(libs.camera.view)
     implementation(libs.mlkit.barcode.scanning)
+    // #76 OCR: bundled on-device text recognition.
+    implementation("com.google.mlkit:text-recognition:16.0.0")
 
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)
