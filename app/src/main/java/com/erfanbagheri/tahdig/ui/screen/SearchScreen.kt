@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.foundation.clickable
 import androidx.compose.material3.TextButton
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,6 +23,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.QrCodeScanner
@@ -49,6 +52,7 @@ import com.erfanbagheri.tahdig.util.MicroNutrients
 import com.erfanbagheri.tahdig.util.Flavor
 import com.erfanbagheri.tahdig.util.VoiceInput
 import com.erfanbagheri.tahdig.ui.components.FirstRunTip
+import com.erfanbagheri.tahdig.ui.components.TagSheet
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
 import com.erfanbagheri.tahdig.util.FirstRun
 import com.erfanbagheri.tahdig.ui.viewmodel.SearchHistory
@@ -65,6 +69,7 @@ fun SearchScreen(
     onOpenScanner: () -> Unit = {},
     // #75: entry to the import hub (paste / source capture / review).
     onOpenImportHub: () -> Unit = {},
+    tagViewModel: com.erfanbagheri.tahdig.ui.viewmodel.TagViewModel = viewModel(),
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
     val query by viewModel.query.collectAsState()
@@ -81,6 +86,13 @@ fun SearchScreen(
     val results by viewModel.results.collectAsState()
     // #126: dishes a relaxed query reaches when the strict one returns none.
     val relaxedMatches by viewModel.relaxedMatches.collectAsState()
+    // #80 — user tags: collapsible chip row under the category chips.
+    // The flows live on SearchViewModel (they drive the AND-filter in SQL);
+    // TagViewModel owns the tag sheet from other entry points.
+    val allTags by viewModel.allTags.collectAsState()
+    val selectedTagIds by viewModel.tagIds.collectAsState()
+    val tagsExpanded by viewModel.tagsExpanded.collectAsState()
+    val sheetFoodId by tagViewModel.sheetFoodId.collectAsState()
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -352,6 +364,48 @@ fun SearchScreen(
                 }
             }
 
+            // #80 — user tags: collapsible chip row under the category chips.
+            // Collapsed keeps the selection; the row only hides the chips.
+            if (allTags.isNotEmpty()) {
+                Spacer(Modifier.height(8.dp))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable(
+                            role = androidx.compose.ui.semantics.Role.Button,
+                            onClickLabel = if (tagsExpanded) "بستن برچسب‌ها" else "نمایش برچسب‌ها",
+                        ) { viewModel.onTagsToggleRow() },
+                    verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = "برچسب‌های من",
+                        style = MaterialTheme.typography.titleSmall,
+                        fontFamily = YekanBakh,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.weight(1f),
+                    )
+                    Icon(
+                        imageVector = if (tagsExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                        contentDescription = if (tagsExpanded) "بستن" else "باز کردن",
+                    )
+                }
+                if (tagsExpanded) {
+                    Spacer(Modifier.height(8.dp))
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        items(allTags, key = { it.id }) { tag ->
+                            CategoryChip(
+                                label = tag.name,
+                                selected = tag.id in selectedTagIds,
+                                onClick = { viewModel.onTagToggle(tag.id) },
+                            )
+                        }
+                    }
+                }
+            }
+
             Spacer(Modifier.height(16.dp))
 
             // #126: one-line hint on first encounter with the chips row.
@@ -394,11 +448,11 @@ fun SearchScreen(
 
             // Results
             val filtering = query.isNotBlank() || selectedCategoryId != null || diet != null ||
-                ingredients.isNotBlank() || excluded.isNotBlank()
+                ingredients.isNotBlank() || excluded.isNotBlank() || selectedTagIds.isNotEmpty()
             // Non-query filters only: the note must not nag someone whose
             // plain query simply has no match.
             val hasActiveFilters = selectedCategoryId != null || diet != null ||
-                ingredients.isNotBlank() || excluded.isNotBlank()
+                ingredients.isNotBlank() || excluded.isNotBlank() || selectedTagIds.isNotEmpty()
             if (results.isEmpty() && filtering) {
                 // #126 no-match recovery: a dead sentence is a dead end. Offer
                 // the filter reset, plus up to 3 dishes a relaxed query did
@@ -424,7 +478,10 @@ fun SearchScreen(
                             textAlign = TextAlign.Center,
                         )
                         Spacer(Modifier.height(4.dp))
-                        TextButton(onClick = viewModel::clearFilters) {
+                        TextButton(onClick = {
+                            viewModel.clearFilters()
+                            selectedTagIds.forEach { viewModel.onTagToggle(it) }
+                        }) {
                             Text("برداشتن فیلترها", fontFamily = YekanBakh)
                         }
                     }
@@ -452,10 +509,21 @@ fun SearchScreen(
                         SearchResultItem(
                             food = food,
                             onClick = { onFoodClick(food.id) },
+                            // #80: long-press opens the tag sheet for this dish.
+                            onLongClick = { tagViewModel.openSheet(food.id) },
                         )
                     }
                 }
             }
+        }
+
+        // #80 — tag sheet for the long-pressed dish.
+        sheetFoodId?.let { foodId ->
+            TagSheet(
+                viewModel = tagViewModel,
+                foodId = foodId,
+                onDismiss = tagViewModel::closeSheet,
+            )
         }
     }
 }
@@ -496,18 +564,24 @@ private fun CategoryChip(
     }
 }
 
+// combinedClickable is still experimental; both entry rows need it, same as
+// the #81 selection card in CategoryBrowseScreen.
+@OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
 @Composable
 private fun SearchResultItem(
     food: com.erfanbagheri.tahdig.data.local.entity.FoodEntity,
     onClick: () -> Unit = {},
+    onLongClick: () -> Unit = {},
 ) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(
+            .combinedClickable(
                 onClick = onClick,
+                onLongClick = onLongClick,
                 role = androidx.compose.ui.semantics.Role.Button,
                 onClickLabel = "نمایش ${food.name}",
+                onLongClickLabel = "برچسب‌های ${food.name}",
             )
             // #129: result rows were thumb + name + meta = three stops.
             .oneA11yStop(food.name),
