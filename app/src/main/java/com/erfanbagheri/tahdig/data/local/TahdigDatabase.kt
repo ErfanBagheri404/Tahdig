@@ -7,6 +7,7 @@ import androidx.room.RoomDatabase
 import com.erfanbagheri.tahdig.data.local.dao.CaffeineDao
 import com.erfanbagheri.tahdig.data.local.dao.CategoryDao
 import com.erfanbagheri.tahdig.data.local.dao.CookSessionDao
+import com.erfanbagheri.tahdig.data.local.dao.CollectionDao
 import com.erfanbagheri.tahdig.data.local.dao.FavoriteDao
 import com.erfanbagheri.tahdig.data.local.dao.FoodDao
 import com.erfanbagheri.tahdig.data.local.dao.HistoryDao
@@ -21,6 +22,8 @@ import com.erfanbagheri.tahdig.data.local.dao.WaterDao
 import com.erfanbagheri.tahdig.data.local.dao.WeightDao
 import com.erfanbagheri.tahdig.data.local.entity.CategoryEntity
 import com.erfanbagheri.tahdig.data.local.entity.CookSessionEntity
+import com.erfanbagheri.tahdig.data.local.entity.CollectionEntity
+import com.erfanbagheri.tahdig.data.local.entity.CollectionFoodEntity
 import com.erfanbagheri.tahdig.data.local.entity.FavoriteEntity
 import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
 import com.erfanbagheri.tahdig.data.local.dao.JournalDao
@@ -62,8 +65,11 @@ import com.erfanbagheri.tahdig.data.local.seed.SeedLoader
         WaterLogEntity::class,
         WeightLogEntity::class,
         CaffeineLogEntity::class,
+        CollectionEntity::class, // #79
+        CollectionFoodEntity::class, // #79
     ],
-    version = 20, // + ratings.updated_at (#92); destructive fallback
+    // #79: collections + collection_food join; destructive fallback
+    version = 21,
     exportSchema = true,
 )
 abstract class TahdigDatabase : RoomDatabase() {
@@ -92,6 +98,9 @@ abstract class TahdigDatabase : RoomDatabase() {
 
     /** Caffeine log (#119). */
     abstract fun caffeineDao(): CaffeineDao
+
+    /** Named collections of saved dishes (#79). */
+    abstract fun collectionDao(): CollectionDao
 
     companion object {
         private const val DB_NAME = "tahdig.db"
