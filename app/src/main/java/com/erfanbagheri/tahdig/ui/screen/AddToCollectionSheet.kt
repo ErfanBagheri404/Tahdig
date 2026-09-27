@@ -20,6 +20,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import com.erfanbagheri.tahdig.ui.components.oneA11yStop
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -79,6 +80,9 @@ fun AddToCollectionSheet(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable { viewModel.toggle(row.id, foodId) }
+                            // #129: name + check were two stops; the state is
+                            // folded into the label so one swipe hears it all.
+                            .oneA11yStop(row.name + if (inIt) "، انتخاب‌شده" else "")
                             .padding(vertical = 10.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {

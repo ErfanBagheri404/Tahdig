@@ -45,6 +45,7 @@ import com.erfanbagheri.tahdig.util.NutrientCaps
 import com.erfanbagheri.tahdig.util.PersianText
 import com.erfanbagheri.tahdig.ui.viewmodel.SettingsViewModel
 import com.erfanbagheri.tahdig.ui.components.oneA11yStop
+import com.erfanbagheri.tahdig.ui.components.minTouchTarget
 
 @OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
 @Composable
@@ -967,7 +968,9 @@ fun SettingsScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable(onClick = onOpenTags),
+                .clickable(onClick = onOpenTags)
+                // #129: label + arrow were two stops; the row is one decision.
+                .oneA11yStop("ویرایش برچسب‌ها"),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
@@ -1119,6 +1122,9 @@ private fun AccentPicker(
             Box(
                 modifier = Modifier
                     .size(40.dp)
+                    // #129: 40dp visual, 48dp hit box. minTouchTarget grows only
+                    // the touch area, the swatch grid keeps its spacing.
+                    .minTouchTarget()
                     .clip(RoundedCornerShape(8.dp))
                     .background(accent.forDarkTheme(false))
                     .border(

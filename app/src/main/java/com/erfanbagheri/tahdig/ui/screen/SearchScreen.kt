@@ -377,7 +377,10 @@ fun SearchScreen(
                         .clickable(
                             role = androidx.compose.ui.semantics.Role.Button,
                             onClickLabel = if (tagsExpanded) "بستن برچسب‌ها" else "نمایش برچسب‌ها",
-                        ) { viewModel.onTagsToggleRow() },
+                        ) { viewModel.onTagsToggleRow() }
+                        // #129: header + expand arrow were two stops; the open
+                        // state is folded into the label.
+                        .oneA11yStop("برچسب‌های من" + if (tagsExpanded) "، باز" else "، بسته"),
                     verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
                 ) {
                     Text(
