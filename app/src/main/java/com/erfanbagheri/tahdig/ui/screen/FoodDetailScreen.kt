@@ -21,6 +21,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -84,6 +85,8 @@ fun FoodDetailScreen(
     onExportFile: (FoodEntity) -> Unit = {},
     /** Mise-en-place checked-state store (#99); null renders rows without checks. */
     milestoneViewModel: com.erfanbagheri.tahdig.ui.viewmodel.MilestoneViewModel? = null,
+    /** #80: opens the tag sheet for this dish from the overflow. */
+    tagViewModel: com.erfanbagheri.tahdig.ui.viewmodel.TagViewModel? = null,
 ) {
     val context = LocalContext.current.applicationContext
     var food by remember { mutableStateOf<FoodEntity?>(null) }
@@ -177,6 +180,29 @@ fun FoodDetailScreen(
                 },
                 actions = {
                     if (food != null) {
+                        // #80: the tag sheet lives behind an overflow menu, the
+                        // same shape as the share/export actions beside it.
+                        if (tagViewModel != null) {
+                            var menuOpen by remember { mutableStateOf(false) }
+                            IconButton(onClick = { menuOpen = true }) {
+                                Icon(
+                                    Icons.Default.MoreVert,
+                                    contentDescription = "گزینه‌های غذا",
+                                )
+                            }
+                            androidx.compose.material3.DropdownMenu(
+                                expanded = menuOpen,
+                                onDismissRequest = { menuOpen = false },
+                            ) {
+                                androidx.compose.material3.DropdownMenuItem(
+                                    text = { Text("برچسب‌ها", fontFamily = YekanBakh) },
+                                    onClick = {
+                                        menuOpen = false
+                                        tagViewModel.openSheet(foodId)
+                                    },
+                                )
+                            }
+                        }
                         IconButton(onClick = { onShare(food!!) }) {
                             Icon(
                                 imageVector = Icons.Default.Share,
@@ -876,6 +902,18 @@ fun FoodDetailScreen(
                     }
 
                     Spacer(Modifier.height(48.dp))
+                }
+            }
+
+            // #80 tag sheet: renders at screen level so the overflow menu can open it without touching the scrolling column.
+            tagViewModel?.let { tvm ->
+                val sheetFoodId by tvm.sheetFoodId.collectAsState(initial = null)
+                sheetFoodId?.let { id ->
+                    com.erfanbagheri.tahdig.ui.components.TagSheet(
+                        viewModel = tvm,
+                        foodId = id,
+                        onDismiss = tvm::closeSheet,
+                    )
                 }
             }
         }
