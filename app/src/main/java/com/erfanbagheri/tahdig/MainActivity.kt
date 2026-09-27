@@ -42,6 +42,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.lifecycleScope
 import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
 import com.erfanbagheri.tahdig.data.local.TahdigDatabase
+import com.erfanbagheri.tahdig.ui.screen.BarcodeScreen
 import com.erfanbagheri.tahdig.ui.screen.CategoryBrowseScreen
 import com.erfanbagheri.tahdig.ui.screen.CategoryDishesScreen
 import com.erfanbagheri.tahdig.ui.screen.FavoritesScreen
@@ -134,6 +135,7 @@ private fun TahdigApp() {
     var browseCategories by rememberSaveable { mutableStateOf(false) }
     var showPantry by rememberSaveable { mutableStateOf(false) }
     var showLeftover by rememberSaveable { mutableStateOf(false) }
+    var showScanner by rememberSaveable { mutableStateOf(false) }
     var showHeatmap by rememberSaveable { mutableStateOf(false) }
     var browseTechniques by rememberSaveable { mutableStateOf(false) }
     var browseOccasions by rememberSaveable { mutableStateOf(false) }
@@ -286,6 +288,20 @@ private fun TahdigApp() {
                         onBack = { showLeftover = false },
                     )
                 }
+                showScanner -> {
+                    // #116: a scanned product is added by NAME — it is not one of
+                    // the seed dishes, so it has no foodId to add by.
+                    val bvm: com.erfanbagheri.tahdig.ui.viewmodel.BarcodeViewModel = viewModel()
+                    val svm: ShoppingViewModel = viewModel()
+                    val pvm: PantryViewModel = viewModel()
+                    BarcodeScreen(
+                        viewModel = bvm,
+                        onAddToShopping = { name -> svm.addItems(name) },
+                        onAddToPantry = { name -> pvm.addItem(name) },
+                        onBack = { showScanner = false },
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                }
                 showHeatmap -> {
                     val vm: CookHeatmapViewModel = viewModel()
                     CookHeatmapScreen(
@@ -319,6 +335,7 @@ private fun TahdigApp() {
                         viewModel = vm,
                         onFoodClick = { detailFoodId = it },
                         onOpenPantry = { showPantry = true },
+                        onOpenScanner = { showScanner = true },
                     )
                 }
                 selectedTab == 2 -> {

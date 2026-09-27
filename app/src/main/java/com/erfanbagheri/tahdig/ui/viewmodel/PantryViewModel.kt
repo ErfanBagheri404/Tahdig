@@ -118,6 +118,26 @@ class PantryViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /**
+     * Stock one named item directly (#116 barcode scanner «به انبار»). Shares
+     * the draft's insert path so a scanned product gets the same default shelf
+     * life as a typed one — a second code path would drift from the first.
+     */
+    fun addItem(name: String) {
+        val part = PersianText.normalize(name).trim()
+        if (part.isEmpty()) return
+        viewModelScope.launch {
+            val now = System.currentTimeMillis()
+            pantryDao.insert(
+                PantryItemEntity(
+                    item = part,
+                    addedAt = now,
+                    expiresAt = ExpiryMath.defaultExpiry(part, now),
+                ),
+            )
+        }
+    }
+
     fun remove(id: Long) = viewModelScope.launch { pantryDao.deleteById(id) }
 
     fun clearAll() = viewModelScope.launch { pantryDao.clearAll() }

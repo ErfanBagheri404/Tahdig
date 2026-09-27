@@ -16,6 +16,14 @@
          dispatcher throws an uncaught SecurityException and the app crashes. -->
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- Barcode scanner (#116). Optional: the scanner can be switched off in
+         settings and the rest of the app never touches the camera, so the
+         hardware feature is not declared required. -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
     <!-- Voice input launches the device's speech recogniser. On Android 11+ package
          visibility hides it from resolveActivity() without this, so the mic button
          would never appear. The recogniser app owns the mic, so RECORD_AUDIO is not

@@ -49,5 +49,9 @@ class SettingsViewModel(app: Application) : AndroidViewModel(app) {
     /** Shake-to-spin the roulette (#123), off by default. */
     val shakeSpin = SettingsStore.shakeSpin
     fun setShakeSpin(on: Boolean) = SettingsStore.setShakeSpin(on)
+
+    // Barcode scanner (#116) — hides the scanner entry point in search.
+    val scannerEnabled = SettingsStore.scannerEnabled
+    fun setScannerEnabled(on: Boolean) = SettingsStore.setScannerEnabled(on)
     fun setShakeSensitivity(value: Float) = SettingsStore.setShakeSensitivity(value)
 }

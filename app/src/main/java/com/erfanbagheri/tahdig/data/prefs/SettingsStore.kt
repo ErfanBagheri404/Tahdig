@@ -31,6 +31,7 @@ object SettingsStore {
     private const val KEY_ALLERGENS = "allergens"              // JSON set (#112)
     private const val KEY_ALLERGEN_HIDE = "allergen_hide"      // search-wide hide toggle (#112)
     private const val KEY_SHAKE_SPIN = "shake_spin"            // shake-to-spin roulette (#123)
+    private const val KEY_SCANNER = "scanner_enabled"            // barcode scanner (#116), on by default
     private const val KEY_CAP_PRESET = "cap_preset"              // preset name or "" (#113)
     private const val KEY_CAP_CUSTOM = "cap_custom"              // JSON {NUTRIENT: value} (#113)
     private const val KEY_HALAL_STRICT = "halal_strict"          // hide flagged dishes (#118)
@@ -106,6 +107,12 @@ object SettingsStore {
     private val _shakeSpin = MutableStateFlow(false)
     val shakeSpin: StateFlow<Boolean> = _shakeSpin
 
+    // ── Barcode scanner (#116) ───────────────────────────────────
+    // On by default: disabling is the exception, for users who never want
+    // the camera entry point in search.
+    private val _scannerEnabled = MutableStateFlow(true)
+    val scannerEnabled: StateFlow<Boolean> = _scannerEnabled
+
     // ── Nutrient caps (#113) ─────────────────────────────────────
     // SettingsStore over Room here: no DB migration, no schema, and the issue
     // asks for a prefs-plus-entity approach. One key for the preset, one map
@@ -179,6 +186,7 @@ object SettingsStore {
         _allergenHide.value = prefs.getBoolean(KEY_ALLERGEN_HIDE, false)
         _halalStrict.value = prefs.getBoolean(KEY_HALAL_STRICT, false)
         _shakeSpin.value = prefs.getBoolean(KEY_SHAKE_SPIN, false)
+        _scannerEnabled.value = prefs.getBoolean(KEY_SCANNER, true)
         _capPreset.value = prefs.getString(KEY_CAP_PRESET, "")?.ifBlank { null }
         _capCustom.value = loadDoubleMap(KEY_CAP_CUSTOM)
         grantFreezeIfNeeded()
@@ -233,6 +241,12 @@ object SettingsStore {
     fun setAllergenHide(on: Boolean) {
         prefs.edit().putBoolean(KEY_ALLERGEN_HIDE, on).apply()
         _allergenHide.value = on
+    }
+
+    /** Barcode scanner (#116), on by default — hiding the search entry point. */
+    fun setScannerEnabled(on: Boolean) {
+        prefs.edit().putBoolean(KEY_SCANNER, on).apply()
+        _scannerEnabled.value = on
     }
 
     /** Shake-to-spin (#123), off by default — shares the sensitivity slider. */
