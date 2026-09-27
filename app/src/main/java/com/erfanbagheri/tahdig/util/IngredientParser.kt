@@ -64,7 +64,7 @@ object IngredientParser {
     private fun key(raw: String): String =
         PersianText.normalize(raw).filterNot { it.isWhitespace() }
 
-    /** Bucket name for grouping in the UI. */
+    /** Bucket name for grouping in the UI. Prefers the canonical aisle when known. */
     fun categoryOf(item: String): String {
         val k = PersianText.normalize(item)
         return CATEGORIES.firstOrNull { (_, words) -> words.any { k.contains(PersianText.normalize(it)) } }
@@ -108,28 +108,43 @@ object IngredientParser {
     /**
      * Merge duplicates across every input line, summing quantities of the same
      * (unit, item). Lines that parsed to no quantity still dedupe by item text.
+     *
+     * Identity goes through [IngredientRegistry] so alias variants of one ingredient
+     * («پیاز» / «پیاز قرمز» / "Red Onion") fold into a single row. Unknown items fall
+     * back to the raw normalized key and behave exactly as before.
+     *
+     * Rows only combine when their units are compatible — equal, or one side stating
+     * none. "۲ پیمانه آرد" and "۱۰۰ گرم آرد" are the same ingredient but not a summable
+     * quantity, so they stay two rows rather than becoming an invented "۱۰۲ پیمانه".
      */
     fun merge(lines: List<String>): List<Parsed> {
-        val order = mutableListOf<String>()
-        val byKey = mutableMapOf<String, Parsed>()
+        val parsed = lines.map { parse(it) }.filter { it.item.isNotBlank() }
+        val result = mutableListOf<Parsed>()
+        // Canonical group -> indices of the rows already emitted for it, so a later
+        // line can find a compatible row to fold into.
+        val groups = LinkedHashMap<String, MutableList<Int>>()
 
-        for (line in lines) {
-            val p = parse(line)
-            if (p.item.isBlank()) continue
-            val k = key(p.unit.orEmpty()) + "|" + key(p.item)
-            val existing = byKey[k]
-            if (existing == null) {
-                byKey[k] = p
-                order += k
-            } else {
-                // Only sum when both sides actually carry a quantity; otherwise the
-                // sum would invent numbers the source never stated.
-                val sum = if (existing.quantity != null && p.quantity != null)
-                    existing.quantity + p.quantity else existing.quantity
-                byKey[k] = existing.copy(quantity = sum)
+        for (p in parsed) {
+            val group = IngredientRegistry.resolve(p.item)?.let { "id:" + it.id }
+                ?: key(p.unit.orEmpty()) + "|" + key(p.item)
+            val slot = groups[group]?.firstOrNull { idx ->
+                val row = result[idx]
+                row.unit == null || p.unit == null || key(row.unit) == key(p.unit)
             }
+            if (slot == null) {
+                result += p
+                groups.getOrPut(group) { mutableListOf() } += result.lastIndex
+                continue
+            }
+            val row = result[slot]
+            // Only sum when both sides actually carry a quantity; otherwise the sum
+            // would invent numbers the source never stated.
+            val sum = if (row.quantity != null && p.quantity != null)
+                row.quantity + p.quantity else row.quantity
+            // First-seen unit and spelling win; they are the ones already on screen.
+            result[slot] = row.copy(quantity = sum, unit = row.unit ?: p.unit)
         }
-        return order.mapNotNull { byKey[it] }
+        return result
     }
 
     /** Group merged entries into display buckets, preserving insertion order within each. */
