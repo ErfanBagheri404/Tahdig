@@ -32,6 +32,8 @@ object BadgeEngine {
         val freezesGranted: Int = 0,
         /** Consecutive days the water target was met (#115) — the «آبرو» badge. */
         val waterGoalDayStreak: Int = 0,
+        /** All journal photo timestamps ever (#125) — the weekly counter + photo badges. */
+        val photoTimestamps: List<Long> = emptyList(),
     )
 
     data class Cook(
@@ -103,6 +105,9 @@ object BadgeEngine {
         Def("all_cuisine_2", "جهان‌گرد", "همه «{n}» منطقه غذایی + ۵۰ غذای متفاوت", "🌏"),
         Def("yalda", "یلدایی", "پخت یک غذای یلدایی در دی یا شب چلدر", "🍉"),
         Def("journal_10", "نویسنده", "۱۰ یادداشت در دفتر آشپزی", "✍️"),
+        Def("photo_1", "عکاس‌باشی", "اولین عکس در دفتر آشپزی", "📸"),
+        Def("photo_10", "آلبوم‌دار", "۱۰ عکس در دفتر آشپزی", "🖼️"),
+        Def("photo_50", "گالری‌دار", "۵۰ عکس در دفتر آشپزی", "🎨"),
         Def("water_7", "آبرو", "۷ روز پیاپی رسیدن به هدف آب", "💧"),
     )
 
@@ -180,6 +185,14 @@ object BadgeEngine {
         // cook creates a row; only some carry a note).
         count("journal_10", cooks.count { it.hasNote }, 10)
 
+        // Photo badges (#125): count the journal's photo ROWS, not cooks with
+        // a photo flag — one cook can only carry one photo, so both agree,
+        // but the timestamp list is the single source the weekly line uses.
+        val photoCount = h.photoTimestamps.size
+        count("photo_1", photoCount, 1)
+        count("photo_10", photoCount, 10)
+        count("photo_50", photoCount, 50)
+
         // «آبرو»: a straight run of days meeting the water goal. The streak
         // is computed from the water tables where the data lives, not here.
         count("water_7", h.waterGoalDayStreak, 7)
@@ -230,6 +243,7 @@ object BadgeEngine {
         val total = h.totalCategories
         val nightCooks = h.cooks.count { it.hour in 1..4 }
         val journalNotes = h.cooks.count { it.hasNote }
+        val photos = h.photoTimestamps.size
 
         return DEFS.map { d ->
             val (p, g) = when (d.id) {
@@ -263,6 +277,9 @@ object BadgeEngine {
                 "night_20" -> nightCooks to 20
                 "night_50" -> nightCooks to 50
                 "journal_10" -> journalNotes to 10
+                "photo_1" -> photos to 1
+                "photo_10" -> photos to 10
+                "photo_50" -> photos to 50
                 "water_7" -> h.waterGoalDayStreak to 7
                 // «بی‌فریز» and «یلدا» have no meaningful counter — the
                 // requirement text carries the rule.

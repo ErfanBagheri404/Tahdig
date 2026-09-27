@@ -38,6 +38,14 @@ interface JournalDao {
     @Query("SELECT timestamp FROM journal WHERE note != ''")
     suspend fun notedTimestamps(): List<Long>
 
+    /** Timestamps of cooks that carry a photo — photo challenge + badges (#125). */
+    @Query("SELECT timestamp FROM journal WHERE photo IS NOT NULL")
+    suspend fun photoTimestamps(): List<Long>
+
+    /** Continuous stream of photo timestamps — for the journal's weekly counter. */
+    @Query("SELECT timestamp FROM journal WHERE photo IS NOT NULL ORDER BY timestamp")
+    fun observePhotoTimestamps(): Flow<List<Long>>
+
     @Insert
     suspend fun insert(entry: JournalEntity): Long
 

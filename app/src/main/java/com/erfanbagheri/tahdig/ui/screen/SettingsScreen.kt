@@ -380,6 +380,51 @@ fun SettingsScreen(
             )
         }
 
+        // Daily photo prompt (#125): off by default, shares POST_NOTIFICATIONS
+        // with the daily suggestion — already requested before this section runs.
+        val photoPrompt by viewModel.photoPrompt.collectAsState()
+        val photoPromptHour by viewModel.photoPromptHour.collectAsState()
+
+        Spacer(Modifier.height(16.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+        ) {
+            Text(
+                text = "یادآور عکس ناهار",
+                style = MaterialTheme.typography.bodyLarge,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.weight(1f),
+            )
+            androidx.compose.material3.Switch(
+                checked = photoPrompt,
+                onCheckedChange = { enabled ->
+                    if (enabled && needsPermission) {
+                        permissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+                    } else {
+                        viewModel.setPhotoPrompt(context, enabled)
+                    }
+                },
+            )
+        }
+        if (photoPrompt) {
+            Spacer(Modifier.height(4.dp))
+            Text(
+                text = "ساعت یادآوری: " + PersianText.toPersianDigits(
+                    photoPromptHour.coerceIn(1, 23).toString()) + ":۰۰",
+                style = MaterialTheme.typography.bodySmall,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            androidx.compose.material3.Slider(
+                value = photoPromptHour.coerceIn(1, 23).toFloat(),
+                onValueChange = { viewModel.setPhotoPromptHour(context, it.toInt().coerceIn(1, 23)) },
+                valueRange = 7f..23f,
+                steps = 15,
+            )
+        }
+
         // Smart notifications (#122): the quiet-hours window and the user-picked
         // reminder hour, plus the re-prime hint when the OS permission was
         // denied. Timer copy states the override rule here, once.

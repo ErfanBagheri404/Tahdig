@@ -53,6 +53,15 @@ class SettingsViewModel(app: Application) : AndroidViewModel(app) {
     fun setDailyNotify(context: android.content.Context, enabled: Boolean) =
         SettingsStore.setDailyNotify(context, enabled)
 
+    // Daily photo prompt (#125).
+    val photoPrompt = SettingsStore.photoPrompt
+    val photoPromptHour = SettingsStore.photoPromptHour
+
+    fun setPhotoPrompt(context: android.content.Context, enabled: Boolean) =
+        SettingsStore.setPhotoPrompt(context, enabled)
+    fun setPhotoPromptHour(context: android.content.Context, hour: Int) =
+        SettingsStore.setPhotoPromptHour(context, hour)
+
     // Smart notifications (#122): user-picked hour, quiet hours, denial hint.
     val notifyHour = SettingsStore.notifyHour
     val quietOn = SettingsStore.quietOn

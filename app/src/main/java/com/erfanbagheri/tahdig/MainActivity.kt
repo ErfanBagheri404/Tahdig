@@ -83,9 +83,29 @@ import com.erfanbagheri.tahdig.ui.viewmodel.CookHeatmapViewModel
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
+
+    companion object {
+        /** Intent extra consumed by [onCreate]/[onNewIntent] to route into a screen. */
+        const val EXTRA_DESTINATION = "tahdig.destination"
+        const val DEST_JOURNAL_PHOTO = "journal_photo"
+    }
+
+    /** Set when a photo-prompt notification fires while the app is already alive. */
+    private var pendingJournalAttach = false
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        if (intent.getStringExtra(EXTRA_DESTINATION) == DEST_JOURNAL_PHOTO) {
+            pendingJournalAttach = true
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        if (intent.getStringExtra(EXTRA_DESTINATION) == DEST_JOURNAL_PHOTO) {
+            pendingJournalAttach = true
+        }
 
         lifecycleScope.launch {
             TahdigDatabase.populateIfEmpty(this@MainActivity)
@@ -95,7 +115,7 @@ class MainActivity : ComponentActivity() {
             // Farsi-only app: force RTL regardless of device locale.
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
                 TahdigTheme {
-                    TahdigApp()
+                    TahdigApp(startAttachPhoto = pendingJournalAttach, onAttachHandled = { pendingJournalAttach = false })
                 }
             }
         }
@@ -103,8 +123,18 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-private fun TahdigApp() {
-    var selectedTab by rememberSaveable { mutableIntStateOf(0) }
+private fun TahdigApp(
+    startAttachPhoto: Boolean = false,
+    onAttachHandled: () -> Unit = {},
+) {
+    // Tab 2 is Favorites/History where the journal tab lives.
+    var selectedTab by rememberSaveable { mutableIntStateOf(if (startAttachPhoto) 2 else 0) }
+    androidx.compose.runtime.LaunchedEffect(startAttachPhoto) {
+        if (startAttachPhoto) {
+            selectedTab = 2
+            onAttachHandled()
+        }
+    }
     var detailFoodId by rememberSaveable { mutableLongStateOf(-1L) }
     val context = LocalContext.current
     // Backup/restore SAF launchers
@@ -365,6 +395,8 @@ private fun TahdigApp() {
                         historyViewModel = hvm,
                         journalViewModel = jvm,
                         onFoodClick = { detailFoodId = it },
+                        startInJournal = startAttachPhoto,
+                        onAttachHandled = onAttachHandled,
                     )
                 }
                 selectedTab == 3 -> {
