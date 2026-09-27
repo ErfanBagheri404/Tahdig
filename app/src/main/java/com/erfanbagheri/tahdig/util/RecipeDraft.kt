@@ -30,5 +30,8 @@ data class RecipeDraft(
         prepTimeMin = 0,
         ingredients = ingredients.joinToString("\n"),
         description = steps.joinToString("\n"),
+        // #77: a video import brings its thumbnail as the photo; the detail
+        // screen's attach-photo flow is the replacement path.
+        imageUrl = photoUrl,
     )
 }

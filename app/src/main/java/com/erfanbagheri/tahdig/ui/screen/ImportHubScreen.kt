@@ -22,12 +22,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
+import com.erfanbagheri.tahdig.util.PersianText
 import com.erfanbagheri.tahdig.util.RecipeDraft
 import com.erfanbagheri.tahdig.util.RecipeTextParser
+import com.erfanbagheri.tahdig.util.VideoDescriptionParser
+import com.erfanbagheri.tahdig.util.VideoError
+import com.erfanbagheri.tahdig.util.VideoImportError
+import com.erfanbagheri.tahdig.util.farsiMessage
 import kotlinx.coroutines.launch
 
 /**
@@ -52,10 +58,36 @@ fun ImportHubScreen(
     modifier: Modifier = Modifier,
 ) {
     var input by remember { mutableStateOf("") }
+    // #77: video fetch state lives here, next to the input — a second draft
+    // slot in the caller would split one flow across two owners.
+    var videoLoading by remember { mutableStateOf(false) }
+    var videoError by remember { mutableStateOf<String?>(null) }
+    var videoHint by remember { mutableStateOf(false) }
+    val scope = androidx.compose.runtime.rememberCoroutineScope()
+    val focus = androidx.compose.ui.focus.FocusRequester()
 
     fun analyse() {
         if (input.isBlank()) return
-        onDraftReady(RecipeTextParser.parseAny(input))
+        videoError = null
+        if (!RecipeTextParser.looksLikeUrlOnly(input)) {
+            onDraftReady(RecipeTextParser.parse(input)); return
+        }
+        val url = input.trim()
+        // Only YouTube actually imports (#77). Anything else keeps the old
+        // link-as-source stub so the user can fill the lists by hand.
+        if (VideoDescriptionParser.extractVideoId(url) == null) {
+            onDraftReady(RecipeTextParser.parseUrl(url)); return
+        }
+        videoLoading = true
+        scope.launch {
+            runCatching { VideoDescriptionParser.fetchParse(url) }
+                .onSuccess { onDraftReady(it) }
+                .onFailure { e ->
+                    videoError = (e as? VideoImportError)?.kind?.farsiMessage()
+                        ?: VideoError.NETWORK.farsiMessage()
+                }
+            videoLoading = false
+        }
     }
 
     Column(
@@ -83,7 +115,9 @@ fun ImportHubScreen(
         OutlinedTextField(
             value = input,
             onValueChange = { input = it },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .focusRequester(focus),
             placeholder = {
                 Text(text = "متن دستور یا نشانی اینترنتی…", fontFamily = YekanBakh)
             },
@@ -93,6 +127,15 @@ fun ImportHubScreen(
                 imeAction = ImeAction.Done,
             ),
         )
+        if (videoHint) {
+            Spacer(Modifier.height(4.dp))
+            Text(
+                text = "نشانی ویدیو را بچسبان و «تحلیل متن» را بزن.",
+                fontFamily = YekanBakh,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
         Spacer(Modifier.height(8.dp))
 
         // The button enables on PARSEABILITY, not non-blankness: «،،» is
@@ -102,10 +145,25 @@ fun ImportHubScreen(
             .let { it.title.isNotBlank() || it.ingredients.isNotEmpty() || it.steps.isNotEmpty() }
         Button(
             onClick = { analyse() },
-            enabled = parses,
+            enabled = parses && !videoLoading,
             modifier = Modifier.fillMaxWidth(),
         ) {
-            Text(text = "تحلیل متن", fontFamily = YekanBakh)
+            Text(
+                text = if (videoLoading) "در حال خواندن ویدیو…" else "تحلیل متن",
+                fontFamily = YekanBakh,
+            )
+        }
+
+        // #77: a private/removed video or a dead link is a message, never a crash.
+        videoError?.let {
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = it,
+                fontFamily = YekanBakh,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.fillMaxWidth(),
+            )
         }
 
         Spacer(Modifier.height(24.dp))
@@ -128,7 +186,13 @@ fun ImportHubScreen(
                 SourceRow(label = "عکس‌برداری از کارت دستور", onClick = onScanPhoto)
             }
             if (onPasteVideoUrl != null) {
-                SourceRow(label = "نشانی ویدیو (یوتیوب، اینستاگرام)", onClick = onPasteVideoUrl)
+                SourceRow(label = "نشانی ویدیو (یوتیوب، اینستاگرام)", onClick = {
+                    // The URL goes in the SAME field: a second input would make
+                    // two ways to start one import and two places to look.
+                    videoHint = true
+                    focus.requestFocus()
+                    onPasteVideoUrl()
+                })
             }
             if (onOpenWebReader != null) {
                 SourceRow(label = "باز کردن یک صفحهٔ وب", onClick = onOpenWebReader)
