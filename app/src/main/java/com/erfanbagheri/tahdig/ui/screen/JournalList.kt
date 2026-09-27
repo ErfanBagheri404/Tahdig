@@ -50,6 +50,8 @@ fun JournalList(
     // empty — then the row is simply absent and the user attaches by hand).
     attachToId: Long? = null,
     onAttach: (Long, android.net.Uri) -> Unit = { _, _ -> },
+    // #126: ghost-row CTA when the journal is empty.
+    onGoHome: () -> Unit = {},
 ) {
     val picker = androidx.activity.compose.rememberLauncherForActivityResult(
         androidx.activity.result.contract.ActivityResultContracts.GetContent(),
@@ -58,6 +60,17 @@ fun JournalList(
     }
     androidx.compose.runtime.LaunchedEffect(attachToId) {
         if (attachToId != null) picker.launch("image/*")
+    }
+    if (entries.isEmpty()) {
+        // #126: preview the real row shape + one CTA. No modal, no wall.
+        com.erfanbagheri.tahdig.ui.components.GhostRowsEmptyState(
+            title = "هنوز چیزی ثبت نشده",
+            subtitle = "بعد از پخت، یه عکس یا یادداشت بذار تا اینجا جمع بشه",
+            cta = "برگرد به پیشنهاد امروز",
+            onCta = onGoHome,
+            modifier = Modifier.padding(top = 32.dp),
+        )
+        return
     }
     LazyColumn(modifier = Modifier.fillMaxWidth()) {
         items(entries, key = { it.id }) { entry ->

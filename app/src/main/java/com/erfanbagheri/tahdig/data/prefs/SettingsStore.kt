@@ -50,6 +50,10 @@ object SettingsStore {
     private const val KEY_NOTIF_DENIED = "notif_denied"           // denial remembered (#122)
     private const val KEY_PHOTO_PROMPT = "photo_prompt_enabled"   // daily lunch photo reminder (#125)
     private const val KEY_PHOTO_PROMPT_HOUR = "photo_prompt_hour" // 0..23, default 13 (#125)
+    private const val KEY_TIPS_SEEN = "tips_seen"              // JSON set, dismissed tips (#126)
+    private const val KEY_SAMPLE_PICK = "sample_pick"          // onboarding sample dish id (#126)
+    private const val KEY_SAMPLE_DONE = "sample_done"          // celebration acknowledged (#126)
+    private const val KEY_SAMPLE_FIRED = "sample_fired"        // 0, else epoch ms of first save/cook (#126)
 
     private lateinit var prefs: SharedPreferences
     private val _themeMode = MutableStateFlow(0)
@@ -57,6 +61,17 @@ object SettingsStore {
 
     private val _onboarded = MutableStateFlow(false)
     val onboarded: StateFlow<Boolean> = _onboarded
+
+    // ── First-run (#126) ───────────────────────────────────────────
+    private val _tipsSeen = MutableStateFlow<Set<String>>(emptySet())
+    val tipsSeen: StateFlow<Set<String>> = _tipsSeen
+    private val _samplePick = MutableStateFlow<Long?>(null)
+    val samplePick: StateFlow<Long?> = _samplePick
+    private val _sampleDone = MutableStateFlow(false)
+    val sampleDone: StateFlow<Boolean> = _sampleDone
+    /** Epoch ms of the first save/cook, 0 before that — the celebration trigger. */
+    private val _firstSuccessAt = MutableStateFlow(0L)
+    val firstSuccessAt: StateFlow<Long> = _firstSuccessAt
 
     private val _dailyNotify = MutableStateFlow(false)
     val dailyNotify: StateFlow<Boolean> = _dailyNotify
@@ -308,6 +323,10 @@ object SettingsStore {
         _notifDenied.value = prefs.getBoolean(KEY_NOTIF_DENIED, false)
         _photoPrompt.value = prefs.getBoolean(KEY_PHOTO_PROMPT, false)
         _photoPromptHour.value = prefs.getInt(KEY_PHOTO_PROMPT_HOUR, 13).let { if (it in 1..23) it else 13 }
+        _tipsSeen.value = loadSet(KEY_TIPS_SEEN)
+        _samplePick.value = prefs.getLong(KEY_SAMPLE_PICK, 0L).takeIf { it > 0 }
+        _sampleDone.value = prefs.getBoolean(KEY_SAMPLE_DONE, false)
+        _firstSuccessAt.value = prefs.getLong(KEY_SAMPLE_FIRED, 0L)
         _shakeSpin.value = prefs.getBoolean(KEY_SHAKE_SPIN, false)
         _scannerEnabled.value = prefs.getBoolean(KEY_SCANNER, true)
         _glassSizeMl.value = prefs.getInt(KEY_GLASS_ML, 200)
@@ -534,6 +553,55 @@ object SettingsStore {
     fun setOnboarded() {
         prefs.edit().putBoolean(KEY_ONBOARDED, true).apply()
         _onboarded.value = true
+    }
+
+    // ── First-run (#126) ───────────────────────────────────────────
+
+    /** Dismiss a one-line hint for good. Re-dismissing is a no-op. */
+    fun dismissTip(id: String) {
+        if (id in _tipsSeen.value) return
+        val next = _tipsSeen.value + id
+        prefs.edit().putStringSet(KEY_TIPS_SEEN, next).apply()
+        _tipsSeen.value = next
+    }
+
+    /** Remember the dish onboarding picked, so the first-run card can point at it. */
+    fun setSamplePick(foodId: Long?) {
+        prefs.edit().putLong(KEY_SAMPLE_PICK, foodId ?: 0L).apply()
+        _samplePick.value = foodId
+    }
+
+    /**
+     * First save/cook (#126). Written exactly once: a second favourite must not
+     * restart a celebration the user already saw.
+     */
+    fun markFirstSuccess() {
+        if (_firstSuccessAt.value > 0L) return
+        val now = System.currentTimeMillis()
+        prefs.edit().putLong(KEY_SAMPLE_FIRED, now).apply()
+        _firstSuccessAt.value = now
+    }
+
+    /** First save/cook celebrated — the done-state never shows twice. */
+    fun setSampleDone() {
+        prefs.edit().putBoolean(KEY_SAMPLE_DONE, true).apply()
+        _sampleDone.value = true
+    }
+
+    /** Reset every first-run marker (Settings → «راه‌اندازی مجدد تور»). */
+    fun resetFirstRun() {
+        prefs.edit()
+            .putBoolean(KEY_ONBOARDED, false)
+            .putStringSet(KEY_TIPS_SEEN, emptySet())
+            .putLong(KEY_SAMPLE_PICK, 0L)
+            .putBoolean(KEY_SAMPLE_DONE, false)
+            .putLong(KEY_SAMPLE_FIRED, 0L)
+            .apply()
+        _onboarded.value = false
+        _tipsSeen.value = emptySet()
+        _samplePick.value = null
+        _sampleDone.value = false
+        _firstSuccessAt.value = 0L
     }
 
     /** Toggle the daily suggestion notification; schedules/cancels the alarm. */

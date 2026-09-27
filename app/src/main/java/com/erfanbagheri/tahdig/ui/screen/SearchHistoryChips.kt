@@ -22,38 +22,53 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
+import com.erfanbagheri.tahdig.util.FirstRun
 
+/**
+ * Recent searches, falling back to bundled starter chips on a fresh install
+ * (#126). A brand-new install has no history, and an empty search screen
+ * teaches nothing — so before the first search the same row shows popular
+ * dishes instead of disappearing. Clearing only affects the real history; the
+ * starters are constants and come back until there is history to replace them.
+ */
 @Composable
 fun SearchHistoryChips(
     history: List<String>,
     onSelect: (String) -> Unit,
     onClear: () -> Unit,
     modifier: Modifier = Modifier,
+    starters: List<String> = FirstRun.starterChips,
 ) {
-    if (history.isEmpty()) return
+    val showingStarters = history.isEmpty()
+    val items = if (showingStarters) starters else history
+    if (items.isEmpty()) return
     Column(modifier = modifier.padding(top = 8.dp)) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth(),
         ) {
             Text(
-                text = "جستجوهای اخیر",
+                text = if (showingStarters) "پیشنهاد شروع" else "جستجوهای اخیر",
                 style = MaterialTheme.typography.labelMedium,
                 fontFamily = YekanBakh,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.weight(1f),
             )
-            IconButton(onClick = onClear, modifier = Modifier.size(24.dp)) {
-                Text(
-                    text = "پاک کردن",
-                    style = MaterialTheme.typography.labelSmall,
-                    fontFamily = YekanBakh,
-                    color = MaterialTheme.colorScheme.error,
-                )
+            // No clear button for the bundled starters — there is nothing
+            // user-owned to clear, and the button would be a lie.
+            if (!showingStarters) {
+                IconButton(onClick = onClear, modifier = Modifier.size(24.dp)) {
+                    Text(
+                        text = "پاک کردن",
+                        style = MaterialTheme.typography.labelSmall,
+                        fontFamily = YekanBakh,
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                }
             }
         }
         Spacer(Modifier.height(4.dp))
-        history.forEach { q ->
+        items.forEach { q ->
             Text(
                 text = q,
                 style = MaterialTheme.typography.bodyMedium,

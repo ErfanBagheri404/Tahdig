@@ -14,6 +14,7 @@ import com.erfanbagheri.tahdig.util.NutriLabel
 import com.erfanbagheri.tahdig.util.MicroNutrients
 import com.erfanbagheri.tahdig.util.NutrientCaps
 import com.erfanbagheri.tahdig.util.DietFilter
+import com.erfanbagheri.tahdig.util.FirstRun
 import com.erfanbagheri.tahdig.util.Flavor
 import com.erfanbagheri.tahdig.util.PersianText
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -24,7 +25,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -158,6 +162,53 @@ class SearchViewModel(app: Application) : AndroidViewModel(app) {
             }
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    /**
+     * Zero-result recovery (#126).
+     *
+     * When the active query returns nothing, drop the last token and search
+     * again — «کباب زعفرانی مخصوص» still reaches «کباب زعفرانی». Only the
+     * query is relaxed; the other filters stay untouched so the suggestion
+     * never contradicts a chip the user deliberately turned on.
+     */
+    private val _relaxedMatches = MutableStateFlow<List<FoodEntity>>(emptyList())
+    val relaxedMatches: StateFlow<List<FoodEntity>> = _relaxedMatches
+
+    init {
+        // #126: try each truncation in order and keep the first that returns
+        // rows. A single drop is not enough — «paste pasta bake» would relax to
+        // «paste pasta», still zero rows, and the "شاید این‌ها" list would ship
+        // empty while claiming to have suggestions.
+        viewModelScope.launch {
+            _query
+                .debounce(300)
+                .map { FirstRun.relaxedCandidates(it) }
+                .distinctUntilChanged()
+                .collectLatest { candidates ->
+                    var found: List<FoodEntity> = emptyList()
+                    for (candidate in candidates) {
+                        val hits = foodDao.searchByName(candidate).first()
+                        if (hits.isNotEmpty()) {
+                            found = hits
+                            break
+                        }
+                    }
+                    _relaxedMatches.value = found.take(3)
+                }
+        }
+    }
+
+    /** Clear every active filter at once — the other half of no-match recovery. */
+    fun clearFilters() {
+        _selectedCategoryId.value = null
+        _diet.value = null
+        _ingredients.value = ""
+        _excluded.value = ""
+        _flavors.value = emptySet()
+        _nutriAb.value = false
+        _withinCaps.value = false
+        _badge.value = null
+    }
 
     /** Nutri-Score A-B chip (#111); off by default. */
     fun onNutriAbToggle(on: Boolean) { _nutriAb.value = on }

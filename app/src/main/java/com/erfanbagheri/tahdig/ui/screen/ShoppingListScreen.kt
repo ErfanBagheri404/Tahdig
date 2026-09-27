@@ -42,6 +42,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.erfanbagheri.tahdig.data.local.entity.ShoppingItemEntity
 import com.erfanbagheri.tahdig.data.prefs.SettingsStore
+import com.erfanbagheri.tahdig.ui.components.GhostRowsEmptyState
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
 import com.erfanbagheri.tahdig.util.AislePlanner
 import com.erfanbagheri.tahdig.ui.viewmodel.ShoppingViewModel
@@ -49,6 +50,7 @@ import com.erfanbagheri.tahdig.ui.viewmodel.ShoppingViewModel
 @Composable
 fun ShoppingListScreen(
     viewModel: ShoppingViewModel,
+    onGoHome: () -> Unit = {},
 ) {
     val items by viewModel.items.collectAsState()
     // Pantry items already at home: those rows get a «داری» badge and sink to the bottom
@@ -99,15 +101,13 @@ fun ShoppingListScreen(
         Spacer(Modifier.height(12.dp))
 
         if (items.isEmpty()) {
-            Text(
-                text = "لیست خرید خالیه\nاز صفحه غذا، مواد لازم رو اضافه کن",
-                style = MaterialTheme.typography.bodyLarge,
-                fontFamily = YekanBakh,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 48.dp),
+            // #126: ghost rows + one CTA instead of a bare sentence.
+            GhostRowsEmptyState(
+                title = "لیست خرید خالیه",
+                subtitle = "از صفحه هر غذا، مواد لازم رو اضافه کن",
+                cta = "دیدن پیشنهاد امروز",
+                onCta = onGoHome,
+                modifier = Modifier.padding(top = 32.dp),
             )
         } else {
             // Grouped by shopping aisle so the list follows the route through a store.
