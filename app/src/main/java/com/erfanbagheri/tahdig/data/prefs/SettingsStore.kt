@@ -33,6 +33,7 @@ object SettingsStore {
     private const val KEY_SHAKE_SPIN = "shake_spin"            // shake-to-spin roulette (#123)
     private const val KEY_CAP_PRESET = "cap_preset"              // preset name or "" (#113)
     private const val KEY_CAP_CUSTOM = "cap_custom"              // JSON {NUTRIENT: value} (#113)
+    private const val KEY_HALAL_STRICT = "halal_strict"          // hide flagged dishes (#118)
 
     private lateinit var prefs: SharedPreferences
     private val _themeMode = MutableStateFlow(0)
@@ -89,6 +90,17 @@ object SettingsStore {
     val allergens: StateFlow<Set<String>> = _allergens
     private val _allergenHide = MutableStateFlow(false)
     val allergenHide: StateFlow<Boolean> = _allergenHide
+
+    // ── Halal-style strict mode (#118) ──────────────────────────────
+    // Off by default: the warning row alone never hides anything.
+    private val _halalStrict = MutableStateFlow(false)
+    val halalStrict: StateFlow<Boolean> = _halalStrict
+
+    /** Hide flagged dishes in search (#118). Persists immediately. */
+    fun setHalalStrict(on: Boolean) {
+        _halalStrict.value = on
+        if (::prefs.isInitialized) prefs.edit().putBoolean(KEY_HALAL_STRICT, on).apply()
+    }
 
     // ── Shake-to-spin roulette (#123) ──────────────────────────────
     private val _shakeSpin = MutableStateFlow(false)
@@ -165,6 +177,7 @@ object SettingsStore {
         _freezeDeclinedDay.value = prefs.getString(KEY_FREEZE_DECLINED, "") ?: ""
         _allergens.value = loadSet(KEY_ALLERGENS)
         _allergenHide.value = prefs.getBoolean(KEY_ALLERGEN_HIDE, false)
+        _halalStrict.value = prefs.getBoolean(KEY_HALAL_STRICT, false)
         _shakeSpin.value = prefs.getBoolean(KEY_SHAKE_SPIN, false)
         _capPreset.value = prefs.getString(KEY_CAP_PRESET, "")?.ifBlank { null }
         _capCustom.value = loadDoubleMap(KEY_CAP_CUSTOM)

@@ -28,6 +28,10 @@ class SettingsViewModel(app: Application) : AndroidViewModel(app) {
     fun setAllergens(set: Set<String>) = SettingsStore.setAllergens(set)
     fun setAllergenHide(on: Boolean) = SettingsStore.setAllergenHide(on)
 
+    // Halal-style flags (#118): strict toggle hides flagged dishes in search.
+    val halalStrict = SettingsStore.halalStrict
+    fun setHalalStrict(on: Boolean) = SettingsStore.setHalalStrict(on)
+
     // Nutrient caps (#113): preset name plus {NUTRIENT: mg/g} overrides.
     val capPreset = SettingsStore.capPreset
     val capCustom = SettingsStore.capCustom

@@ -204,6 +204,38 @@ fun SettingsScreen(
             )
         }
 
+        Spacer(Modifier.height(16.dp))
+
+        // ── Halal-style flags (#118) ────────────────────────────────
+        // A check, not a certification: the toggle only hides dishes whose
+        // ingredient text POSITIVELY names pork, alcohol or animal gelatin.
+        val halalStrict by viewModel.halalStrict.collectAsState()
+        Text(
+            "پرچم مواد غیرحلال",
+            fontFamily = YekanBakh,
+            style = MaterialTheme.typography.titleMedium,
+        )
+        Spacer(Modifier.height(4.dp))
+        Text(
+            "اگر دستور غذایی گوشت خوک، الکل یا ژلاتین حیوانی داشته باشد، «بررسی کن» نشان می‌دهد. " +
+                "این گواهی حلال نیست.",
+            fontFamily = YekanBakh,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Spacer(Modifier.height(8.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            androidx.compose.material3.Switch(
+                checked = halalStrict,
+                onCheckedChange = { viewModel.setHalalStrict(it) },
+            )
+            Spacer(Modifier.width(12.dp))
+            Text(
+                "پنهان‌سازی غذاهای پرچم‌خورده",
+                fontFamily = YekanBakh,
+            )
+        }
+
         Spacer(Modifier.height(32.dp))
 
         // ── Nutrient caps (#113) ────────────────────────────────────
