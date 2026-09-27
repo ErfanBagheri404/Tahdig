@@ -63,6 +63,8 @@ import kotlinx.coroutines.isActive
 fun StepModeScreen(
     foodId: Long,
     onBack: () -> Unit,
+    /** Opens a linked technique page (#101); back returns to this step. */
+    onTechnique: (String) -> Unit = {},
 ) {
     val appContext = LocalContext.current.applicationContext
     val view = LocalView.current
@@ -251,6 +253,37 @@ fun StepModeScreen(
                 color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.weight(1f),
             )
+
+            // Technique deep-links (#101): linked terms of THIS step as tappable chips.
+            // Back from the technique returns to this exact step because `current`
+            // lives in this screen's state, which stays on the back stack.
+            val stepTechIds = remember(current, steps) {
+                com.erfanbagheri.tahdig.util.TechniqueLinker
+                    .linkify(steps.getOrElse(current) { "" }, com.erfanbagheri.tahdig.util.TechniqueRegistry.all())
+                    .mapNotNull { it.techniqueId }
+                    .distinct()
+            }
+            if (stepTechIds.isNotEmpty()) {
+                Spacer(Modifier.height(8.dp))
+                androidx.compose.foundation.layout.Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    stepTechIds.forEach { id ->
+                        val tech = com.erfanbagheri.tahdig.util.TechniqueRegistry.byId(id)
+                        if (tech != null) {
+                            Text(
+                                text = tech.name,
+                                style = MaterialTheme.typography.labelMedium,
+                                fontFamily = YekanBakh,
+                                color = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier
+                                    .clickable { onTechnique(tech.id) }
+                                    .padding(horizontal = 8.dp, vertical = 4.dp),
+                            )
+                        }
+                    }
+                }
+            }
 
             // Inline timer — only when this step actually states a duration
             if (stepDuration != null) {
