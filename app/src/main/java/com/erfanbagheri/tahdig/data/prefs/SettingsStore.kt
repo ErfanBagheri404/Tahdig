@@ -31,6 +31,8 @@ object SettingsStore {
     private const val KEY_ALLERGENS = "allergens"              // JSON set (#112)
     private const val KEY_ALLERGEN_HIDE = "allergen_hide"      // search-wide hide toggle (#112)
     private const val KEY_SHAKE_SPIN = "shake_spin"            // shake-to-spin roulette (#123)
+    private const val KEY_CAP_PRESET = "cap_preset"              // preset name or "" (#113)
+    private const val KEY_CAP_CUSTOM = "cap_custom"              // JSON {NUTRIENT: value} (#113)
 
     private lateinit var prefs: SharedPreferences
     private val _themeMode = MutableStateFlow(0)
@@ -92,6 +94,33 @@ object SettingsStore {
     private val _shakeSpin = MutableStateFlow(false)
     val shakeSpin: StateFlow<Boolean> = _shakeSpin
 
+    // ── Nutrient caps (#113) ─────────────────────────────────────
+    // SettingsStore over Room here: no DB migration, no schema, and the issue
+    // asks for a prefs-plus-entity approach. One key for the preset, one map
+    // for overrides. The pure merge rule lives in NutrientCaps.
+    private val _capPreset = MutableStateFlow<String?>(null)
+    val capPreset: StateFlow<String?> = _capPreset
+    private val _capCustom = MutableStateFlow<Map<String, Double>>(emptyMap())
+    val capCustom: StateFlow<Map<String, Double>> = _capCustom
+
+    /** Pick a preset by enum name, or null to clear — persists immediately. */
+    fun setCapPreset(name: String?) {
+        _capPreset.value = name
+        if (::prefs.isInitialized) prefs.edit().putString(KEY_CAP_PRESET, name ?: "").apply()
+    }
+
+    /** Set one personal override (mg/g); non-positive removes it. Persists immediately. */
+    fun setCapCustom(nutrient: String, value: Double) {
+        val next = _capCustom.value.toMutableMap()
+        if (value > 0.0) next[nutrient] = value else next.remove(nutrient)
+        _capCustom.value = next
+        if (::prefs.isInitialized) {
+            js.encodeToString(
+                MapSerializer(String.serializer(), Double.serializer()), next,
+            ).let { prefs.edit().putString(KEY_CAP_CUSTOM, it).apply() }
+        }
+    }
+
     private val js = kotlinx.serialization.json.Json
 
     private fun loadList(key: String): List<String> =
@@ -105,6 +134,12 @@ object SettingsStore {
         }.getOrDefault(emptyMap())
 
     private fun loadSet(key: String): Set<String> = loadList(key).toSet()
+
+    /** {NUTRIENT: mg/g} doubles; non-finite junk is dropped, never trusted blindly. */
+    private fun loadDoubleMap(key: String): Map<String, Double> =
+        loadMap(key).mapNotNull { (k, v) ->
+            v.toDoubleOrNull()?.takeIf { it.isFinite() && it > 0.0 }?.let { k to it }
+        }.toMap()
 
     fun isInitialized(): Boolean = ::prefs.isInitialized
 
@@ -131,6 +166,8 @@ object SettingsStore {
         _allergens.value = loadSet(KEY_ALLERGENS)
         _allergenHide.value = prefs.getBoolean(KEY_ALLERGEN_HIDE, false)
         _shakeSpin.value = prefs.getBoolean(KEY_SHAKE_SPIN, false)
+        _capPreset.value = prefs.getString(KEY_CAP_PRESET, "")?.ifBlank { null }
+        _capCustom.value = loadDoubleMap(KEY_CAP_CUSTOM)
         grantFreezeIfNeeded()
     }
 

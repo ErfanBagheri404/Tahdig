@@ -61,6 +61,7 @@ fun SearchScreen(
     val ingredients by viewModel.ingredients.collectAsState()
     val excluded by viewModel.excluded.collectAsState()
     val nutriAb by viewModel.nutriAb.collectAsState()
+    val withinCaps by viewModel.withinCaps.collectAsState()
     val flavors by viewModel.flavors.collectAsState()
     val flavorCount by viewModel.flavorCount.collectAsState()
     val categories by viewModel.categories.collectAsState()
@@ -232,6 +233,16 @@ fun SearchScreen(
                         label = "نمره A-B",
                         selected = nutriAb,
                         onClick = { viewModel.onNutriAbToggle(!nutriAb) },
+                    )
+                }
+                // «در محدوده من» (#113). Only keeps dishes that pass the
+                // user's nutrient caps; estimates drop out because unknown
+                // amounts are not within a limit.
+                item {
+                    CategoryChip(
+                        label = "در محدوده من",
+                        selected = withinCaps,
+                        onClick = { viewModel.onWithinCapsToggle(!withinCaps) },
                     )
                 }
             }

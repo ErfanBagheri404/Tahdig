@@ -28,6 +28,12 @@ class SettingsViewModel(app: Application) : AndroidViewModel(app) {
     fun setAllergens(set: Set<String>) = SettingsStore.setAllergens(set)
     fun setAllergenHide(on: Boolean) = SettingsStore.setAllergenHide(on)
 
+    // Nutrient caps (#113): preset name plus {NUTRIENT: mg/g} overrides.
+    val capPreset = SettingsStore.capPreset
+    val capCustom = SettingsStore.capCustom
+    fun setCapPreset(name: String?) = SettingsStore.setCapPreset(name)
+    fun setCapCustom(nutrient: String, value: Double) = SettingsStore.setCapCustom(nutrient, value)
+
     fun setThemeMode(mode: Int) = SettingsStore.setThemeMode(mode)
 
     fun setDailyNotify(context: android.content.Context, enabled: Boolean) =

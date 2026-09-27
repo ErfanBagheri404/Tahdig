@@ -400,6 +400,29 @@ fun FoodDetailScreen(
                     }
                     NutritionLabelPanel(label = labelData)
 
+                    // Personal nutrient caps (#113): pass/warn/fail per active
+                    // cap against this dish, only when the user has limits set.
+                    val capPreset by com.erfanbagheri.tahdig.data.prefs.SettingsStore.capPreset
+                        .collectAsState()
+                    val capCustom by com.erfanbagheri.tahdig.data.prefs.SettingsStore.capCustom
+                        .collectAsState()
+                    val caps = remember(capPreset, capCustom) {
+                        com.erfanbagheri.tahdig.util.NutrientCaps.merge(
+                            com.erfanbagheri.tahdig.util.NutrientCaps.Preset.entries
+                                .firstOrNull { it.name == capPreset },
+                            capCustom.mapNotNull { (k, v) ->
+                                com.erfanbagheri.tahdig.util.NutrientCaps.Nutrient.entries
+                                    .firstOrNull { it.name == k }?.let { it to v }
+                            }.toMap(),
+                        )
+                    }
+                    if (caps.isNotEmpty()) {
+                        NutrientCapReport(
+                            caps = caps,
+                            amounts = NutritionLabelData.amounts(labelData),
+                        )
+                    }
+
                     // ── Mise-en-place (#99) ───────────────────────────────────────
                     // Parsed once per dish; display scales with servings × batch, hashes never do.
                     val checkedHashes = if (milestoneViewModel != null)

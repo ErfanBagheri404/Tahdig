@@ -10,6 +10,7 @@ import com.erfanbagheri.tahdig.data.prefs.SettingsStore
 import com.erfanbagheri.tahdig.ui.screen.NutritionLabelData
 import com.erfanbagheri.tahdig.util.AllergenDetector
 import com.erfanbagheri.tahdig.util.NutriLabel
+import com.erfanbagheri.tahdig.util.NutrientCaps
 import com.erfanbagheri.tahdig.util.DietFilter
 import com.erfanbagheri.tahdig.util.Flavor
 import com.erfanbagheri.tahdig.util.PersianText
@@ -50,6 +51,11 @@ class SearchViewModel(app: Application) : AndroidViewModel(app) {
     /** Nutri-Score A-B only (#111) — needs real per-100g data, so most dishes drop out. */
     private val _nutriAb = MutableStateFlow(false)
     val nutriAb: StateFlow<Boolean> = _nutriAb.asStateFlow()
+
+    /** «در محدوده من» (#113) — keeps dishes inside the user's nutrient caps. */
+    private val _withinCaps = MutableStateFlow(false)
+    val withinCaps: StateFlow<Boolean> = _withinCaps.asStateFlow()
+    fun onWithinCapsToggle(on: Boolean) { _withinCaps.value = on }
     private val _flavors = MutableStateFlow<Set<Flavor>>(emptySet())
     val flavors: StateFlow<Set<Flavor>> = _flavors.asStateFlow()
 
@@ -96,6 +102,27 @@ class SearchViewModel(app: Application) : AndroidViewModel(app) {
             else foods.filter { food ->
                 val label = NutritionLabelData.of(food.name, food.tags, food.ingredients)
                 label.score?.let { NutriLabel.passesFilter(it, keepAB = true) } ?: false
+            }
+        }
+        // «در محدوده من» (#113): drops estimate dishes with a hint-worthy
+        // reason — their amounts are unknown, and unknown is not within.
+        // No caps active is a no-op so the chip does nothing while unset.
+        .combine(_withinCaps) { foods, onlyWithin ->
+            if (!onlyWithin) return@combine foods
+            val caps = NutrientCaps.merge(
+                NutrientCaps.Preset.entries.firstOrNull {
+                    it.name == SettingsStore.capPreset.value
+                },
+                SettingsStore.capCustom.value.mapNotNull { (k, v) ->
+                    NutrientCaps.Nutrient.entries.firstOrNull { it.name == k }
+                        ?.let { it to v }
+                }.toMap(),
+            )
+            if (caps.isEmpty()) foods
+            else foods.filter { food ->
+                val label = NutritionLabelData.of(food.name, food.tags, food.ingredients)
+                if (label.estimated) false
+                else NutrientCaps.allWithin(caps, NutritionLabelData.amounts(label))
             }
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
