@@ -60,6 +60,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.semantics.CustomAccessibilityAction
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.customActions
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
@@ -77,6 +82,8 @@ import com.erfanbagheri.tahdig.util.Haptics
 import com.erfanbagheri.tahdig.util.KeepAwake
 import com.erfanbagheri.tahdig.util.MealTimeHelper
 import com.erfanbagheri.tahdig.util.PersianText
+import com.erfanbagheri.tahdig.util.ShakeDetector
+import com.erfanbagheri.tahdig.util.ShakeWatcher
 import com.erfanbagheri.tahdig.util.ShareCard
 import java.util.Locale
 import kotlinx.coroutines.delay
@@ -119,6 +126,19 @@ fun StepModeScreen(
     if (!SettingsStore.isInitialized()) SettingsStore.init(appContext)
     val voiceMasterOn by SettingsStore.voiceControl.collectAsState(initial = false)
     val voiceReadAloud by SettingsStore.voiceReadAloud.collectAsState(initial = false)
+    // Shake-to-advance (#96): opt-in, gated by the sub-60s guard + re-arm.
+    val shakeOn by SettingsStore.shakeAdvance.collectAsState(initial = false)
+    val shakeSensitivity by SettingsStore.shakeSensitivity.collectAsState(initial = 0.5f)
+    // Visual ack flash (#96): shown when a shake (or a11y action) advances.
+    var shakeFlashTick by remember { mutableIntStateOf(0) }
+    var shakeFlashVisible by remember { mutableStateOf(false) }
+    LaunchedEffect(shakeFlashTick) {
+        if (shakeFlashTick == 0) return@LaunchedEffect
+        shakeFlashVisible = true
+        delay(1200)
+        shakeFlashVisible = false
+    }
+
     var micGranted by remember { mutableStateOf(false) }
     var voiceEcho by remember { mutableStateOf<String?>(null) }
     // Re-trigger for the REPEAT command (same text, needs its own launch).
@@ -282,6 +302,32 @@ fun StepModeScreen(
             )
         }
         onCooked(f)
+    }
+
+    // ── Shake-to-advance (#96) ──────────────────────────────────────
+    // `shakeOn`/`shakeSensitivity`/`shakeFlashTick` are declared up top (they
+    // have no forward refs); this block sits after goTo/enterDone so it may
+    // call them. The sensor gate + sub-60s guard live in the watcher callback.
+    fun advanceFromHandsFree() {
+        if (showDone) return
+        Haptics.tap(view)
+        shakeFlashTick++
+        // Same path as the nav button — persist + undo arm come along (#96).
+        if (current >= steps.lastIndex) enterDone() else goTo(current + 1)
+    }
+
+    val shakeWatcher = remember(appContext) {
+        ShakeWatcher(appContext) {
+            if (ShakeDetector.canAdvance(remaining, running)) {
+                advanceFromHandsFree()
+            }
+        }
+    }
+    DisposableEffect(shakeWatcher, shakeOn, shakeSensitivity) {
+        shakeWatcher.enabled = shakeOn && !showDone
+        shakeWatcher.threshold = ShakeDetector.thresholdFor(shakeSensitivity)
+        if (shakeOn && shakeWatcher.available) shakeWatcher.start()
+        onDispose { shakeWatcher.stop() }
     }
 
     // ── Per-step timer ──────────────────────────────────────────────
@@ -540,6 +586,20 @@ fun StepModeScreen(
                 color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
                     .weight(1f)
+                    // A11y (#96): TalkBack «مرحله بعد/قبلی» reach the exact same
+                    // path as the nav buttons; the step counter is a live region
+                    // so advances are announced.
+                    .semantics {
+                        liveRegion = LiveRegionMode.Polite
+                        customActions = listOf(
+                            CustomAccessibilityAction("مرحله بعد") {
+                                advanceFromHandsFree(); true
+                            },
+                            CustomAccessibilityAction("مرحله قبلی") {
+                                goBackInMode(); true
+                            },
+                        )
+                    }
                     // Horizontal swipe turns pages (#93). Direction comes from
                     // CookSessionMath.stepForSwipe, so RTL advances on dx > 0.
                     .pointerInput(steps) {
@@ -849,6 +909,24 @@ fun StepModeScreen(
                             Text("اشتراک‌گذاری", fontFamily = YekanBakh)
                         }
                     }
+                }
+            }
+
+            // Shake ack flash (#96): centered chip, no layout shift, brief.
+            if (shakeFlashVisible) {
+                Surface(
+                    color = MaterialTheme.colorScheme.primary,
+                    shape = RoundedCornerShape(16.dp),
+                    modifier = Modifier.align(Alignment.Center).padding(16.dp),
+                ) {
+                    Text(
+                        text = "مرحله بعد",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontFamily = YekanBakh,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp),
+                    )
                 }
             }
 

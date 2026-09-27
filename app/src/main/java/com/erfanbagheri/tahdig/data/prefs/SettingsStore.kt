@@ -12,6 +12,8 @@ object SettingsStore {
     private const val KEY_DAILY_NOTIFY = "daily_notify"
     private const val KEY_VOICE_CONTROL = "voice_control"   // hands-free cook mode (#94)
     private const val KEY_VOICE_READ = "voice_read_aloud"   // TTS of next step (#94)
+    private const val KEY_SHAKE = "shake_advance"           // shake-to-advance (#96)
+    private const val KEY_SHAKE_SENS = "shake_sensitivity"  // 0f..1f slider (#96)
 
     private lateinit var prefs: SharedPreferences
     private val _themeMode = MutableStateFlow(0)
@@ -29,6 +31,12 @@ object SettingsStore {
     private val _voiceReadAloud = MutableStateFlow(false)
     val voiceReadAloud: StateFlow<Boolean> = _voiceReadAloud
 
+    private val _shakeAdvance = MutableStateFlow(false)
+    val shakeAdvance: StateFlow<Boolean> = _shakeAdvance
+
+    private val _shakeSensitivity = MutableStateFlow(0.5f)
+    val shakeSensitivity: StateFlow<Float> = _shakeSensitivity
+
     fun isInitialized(): Boolean = ::prefs.isInitialized
 
     fun init(context: Context) {
@@ -38,6 +46,21 @@ object SettingsStore {
         _dailyNotify.value = prefs.getBoolean(KEY_DAILY_NOTIFY, false)
         _voiceControl.value = prefs.getBoolean(KEY_VOICE_CONTROL, false)
         _voiceReadAloud.value = prefs.getBoolean(KEY_VOICE_READ, false)
+        _shakeAdvance.value = prefs.getBoolean(KEY_SHAKE, false)
+        _shakeSensitivity.value = prefs.getFloat(KEY_SHAKE_SENS, 0.5f)
+    }
+
+    /** Shake-to-advance in cook mode (#96); default off — gestures are opt-in. */
+    fun setShakeAdvance(enabled: Boolean) {
+        prefs.edit().putBoolean(KEY_SHAKE, enabled).apply()
+        _shakeAdvance.value = enabled
+    }
+
+    /** Shake sensitivity 0..1 (#96); higher = advances on a lighter shake. */
+    fun setShakeSensitivity(value: Float) {
+        val v = value.coerceIn(0f, 1f)
+        prefs.edit().putFloat(KEY_SHAKE_SENS, v).apply()
+        _shakeSensitivity.value = v
     }
 
     /** Hands-free cook-mode voice control master (#94); default off. */
