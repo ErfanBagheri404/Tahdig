@@ -3,6 +3,9 @@ package com.erfanbagheri.tahdig.data.prefs
 import android.content.Context
 import android.content.SharedPreferences
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.MapSerializer
+import kotlinx.serialization.builtins.serializer
 import kotlinx.coroutines.flow.StateFlow
 
 object SettingsStore {
@@ -15,6 +18,10 @@ object SettingsStore {
     private const val KEY_SHAKE = "shake_advance"           // shake-to-advance (#96)
     private const val KEY_SHAKE_SENS = "shake_sensitivity"  // 0f..1f slider (#96)
     private const val KEY_CONVERT_FAV = "convert_favorite"  // last-used pair (#103)
+    private const val KEY_AISLE_ORDER = "aisle_order"        // JSON list (#108)
+    private const val KEY_AISLE_RENAMES = "aisle_renames"    // JSON map (#108)
+    private const val KEY_AISLE_HIDDEN = "aisle_hidden"      // JSON set (#108)
+    private const val KEY_TRIP_ACTIVE = "shopping_trip_active" // in-store trip (#108)
 
     private lateinit var prefs: SharedPreferences
     private val _themeMode = MutableStateFlow(0)
@@ -41,6 +48,33 @@ object SettingsStore {
     private val _convertFavorite = MutableStateFlow<String?>(null)
     val convertFavorite: StateFlow<String?> = _convertFavorite
 
+    // ── Shopping aisles + trip mode (#108) ──────────────────────────
+    private val _aisleOrder = MutableStateFlow<List<String>>(emptyList())
+    val aisleOrder: StateFlow<List<String>> = _aisleOrder
+
+    private val _aisleRenames = MutableStateFlow<Map<String, String>>(emptyMap())
+    val aisleRenames: StateFlow<Map<String, String>> = _aisleRenames
+
+    private val _aisleHidden = MutableStateFlow<Set<String>>(emptySet())
+    val aisleHidden: StateFlow<Set<String>> = _aisleHidden
+
+    private val _tripActive = MutableStateFlow(false)
+    val tripActive: StateFlow<Boolean> = _tripActive
+
+    private val js = kotlinx.serialization.json.Json
+
+    private fun loadList(key: String): List<String> =
+        runCatching {
+            js.decodeFromString<List<String>>(prefs.getString(key, "[]") ?: "[]")
+        }.getOrDefault(emptyList())
+
+    private fun loadMap(key: String): Map<String, String> =
+        runCatching {
+            js.decodeFromString<Map<String, String>>(prefs.getString(key, "{}") ?: "{}")
+        }.getOrDefault(emptyMap())
+
+    private fun loadSet(key: String): Set<String> = loadList(key).toSet()
+
     fun isInitialized(): Boolean = ::prefs.isInitialized
 
     fun init(context: Context) {
@@ -53,6 +87,28 @@ object SettingsStore {
         _shakeAdvance.value = prefs.getBoolean(KEY_SHAKE, false)
         _shakeSensitivity.value = prefs.getFloat(KEY_SHAKE_SENS, 0.5f)
         _convertFavorite.value = prefs.getString(KEY_CONVERT_FAV, null)
+        _aisleOrder.value = loadList(KEY_AISLE_ORDER)
+        _aisleRenames.value = loadMap(KEY_AISLE_RENAMES)
+        _aisleHidden.value = loadSet(KEY_AISLE_HIDDEN)
+        _tripActive.value = prefs.getBoolean(KEY_TRIP_ACTIVE, false)
+    }
+
+    /** Persist the full aisle-manager state in one write (#108). */
+    fun setAisleConfig(order: List<String>, renames: Map<String, String>, hidden: Set<String>) {
+        prefs.edit()
+            .putString(KEY_AISLE_ORDER, js.encodeToString(ListSerializer(String.serializer()), order))
+            .putString(KEY_AISLE_RENAMES, js.encodeToString(MapSerializer(String.serializer(), String.serializer()), renames))
+            .putString(KEY_AISLE_HIDDEN, js.encodeToString(ListSerializer(String.serializer()), hidden.toList()))
+            .apply()
+        _aisleOrder.value = order
+        _aisleRenames.value = renames
+        _aisleHidden.value = hidden
+    }
+
+    /** Trip mode is a light flag: start snapshots in the VM, end archives there. */
+    fun setTripActive(active: Boolean) {
+        prefs.edit().putBoolean(KEY_TRIP_ACTIVE, active).apply()
+        _tripActive.value = active
     }
 
     /** Last-used converter pair, "from|to" key (#103) — survives restart. */

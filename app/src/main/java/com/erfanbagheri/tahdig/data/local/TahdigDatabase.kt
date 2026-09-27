@@ -15,6 +15,7 @@ import com.erfanbagheri.tahdig.data.local.dao.PantryDao
 import com.erfanbagheri.tahdig.data.local.dao.RatingDao
 import com.erfanbagheri.tahdig.data.local.dao.RecentViewDao
 import com.erfanbagheri.tahdig.data.local.dao.ShoppingDao
+import com.erfanbagheri.tahdig.data.local.dao.ShoppingTripDao
 import com.erfanbagheri.tahdig.data.local.entity.CategoryEntity
 import com.erfanbagheri.tahdig.data.local.entity.CookSessionEntity
 import com.erfanbagheri.tahdig.data.local.entity.FavoriteEntity
@@ -26,6 +27,7 @@ import com.erfanbagheri.tahdig.data.local.entity.PantryItemEntity
 import com.erfanbagheri.tahdig.data.local.entity.RatingEntity
 import com.erfanbagheri.tahdig.data.local.entity.RecentViewEntity
 import com.erfanbagheri.tahdig.data.local.entity.ShoppingItemEntity
+import com.erfanbagheri.tahdig.data.local.entity.ShoppingTripEntity
 import com.erfanbagheri.tahdig.data.local.seed.SeedLoader
 
 @Database(
@@ -41,8 +43,9 @@ import com.erfanbagheri.tahdig.data.local.seed.SeedLoader
         PantryItemEntity::class,
         MilestoneCheckEntity::class,
         CookSessionEntity::class,
+        ShoppingTripEntity::class,
     ],
-    version = 10, // + pantry.added_at / expires_at (#106); destructive fallback, pre-release
+    version = 11, // + shopping_trips table (#108); destructive fallback, pre-release
     exportSchema = true,
 )
 abstract class TahdigDatabase : RoomDatabase() {
@@ -55,6 +58,7 @@ abstract class TahdigDatabase : RoomDatabase() {
     abstract fun ratingDao(): RatingDao
     abstract fun recentViewDao(): RecentViewDao
     abstract fun shoppingDao(): ShoppingDao
+    abstract fun shoppingTripDao(): ShoppingTripDao
     abstract fun pantryDao(): PantryDao
     abstract fun milestoneCheckDao(): MilestoneCheckDao
     abstract fun cookSessionDao(): CookSessionDao
