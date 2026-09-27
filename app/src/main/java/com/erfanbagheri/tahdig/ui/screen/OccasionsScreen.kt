@@ -28,6 +28,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.erfanbagheri.tahdig.data.local.TahdigDatabase
+import com.erfanbagheri.tahdig.ui.theme.LocalHairline
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
 import com.erfanbagheri.tahdig.util.OccasionRegistry
 import com.erfanbagheri.tahdig.util.Occasion
@@ -124,7 +125,8 @@ private fun OccasionSection(
                     Surface(
                         shape = RoundedCornerShape(10.dp),
                         color = MaterialTheme.colorScheme.surface,
-                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                        // #128: hairline doubles in high contrast
+                        border = BorderStroke(LocalHairline.current, MaterialTheme.colorScheme.outlineVariant),
                         // #129: single-Text chip already reads as one stop; the
                         // modifier makes that a promise the audit can check.
                         modifier = Modifier

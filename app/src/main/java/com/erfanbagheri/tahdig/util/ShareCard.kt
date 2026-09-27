@@ -11,6 +11,7 @@ import android.graphics.Typeface
 import androidx.core.content.FileProvider
 import androidx.compose.ui.graphics.toArgb
 import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
+import com.erfanbagheri.tahdig.data.prefs.SettingsStore
 import com.erfanbagheri.tahdig.ui.screen.splitSteps
 import java.io.File
 
@@ -84,7 +85,9 @@ object ShareCard {
 
         // Accent bar
         val accentPaint = Paint().apply {
-            color = FoodVisuals.accent(food.categoryId).toArgb()
+            // #128: the share card is a plain canvas, so it reads the store
+            // directly — there is no composition to hang a local on here.
+            color = FoodVisuals.accent(food.categoryId, SettingsStore.accentHex.value).toArgb()
             style = Paint.Style.FILL
         }
         c.drawRect(0f, 0f, W.toFloat(), 16f, accentPaint)

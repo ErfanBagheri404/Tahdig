@@ -11,7 +11,9 @@ import kotlinx.coroutines.flow.StateFlow
 
 object SettingsStore {
     private const val PREFS_NAME = "tahdig_settings"
-    private const val KEY_THEME_MODE = "theme_mode" // 0=system, 1=light, 2=dark
+    private const val KEY_THEME_MODE = "theme_mode" // 0=system, 1=light, 2=dark, 3=dynamic
+    private const val KEY_ACCENT_HEX = "accent_hex"       // "#RRGGBB", "" = app default (#128)
+    private const val KEY_HIGH_CONTRAST = "high_contrast" // 1px->2px hairlines, 7:1 text (#128)
     private const val KEY_ONBOARDED = "onboarded"
     private const val KEY_DAILY_NOTIFY = "daily_notify"
     private const val KEY_VOICE_CONTROL = "voice_control"   // hands-free cook mode (#94)
@@ -58,6 +60,15 @@ object SettingsStore {
     private lateinit var prefs: SharedPreferences
     private val _themeMode = MutableStateFlow(0)
     val themeMode: StateFlow<Int> = _themeMode
+
+    // ── Theme (#128) ─────────────────────────────────────────────
+    /** "" = the app's default saffron; otherwise "#RRGGBB" from the picker. */
+    private val _accentHex = MutableStateFlow("")
+    val accentHex: StateFlow<String> = _accentHex
+
+    /** Sunlight readability: hairlines 1px->2px, text lifted to 7:1. */
+    private val _highContrast = MutableStateFlow(false)
+    val highContrast: StateFlow<Boolean> = _highContrast
 
     private val _onboarded = MutableStateFlow(false)
     val onboarded: StateFlow<Boolean> = _onboarded
@@ -289,7 +300,9 @@ object SettingsStore {
 
     fun init(context: Context) {
         prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        _themeMode.value = prefs.getInt(KEY_THEME_MODE, 0)
+        _themeMode.value = prefs.getInt(KEY_THEME_MODE, 0).coerceIn(0, 3)
+        _accentHex.value = prefs.getString(KEY_ACCENT_HEX, "") ?: ""
+        _highContrast.value = prefs.getBoolean(KEY_HIGH_CONTRAST, false)
         _onboarded.value = prefs.getBoolean(KEY_ONBOARDED, false)
         _dailyNotify.value = prefs.getBoolean(KEY_DAILY_NOTIFY, false)
         _voiceControl.value = prefs.getBoolean(KEY_VOICE_CONTROL, false)
@@ -548,6 +561,26 @@ object SettingsStore {
     fun setThemeMode(mode: Int) {
         prefs.edit().putInt(KEY_THEME_MODE, mode).apply()
         _themeMode.value = mode
+    }
+
+    /**
+     * Store an accent as "#RRGGBB", or "" to return to the app default.
+     *
+     * Rejects rather than silently normalizes: an unparseable entry means the
+     * user's entry failed validation upstream, and writing it anyway would make
+     * the saved value disagree with what the picker is displaying.
+     */
+    fun setAccentHex(hex: String) {
+        val cleaned = hex.trim()
+        if (cleaned.isNotEmpty() && !cleaned.matches(Regex("^#?[0-9A-Fa-f]{6}$"))) return
+        val normalized = if (cleaned.isEmpty()) "" else "#" + cleaned.removePrefix("#").uppercase()
+        prefs.edit().putString(KEY_ACCENT_HEX, normalized).apply()
+        _accentHex.value = normalized
+    }
+
+    fun setHighContrast(enabled: Boolean) {
+        prefs.edit().putBoolean(KEY_HIGH_CONTRAST, enabled).apply()
+        _highContrast.value = enabled
     }
 
     fun setOnboarded() {

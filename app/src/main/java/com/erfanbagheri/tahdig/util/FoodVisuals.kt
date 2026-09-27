@@ -39,5 +39,21 @@ object FoodVisuals {
     private val defaultVisual = Visual("🍽️", Color(0xFF5D4037))
 
     fun emoji(categoryId: Long): String = visuals[categoryId.toInt()]?.emoji ?: defaultVisual.emoji
+
     fun accent(categoryId: Long): Color = visuals[categoryId.toInt()]?.accent ?: defaultVisual.accent
+
+    /**
+     * Category accent, overridden by the user's chosen accent (#128).
+     *
+     * The override is a parameter rather than a read of SettingsStore from in
+     * here: FoodVisuals is a pure lookup table, and callers already hold either
+     * the composition local (UI) or the store's current value (canvas), so
+     * reaching into prefs would couple the two without buying anything.
+     * A blank/invalid override falls back to the category color.
+     */
+    fun accent(categoryId: Long, overrideHex: String): Color {
+        val parsed = com.erfanbagheri.tahdig.ui.theme.ThemeTokens.parseHex(overrideHex)
+            ?: return accent(categoryId)
+        return parsed
+    }
 }

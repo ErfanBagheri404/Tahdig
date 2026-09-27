@@ -11,6 +11,13 @@ class SettingsViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     val themeMode: StateFlow<Int> = SettingsStore.themeMode
+
+    // Theme (#128)
+    val accentHex: StateFlow<String> = SettingsStore.accentHex
+    val highContrast: StateFlow<Boolean> = SettingsStore.highContrast
+
+    fun setAccentHex(hex: String) = SettingsStore.setAccentHex(hex)
+    fun setHighContrast(on: Boolean) = SettingsStore.setHighContrast(on)
     val dailyNotify: StateFlow<Boolean> = SettingsStore.dailyNotify
     val voiceControl: StateFlow<Boolean> = SettingsStore.voiceControl
     val voiceReadAloud: StateFlow<Boolean> = SettingsStore.voiceReadAloud

@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import com.erfanbagheri.tahdig.ui.theme.LocalHairline
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
 import com.erfanbagheri.tahdig.util.MisePlace
 
@@ -75,7 +76,8 @@ private fun SquareCheck(checked: Boolean) {
         modifier = Modifier
             .size(20.dp)
             .border(
-                width = 1.dp,
+                // #128: hairline doubles in high contrast
+                width = LocalHairline.current,
                 color = if (checked) primary else MaterialTheme.colorScheme.outlineVariant,
                 shape = androidx.compose.foundation.shape.RoundedCornerShape(4.dp),
             )
