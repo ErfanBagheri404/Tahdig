@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.erfanbagheri.tahdig.util.DietFilter
+import com.erfanbagheri.tahdig.util.Flavor
 import com.erfanbagheri.tahdig.util.VoiceInput
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
 import com.erfanbagheri.tahdig.ui.viewmodel.SearchHistory
@@ -59,6 +60,8 @@ fun SearchScreen(
     val diet by viewModel.diet.collectAsState()
     val ingredients by viewModel.ingredients.collectAsState()
     val excluded by viewModel.excluded.collectAsState()
+    val flavors by viewModel.flavors.collectAsState()
+    val flavorCount by viewModel.flavorCount.collectAsState()
     val categories by viewModel.categories.collectAsState()
     val results by viewModel.results.collectAsState()
 
@@ -219,6 +222,32 @@ fun SearchScreen(
                         selected = diet == d,
                         onClick = { viewModel.onDietSelect(d) },
                     )
+                }
+            }
+
+            // Taste/mood chips (#89) — «امروز چه مزه‌ای؟».
+            // Hidden entirely when the library carries zero tags (acceptance),
+            // never rendered as an empty row.
+            if (flavorCount > 0) {
+                Spacer(Modifier.height(16.dp))
+                Text(
+                    text = "امروز چه مزه‌ای؟",
+                    style = MaterialTheme.typography.titleSmall,
+                    fontFamily = YekanBakh,
+                    color = MaterialTheme.colorScheme.onBackground,
+                )
+                Spacer(Modifier.height(8.dp))
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    items(Flavor.entries.toList()) { fl ->
+                        CategoryChip(
+                            label = fl.label,
+                            selected = fl in flavors,
+                            onClick = { viewModel.onFlavorToggle(fl) },
+                        )
+                    }
                 }
             }
 
