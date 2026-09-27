@@ -63,6 +63,8 @@ fun SearchScreen(
     onFoodClick: (Long) -> Unit = {},
     onOpenPantry: () -> Unit = {},
     onOpenScanner: () -> Unit = {},
+    // #75: entry to the import hub (paste / source capture / review).
+    onOpenImportHub: () -> Unit = {},
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
     val query by viewModel.query.collectAsState()
@@ -189,6 +191,40 @@ fun SearchScreen(
                         )
                         Text(
                             text = "بگو خونه چی داری، غذا پیشنهاد بده",
+                            style = MaterialTheme.typography.labelSmall,
+                            fontFamily = YekanBakh,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        )
+                    }
+                }
+            }
+
+            Spacer(Modifier.height(12.dp))
+
+            // #75: import-hub entry — one tile next to the pantry one, same flat style.
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable(onClick = onOpenImportHub)
+                    .oneA11yStop("افزودن دستور؛ بچسبان یا از کارت و ویدیو بگیر"),
+                shape = RoundedCornerShape(12.dp),
+                color = MaterialTheme.colorScheme.secondaryContainer,
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(text = "📝", fontSize = 20.sp)
+                    Spacer(Modifier.width(12.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "افزودن دستور",
+                            style = MaterialTheme.typography.titleSmall,
+                            fontFamily = YekanBakh,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        )
+                        Text(
+                            text = "بچسبان یا از کارت و ویدیو بگیر",
                             style = MaterialTheme.typography.labelSmall,
                             fontFamily = YekanBakh,
                             color = MaterialTheme.colorScheme.onSecondaryContainer,
