@@ -309,7 +309,7 @@ fun FoodDetailScreen(
                     val scaleFactor = com.erfanbagheri.tahdig.util.ServingScaler
                         .composed(servings, batch)
 
-                    // Nutrition: real OFF data when the ingredients are covered,
+                    // Nutrition: real per-100g data when the ingredients are covered,
                     // else the per-category heuristic. Badge says which.
                     val real = com.erfanbagheri.tahdig.util.NutritionEstimate
                         .estimateFromIngredients(f.ingredients)
@@ -389,6 +389,16 @@ fun FoodDetailScreen(
                         // Honesty badge: the user should know which tier this came from.
                         DetailChip(if (real != null) "واقعی" else "تخمینی")
                     }
+
+                    // Full label (#111): macro table with %DV bars plus
+                    // Nutri-Score / NOVA. The badges only appear when the data
+                    // behind them is real — an estimate renders dimmed with no
+                    // grade, never a fabricated letter.
+                    Spacer(Modifier.height(12.dp))
+                    val labelData = remember(f.id) {
+                        NutritionLabelData.of(f.name, f.tags, f.ingredients)
+                    }
+                    NutritionLabelPanel(label = labelData)
 
                     // ── Mise-en-place (#99) ───────────────────────────────────────
                     // Parsed once per dish; display scales with servings × batch, hashes never do.
