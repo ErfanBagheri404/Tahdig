@@ -59,6 +59,7 @@ import com.erfanbagheri.tahdig.ui.screen.LeftoverScreen
 import androidx.compose.ui.Alignment
 import com.erfanbagheri.tahdig.ui.components.UndoSnackbarHost
 import com.erfanbagheri.tahdig.ui.screen.OnboardingPager
+import com.erfanbagheri.tahdig.ui.screen.ImportHubScreen
 import com.erfanbagheri.tahdig.ui.screen.RecipeImportScreen
 import com.erfanbagheri.tahdig.ui.screen.PantryScreen
 import com.erfanbagheri.tahdig.ui.screen.SearchScreen
@@ -263,6 +264,13 @@ private fun TahdigApp(
 ) {
     // Tab 2 is Favorites/History where the journal tab lives.
     var selectedTab by rememberSaveable { mutableIntStateOf(if (startAttachPhoto) 2 else 0) }
+    // #75: the import hub is app-local state, not a hoisted param — it is a
+    // transient capture flow, and hoisting it would force the Activity to track
+    // a second import flag alongside `pendingImport`.
+    var importHubOpen by remember { mutableStateOf(false) }
+    // #75: hub-captured drafts live here, next to the hub flag — the hoisted
+    // `importDraft` param is owned by the Activity (share sheet) and is a val.
+    var hubDraft by remember { mutableStateOf<com.erfanbagheri.tahdig.util.RecipeDraft?>(null) }
     androidx.compose.runtime.LaunchedEffect(startAttachPhoto) {
         if (startAttachPhoto) {
             selectedTab = 2
@@ -457,13 +465,32 @@ private fun TahdigApp(
         // and the snackbar appears here, above every screen.
         UndoSnackbarHost(modifier = Modifier.align(Alignment.BottomCenter))
         when {
-            // #75: share-sheet / pasted-text import owns the screen while a
-            // draft is waiting for review.
-            importDraft != null -> {
+            // #75: the import hub (paste / source buttons) and the review screen
+            // are two states of ONE destination, so a shared draft swaps the
+            // hub for the review rather than pushing a second screen.
+            importHubOpen -> {
+                ImportHubScreen(
+                    onDraftReady = { draft -> hubDraft = draft },
+                    onBack = { importHubOpen = false },
+                    // #76/#77/#78 wire their sources here; null renders no row.
+                    modifier = Modifier.fillMaxSize(),
+                )
+            }
+            // Hub-captured drafts (#75) and share-sheet drafts (#75) share the
+            // one review screen, so validation and save cannot diverge.
+            hubDraft != null || importDraft != null -> {
+                val draft = hubDraft ?: importDraft!!
                 RecipeImportScreen(
-                    draft = importDraft!!,
-                    onSave = onSaveImport,
-                    onBack = onImportHandled,
+                    draft = draft,
+                    onSave = {
+                        onSaveImport(it)
+                        hubDraft = null
+                        importHubOpen = false
+                    },
+                    onBack = {
+                        hubDraft = null
+                        onImportHandled()
+                    },
                     modifier = Modifier.fillMaxSize(),
                 )
             }
@@ -619,6 +646,9 @@ private fun TahdigApp(
                         onFoodClick = { detailFoodId = it },
                         onOpenPantry = { showPantry = true },
                         onOpenScanner = { showScanner = true },
+                        // #75: the hub shares this tab instead of adding a 7th
+                        // nav item — 6 bottom items is already the practical cap.
+                        onOpenImportHub = { importHubOpen = true },
                     )
                 }
                 selectedTab == 2 -> {
