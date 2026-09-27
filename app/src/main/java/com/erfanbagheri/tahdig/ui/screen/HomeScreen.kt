@@ -59,12 +59,15 @@ fun HomeScreen(
     onBrowseCategories: () -> Unit = {},
     onFoodClick: (Long) -> Unit = {},
     onOpenLeftover: () -> Unit = {},
+    /** «رو به اتمام» card taps through to the pantry (#106). */
+    onOpenPantry: () -> Unit = {},
 ) {
     val suggestion by viewModel.suggestion.collectAsState()
     val mealLabel by viewModel.mealLabel.collectAsState()
     val isFavorite by viewModel.isFavorite.collectAsState()
     val view = LocalView.current
     val dishOfDay by viewModel.dishOfDay.collectAsState()
+    val expirySummary by viewModel.expirySummary.collectAsState()
     val leftoverSuggestions by viewModel.leftoverSuggestions.collectAsState()
     val occasion by viewModel.occasion.collectAsState()
     val occasionDishes by viewModel.occasionDishes.collectAsState()
@@ -139,6 +142,28 @@ fun HomeScreen(
                 Text("غذای مونده دارم", fontFamily = YekanBakh)
             }
             Spacer(Modifier.height(24.dp))
+
+            // ── Expiry summary (#106) ──────────────────────────────────────
+            // Computed from Room alone; the card emits NOTHING when the string is
+            // empty, so a fresh pantry shows no empty row.
+            if (expirySummary.isNotBlank()) {
+                Surface(
+                    shape = RoundedCornerShape(12.dp),
+                    color = MaterialTheme.colorScheme.errorContainer,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable(onClick = onOpenPantry),
+                ) {
+                    Text(
+                        text = expirySummary,
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontFamily = YekanBakh,
+                        color = MaterialTheme.colorScheme.onErrorContainer,
+                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+                    )
+                }
+                Spacer(Modifier.height(16.dp))
+            }
 
             // ── Occasion shelf (#88) ───────────────────────────────────────
             // Renders only while an occasion window is active — outside every

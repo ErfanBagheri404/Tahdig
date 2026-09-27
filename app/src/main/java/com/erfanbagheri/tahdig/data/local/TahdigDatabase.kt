@@ -42,7 +42,7 @@ import com.erfanbagheri.tahdig.data.local.seed.SeedLoader
         MilestoneCheckEntity::class,
         CookSessionEntity::class,
     ],
-    version = 9,
+    version = 10, // + pantry.added_at / expires_at (#106); destructive fallback, pre-release
     exportSchema = true,
 )
 abstract class TahdigDatabase : RoomDatabase() {

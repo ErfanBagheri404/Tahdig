@@ -15,6 +15,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import com.erfanbagheri.tahdig.util.ExpiryMath
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import java.time.LocalDate
 
 class HomeViewModel(app: Application) : AndroidViewModel(app) {
@@ -58,6 +62,19 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
 
     private val _occasionDishes = MutableStateFlow<List<FoodEntity>>(emptyList())
     val occasionDishes: StateFlow<List<FoodEntity>> = _occasionDishes.asStateFlow()
+
+    // ── Morning expiry summary (#106) ───────────────────────────────
+    /** «۳ قلم تا ۲ روز آینده: …» from Room alone; "" hides the card entirely. */
+    val expirySummary: StateFlow<String> = db.pantryDao().observeAll()
+        .map { list ->
+            val now = System.currentTimeMillis()
+            ExpiryMath.summary(
+                list.filter { ExpiryMath.isUrgent(ExpiryMath.daysTo(it.expiresAt, now)) }
+                    .sortedBy { it.expiresAt }
+                    .map { it.item },
+            )
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
 
     init {
         refreshMealLabel()
