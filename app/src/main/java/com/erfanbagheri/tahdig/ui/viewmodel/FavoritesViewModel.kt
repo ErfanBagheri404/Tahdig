@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.erfanbagheri.tahdig.data.local.TahdigDatabase
+import com.erfanbagheri.tahdig.data.local.entity.FavoriteEntity
 import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
 import com.erfanbagheri.tahdig.util.UndoHub
 import kotlinx.coroutines.flow.SharingStarted
@@ -20,6 +21,16 @@ class FavoritesViewModel(app: Application) : AndroidViewModel(app) {
 
     val blockedFoods: StateFlow<List<FoodEntity>> = favoriteDao.observeBlockedFoods()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    /**
+     * Save one dish (#81). The batch bar loops this exact single-dish call —
+     * `upsert` is REPLACE, so re-favoriting is harmless and no bulk SQL exists.
+     */
+    fun addFavorite(foodId: Long) {
+        viewModelScope.launch {
+            favoriteDao.upsert(FavoriteEntity(foodId = foodId, isBlocked = false))
+        }
+    }
 
     fun removeFavorite(foodId: Long) {
         viewModelScope.launch {

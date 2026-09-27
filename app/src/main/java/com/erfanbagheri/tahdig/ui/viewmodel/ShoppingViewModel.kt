@@ -175,6 +175,18 @@ class ShoppingViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /**
+     * #81 batch «افزودن به لیست خرید»: same shape as [addPlanIngredients] —
+     * one merge pass so two dishes needing onion yield one shared row, and a
+     * caller passing 3 ids needs no special case. Rows carry no single foodId.
+     */
+    fun addDishes(foodIds: List<Long>) {
+        if (foodIds.isEmpty()) return
+        viewModelScope.launch {
+            mergeInto(foodDao.byIds(foodIds).flatMap { split(it.ingredients) }, null)
+        }
+    }
+
     private fun split(ingredients: String) = ingredients
         .split(',', '،', '\n')
         .map { it.trim() }
