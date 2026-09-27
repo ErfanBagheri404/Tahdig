@@ -1,6 +1,13 @@
 package com.erfanbagheri.tahdig.ui.screen
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Row
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import com.erfanbagheri.tahdig.ui.components.oneA11yStop
@@ -37,6 +44,8 @@ import androidx.compose.ui.unit.sp
 import com.erfanbagheri.tahdig.data.local.entity.CategoryEntity
 import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
+import com.erfanbagheri.tahdig.util.PersianText
+import com.erfanbagheri.tahdig.util.SelectionSet
 import com.erfanbagheri.tahdig.ui.viewmodel.CategoryViewModel
 
 @Composable
@@ -189,12 +198,40 @@ fun CategoryDishesScreen(
     categoryName: String,
     onFoodClick: (Long) -> Unit,
     onBack: () -> Unit,
+    favoritesViewModel: com.erfanbagheri.tahdig.ui.viewmodel.FavoritesViewModel? = null,
+    shoppingViewModel: com.erfanbagheri.tahdig.ui.viewmodel.ShoppingViewModel? = null,
+    // #81: hoisted so the host owns back-exit + bottom-nav hiding.
+    selection: SelectionSet = SelectionSet(),
+    onSelectionChange: (SelectionSet) -> Unit = {},
 ) {
     val dishes by viewModel.dishesByCategory(categoryId).collectAsState(initial = emptyList())
+    // #81: batch selection. Long-press enters, tap toggles, back/cancel exits.
 
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         Column(modifier = Modifier.fillMaxSize()) {
-            Header(categoryName, onBack)
+            if (selection.isActive) {
+                SelectionTopBar(
+                    count = selection.count,
+                    onCancel = { onSelectionChange(selection.clear()) },
+                    onAddToShopping = {
+                        val ids = selection.ids.toList()
+                        onSelectionChange(selection.clear())
+                        shoppingViewModel?.addDishes(ids)
+                    },
+                    onAddToFavorites = {
+                        val ids = selection.ids.toList()
+                        onSelectionChange(selection.clear())
+                        ids.forEach { favoritesViewModel?.addFavorite(it) }
+                    },
+                    onDelete = {
+                        val ids = selection.ids.toList()
+                        onSelectionChange(selection.clear())
+                        viewModel.deleteDishes(ids)
+                    },
+                )
+            } else {
+                Header(categoryName, onBack)
+            }
             LazyVerticalGrid(
                 columns = GridCells.Adaptive(minSize = 160.dp),
                 contentPadding = PaddingValues(16.dp),
@@ -203,8 +240,105 @@ fun CategoryDishesScreen(
                 modifier = Modifier.fillMaxSize(),
             ) {
                 items(dishes, key = { it.id }) { dish ->
-                    DishCard(dish, onClick = { onFoodClick(dish.id) })
+                    SelectableDishCard(
+                        dish = dish,
+                        selected = dish.id in selection.ids,
+                        selectionActive = selection.isActive,
+                        onClick = {
+                            if (selection.isActive) onSelectionChange(selection.toggle(dish.id))
+                            else onFoodClick(dish.id)
+                        },
+                        onLongClick = { onSelectionChange(selection.add(dish.id)) },
+                    )
                 }
+            }
+        }
+    }
+}
+
+/** #81 — contextual bar: count in Persian digits + the four batch actions. */
+@Composable
+private fun SelectionTopBar(
+    count: Int,
+    onCancel: () -> Unit,
+    onAddToShopping: () -> Unit,
+    onAddToFavorites: () -> Unit,
+    onDelete: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        IconButton(onClick = onCancel) {
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "لغو")
+        }
+        Text(
+            text = "${PersianText.toPersianDigits(count)} مورد",
+            style = MaterialTheme.typography.titleMedium,
+            fontFamily = YekanBakh,
+            modifier = Modifier.weight(1f),
+        )
+        IconButton(onClick = onAddToShopping) {
+            Icon(Icons.Default.ShoppingCart, contentDescription = "افزودن به لیست خرید")
+        }
+        IconButton(onClick = onAddToFavorites) {
+            Icon(Icons.Default.Favorite, contentDescription = "افزودن به علاقهمندیها")
+        }
+        IconButton(onClick = onDelete) {
+            Icon(Icons.Default.Delete, contentDescription = "حذف")
+        }
+    }
+}
+
+/** #81 — dish card that toggles in selection mode, opens the dish otherwise. */
+// combinedClickable is still @ExperimentalFoundationApi; long-press is the only
+// way into selection mode, so the opt-in is structural, not a preference.
+@OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
+@Composable
+private fun SelectableDishCard(
+    dish: FoodEntity,
+    selected: Boolean,
+    selectionActive: Boolean,
+    onClick: () -> Unit,
+    onLongClick: () -> Unit,
+) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = onLongClick,
+                onLongClickLabel = "انتخاب غذا",
+            )
+            .oneA11yStop(
+                dish.name +
+                    if (dish.description.isNotBlank())
+                        "، ${dish.description.take(60)}" +
+                        if (dish.description.length > 60) "..." else ""
+                    else ""
+            ),
+        shape = RoundedCornerShape(14.dp),
+        color = if (selected) MaterialTheme.colorScheme.primaryContainer
+        else MaterialTheme.colorScheme.surface,
+    ) {
+        Column(modifier = Modifier.padding(14.dp)) {
+            Text(
+                text = dish.name,
+                style = MaterialTheme.typography.titleMedium,
+                fontFamily = YekanBakh,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            if (dish.description.isNotBlank()) {
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    text = dish.description.take(60) + (if (dish.description.length > 60) "..." else ""),
+                    style = MaterialTheme.typography.bodySmall,
+                    fontFamily = YekanBakh,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
         }
     }
