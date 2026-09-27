@@ -21,11 +21,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
+import com.erfanbagheri.tahdig.util.PersianText
 import com.erfanbagheri.tahdig.ui.viewmodel.SettingsViewModel
 
 @Composable
@@ -67,6 +69,69 @@ fun SettingsScreen(
         ThemeOption("سیستم", selected = themeMode == 0) { viewModel.setThemeMode(0) }
         ThemeOption("روشن", selected = themeMode == 1) { viewModel.setThemeMode(1) }
         ThemeOption("تاریک", selected = themeMode == 2) { viewModel.setThemeMode(2) }
+
+        Spacer(Modifier.height(32.dp))
+
+        // ── Nutrition profile (#110) ───────────────────────────────────
+        // Skippable by design: leaving «بدون هدف» on shows totals only, so the
+        // section never blocks the app behind a form (AC).
+        val profile by viewModel.profile.collectAsState()
+        Text(
+            text = "هدف تغذیه",
+            style = MaterialTheme.typography.titleMedium,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Spacer(Modifier.height(4.dp))
+        if (profile.hasGoal) {
+            Text(
+                text = "روزانه ${PersianText.toPersianDigits(
+                    com.erfanbagheri.tahdig.util.DailyBudget.budget(profile).toString(),
+                )} کیلوکالری",
+                style = MaterialTheme.typography.bodyMedium,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.primary,
+            )
+        } else {
+            Text(
+                text = "بدون هدف — فقط مجموع نشون داده می‌شه",
+                style = MaterialTheme.typography.bodySmall,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Spacer(Modifier.height(8.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            androidx.compose.material3.Switch(
+                checked = profile.hasGoal,
+                onCheckedChange = { viewModel.setProfile(profile.copy(hasGoal = it)) },
+            )
+            Spacer(Modifier.width(12.dp))
+            Text("محاسبه هدف روزانه", fontFamily = YekanBakh)
+        }
+        if (profile.hasGoal) {
+            StepperRow("سن", profile.age, 10..100) { viewModel.setProfile(profile.copy(age = it)) }
+            StepperRow(
+                "وزن (کیلوگرم)", profile.weightKg.toInt(), 30..200,
+            ) { viewModel.setProfile(profile.copy(weightKg = it.toDouble())) }
+            StepperRow(
+                "قد (سانتی‌متر)", profile.heightCm.toInt(), 120..220,
+            ) { viewModel.setProfile(profile.copy(heightCm = it.toDouble())) }
+            StepperRow(
+                label = "فعالیت",
+                value = profile.activity,
+                range = 0..com.erfanbagheri.tahdig.util.DailyBudget.ACTIVITY.lastIndex,
+                labelFor = { ACTIVITY_LABELS.getOrElse(it) { "" } },
+                onChange = { viewModel.setProfile(profile.copy(activity = it)) },
+            )
+            StepperRow(
+                label = "هدف",
+                value = profile.goal,
+                range = 0..com.erfanbagheri.tahdig.util.DailyBudget.GOALS.lastIndex,
+                labelFor = { GOAL_LABELS.getOrElse(it) { "" } },
+                onChange = { viewModel.setProfile(profile.copy(goal = it)) },
+            )
+        }
 
         Spacer(Modifier.height(32.dp))
 
@@ -279,6 +344,51 @@ fun SettingsScreen(
         BackupRestoreRow("تقویم پخت", onOpenHeatmap)
 
         Spacer(Modifier.height(48.dp))
+    }
+}
+
+/** Human labels for the activity / goal ordinals (#110). */
+private val ACTIVITY_LABELS = listOf("کم", "سبک", "متوسط", "زیاد", "ورزشی")
+private val GOAL_LABELS = listOf("کاهش", "ثبات", "افزایش")
+
+/**
+ * One ± stepper row (#110): label, Persian-digit value, 48dp targets. Keeps the
+ * flat settings look — no sliders, no dialogs for one integer.
+ */
+@Composable
+private fun StepperRow(
+    label: String,
+    value: Int,
+    range: IntRange,
+    labelFor: (Int) -> String = { it.toString() },
+    onChange: (Int) -> Unit,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyMedium,
+            fontFamily = YekanBakh,
+            modifier = Modifier.weight(1f),
+        )
+        Text(
+            text = PersianText.toPersianDigits(labelFor(value)),
+            style = MaterialTheme.typography.bodyMedium,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.width(56.dp),
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+        )
+        TextButton(enabled = value > range.first, onClick = { onChange(value - 1) }) {
+            Text("\u2212", fontFamily = YekanBakh)
+        }
+        TextButton(enabled = value < range.last, onClick = { onChange(value + 1) }) {
+            Text("+", fontFamily = YekanBakh)
+        }
     }
 }
 

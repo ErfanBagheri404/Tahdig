@@ -17,6 +17,11 @@ class SettingsViewModel(app: Application) : AndroidViewModel(app) {
     val shakeAdvance: StateFlow<Boolean> = SettingsStore.shakeAdvance
     val shakeSensitivity: StateFlow<Float> = SettingsStore.shakeSensitivity
 
+    /** Nutrition profile (#110) — edits recompute the budget immediately. */
+    val profile: StateFlow<com.erfanbagheri.tahdig.util.DailyBudget.Profile> = SettingsStore.profile
+
+    fun setProfile(p: com.erfanbagheri.tahdig.util.DailyBudget.Profile) = SettingsStore.setProfile(p)
+
     fun setThemeMode(mode: Int) = SettingsStore.setThemeMode(mode)
 
     fun setDailyNotify(context: android.content.Context, enabled: Boolean) =
