@@ -25,6 +25,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -73,6 +75,37 @@ fun MealPlanScreen(
             )
             Spacer(Modifier.width(8.dp))
             Text("افزودن کل هفته به لیست خرید", fontFamily = YekanBakh)
+        }
+
+        // Auto-fill: only empty slots by default; long-press to regenerate the whole week.
+        val generating by viewModel.generating.collectAsState()
+        val canUndo by viewModel.canUndo.collectAsState()
+        val fillModifier = Modifier.pointerInput(Unit) {
+            detectTapGestures(
+                onTap = { viewModel.generateWeek(regenerateAll = false) },
+                onLongPress = { viewModel.generateWeek(regenerateAll = true) },
+            )
+        }
+        TextButton(
+            onClick = {},
+            modifier = Modifier.fillMaxWidth().then(fillModifier),
+        ) {
+            Text(
+                text = if (generating) "داره می‌چینه…" else "🎲 پر کردن خودکار هفته",
+                fontFamily = YekanBakh,
+            )
+        }
+        if (canUndo) {
+            Text(
+                text = "بازگردانی برنامه قبلی",
+                style = MaterialTheme.typography.labelMedium,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable(onClick = viewModel::undoGenerate)
+                    .padding(vertical = 6.dp),
+            )
         }
 
         Spacer(Modifier.height(8.dp))
