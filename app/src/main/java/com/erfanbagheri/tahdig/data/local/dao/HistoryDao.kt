@@ -17,6 +17,10 @@ interface HistoryDao {
     @Query("SELECT food_id FROM history ORDER BY timestamp DESC LIMIT :limit")
     suspend fun recentFoodIds(limit: Int): List<Long>
 
+    /** Distinct cooked dish ids — the «امتحان کردی» side of the coverage meter (#90). */
+    @Query("SELECT DISTINCT food_id FROM history")
+    fun observeCookedIds(): Flow<List<Long>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(entry: HistoryEntity)
 
