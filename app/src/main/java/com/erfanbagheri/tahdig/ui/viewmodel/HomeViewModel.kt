@@ -7,14 +7,38 @@ import com.erfanbagheri.tahdig.data.local.TahdigDatabase
 import com.erfanbagheri.tahdig.data.local.entity.FavoriteEntity
 import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
 import com.erfanbagheri.tahdig.data.local.entity.HistoryEntity
+import com.erfanbagheri.tahdig.data.prefs.SettingsStore
+import com.erfanbagheri.tahdig.util.DailyBudget
+import com.erfanbagheri.tahdig.util.NutritionDay
+import com.erfanbagheri.tahdig.util.NutritionLog
+import com.erfanbagheri.tahdig.util.AllergenDetector
 import com.erfanbagheri.tahdig.util.LeftoverMatcher
+import com.erfanbagheri.tahdig.util.TasteProfile
+import com.erfanbagheri.tahdig.util.TasteScorer
+import com.erfanbagheri.tahdig.data.local.entity.JournalEntity
+import com.erfanbagheri.tahdig.util.DietFilter
+import com.erfanbagheri.tahdig.util.MicroNutrients
+import com.erfanbagheri.tahdig.util.NutrientCaps
+import com.erfanbagheri.tahdig.ui.screen.NutritionLabelData
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import com.erfanbagheri.tahdig.util.JournalPhoto
 import com.erfanbagheri.tahdig.util.MealTimeHelper
-import com.erfanbagheri.tahdig.util.SerendipityPicker
+import com.erfanbagheri.tahdig.util.RouletteMath
+import com.erfanbagheri.tahdig.util.OccasionRegistry
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import com.erfanbagheri.tahdig.util.ExpiryMath
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import java.time.LocalDate
 
 class HomeViewModel(app: Application) : AndroidViewModel(app) {
@@ -24,6 +48,16 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
     private val historyDao = db.historyDao()
     private val favoriteDao = db.favoriteDao()
     private val categoryDao = db.categoryDao()
+
+    /**
+     * How many same-bucket dishes the taste scorer chooses between (#92).
+     *
+     * 24: enough spread that a well-rated dish is usually in the sample, small
+     * enough that the query stays a single fast index scan on a 1331-row
+     * catalog. The whole catalog scored per roll would also work and would make
+     * every button press noticeably slower.
+     */
+    private val tastePoolSize = 24
 
     // ── current suggestion ──────────────────────────────────────────
     private val _suggestion = MutableStateFlow<FoodEntity?>(null)
@@ -49,22 +83,35 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
     private val _dishOfDay = MutableStateFlow<FoodEntity?>(null)
     val dishOfDay: StateFlow<FoodEntity?> = _dishOfDay.asStateFlow()
 
-    /** «یکی از آرشیو» — forgotten/never-cooked pick + its Farsi reason line. */
-    private val _serendipity = MutableStateFlow<SerendipityPick?>(null)
-    val serendipity: StateFlow<SerendipityPick?> = _serendipity.asStateFlow()
+    // ── occasion shelf (#88) ────────────────────────────────────────
+    /** Active occasion today, or null — null hides the shelf entirely (AC). */
+    private val _occasion = MutableStateFlow(
+        OccasionRegistry.activeOn(LocalDate.now())
+    )
+    val occasion: StateFlow<com.erfanbagheri.tahdig.util.Occasion?> = _occasion.asStateFlow()
 
-    data class SerendipityPick(val food: FoodEntity, val reason: String)
+    private val _occasionDishes = MutableStateFlow<List<FoodEntity>>(emptyList())
+    val occasionDishes: StateFlow<List<FoodEntity>> = _occasionDishes.asStateFlow()
 
-    private val serendipityPrefs by lazy {
-        getApplication<Application>().getSharedPreferences("tahdig_serendipity", 0)
-    }
+    // ── Morning expiry summary (#106) ───────────────────────────────
+    /** «۳ قلم تا ۲ روز آینده: …» from Room alone; "" hides the card entirely. */
+    val expirySummary: StateFlow<String> = db.pantryDao().observeAll()
+        .map { list ->
+            val now = System.currentTimeMillis()
+            ExpiryMath.summary(
+                list.filter { ExpiryMath.isUrgent(ExpiryMath.daysTo(it.expiresAt, now)) }
+                    .sortedBy { it.expiresAt }
+                    .map { it.item },
+            )
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
 
     init {
         refreshMealLabel()
         loadHistory()
         roll()
         loadDishOfDay()
-        loadSerendipity()
+        loadOccasion()
     }
 
     /** Pick today's dish from the day-of-year index — no DB change, no extra screen. */
@@ -81,55 +128,145 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
     fun refreshDay() {
         refreshMealLabel()
         loadDishOfDay()
-        loadSerendipity()
+        loadOccasion()
+        loadNutritionDay()
     }
 
     /**
-     * Pick the archive dish — never-cooked/never-favourited first, stalest when all
-     * touched. Deterministic per day, honours a 30-day skip.
+     * The day key the totals flow is bound to (#110). Re-assigned on resume so
+     * crossing midnight rebuilds the query instead of reporting yesterday.
      */
-    fun loadSerendipity() {
-        viewModelScope.launch {
-            val all = foodDao.observeAll().first()
-            val stamps = historyDao.cookStamps().associate { it.foodId to it.ts }
-            val favs = favoriteDao.observeFavoritedFoods().first().map { it.id }.toSet()
+    private val _dayTick = MutableStateFlow(NutritionLog.dayKey())
 
-            val skippedUntil = serendipityPrefs.getLong("skip_until", 0L)
-            val skippedId = serendipityPrefs.getLong("skip_id", -1L)
-            val now = System.currentTimeMillis()
-            val effectiveStamps = if (skippedUntil > now && skippedId != -1L) {
-                stamps + (skippedId to skippedUntil) // hidden until the window lapses
-            } else {
-                stamps
-            }
+    /**
+     * Today's eaten-vs-target state for the «امروز» card (#110). Day-keyed so
+     * midnight rolls the card over on its own; the budget recomputes live from
+     * the stored profile, so a Settings edit updates the ring without a reload.
+     */
+    val nutritionDay: StateFlow<NutritionDay> = combine(
+        _dayTick.flatMapLatest { day -> db.nutritionLogDao().observeTotals(day) },
+        SettingsStore.profile,
+    ) { totals, profile ->
+        val budget = DailyBudget.budget(profile)
+        NutritionDay(
+            consumedCal = totals.cal,
+            consumedProtein = totals.pro,
+            consumedFat = totals.fat,
+            consumedCarbs = totals.carb,
+            targetCal = if (profile.hasGoal) budget else 0,
+            macroTarget = if (profile.hasGoal) DailyBudget.macroSplit(budget) else null,
+        )
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), NutritionDay())
 
-            val pool = SerendipityPicker.pool(all, effectiveStamps, favs, now)
-            val pick = SerendipityPicker.pickForDay(pool, LocalDate.now().dayOfYear)
-            _serendipity.value = pick?.let {
-                SerendipityPick(it, SerendipityPicker.reason(it, stamps, now))
+    fun loadNutritionDay() { _dayTick.value = NutritionLog.dayKey() }
+
+    /**
+     * Today's sodium against the cap (#117). Derived from the day's logged
+     * food IDs rather than a new column: the log already records which dish
+     * was eaten, and re-resolving the label gives the sodium for free with no
+     * DB migration. -1.0 means "nothing measurable" — the card says so rather
+     * than showing a healthy-looking zero.
+     */
+    @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
+    val dailySodium: StateFlow<Double> = _dayTick.flatMapLatest { day ->
+        db.nutritionLogDao().observeDay(day).map { logs ->
+            if (logs.isEmpty()) return@map -1.0
+            val byId = foodDao.byIds(logs.map { it.foodId }).associateBy { it.id }
+            val meals = logs.mapNotNull { log ->
+                val food = byId[log.foodId] ?: return@mapNotNull null
+                val label = NutritionLabelData.of(food.name, food.tags, food.ingredients)
+                if (label.estimated) null
+                else NutritionLabelData.amounts(label)[NutrientCaps.Nutrient.SODIUM]
             }
+            MicroNutrients.dailyTotal(meals.map { mapOf(NutrientCaps.Nutrient.SODIUM to it) },
+                NutrientCaps.Nutrient.SODIUM)
         }
-    }
-
-    /** Hide the current archive pick for 30 days — never a permanent block. */
-    fun skipSerendipity() {
-        val food = _serendipity.value?.food ?: return
-        serendipityPrefs.edit()
-            .putLong("skip_id", food.id)
-            .putLong("skip_until", System.currentTimeMillis() + 30L * 86_400_000L)
-            .apply()
-        _serendipity.value = null
-        loadSerendipity()
-    }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), -1.0)
 
     /**
-     * Pull-to-refresh: re-ranks the local feed (fresh meal bucket + a new weighted pick).
-     * Purely local — an offline app showing a network spinner would be a lie, so this
-     * never touches connectivity.
+     * The user's current sodium cap (#113 merged caps), or null when unset.
+     * The today card (#117) reads this so a sodium line appears only when the
+     * cap exists — an accumulator without a ceiling is clutter.
      */
-    fun refreshFeed() {
-        refreshMealLabel()
-        roll()
+    val sodiumCap: StateFlow<Double?> = combine(
+        SettingsStore.capPreset,
+        SettingsStore.capCustom,
+    ) { presetName, custom ->
+        NutrientCaps.merge(
+            NutrientCaps.Preset.entries.firstOrNull { it.name == presetName },
+            custom.mapNotNull { (k, v) ->
+                NutrientCaps.Nutrient.entries.firstOrNull { it.name == k }?.let { it to v }
+            }.toMap(),
+        )[NutrientCaps.Nutrient.SODIUM]
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+
+    /** UI bundle for #120: streak state plus whether the freeze prompt shows. */
+    data class StreakUi(
+        val state: com.erfanbagheri.tahdig.util.StreakMath.State,
+        val promptVisible: Boolean,
+    )
+
+    /**
+     * Cook streak (#120). History stamps → local days → [StreakMath.compute].
+     * The prompt only appears when a decline hasn't been recorded today AND a
+     * freeze is the difference between holding and resetting — a met weekly
+     * floor never nags.
+     */
+    val streakUi: StateFlow<StreakUi> = combine(
+        historyDao.observeRecent(1000),
+        SettingsStore.weeklyFloor,
+        SettingsStore.freezes,
+        SettingsStore.freezeDeclinedDay,
+        _dayTick,
+    ) { rows, floor, freezes, declined, _ ->
+        val today = LocalDate.now()
+        val cookedDays = rows.mapTo(mutableSetOf()) {
+            java.time.Instant.ofEpochMilli(it.timestamp)
+                .atZone(java.time.ZoneId.systemDefault())
+                .toLocalDate()
+        }
+        val declinedToday = declined == today.toString()
+        val state = com.erfanbagheri.tahdig.util.StreakMath.compute(
+            cookedDays, today, if (declinedToday) 0 else freezes, floor,
+        )
+        val prompt = if (declinedToday || freezes <= 0) {
+            false
+        } else {
+            val withoutFreeze =
+                com.erfanbagheri.tahdig.util.StreakMath.compute(cookedDays, today, 0, floor)
+            state.current > 0 && withoutFreeze.current == 0
+        }
+        StreakUi(state, prompt)
+    }.stateIn(
+        viewModelScope, SharingStarted.WhileSubscribed(5000),
+        StreakUi(com.erfanbagheri.tahdig.util.StreakMath.State(0, 0, 1, 0, 3), false),
+    )
+
+    /** Spend a freeze on the prompt's «بله» — recompute runs via the same flow. */
+    fun acceptFreeze() = SettingsStore.spendFreeze()
+
+    /** «نه» — don't ask again today (AC: decide again tomorrow). */
+    fun declineFreeze() = SettingsStore.declineFreeze(LocalDate.now().toString())
+
+    /**
+     * True once the user has ever COOKED (#122). Keyed on the journal, which
+     * both cook paths stamp, and NOT on history: roll() writes a history row
+     * on every app open, so history would flip this true on the very first
+     * screen — exactly what the AC forbids.
+     */
+    val everCooked: StateFlow<Boolean> = db.journalDao().observeCount()
+        .map { it > 0 }
+        .stateIn(
+            viewModelScope, SharingStarted.Eagerly, false,
+        )
+
+    /** Re-evaluate today's occasion and load its curated dish strip (#88). */
+    fun loadOccasion() {
+        _occasion.value = OccasionRegistry.activeOn(LocalDate.now())
+        val occ = _occasion.value ?: run { _occasionDishes.value = emptyList(); return }
+        viewModelScope.launch {
+            _occasionDishes.value = foodDao.byIds(occ.dishes)
+        }
     }
 
     /** Re-read meal bucket (call from a timer or recomposition). */
@@ -160,13 +297,27 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
                 pick = foodDao.randomAny(1).firstOrNull()
             }
 
-            // Smart weighting: 30% chance favor a favorited dish (skip if already favorited)
-            if (pick != null && !isFavorited(pick.id) && Math.random() < 0.30) {
-                val favPicks = favoriteDao.observeFavoritedFoods().first()
-                    .filter { it.mealTime.contains(bucket, ignoreCase = true) }
-                if (favPicks.isNotEmpty()) {
-                    pick = favPicks.random()
+            // #92: weighted-by-taste instead of a flat 30% favorited coin flip.
+            // Drawn from a widened pool of the same meal-time bucket so the
+            // score has something to choose between, and hidden dishes are
+            // dropped from the pool outright rather than down-weighted.
+            val pool = foodDao.randomByMealTimeMany(bucket, tastePoolSize)
+            if (pool.size > 1) {
+                val now = System.currentTimeMillis()
+                val snapshot = TasteProfile.snapshot(
+                    db,
+                    SettingsStore.tasteResetAt.value,
+                    SettingsStore.preferredCategories.value,
+                )
+                val eligible = pool.filter { candidate ->
+                    // Hidden dishes leave the pool: the rule is absolute, so it
+                    // is applied here rather than left to the score multiplier.
+                    // The snapshot already carries every blocked id — asking the
+                    // DAO per candidate would be 24 queries on every roll.
+                    TasteScorer.pool(disliked = snapshot.isDisliked(candidate.id))
                 }
+                val weighted = TasteScorer.weightedPick(eligible) { snapshot.scoreOf(it, now) }
+                if (weighted != null) pick = weighted
             }
 
             _suggestion.value = pick
@@ -185,10 +336,77 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /** Shake-to-spin state (#123) — read by the Home watcher. */
+    val shakeSpin = SettingsStore.shakeSpin
+    val shakeSensitivity = SettingsStore.shakeSensitivity
+
+    // ── Dinner roulette (#123) ──────────────────────────────────────
+    val spinOpen = MutableStateFlow(false)
+    val spinBucket = MutableStateFlow(MealTimeHelper.currentBucket())
+    val spinDiet = MutableStateFlow<DietFilter?>(null)
+    /** Wheel pool in slice order — index alignment with the winner is the
+     *  whole game: the UI reads winnerIndex off this list. */
+    private val _spinPool = MutableStateFlow<List<FoodEntity>>(emptyList())
+    val spinPool: StateFlow<List<FoodEntity>> = _spinPool
+    private val _spinPick = MutableStateFlow<FoodEntity?>(null)
+    val spinPick: StateFlow<FoodEntity?> = _spinPick
+    /** Bumps on every spin so the wheel animates exactly once per pick. */
+    private val _spinToken = MutableStateFlow(0L)
+    val spinToken: StateFlow<Long> = _spinToken
+    /** Session-scoped veto set — «نه» dishes never come back this session. */
+    private val spinVetoed = mutableSetOf<Long>()
+
+    fun openSpin() {
+        spinOpen.value = true
+        rerollSpin()
+    }
+
+    fun closeSpin() {
+        spinOpen.value = false
+    }
+
+    /** Sheet chips changed the pool (زمان/رژیمی) — rebuild and spin. */
+    fun spinWith(bucket: String, diet: DietFilter?) {
+        spinBucket.value = bucket
+        spinDiet.value = diet
+        rerollSpin()
+    }
+
+    /** Veto the landed dish for this session, then spin again. */
+    fun vetoSpin() {
+        _spinPick.value?.let { spinVetoed.add(it.id) }
+        rerollSpin()
+    }
+
+    private fun rerollSpin() {
+        viewModelScope.launch {
+            val bucket = spinBucket.value
+            val diet = spinDiet.value
+            val candidates = foodDao.observeByMealTime(bucket).first()
+                .filter { diet == null || diet.matches(it.tags) }
+            val poolIds = RouletteMath.buildPool(
+                candidates = candidates.map { it.id },
+                vetoed = spinVetoed,
+                recent = historyDao.recentFoodIds(15),
+            )
+            if (poolIds.isEmpty()) {
+                _spinPool.value = emptyList()
+                _spinPick.value = null
+                return@launch
+            }
+            val winnerId = RouletteMath.pick(poolIds, seed = System.nanoTime())
+            _spinPool.value = poolIds.map { id -> candidates.first { it.id == id } }
+            _spinPick.value = _spinPool.value.first { it.id == winnerId }
+            _spinToken.value = _spinToken.value + 1
+        }
+    }
+
     /** Toggle favorite status on current suggestion. */
     fun toggleFavorite() {
         viewModelScope.launch {
             val food = _suggestion.value ?: return@launch
+            // #126: first save — the start of the first-success story.
+            markWhenFirst(food.id, favorited = true)
             if (isFavorited(food.id)) {
                 favoriteDao.deleteByFoodId(food.id)
                 _isFavorite.value = false
@@ -210,22 +428,111 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /**
+     * Leftovers for an ARBITRARY dish (#98: cooked via cook-mode's done state —
+     * the home suggestion may be a different dish entirely). Surfaces the same
+     * prompt card as [markCooked].
+     */
+    fun showLeftoversFor(food: FoodEntity) {
+        viewModelScope.launch {
+            val all = foodDao.observeAll().first()
+            val profile = SettingsStore.allergens.value
+            val hide = SettingsStore.allergenHide.value
+            // Allergen exclusion (#112): when the toggle is on the matcher must
+            // not RANK a conflicting dish — filtering after ranking would let one
+            // slip through when the list is shorter than its top-N.
+            _leftoverSuggestions.value = LeftoverMatcher.findLeftovers(food, all)
+                .filterNot {
+                    AllergenDetector.shouldHide(
+                        hide, profile, AllergenDetector.detect(it.ingredients),
+                    )
+                }
+        }
+    }
+
+    /**
      * User says they cooked the current dish. Shows leftover suggestions:
      * dishes sharing ≥2 ingredients with the cooked dish.
      */
     fun markCooked() {
-        viewModelScope.launch {
-            val cooked = _suggestion.value ?: return@launch
-            val all = foodDao.observeAll().first()
-            val suggestions = LeftoverMatcher.findLeftovers(cooked, all)
-            _leftoverSuggestions.value = suggestions
-            roll()
+        _suggestion.value?.let { food ->
+            showLeftoversFor(food)
+            NutritionLog.logCooked(db, food, viewModelScope)
+            stampCook(food.id)
         }
+        roll()
+    }
+
+    // ── Cooking journal (#124) ──────────────────────────────────────
+    /** Cook awaiting a photo/note; null hides the capture prompt. */
+    private val _journalPending = MutableStateFlow<FoodEntity?>(null)
+    val journalPending: StateFlow<FoodEntity?> = _journalPending
+    /** The journal row the prompt writes into — never "the newest row". */
+    private var pendingJournalId = 0L
+
+    /**
+     * Stamp a cook into the journal and arm the capture prompt.
+     *
+     * Called by BOTH cook paths (step-mode «پختم» and Home's markCooked) so a
+     * dish logged from either place shows up in خاطرات پخت. The row is written
+     * immediately with no photo/note: skipping the prompt must still leave the
+     * memory behind.
+     */
+    fun stampCook(foodId: Long) {
+        viewModelScope.launch {
+            // #126: first cook looks like a favorite to a first-run user; it is.
+            markWhenFirst(foodId, favorited = false)
+            val id = db.journalDao().insert(
+                JournalEntity(foodId = foodId, timestamp = System.currentTimeMillis()),
+            )
+            pendingJournalId = id
+            _journalPending.value = foodDao.getById(foodId)
+            // A cook breaks the idle spell: re-arm both idle tiers (#122) so
+            // the NEXT idle period can nudge again.
+            SettingsStore.setIdleTierHours(0.0)
+        }
+    }
+
+    /** Attach the (already downscaled) photo to the pending cook. */
+    fun attachJournalPhoto(uri: android.net.Uri) {
+        val id = pendingJournalId
+        if (id == 0L) return
+        viewModelScope.launch {
+            val bytes = withContext(Dispatchers.IO) {
+                JournalPhoto.read(getApplication(), uri)
+            }
+            if (bytes != null) db.journalDao().updatePhoto(id, bytes)
+        }
+    }
+
+    /** Attach the one-line memory to the pending cook. */
+    fun attachJournalNote(note: String) {
+        val id = pendingJournalId
+        if (id == 0L || note.isBlank()) return
+        viewModelScope.launch { db.journalDao().updateNote(id, note.trim()) }
+    }
+
+    /** Prompt dismissed — the stamped row stays, photo/note stay empty. */
+    fun dismissJournalPrompt() {
+        _journalPending.value = null
+        pendingJournalId = 0L
     }
 
     /** Dismiss the leftover suggestion card. */
     fun dismissLeftover() {
         _leftoverSuggestions.value = emptyList()
+    }
+
+    /**
+     * Fire the first-success clock (#126) exactly once. Favoriting and cooking
+     * both count — a fresh install does one or the other first, never both, so
+     * waiting for the second would leave the celebration behind for half the
+     * users. The guard lives in the store: the first writer wins.
+     */
+    private suspend fun markWhenFirst(foodId: Long, favorited: Boolean) {
+        val celebrated = SettingsStore.firstSuccessAt.value > 0L
+            || SettingsStore.sampleDone.value
+        if (!celebrated) SettingsStore.markFirstSuccess()
+        if (favorited) SettingsStore.setSamplePick(foodId)
     }
 
     private suspend fun isFavorited(foodId: Long): Boolean =

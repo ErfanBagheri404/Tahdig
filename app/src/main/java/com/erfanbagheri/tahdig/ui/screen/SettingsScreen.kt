@@ -1,6 +1,9 @@
 package com.erfanbagheri.tahdig.ui.screen
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,8 +15,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -21,21 +26,43 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import com.erfanbagheri.tahdig.ui.theme.LocalHairline
+import com.erfanbagheri.tahdig.ui.theme.ThemeTokens
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import com.erfanbagheri.tahdig.util.NutrientCaps
+import com.erfanbagheri.tahdig.util.PersianText
 import com.erfanbagheri.tahdig.ui.viewmodel.SettingsViewModel
+import com.erfanbagheri.tahdig.ui.components.oneA11yStop
 
+@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
 @Composable
 fun SettingsScreen(
     viewModel: SettingsViewModel,
     onBackup: () -> Unit = {},
     onRestore: () -> Unit = {},
+    /** #133: encrypted full-library bundle (passphrase asked at export time). */
+    onTransfer: () -> Unit = {},
+    onRestoreBundle: () -> Unit = {},
     onOpenHeatmap: () -> Unit = {},
+    onOpenDiary: () -> Unit = {},
+    onOpenBadges: () -> Unit = {},
+    /** #80: rename/delete the user's own tags. */
+    onOpenTags: () -> Unit = {},
 ) {
     val themeMode by viewModel.themeMode.collectAsState()
+    val dynamicAvailable = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S
 
     Column(
         modifier = Modifier
@@ -64,9 +91,331 @@ fun SettingsScreen(
 
         Spacer(Modifier.height(8.dp))
 
-        ThemeOption("سیستم", selected = themeMode == 0) { viewModel.setThemeMode(0) }
-        ThemeOption("روشن", selected = themeMode == 1) { viewModel.setThemeMode(1) }
-        ThemeOption("تاریک", selected = themeMode == 2) { viewModel.setThemeMode(2) }
+        ThemeOption("سیستم", selected = themeMode == ThemeTokens.SYSTEM) { viewModel.setThemeMode(ThemeTokens.SYSTEM) }
+        ThemeOption("روشن", selected = themeMode == ThemeTokens.LIGHT) { viewModel.setThemeMode(ThemeTokens.LIGHT) }
+        ThemeOption("تاریک", selected = themeMode == ThemeTokens.DARK) { viewModel.setThemeMode(ThemeTokens.DARK) }
+        ThemeOption(
+            // #128: dynamic is a real mode, so it says so rather than silently
+            // doing nothing when the platform cannot provide a wallpaper color.
+            label = if (dynamicAvailable) "پویا (رنگ تصویر زمینه)" else "پویا (اندروید ۱۲ به بالا)",
+            selected = themeMode == ThemeTokens.DYNAMIC,
+        ) { viewModel.setThemeMode(ThemeTokens.DYNAMIC) }
+
+        Spacer(Modifier.height(20.dp))
+
+        // ── Accent (#128) ──────────────────────────────────────────────
+        // Flat swatches, not a gradient picker: the food is the color in this
+        // app, and a rainbow control competes with it.
+        val accentHex by viewModel.accentHex.collectAsState()
+        Text(
+            text = "رنگ دلخواه",
+            style = MaterialTheme.typography.titleSmall,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Spacer(Modifier.height(8.dp))
+        AccentPicker(
+            selectedHex = accentHex,
+            onPick = { viewModel.setAccentHex(it) },
+        )
+
+        Spacer(Modifier.height(16.dp))
+
+        // ── High contrast (#128) ───────────────────────────────────────
+        val highContrast by viewModel.highContrast.collectAsState()
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            androidx.compose.material3.Switch(
+                checked = highContrast,
+                onCheckedChange = { viewModel.setHighContrast(it) },
+            )
+            Spacer(Modifier.width(12.dp))
+            Text(
+                text = "کنتراست بالا — خطوط ضخیم‌تر در نور آفتاب",
+                fontFamily = YekanBakh,
+            )
+        }
+
+        Spacer(Modifier.height(24.dp))
+
+        // ── Taste profile (#92) ─────────────────────────────────────────
+        // Reset is a cutoff, not a delete: ratings and cook history stay on
+        // disk (the user can still read them) but stop steering the feed.
+        val resetTaste by viewModel.tasteResetAt.collectAsState()
+        Text(
+            text = "سلیقه",
+            style = MaterialTheme.typography.titleMedium,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Spacer(Modifier.height(4.dp))
+        Text(
+            text = if (resetTaste == 0L) {
+                "پیشنهادها بر پایهٔ امتیازها، دفعات پخت و علاقه‌مندی‌هایت مرتب می‌شوند."
+            } else {
+                "از آخرین بازنشانی به بعد ساخته شده — امتیازها و تاریخچه پختت پاک نشده‌اند."
+            },
+            style = MaterialTheme.typography.bodyMedium,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Spacer(Modifier.height(8.dp))
+        TextButton(onClick = { viewModel.resetTasteProfile() }) {
+            Text(text = "بازنشانی سلیقه", fontFamily = YekanBakh)
+        }
+
+        Spacer(Modifier.height(32.dp))
+
+        // ── Nutrition profile (#110) ───────────────────────────────────
+        // Skippable by design: leaving «بدون هدف» on shows totals only, so the
+        // section never blocks the app behind a form (AC).
+        val profile by viewModel.profile.collectAsState()
+        Text(
+            text = "هدف تغذیه",
+            style = MaterialTheme.typography.titleMedium,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Spacer(Modifier.height(4.dp))
+        if (profile.hasGoal) {
+            Text(
+                text = "روزانه ${PersianText.toPersianDigits(
+                    com.erfanbagheri.tahdig.util.DailyBudget.budget(profile).toString(),
+                )} کیلوکالری",
+                style = MaterialTheme.typography.bodyMedium,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.primary,
+            )
+        } else {
+            Text(
+                text = "بدون هدف — فقط مجموع نشون داده می‌شه",
+                style = MaterialTheme.typography.bodySmall,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Spacer(Modifier.height(8.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            androidx.compose.material3.Switch(
+                checked = profile.hasGoal,
+                onCheckedChange = { viewModel.setProfile(profile.copy(hasGoal = it)) },
+            )
+            Spacer(Modifier.width(12.dp))
+            Text("محاسبه هدف روزانه", fontFamily = YekanBakh)
+        }
+        if (profile.hasGoal) {
+            StepperRow("سن", profile.age, 10..100) { viewModel.setProfile(profile.copy(age = it)) }
+            StepperRow(
+                "وزن (کیلوگرم)", profile.weightKg.toInt(), 30..200,
+            ) { viewModel.setProfile(profile.copy(weightKg = it.toDouble())) }
+            StepperRow(
+                "قد (سانتی‌متر)", profile.heightCm.toInt(), 120..220,
+            ) { viewModel.setProfile(profile.copy(heightCm = it.toDouble())) }
+            StepperRow(
+                label = "فعالیت",
+                value = profile.activity,
+                range = 0..com.erfanbagheri.tahdig.util.DailyBudget.ACTIVITY.lastIndex,
+                labelFor = { ACTIVITY_LABELS.getOrElse(it) { "" } },
+                onChange = { viewModel.setProfile(profile.copy(activity = it)) },
+            )
+            StepperRow(
+                label = "هدف",
+                value = profile.goal,
+                range = 0..com.erfanbagheri.tahdig.util.DailyBudget.GOALS.lastIndex,
+                labelFor = { GOAL_LABELS.getOrElse(it) { "" } },
+                onChange = { viewModel.setProfile(profile.copy(goal = it)) },
+            )
+        }
+
+        Spacer(Modifier.height(32.dp))
+
+        // ── Allergy profile (#112) ───────────────────────────────────
+        // Options come from the seed's own allergen taxonomy, so every chip
+        // can actually match a dish. Detection is conservative: unknown
+        // ingredients never warn.
+        val allergens by viewModel.allergens.collectAsState()
+        val allergenHide by viewModel.allergenHide.collectAsState()
+        Text(
+            text = "آلرژی‌ها",
+            style = MaterialTheme.typography.titleMedium,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Spacer(Modifier.height(4.dp))
+        if (allergens.isEmpty()) {
+            Text(
+                text = "چیزی انتخاب نشده — تشخیصی انجام نمی‌شه",
+                style = MaterialTheme.typography.bodySmall,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Spacer(Modifier.height(8.dp))
+        androidx.compose.foundation.layout.FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            com.erfanbagheri.tahdig.util.AllergenDetector.PROFILE_OPTIONS.forEach { option ->
+                val on = option in allergens
+                Text(
+                    text = option,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontFamily = YekanBakh,
+                    color = if (on) MaterialTheme.colorScheme.onPrimaryContainer
+                    else MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier
+                        .padding(bottom = 4.dp)
+                        .background(
+                            color = if (on) MaterialTheme.colorScheme.primaryContainer
+                            else MaterialTheme.colorScheme.surfaceVariant,
+                            shape = RoundedCornerShape(8.dp),
+                        )
+                        .clickable {
+                            viewModel.setAllergens(
+                                allergens.toMutableSet().apply {
+                                    if (!remove(option)) add(option)
+                                },
+                            )
+                        }
+                        .padding(horizontal = 14.dp, vertical = 8.dp),
+                )
+            }
+        }
+        Spacer(Modifier.height(8.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            androidx.compose.material3.Switch(
+                checked = allergenHide,
+                onCheckedChange = { viewModel.setAllergenHide(it) },
+            )
+            Spacer(Modifier.width(12.dp))
+            Text(
+                "پنهان‌سازی غذاهای آلرژن‌دار",
+                fontFamily = YekanBakh,
+            )
+        }
+
+        Spacer(Modifier.height(16.dp))
+
+        // ── Halal-style flags (#118) ────────────────────────────────
+        // A check, not a certification: the toggle only hides dishes whose
+        // ingredient text POSITIVELY names pork, alcohol or animal gelatin.
+        val halalStrict by viewModel.halalStrict.collectAsState()
+        Text(
+            "پرچم مواد غیرحلال",
+            fontFamily = YekanBakh,
+            style = MaterialTheme.typography.titleMedium,
+        )
+        Spacer(Modifier.height(4.dp))
+        Text(
+            "اگر دستور غذایی گوشت خوک، الکل یا ژلاتین حیوانی داشته باشد، «بررسی کن» نشان می‌دهد. " +
+                "این گواهی حلال نیست.",
+            fontFamily = YekanBakh,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Spacer(Modifier.height(8.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            androidx.compose.material3.Switch(
+                checked = halalStrict,
+                onCheckedChange = { viewModel.setHalalStrict(it) },
+            )
+            Spacer(Modifier.width(12.dp))
+            Text(
+                "پنهان‌سازی غذاهای پرچم‌خورده",
+                fontFamily = YekanBakh,
+            )
+        }
+
+        Spacer(Modifier.height(32.dp))
+
+        // ── Nutrient caps (#113) ────────────────────────────────────
+        // «محدودیت‌های من». Preset first, then overrides: a personal cap wins
+        // over the preset for the same nutrient, and caps for other nutrients
+        // stack on top. These are personal limits, not medical advice.
+        val capPreset by viewModel.capPreset.collectAsState()
+        val capCustom by viewModel.capCustom.collectAsState()
+        Text(
+            text = "محدودیت‌های من",
+            style = MaterialTheme.typography.titleMedium,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Spacer(Modifier.height(4.dp))
+        Text(
+            text = "سقف هر ماده روی هر وعده حساب می‌شه، نه کل روز",
+            style = MaterialTheme.typography.bodySmall,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Spacer(Modifier.height(8.dp))
+        androidx.compose.foundation.layout.FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            NutrientCaps.Preset.entries.forEach { p ->
+                val on = capPreset == p.name
+                Text(
+                    text = p.label,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontFamily = YekanBakh,
+                    color = if (on) MaterialTheme.colorScheme.onPrimaryContainer
+                    else MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier
+                        .padding(bottom = 4.dp)
+                        .background(
+                            color = if (on) MaterialTheme.colorScheme.primaryContainer
+                            else MaterialTheme.colorScheme.surfaceVariant,
+                            shape = RoundedCornerShape(8.dp),
+                        )
+                        .clickable {
+                            viewModel.setCapPreset(if (on) null else p.name)
+                        }
+                        .padding(horizontal = 14.dp, vertical = 8.dp),
+                )
+            }
+        }
+        // Every active cap, preset or personal, in one flat list.
+        val activeCaps = remember(capPreset, capCustom) {
+            NutrientCaps.merge(
+                NutrientCaps.Preset.entries.firstOrNull { it.name == capPreset },
+                capCustom.mapNotNull { (k, v) ->
+                    NutrientCaps.Nutrient.entries.firstOrNull { it.name == k }?.let { it to v }
+                }.toMap(),
+            )
+        }
+        if (activeCaps.isNotEmpty()) {
+            Spacer(Modifier.height(8.dp))
+            activeCaps.forEach { (n, cap) ->
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
+                ) {
+                    Text(
+                        text = n.label,
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontFamily = YekanBakh,
+                        modifier = Modifier.weight(1f),
+                    )
+                    Text(
+                        text = "سقف ${PersianText.toPersianDigits(
+                            if (cap == cap.toLong().toDouble()) cap.toLong().toString()
+                            else String.format("%.1f", cap),
+                        )} ${n.unit}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontFamily = YekanBakh,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+        }
+        // Per-nutrient override steppers. Off by default (0) = follow the preset.
+        Spacer(Modifier.height(12.dp))
+        NutrientCaps.Nutrient.entries.forEach { n ->
+            val current = capCustom[n.name]?.toInt() ?: 0
+            StepperRow(
+                label = n.label,
+                value = current,
+                range = 0..5000,
+                onChange = { viewModel.setCapCustom(n.name, it.toDouble()) },
+            )
+        }
 
         Spacer(Modifier.height(32.dp))
 
@@ -114,6 +463,287 @@ fun SettingsScreen(
                         viewModel.setDailyNotify(context, enabled)
                     }
                 },
+            )
+        }
+
+        // Daily photo prompt (#125): off by default, shares POST_NOTIFICATIONS
+        // with the daily suggestion — already requested before this section runs.
+        val photoPrompt by viewModel.photoPrompt.collectAsState()
+        val photoPromptHour by viewModel.photoPromptHour.collectAsState()
+
+        Spacer(Modifier.height(16.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+        ) {
+            Text(
+                text = "یادآور عکس ناهار",
+                style = MaterialTheme.typography.bodyLarge,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.weight(1f),
+            )
+            androidx.compose.material3.Switch(
+                checked = photoPrompt,
+                onCheckedChange = { enabled ->
+                    if (enabled && needsPermission) {
+                        permissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+                    } else {
+                        viewModel.setPhotoPrompt(context, enabled)
+                    }
+                },
+            )
+        }
+        if (photoPrompt) {
+            Spacer(Modifier.height(4.dp))
+            Text(
+                text = "ساعت یادآوری: " + PersianText.toPersianDigits(
+                    photoPromptHour.coerceIn(1, 23).toString()) + ":۰۰",
+                style = MaterialTheme.typography.bodySmall,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            androidx.compose.material3.Slider(
+                value = photoPromptHour.coerceIn(1, 23).toFloat(),
+                onValueChange = { viewModel.setPhotoPromptHour(context, it.toInt().coerceIn(1, 23)) },
+                valueRange = 7f..23f,
+                steps = 15,
+            )
+        }
+
+        // Smart notifications (#122): the quiet-hours window and the user-picked
+        // reminder hour, plus the re-prime hint when the OS permission was
+        // denied. Timer copy states the override rule here, once.
+        val notifyHour by viewModel.notifyHour.collectAsState()
+        val quietOn by viewModel.quietOn.collectAsState()
+        val quietFrom by viewModel.quietFromMin.collectAsState()
+        val quietUntil by viewModel.quietUntilMin.collectAsState()
+        val notifDenied by viewModel.notifDenied.collectAsState()
+        val reprimeLauncher = androidx.activity.compose.rememberLauncherForActivityResult(
+            androidx.activity.result.contract.ActivityResultContracts.RequestPermission(),
+        ) { granted ->
+            viewModel.setNotifPermission(primed = true, granted = granted)
+            if (granted) viewModel.setDailyNotify(context, true)
+        }
+
+        Spacer(Modifier.height(16.dp))
+        Text(
+            text = "ساعت یادآوری: " +
+                (if (notifyHour in 1..23)
+                    PersianText.toPersianDigits(notifyHour.toString()) + ":۳۰"
+                else "۲۰:۳۰ (پیش‌فرض)"),
+            style = MaterialTheme.typography.bodyMedium,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        androidx.compose.material3.Slider(
+            value = if (notifyHour in 1..23) notifyHour.toFloat() else 20f,
+            onValueChange = { viewModel.setNotifyHour(context, it.toInt().coerceIn(1, 23)) },
+            valueRange = 7f..23f,
+            steps = 15,
+        )
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+        ) {
+            Text(
+                text = "ساعت سکوت (دست‌نخورده‌گی)",
+                style = MaterialTheme.typography.bodyLarge,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.weight(1f),
+            )
+            androidx.compose.material3.Switch(
+                checked = quietOn,
+                onCheckedChange = { viewModel.setQuietOn(it) },
+            )
+        }
+        if (quietOn) {
+            Spacer(Modifier.height(4.dp))
+            val fromH = (quietFrom / 60).coerceIn(19, 23)
+            val untilH = (quietUntil / 60).coerceIn(5, 9)
+            Text(
+                text = "از ساعت ${PersianText.toPersianDigits(fromH.toString())} تا " +
+                    "${PersianText.toPersianDigits(untilH.toString())} ساکت می‌مانیم. " +
+                    "تایمرهای آشپزی همیشه بوق می‌زنند.",
+                style = MaterialTheme.typography.bodySmall,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            androidx.compose.material3.Slider(
+                value = fromH.toFloat(),
+                onValueChange = {
+                    viewModel.setQuietWindow(it.toInt().coerceIn(19, 23) * 60, quietUntil)
+                },
+                valueRange = 19f..23f,
+                steps = 3,
+            )
+            androidx.compose.material3.Slider(
+                value = untilH.toFloat(),
+                onValueChange = {
+                    viewModel.setQuietWindow(quietFrom, it.toInt().coerceIn(5, 9) * 60)
+                },
+                valueRange = 5f..9f,
+                steps = 3,
+            )
+        }
+
+        if (notifDenied) {
+            Spacer(Modifier.height(8.dp))
+            TextButton(onClick = {
+                if (android.os.Build.VERSION.SDK_INT >= 33) {
+                    reprimeLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+                }
+            }) {
+                Text("اجازهٔ اعلان را نداده‌ای — دوباره بپرس", fontFamily = YekanBakh)
+            }
+        }
+
+        Spacer(Modifier.height(32.dp))
+
+        // Barcode scanner (#116) — off removes the camera entirely from the
+        // search screen, so no user is ever asked for the camera again.
+        val scannerEnabled by viewModel.scannerEnabled.collectAsState()
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+        ) {
+            Text(
+                text = "اسکنر بارکد",
+                style = MaterialTheme.typography.bodyLarge,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.weight(1f),
+            )
+            androidx.compose.material3.Switch(
+                checked = scannerEnabled,
+                onCheckedChange = { viewModel.setScannerEnabled(it) },
+            )
+        }
+
+        Spacer(Modifier.height(32.dp))
+
+        // Voice control in cook mode (#94)
+        Text(
+            text = "کنترل صوتی",
+            style = MaterialTheme.typography.titleMedium,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+
+        Spacer(Modifier.height(8.dp))
+
+        val voiceControl by viewModel.voiceControl.collectAsState()
+        val voiceReadAloud by viewModel.voiceReadAloud.collectAsState()
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+        ) {
+            Text(
+                text = "کنترل صوتی هنگام پخت",
+                style = MaterialTheme.typography.bodyLarge,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.weight(1f),
+            )
+            androidx.compose.material3.Switch(
+                checked = voiceControl,
+                onCheckedChange = { viewModel.setVoiceControl(it) },
+            )
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+        ) {
+            Text(
+                text = "خواندن مرحله با صدا",
+                style = MaterialTheme.typography.bodyLarge,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.weight(1f),
+            )
+            androidx.compose.material3.Switch(
+                checked = voiceReadAloud,
+                onCheckedChange = { viewModel.setVoiceReadAloud(it) },
+            )
+        }
+
+        Spacer(Modifier.height(32.dp))
+
+        // Shake to advance (#96) — off by default; additive to the buttons.
+        Text(
+            text = "تکان دادن گوشی",
+            style = MaterialTheme.typography.titleMedium,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+
+        Spacer(Modifier.height(8.dp))
+
+        val shakeAdvance by viewModel.shakeAdvance.collectAsState()
+        val shakeSensitivity by viewModel.shakeSensitivity.collectAsState()
+        val shakeSpin by viewModel.shakeSpin.collectAsState()
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+        ) {
+            Text(
+                text = "مرحله بعد با تکان دادن",
+                style = MaterialTheme.typography.bodyLarge,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.weight(1f),
+            )
+            androidx.compose.material3.Switch(
+                checked = shakeAdvance,
+                onCheckedChange = { viewModel.setShakeAdvance(it) },
+            )
+        }
+
+        // Shake-to-spin the dinner roulette (#123) — same gesture, same
+        // sensitivity slider, disabled by nature in cook mode (the home
+        // screen — and its watcher — isn't composed there).
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+        ) {
+            Text(
+                text = "چرخوندن با تکان دادن",
+                style = MaterialTheme.typography.bodyLarge,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.weight(1f),
+            )
+            androidx.compose.material3.Switch(
+                checked = shakeSpin,
+                onCheckedChange = { viewModel.setShakeSpin(it) },
+            )
+        }
+
+        // Sensitivity only matters when the gesture is on — a slider over a
+        // disabled feature is noise.
+        if (shakeAdvance || shakeSpin) {
+            Text(
+                text = "حساسیت",
+                style = MaterialTheme.typography.bodyMedium,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            androidx.compose.material3.Slider(
+                value = shakeSensitivity,
+                onValueChange = { viewModel.setShakeSensitivity(it) },
+                valueRange = 0f..1f,
+                modifier = Modifier.fillMaxWidth(),
+            )
+            Text(
+                text = "حساس‌تر = با تکان ملایم‌تر مرحله عوض می‌شود",
+                style = MaterialTheme.typography.bodySmall,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
 
@@ -177,6 +807,49 @@ fun SettingsScreen(
         BackupRestoreRow("ذخیره پشتیبان", onBackup)
         BackupRestoreRow("بازیابی پشتیبان", onRestore)
 
+        // #133 — the migration path. A DB copy is a fallback; this is how a
+        // recipe library actually moves between phones.
+        Spacer(Modifier.height(32.dp))
+        Text(
+            text = "انتقال داده‌ها",
+            style = MaterialTheme.typography.titleMedium,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Spacer(Modifier.height(4.dp))
+        Text(
+            text = "برای جابه‌جایی به گوشی جدید: کتابخانهٔ کامل، با تنظیمات و یادداشت‌ها، " +
+                "به‌صورت رمزگذاری‌شده. فایل را به گوشی جدید بفرستید و همین‌جا بازیابی کنید.",
+            style = MaterialTheme.typography.bodySmall,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Spacer(Modifier.height(8.dp))
+        BackupRestoreRow("ساخت بستهٔ انتقال", onTransfer)
+        BackupRestoreRow("بازیابی بستهٔ انتقال", onRestoreBundle)
+
+        // Meal plan → device calendar sync (#84). Off by default; the export
+        // button on the plan screen is always there and asks permission there.
+        val calendarSync by viewModel.calendarSync.collectAsState()
+        Spacer(Modifier.height(8.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            androidx.compose.material3.Switch(
+                checked = calendarSync,
+                onCheckedChange = { viewModel.setCalendarSync(it) },
+            )
+            Spacer(Modifier.width(12.dp))
+            Column {
+                Text("همگام‌سازی خودکار برنامه با تقویم", fontFamily = YekanBakh)
+                Text(
+                    "با هر تغییر در برنامه، رویدادها به‌روز می‌شوند",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+
+        Spacer(Modifier.height(32.dp))
+
         // Cooking history heatmap
         Spacer(Modifier.height(32.dp))
 
@@ -191,7 +864,171 @@ fun SettingsScreen(
 
         BackupRestoreRow("تقویم پخت", onOpenHeatmap)
 
+        // Meal diary + weekly report (#114)
+        Spacer(Modifier.height(24.dp))
+        Text(
+            text = "دفترچه وعده‌ها",
+            style = MaterialTheme.typography.titleMedium,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Spacer(Modifier.height(8.dp))
+        BackupRestoreRow("گزارش هفتگی", onOpenDiary)
+        Spacer(Modifier.height(8.dp))
+        // Badge collection (#121) — same overlay shape as the weekly report.
+        BackupRestoreRow("نشان‌ها", onOpenBadges)
+        // #126: replay onboarding, the starter chips and the hints — one row,
+        // and every marker is cleared together so no tip comes back half-reset.
+        Spacer(Modifier.height(8.dp))
+        BackupRestoreRow("دیدن دوبارهٔ معرفی اولیه") {
+            com.erfanbagheri.tahdig.data.prefs.SettingsStore.resetFirstRun()
+        }
+
+        // Carry-over is off by default; the diary reads the same flow
+        // through SettingsViewModel, exactly like every other toggle here.
+        val carryOver by viewModel.carryOver.collectAsState()
+        Spacer(Modifier.height(8.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            androidx.compose.material3.Switch(
+                checked = carryOver,
+                onCheckedChange = { viewModel.setCarryOver(it) },
+            )
+            Spacer(Modifier.width(12.dp))
+            Column {
+                Text("انتقال کالری باقی‌مانده", fontFamily = YekanBakh)
+                Text(
+                    "کالری خرج‌نشدهٔ امروز به فردا اضافه شود",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+
+        // ── کافئین و حالت بارداری (#119) ─────────────────────
+        Spacer(Modifier.height(32.dp))
+        Text(
+            text = "کافئین",
+            style = MaterialTheme.typography.titleMedium,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Spacer(Modifier.height(8.dp))
+
+        // Slider is a convenience only: the cap actually applied is
+        // Caffeine.effectiveCap, which pregnancy mode overrides. The label
+        // shows the MODE's cap when the mode is on, so a 400 slider next to
+        // a 200 line never reads as a bug.
+        val caffeineCap by viewModel.caffeineCap.collectAsState()
+        val pregnancyMode by viewModel.pregnancyMode.collectAsState()
+        val appliedCap = com.erfanbagheri.tahdig.util.Caffeine
+            .effectiveCap(caffeineCap.takeIf { it > 0 }, pregnancyMode)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                "سقف روزانه: " +
+                    com.erfanbagheri.tahdig.util.PersianText.toPersianDigits(appliedCap.toDouble()) +
+                    " میلی‌گرم",
+                fontFamily = YekanBakh,
+            )
+        }
+        androidx.compose.material3.Slider(
+            value = caffeineCap.coerceIn(0, 2000).toFloat(),
+            onValueChange = { viewModel.setCaffeineCap(it.toInt()) },
+            valueRange = 0f..1000f,
+            steps = 19,
+            modifier = Modifier.fillMaxWidth(),
+        )
+
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            androidx.compose.material3.Switch(
+                checked = pregnancyMode,
+                onCheckedChange = { viewModel.setPregnancyMode(it) },
+            )
+            Spacer(Modifier.width(12.dp))
+            Column {
+                Text("حالت بارداری / شیردهی", fontFamily = YekanBakh)
+                Text(
+                    "سقف کافئین ۲۰۰ و هشدار مواد غذایی",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+
+        // #80 — Tags manager: the user renames or deletes their own vocabulary.
+        // Deleting a tag removes joins only; no dish is ever removed.
+        Spacer(Modifier.height(24.dp))
+        Text(
+            text = "برچسب‌های من",
+            style = MaterialTheme.typography.titleMedium,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Spacer(Modifier.height(8.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(onClick = onOpenTags),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = "ویرایش برچسب‌ها",
+                style = MaterialTheme.typography.bodyLarge,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.weight(1f),
+            )
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                contentDescription = null,
+            )
+        }
+
         Spacer(Modifier.height(48.dp))
+    }
+}
+
+/** Human labels for the activity / goal ordinals (#110). */
+private val ACTIVITY_LABELS = listOf("کم", "سبک", "متوسط", "زیاد", "ورزشی")
+private val GOAL_LABELS = listOf("کاهش", "ثبات", "افزایش")
+
+/**
+ * One ± stepper row (#110): label, Persian-digit value, 48dp targets. Keeps the
+ * flat settings look — no sliders, no dialogs for one integer.
+ */
+@Composable
+private fun StepperRow(
+    label: String,
+    value: Int,
+    range: IntRange,
+    labelFor: (Int) -> String = { it.toString() },
+    onChange: (Int) -> Unit,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyMedium,
+            fontFamily = YekanBakh,
+            modifier = Modifier.weight(1f),
+        )
+        Text(
+            text = PersianText.toPersianDigits(labelFor(value)),
+            style = MaterialTheme.typography.bodyMedium,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.width(56.dp),
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+        )
+        TextButton(enabled = value > range.first, onClick = { onChange(value - 1) }) {
+            Text("\u2212", fontFamily = YekanBakh)
+        }
+        TextButton(enabled = value < range.last, onClick = { onChange(value + 1) }) {
+            Text("+", fontFamily = YekanBakh)
+        }
     }
 }
 
@@ -207,7 +1044,7 @@ private fun BackupRestoreRow(label: String, onClick: () -> Unit) {
             .clickable(
                 onClick = onClick,
                 role = androidx.compose.ui.semantics.Role.Button,
-                onClickLabel = "انتخاب تم $label",
+                onClickLabel = "باز کردن $label",
             )
             .padding(vertical = 12.dp),
     )
@@ -223,7 +1060,10 @@ private fun ThemeOption(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp)
-            .clickable(onClick = onClick),
+            .clickable(onClick = onClick)
+            // #129: label + selected state were two stops; the check Icon's
+            // "انتخاب‌شده" would be stripped by the merge, so it is folded in.
+            .oneA11yStop(label + if (selected) "، انتخاب‌شده" else ""),
         shape = RoundedCornerShape(10.dp),
         color = if (selected)
             MaterialTheme.colorScheme.primaryContainer
@@ -248,6 +1088,61 @@ private fun ThemeOption(
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(20.dp),
                 )
+            }
+        }
+    }
+}
+
+/**
+ * Accent swatches (#128) — a flat row, each square toggling the accent; the
+ * selected swatch carries a check. Tapping the selected swatch again returns to
+ * the app default, so no separate "reset" row is needed.
+ *
+ * Custom hex entry is skipped (ponytail: the 8 swatches cover taste; a text
+ * field with live validation is the upgrade path when asked).
+ */
+@Composable
+private fun AccentPicker(
+    selectedHex: String,
+    onPick: (String) -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .horizontalScroll(rememberScrollState()),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        ThemeTokens.ACCENTS.forEach { accent ->
+            val hex = ThemeTokens.toHex(accent.forDarkTheme(false))
+            val selected = selectedHex.equals(hex, ignoreCase = true)
+            val hairline = LocalHairline.current
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(accent.forDarkTheme(false))
+                    .border(
+                        // #128: hairline doubles in high contrast
+                        width = if (selected) hairline else hairline * 2,
+                        color = if (selected) MaterialTheme.colorScheme.primary
+                        else MaterialTheme.colorScheme.outlineVariant,
+                        shape = RoundedCornerShape(8.dp),
+                    )
+                    .clickable {
+                        onPick(if (selected) "" else ThemeTokens.toHex(accent.forDarkTheme(false)))
+                    }
+                    .semantics {
+                        contentDescription = accent.name + if (selected) "، انتخاب‌شده" else ""
+                    },
+            ) {
+                if (selected) {
+                    Icon(
+                        imageVector = Icons.Default.Check,
+                        contentDescription = null,
+                        tint = ThemeTokens.readableOn(accent.forDarkTheme(false), listOf(Color.White, Color.Black)),
+                        modifier = Modifier.align(Alignment.Center).size(20.dp),
+                    )
+                }
             }
         }
     }

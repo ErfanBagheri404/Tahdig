@@ -18,6 +18,10 @@ interface HistoryDao {
     @Query("SELECT food_id FROM history ORDER BY timestamp DESC LIMIT :limit")
     suspend fun recentFoodIds(limit: Int): List<Long>
 
+    /** Distinct cooked dish ids — the «امتحان کردی» side of the coverage meter (#90). */
+    @Query("SELECT DISTINCT food_id FROM history")
+    fun observeCookedIds(): Flow<List<Long>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(entry: HistoryEntity)
 
@@ -27,25 +31,49 @@ interface HistoryDao {
     @Query("DELETE FROM history")
     suspend fun clearAll()
 
-    /** Every row, so a clear can be undone by re-inserting them. */
-    @Query("SELECT * FROM history")
+    /**
+     * Every row, for the clear-history undo (#127). Ordered by time so a
+     * restore puts the timeline back in the order the user saw it.
+     */
+    @Query("SELECT * FROM history ORDER BY timestamp")
     suspend fun allRows(): List<HistoryEntity>
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(entries: List<HistoryEntity>)
 
     /** Raw timestamps for heatmap aggregation — a few hundred rows, fits in memory. */
     @Query("SELECT timestamp FROM history ORDER BY timestamp")
     suspend fun allTimestamps(): List<Long>
 
-    /** One row per dish: its most recent cook timestamp — feeds the serendipity pool. */
-    data class CookStamp(
-        @ColumnInfo(name = "food_id") val foodId: Long,
-        @ColumnInfo(name = "ts") val ts: Long,
-    )
+    /**
+     * Every cook as (dish, time) — the badge engine's source (#121). Columns
+     * alias to camelCase because the engine keys prep times by food id.
+     */
+    @Query("SELECT food_id AS foodId, timestamp FROM history")
+    suspend fun allCookRows(): List<CookRow>
 
-    @Query("SELECT food_id, MAX(timestamp) AS ts FROM history GROUP BY food_id")
-    suspend fun cookStamps(): List<CookStamp>
+    /**
+     * One row per distinct dish ever cooked, with the fields the badge engine
+     * needs to judge category / cuisine coverage and the prep-time record
+     * (#121). `MIN(timestamp)` is the FIRST cook of that dish — "every dish in
+     * this category" is a distinct-id question, so a dish cooked five times
+     * must not count as five dishes.
+     */
+    @Query(
+        """
+        SELECT f.id AS id, f.category_id AS category_id, f.cuisine AS cuisine,
+               f.prep_time_min AS prep_time_min, MIN(h.timestamp) AS first_cook_at
+        FROM history h JOIN foods f ON f.id = h.food_id
+        GROUP BY f.id
+        """
+    )
+    suspend fun distinctCookedDishes(): List<CookedDish>
+
+    /**
+     * How many times each dish was cooked — the taste scorer's frequency
+     * signal (#92). `COUNT(*)`, not the distinct query above: "cooked four
+     * times" is exactly the number that matters here, and a first-cook
+     * timestamp cannot express it.
+     */
+    @Query("SELECT food_id AS foodId, COUNT(*) AS cooks FROM history GROUP BY food_id")
+    suspend fun cookCounts(): List<CookCount>
 
     // ── History list with food details ───────────────────────────
 
@@ -70,6 +98,8 @@ interface HistoryDao {
             f.description AS f_description,
             f.image_url AS f_image_url,
             f.is_blocked AS f_is_blocked,
+            f.equipment AS f_equipment,
+            f.flavors  AS f_flavors,
             f.priority  AS f_priority
         FROM history h
         INNER JOIN foods f ON f.id = h.food_id

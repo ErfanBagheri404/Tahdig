@@ -34,6 +34,19 @@ object SeedLoader {
      */
     private const val IMAGES_FILE = "seed/images.json"
 
+    /**
+     * Baked per-dish equipment ({ "3": ["تابه", "فر"] }), keyed by food id.
+     * Same ownership as images.json: written by scripts/bake_equipment.py so the
+     * 27 seed files stay a plain dish diff. Missing file = runtime inference only.
+     */
+    private const val EQUIPMENT_FILE = "seed/equipment.json"
+
+    /**
+     * Baked taste tags ({ "3": ["TURSH"], "9": [] }) — ALL ids present, empty list
+     * = no taste tags; a missing id falls back to [FlavorTagger] at seed time (#89).
+     */
+    private const val FLAVOR_FILE = "seed/flavor.json"
+
     private val json = Json { ignoreUnknownKeys = true }
 
     suspend fun loadInto(db: TahdigDatabase, assets: AssetManager) = withContext(Dispatchers.IO) {
@@ -49,6 +62,9 @@ object SeedLoader {
                 )
             }
         val images = readImages(assets)
+        val equipment = readEquipment(assets)
+        val flavor = readFlavor(assets)
+        val catNames = categories.associate { it.id to it.name }
 
         // Insert categories first — foods reference them by slug.
         db.categoryDao().insertAll(
@@ -78,6 +94,13 @@ object SeedLoader {
                     tags = it.tags,
                     description = it.description,
                     imageUrl = it.imageUrl ?: images[it.id.toString()]?.url,
+                    equipment = equipment[it.id].orEmpty().joinToString(","),
+                    // Baked tags win; a dish the bake never saw gets tagged once,
+                    // at seed time — never per launch (#89).
+                    flavors = flavor[it.id]?.joinToString(",")
+                        ?: com.erfanbagheri.tahdig.util.FlavorTagger
+                            .tag(it.ingredients, it.tags, it.name, catNames[it.categoryId].orEmpty())
+                            .joinToString(",") { f -> f.name },
                     priority = it.priority,
                 )
             }
@@ -92,6 +115,27 @@ object SeedLoader {
         json.decodeFromString<Map<String, ImageSeed>>(
             assets.open(IMAGES_FILE).bufferedReader().use { it.readText() }
         )
+    } catch (_: Exception) {
+        emptyMap()
+    }
+
+    /** Best-effort like images: a missing/broken file degrades to inference, never a crash. */
+    private fun readEquipment(assets: AssetManager): Map<Long, List<String>> = try {
+        json.decodeFromString<Map<String, List<String>>>(
+            assets.open(EQUIPMENT_FILE).bufferedReader().use { it.readText() }
+        ).mapNotNull { (k, v) -> k.toLongOrNull()?.let { it to v } }.toMap()
+    } catch (_: Exception) {
+        emptyMap()
+    }
+
+    /**
+     * Baked taste tags — same best-effort contract. A missing key (not an empty
+     * list!) means "never baked", so the caller falls back to FlavorTagger.
+     */
+    private fun readFlavor(assets: AssetManager): Map<Long, List<String>> = try {
+        json.decodeFromString<Map<String, List<String>>>(
+            assets.open(FLAVOR_FILE).bufferedReader().use { it.readText() }
+        ).mapNotNull { (k, v) -> k.toLongOrNull()?.let { it to v } }.toMap()
     } catch (_: Exception) {
         emptyMap()
     }

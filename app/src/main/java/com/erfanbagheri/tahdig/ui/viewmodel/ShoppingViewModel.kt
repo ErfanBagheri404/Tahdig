@@ -6,10 +6,14 @@ import androidx.lifecycle.viewModelScope
 import com.erfanbagheri.tahdig.data.local.TahdigDatabase
 import com.erfanbagheri.tahdig.data.local.entity.ShoppingItemEntity
 import com.erfanbagheri.tahdig.util.IngredientParser
-import com.erfanbagheri.tahdig.util.UndoHostState
+import com.erfanbagheri.tahdig.data.local.entity.ShoppingTripEntity
+import com.erfanbagheri.tahdig.data.prefs.SettingsStore
+import com.erfanbagheri.tahdig.util.AislePlanner
 import com.erfanbagheri.tahdig.util.IngredientRegistry
 import com.erfanbagheri.tahdig.util.MissingDiff
+import com.erfanbagheri.tahdig.util.UndoHub
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -18,6 +22,8 @@ import kotlinx.coroutines.launch
 class ShoppingViewModel(app: Application) : AndroidViewModel(app) {
     private val db = TahdigDatabase.getInstance(app)
     private val shoppingDao = db.shoppingDao()
+    private val tripDao = db.shoppingTripDao()
+    private val jx = kotlinx.serialization.json.Json
     private val mealPlanDao = db.mealPlanDao()
     private val foodDao = db.foodDao()
 
@@ -41,41 +47,119 @@ class ShoppingViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch { shoppingDao.setChecked(id, checked) }
     }
 
+    /**
+     * Delete a row, keeping it restorable for the undo window (#127).
+     * The whole row is captured first — the inverse re-inserts it with its
+     * original id and created_at, so undo restores the list exactly.
+     */
     fun remove(id: Long) {
         viewModelScope.launch {
-            val row = shoppingDao.allRows().firstOrNull { it.id == id } ?: return@launch
+            val row = shoppingDao.byId(id) ?: return@launch
             shoppingDao.deleteById(id)
-            UndoHostState.push("«${row.item}» حذف شد") {
-                viewModelScope.launch { shoppingDao.insertAll(listOf(row.copy(id = 0))) }
+            UndoHub.arm("«${row.item}» از لیست خرید حذف شد") {
+                viewModelScope.launch { restore(row) }
             }
         }
     }
 
+    private suspend fun restore(row: ShoppingItemEntity) {
+        shoppingDao.restore(row)
+    }
+
+    /** Drop checked rows only; the exact rows return on undo (#127). */
     fun clearChecked() {
         viewModelScope.launch {
-            val rows = shoppingDao.checkedRows()
-            if (rows.isEmpty()) return@launch
+            val done = shoppingDao.allRows().filter { it.isChecked }
+            if (done.isEmpty()) return@launch
             shoppingDao.clearChecked()
-            UndoHostState.push("انجام‌شده‌ها حذف شد") {
-                viewModelScope.launch { shoppingDao.insertAll(rows.map { it.copy(id = 0) }) }
+            UndoHub.arm("${done.size} قلم خریده‌شده حذف شد") {
+                viewModelScope.launch { done.forEach { shoppingDao.restore(it) } }
             }
         }
     }
 
+    /** Clear the whole list; the exact rows return on undo (#127). */
     fun clearAll() {
         viewModelScope.launch {
             val rows = shoppingDao.allRows()
             if (rows.isEmpty()) return@launch
             shoppingDao.clearAll()
-            UndoHostState.push("لیست خرید پاک شد") {
-                viewModelScope.launch { shoppingDao.insertAll(rows.map { it.copy(id = 0) }) }
+            UndoHub.arm("لیست خرید پاک شد") {
+                viewModelScope.launch { rows.forEach { shoppingDao.restore(it) } }
             }
         }
     }
 
+    // ── Aisle manager (#108) ─────────────────────────────────────────
+    // SettingsStore owns the persisted config; the grouping pass in the screen
+    // reads it through the pure AislePlanner below.
+
+    /** Reorder aisles: the first persisted list wins; new aisles append later. */
+    fun moveAisle(before: String, after: String) {
+        val known = SettingsStore.aisleOrder.value.toMutableList()
+        if (before !in known) known += before
+        if (after !in known) known += after
+        val next = known.filterNot { it == before }.toMutableList()
+        next.add(next.indexOf(after) + 1, before)
+        SettingsStore.setAisleConfig(next, SettingsStore.aisleRenames.value, SettingsStore.aisleHidden.value)
+    }
+
+    fun renameAisle(canonical: String, display: String) {
+        val next = SettingsStore.aisleRenames.value.toMutableMap()
+        if (display.isBlank() || display == canonical) next.remove(canonical) else next[canonical] = display
+        SettingsStore.setAisleConfig(SettingsStore.aisleOrder.value, next, SettingsStore.aisleHidden.value)
+    }
+
+    /** Hide: view-only fold into «سایر» via AislePlanner — data never moves. */
+    fun setAisleHidden(canonical: String, hidden: Boolean) {
+        val next = SettingsStore.aisleHidden.value.toMutableSet()
+        if (hidden) next += canonical else next -= canonical
+        SettingsStore.setAisleConfig(SettingsStore.aisleOrder.value, SettingsStore.aisleRenames.value, next)
+    }
+
+    // ── Trip mode (#108) ────────────────────────────────────────────
+    // Trip mode is a LIGHT flag: the snapshot is taken at END time from the
+    // live rows, because Room already holds the truth — checkoffs during the
+    // trip just accumulate in place.
+
+    /** Past trips, newest first — read-only history for the history view. */
+    val trips = tripDao.observeAll()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    fun startTrip() = SettingsStore.setTripActive(true)
+
+    /** Archive the current list (date + counts + rows) into history (#108). */
+    fun endTrip() {
+        viewModelScope.launch {
+            val rows = shoppingDao.allRows()
+            if (rows.isNotEmpty()) {
+                val (total, bought) = AislePlanner.tripCounts(rows.map { it.item to it.isChecked })
+                val snap = jx.encodeToString(
+                    ListSerializer(TripRow.serializer()),
+                    rows.map { TripRow(it.item, it.isChecked) },
+                )
+                tripDao.insert(ShoppingTripEntity(endedAt = System.currentTimeMillis(), total = total, bought = bought, itemsJson = snap))
+            }
+            SettingsStore.setTripActive(false)
+        }
+    }
+
+    fun clearTripHistory() {
+        viewModelScope.launch { tripDao.clearAll() }
+    }
+
+    /** One archived row — mirrors the JSON keys the file has always used. */
+    @kotlinx.serialization.Serializable
+    data class TripRow(val item: String, val checked: Boolean)
+
     /** Add every ingredient of [ingredients] (comma/،-separated) as a list item. */
     fun addIngredients(foodId: Long, ingredients: String) {
         viewModelScope.launch { mergeInto(split(ingredients), foodId) }
+    }
+
+    /** Items with no single source dish — a pantry row being replaced (#106). */
+    fun addItems(ingredients: String) {
+        viewModelScope.launch { mergeInto(split(ingredients), null) }
     }
 
     /**
@@ -87,6 +171,18 @@ class ShoppingViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             val foodIds = mealPlanDao.allFoodIds()
             if (foodIds.isEmpty()) return@launch
+            mergeInto(foodDao.byIds(foodIds).flatMap { split(it.ingredients) }, null)
+        }
+    }
+
+    /**
+     * #81 batch «افزودن به لیست خرید»: same shape as [addPlanIngredients] —
+     * one merge pass so two dishes needing onion yield one shared row, and a
+     * caller passing 3 ids needs no special case. Rows carry no single foodId.
+     */
+    fun addDishes(foodIds: List<Long>) {
+        if (foodIds.isEmpty()) return
+        viewModelScope.launch {
             mergeInto(foodDao.byIds(foodIds).flatMap { split(it.ingredients) }, null)
         }
     }

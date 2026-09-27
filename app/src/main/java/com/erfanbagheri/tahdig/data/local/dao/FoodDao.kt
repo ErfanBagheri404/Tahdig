@@ -23,8 +23,24 @@ interface FoodDao {
     @Query("SELECT * FROM foods WHERE id IN (:ids)")
     suspend fun byIds(ids: List<Long>): List<FoodEntity>
 
+    /**
+     * Flow form of [byIds], for composing with another flow (#134 note search).
+     * An empty id list is legal SQL (`IN ()`) and returns nothing, so the caller
+     * does not need a special case.
+     */
+    @Query("SELECT * FROM foods WHERE id IN (:ids)")
+    fun byIdsFlow(ids: List<Long>): Flow<List<FoodEntity>>
+
     @Query("SELECT COUNT(*) FROM foods")
     fun observeCount(): Flow<Int>
+
+    /** Dishes of one cuisine for the exploration map (#90). */
+    @Query("SELECT * FROM foods WHERE cuisine = :cuisine AND is_blocked = 0")
+    fun observeByCuisine(cuisine: String): Flow<List<FoodEntity>>
+
+    /** Dishes carrying at least one taste tag (#89) — powers the hidden-at-zero chip row. */
+    @Query("SELECT COUNT(*) FROM foods WHERE flavors != ''")
+    fun observeFlavorCount(): Flow<Int>
 
     @Query("SELECT COUNT(*) FROM foods")
     suspend fun count(): Int
@@ -44,6 +60,23 @@ interface FoodDao {
 
     @Query("SELECT * FROM foods WHERE is_blocked = 0 ORDER BY RANDOM() LIMIT :limit")
     suspend fun randomAny(limit: Int): List<FoodEntity>
+
+    /**
+     * A random sample of one meal-time bucket — the taste scorer's pool (#92).
+     *
+     * `ORDER BY RANDOM() LIMIT n` instead of `randomByMealTime` repeated n
+     * times: the weighted pick needs every candidate in one snapshot, and
+     * re-rolling per candidate would both cost N queries and produce
+     * duplicates in the pool.
+     */
+    @Query(
+        """
+        SELECT * FROM foods
+        WHERE is_blocked = 0 AND meal_time LIKE '%' || :mealTime || '%'
+        ORDER BY RANDOM() LIMIT :limit
+        """
+    )
+    suspend fun randomByMealTimeMany(mealTime: String, limit: Int): List<FoodEntity>
 
     /**
      * Deterministic "dish of the day": the same row for the whole day.

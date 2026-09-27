@@ -2,8 +2,11 @@ package com.erfanbagheri.tahdig.ui.screen
 
 import android.speech.tts.TextToSpeech
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +20,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Star
@@ -55,23 +61,32 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.erfanbagheri.tahdig.data.local.TahdigDatabase
 import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
+import com.erfanbagheri.tahdig.data.prefs.SettingsStore
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
 import com.erfanbagheri.tahdig.ui.viewmodel.RatingViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import java.util.Locale
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun FoodDetailScreen(
     foodId: Long,
     onBack: () -> Unit,
     onStartStepMode: (Long) -> Unit = {},
+    /** Resume an interrupted session (#93) — restores exact step + countdown. */
+    onResumeStepMode: (Long) -> Unit = {},
     ratingViewModel: RatingViewModel? = null,
     onAddToShoppingList: (Long, String) -> Unit = { _, _ -> },
     /** Adds only the pantry gap, so the user isn't told to rebuy what they own. */
     onAddMissing: (String) -> Unit = {},
     onShare: (FoodEntity) -> Unit = {},
+    /** #132: write the recipe to a `.tahdig.json` file via SAF. */
+    onExportFile: (FoodEntity) -> Unit = {},
+    /** Mise-en-place checked-state store (#99); null renders rows without checks. */
+    milestoneViewModel: com.erfanbagheri.tahdig.ui.viewmodel.MilestoneViewModel? = null,
+    /** #80: opens the tag sheet for this dish from the overflow. */
+    tagViewModel: com.erfanbagheri.tahdig.ui.viewmodel.TagViewModel? = null,
 ) {
     val context = LocalContext.current.applicationContext
     var food by remember { mutableStateOf<FoodEntity?>(null) }
@@ -81,6 +96,14 @@ fun FoodDetailScreen(
     var pantry by remember { mutableStateOf<List<String>>(emptyList()) }
 
     val recentViewDao = TahdigDatabase.getInstance(context).recentViewDao()
+    // Cook journal for this dish (#124) — «۳ بار پختی» with the notes stacked.
+    // Photos are excluded by the query; the stack only needs count + notes.
+    val journalEntries by TahdigDatabase.getInstance(context).journalDao()
+        .observeForFood(foodId)
+        .collectAsState(initial = emptyList())
+    // Interrupted cook session (#93): offer «ادامه بده» only when one exists.
+    val cookSession by TahdigDatabase.getInstance(context).cookSessionDao()
+        .observe(foodId).collectAsState(initial = null)
     LaunchedEffect(foodId) {
         val db = TahdigDatabase.getInstance(context)
         food = db.foodDao().getById(foodId)
@@ -157,10 +180,39 @@ fun FoodDetailScreen(
                 },
                 actions = {
                     if (food != null) {
+                        // #80: the tag sheet lives behind an overflow menu, the
+                        // same shape as the share/export actions beside it.
+                        if (tagViewModel != null) {
+                            var menuOpen by remember { mutableStateOf(false) }
+                            IconButton(onClick = { menuOpen = true }) {
+                                Icon(
+                                    Icons.Default.MoreVert,
+                                    contentDescription = "گزینه‌های غذا",
+                                )
+                            }
+                            androidx.compose.material3.DropdownMenu(
+                                expanded = menuOpen,
+                                onDismissRequest = { menuOpen = false },
+                            ) {
+                                androidx.compose.material3.DropdownMenuItem(
+                                    text = { Text("برچسب‌ها", fontFamily = YekanBakh) },
+                                    onClick = {
+                                        menuOpen = false
+                                        tagViewModel.openSheet(foodId)
+                                    },
+                                )
+                            }
+                        }
                         IconButton(onClick = { onShare(food!!) }) {
                             Icon(
                                 imageVector = Icons.Default.Share,
                                 contentDescription = "اشتراک‌گذاری",
+                            )
+                        }
+                        IconButton(onClick = { onExportFile(food!!) }) {
+                            Icon(
+                                imageVector = Icons.Default.Download,
+                                contentDescription = "ذخیرهٔ فایل دستور",
                             )
                         }
                     }
@@ -188,7 +240,7 @@ fun FoodDetailScreen(
 
                     Spacer(Modifier.height(20.dp))
 
-                    // Star rating
+                    // Star rating + the private note (#134)
                     if (ratingViewModel != null) {
                         val dbStars by ratingViewModel.stars(f.id).collectAsState()
                         // Optimistic local value so rapid taps don't read a stale DB value
@@ -200,6 +252,7 @@ fun FoodDetailScreen(
                                 ratingViewModel.setStars(f.id, it)
                             },
                         )
+                        MyNoteEditor(viewModel = ratingViewModel, foodId = f.id)
                         Spacer(Modifier.height(20.dp))
                     }
 
@@ -234,11 +287,12 @@ fun FoodDetailScreen(
                         )
                     }
 
-                    if (f.prepTimeMin > 0 || f.difficulty.isNotBlank()) {
+                    if (f.prepTimeMin > 0 || f.difficulty.isNotBlank() || f.flavors.isNotBlank()) {
                         Spacer(Modifier.height(24.dp))
-                        Row(
+                        // FlowRow so the taste badges (#89) wrap instead of overflowing.
+                        FlowRow(
                             horizontalArrangement = Arrangement.spacedBy(12.dp),
-                            verticalAlignment = Alignment.CenterVertically,
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
                             if (f.prepTimeMin > 0) {
                                 DetailChip("زمان آماده‌سازی: ${f.prepTimeMin} دقیقه")
@@ -249,6 +303,12 @@ fun FoodDetailScreen(
                             val spiceLevel = com.erfanbagheri.tahdig.util.SpiceProfile.level(f.tags, f.ingredients, f.name)
                             if (spiceLevel > 0) {
                                 DetailChip(com.erfanbagheri.tahdig.util.SpiceProfile.label(spiceLevel))
+                            }
+                            // Taste badges next to the spice pill (#89) — baked axis labels.
+                            f.flavors.split(',').forEach { raw ->
+                                com.erfanbagheri.tahdig.util.Flavor.entries
+                                    .firstOrNull { it.name == raw.trim() }
+                                    ?.let { DetailChip(it.label) }
                             }
                         }
                     }
@@ -278,24 +338,211 @@ fun FoodDetailScreen(
                         }
                     }
 
-                    // Nutrition: real OFF data when the ingredients are covered,
+                    // Scale state (#103): declared before nutrition + mise so both
+                    // read the same servings × batch factor.
+                    var servings by remember { mutableStateOf(1) }
+                    var batch by remember { mutableStateOf(1.0) }
+                    val scaleFactor = com.erfanbagheri.tahdig.util.ServingScaler
+                        .composed(servings, batch)
+
+                    // Nutrition: real per-100g data when the ingredients are covered,
                     // else the per-category heuristic. Badge says which.
                     val real = com.erfanbagheri.tahdig.util.NutritionEstimate
                         .estimateFromIngredients(f.ingredients)
                     val nut = real?.info
                         ?: com.erfanbagheri.tahdig.util.NutritionEstimate.estimate(f.name, f.tags)
+                    // Per-serving recalc (#103): chips reflect the amounts shown.
+                    fun scaledCalories(): Int = Math.round(nut.calories * scaleFactor).toInt()
+                    fun scaledGrams(s: String): String = if (scaleFactor == 1.0) s
+                    else s.removeSuffix("g").toDoubleOrNull()
+                        ?.let { "${Math.round(it * scaleFactor)}g" } ?: s
                     Spacer(Modifier.height(16.dp))
+
+                    // Allergen warning band (#112): profile vs this dish's
+                    // ingredients. Shows regardless of the hide toggle — seeing
+                    // the dish with its warning is the point of the toggle.
+                    val allergenProfile by com.erfanbagheri.tahdig.data.prefs.SettingsStore
+                        .allergens.collectAsState()
+                    val allergenHits = remember(f.ingredients) {
+                        com.erfanbagheri.tahdig.util.AllergenDetector.detect(f.ingredients)
+                    }
+                    if (com.erfanbagheri.tahdig.util.AllergenDetector
+                            .conflicts(allergenProfile, allergenHits)
+                    ) {
+                        Surface(
+                            color = MaterialTheme.colorScheme.errorContainer,
+                            shape = RoundedCornerShape(8.dp),
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text(
+                                text = "حاوی " +
+                                    allergenHits.filter { it in allergenProfile }
+                                        .joinToString("، "),
+                                style = MaterialTheme.typography.labelLarge,
+                                fontFamily = YekanBakh,
+                                color = MaterialTheme.colorScheme.onErrorContainer,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                                textAlign = TextAlign.Center,
+                            )
+                        }
+                        Spacer(Modifier.height(12.dp))
+                    }
+
+                    // Halal-style flag row (#118): conservative — renders only on
+                    // a positive word match, and the wording says «check» rather
+                    // than claiming any certification.
+                    val halalFlags = remember(f.ingredients) {
+                        com.erfanbagheri.tahdig.util.HalalFlags.flags(f.ingredients)
+                    }
+                    com.erfanbagheri.tahdig.util.HalalFlags.warningText(halalFlags)?.let { text ->
+                        Surface(
+                            color = MaterialTheme.colorScheme.tertiaryContainer,
+                            shape = RoundedCornerShape(8.dp),
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text(
+                                text = text,
+                                style = MaterialTheme.typography.labelLarge,
+                                fontFamily = YekanBakh,
+                                color = MaterialTheme.colorScheme.onTertiaryContainer,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                                textAlign = TextAlign.Center,
+                            )
+                        }
+                        Spacer(Modifier.height(12.dp))
+                    }
+
+                    // Pregnancy-mode food-safety row (#119): same conservative
+                    // shape as the halal row above — a positive keyword match
+                    // only, and the wording names the risk instead of claiming
+                    // the dish is safe. Hidden entirely when the mode is off.
+                    val pregnancyMode by com.erfanbagheri.tahdig.data.prefs.SettingsStore
+                        .pregnancyMode.collectAsState()
+                    if (pregnancyMode) {
+                        val safety = remember(f.ingredients) {
+                            com.erfanbagheri.tahdig.util.Caffeine.safetyFlags(f.ingredients)
+                        }
+                        com.erfanbagheri.tahdig.util.Caffeine.warningText(safety)?.let { text ->
+                            Surface(
+                                color = MaterialTheme.colorScheme.errorContainer,
+                                shape = RoundedCornerShape(8.dp),
+                                modifier = Modifier.fillMaxWidth(),
+                            ) {
+                                Column(
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                                ) {
+                                    Text(
+                                        text = text,
+                                        style = MaterialTheme.typography.labelLarge,
+                                        fontFamily = YekanBakh,
+                                        color = MaterialTheme.colorScheme.onErrorContainer,
+                                        textAlign = TextAlign.Center,
+                                    )
+                                    // The «why» for each flag, so the user can
+                                    // judge rather than just obey.
+                                    safety.forEach { flag ->
+                                        Text(
+                                            text = "• " + flag.category + ": " + flag.why,
+                                            style = MaterialTheme.typography.bodySmall,
+                                            fontFamily = YekanBakh,
+                                            color = MaterialTheme.colorScheme.onErrorContainer,
+                                        )
+                                    }
+                                }
+                            }
+                            Spacer(Modifier.height(12.dp))
+                        }
+                    }
+
+                    // Cook history for this dish (#124): turns the journal into
+                    // learning data — «۳ بار پختی» plus each note, newest first.
+                    if (journalEntries.isNotEmpty()) {
+                        Text(
+                            text = "«" + f.name + "» را " +
+                                com.erfanbagheri.tahdig.util.PersianText
+                                    .toPersianDigits(journalEntries.size.toString()) +
+                                " بار پختی",
+                            style = MaterialTheme.typography.titleSmall,
+                            fontFamily = YekanBakh,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                        Spacer(Modifier.height(6.dp))
+                        journalEntries.filter { it.note.isNotBlank() }.forEach { entry ->
+                            Text(
+                                text = "• " + entry.note,
+                                style = MaterialTheme.typography.bodySmall,
+                                fontFamily = YekanBakh,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                        Spacer(Modifier.height(16.dp))
+                    }
+
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        DetailChip("~${nut.calories} کالری")
-                        DetailChip("پروتئین ${nut.protein}")
-                        DetailChip("چربی ${nut.fat}")
-                        DetailChip("کربوهیدرات ${nut.carb}")
+                        DetailChip("~${scaledCalories()} کالری")
+                        DetailChip("پروتئین ${scaledGrams(nut.protein)}")
+                        DetailChip("چربی ${scaledGrams(nut.fat)}")
+                        DetailChip("کربوهیدرات ${scaledGrams(nut.carb)}")
                         // Honesty badge: the user should know which tier this came from.
                         DetailChip(if (real != null) "واقعی" else "تخمینی")
                     }
+
+                    // Full label (#111): macro table with %DV bars plus
+                    // Nutri-Score / NOVA. The badges only appear when the data
+                    // behind them is real — an estimate renders dimmed with no
+                    // grade, never a fabricated letter.
+                    Spacer(Modifier.height(12.dp))
+                    val labelData = remember(f.id) {
+                        NutritionLabelData.of(f.name, f.tags, f.ingredients)
+                    }
+                    NutritionLabelPanel(label = labelData)
+
+                    // Personal nutrient caps (#113): pass/warn/fail per active
+                    // cap against this dish, only when the user has limits set.
+                    val capPreset by com.erfanbagheri.tahdig.data.prefs.SettingsStore.capPreset
+                        .collectAsState()
+                    val capCustom by com.erfanbagheri.tahdig.data.prefs.SettingsStore.capCustom
+                        .collectAsState()
+                    val caps = remember(capPreset, capCustom) {
+                        com.erfanbagheri.tahdig.util.NutrientCaps.merge(
+                            com.erfanbagheri.tahdig.util.NutrientCaps.Preset.entries
+                                .firstOrNull { it.name == capPreset },
+                            capCustom.mapNotNull { (k, v) ->
+                                com.erfanbagheri.tahdig.util.NutrientCaps.Nutrient.entries
+                                    .firstOrNull { it.name == k }?.let { it to v }
+                            }.toMap(),
+                        )
+                    }
+                    if (caps.isNotEmpty()) {
+                        NutrientCapReport(
+                            caps = caps,
+                            amounts = NutritionLabelData.amounts(labelData),
+                        )
+                    }
+
+                    // ── Mise-en-place (#99) ───────────────────────────────────────
+                    // Parsed once per dish; display scales with servings × batch, hashes never do.
+                    val checkedHashes = if (milestoneViewModel != null)
+                        milestoneViewModel.checkedHashes.collectAsState().value
+                    else emptySet<String>()
+                    LaunchedEffect(f.id) { milestoneViewModel?.forFood(f.id) }
+                    val miseParsed = remember(f.ingredients) {
+                        com.erfanbagheri.tahdig.util.MisePlace.rowsOf(f.ingredients)
+                    }
+                    val miseRows = remember(miseParsed, scaleFactor) {
+                        com.erfanbagheri.tahdig.util.MisePlace.rowsFor(miseParsed, scaleFactor)
+                    }
+                    val miseChecked = miseRows.map { it.hash }.toSet() intersect checkedHashes
+                    val miseReady = miseRows.isNotEmpty() && miseChecked.size == miseRows.size
 
                     if (f.ingredients.isNotBlank()) {
                         Spacer(Modifier.height(28.dp))
@@ -309,7 +556,6 @@ fun FoodDetailScreen(
                         Spacer(Modifier.height(8.dp))
 
                         // Serving scale stepper
-                        var servings by remember { mutableStateOf(1) }
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -327,15 +573,71 @@ fun FoodDetailScreen(
                                 Icon(Icons.Default.Add, contentDescription = "زیاد کردن")
                             }
                         }
+
+                        // Batch multiplier (#103): composes with servings above.
+                        Spacer(Modifier.height(4.dp))
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            com.erfanbagheri.tahdig.util.ServingScaler.BATCHES.forEach { mult ->
+                                val selected = batch == mult
+                                Text(
+                                    text = com.erfanbagheri.tahdig.util.PersianText
+                                        .toPersianDigits("${mult}x"),
+                                    style = MaterialTheme.typography.labelLarge,
+                                    fontFamily = YekanBakh,
+                                    fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
+                                    color = if (selected) MaterialTheme.colorScheme.onPrimary
+                                    else MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier
+                                        .background(
+                                            color = if (selected) MaterialTheme.colorScheme.primary
+                                            else MaterialTheme.colorScheme.surfaceVariant,
+                                            shape = RoundedCornerShape(8.dp),
+                                        )
+                                        .clickable { batch = mult }
+                                        .padding(horizontal = 12.dp, vertical = 6.dp),
+                                )
+                            }
+                        }
                         Spacer(Modifier.height(8.dp))
-                        Text(
-                            text = if (servings == 1) f.ingredients
-                                   else com.erfanbagheri.tahdig.util.ServingScaler.scale(f.ingredients, servings.toDouble()),
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontFamily = YekanBakh,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.fillMaxWidth(),
-                        )
+
+                        // ── Checklist: counter + reset, then tappable rows (#99) ──
+                        if (miseRows.isNotEmpty()) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.fillMaxWidth(),
+                            ) {
+                                Text(
+                                    text = com.erfanbagheri.tahdig.ui.components.miseCounter(
+                                        miseChecked.size, miseRows.size,
+                                    ),
+                                    style = MaterialTheme.typography.labelLarge,
+                                    fontFamily = YekanBakh,
+                                    fontWeight = FontWeight.Bold,
+                                    color = if (miseReady)
+                                        MaterialTheme.colorScheme.primary
+                                    else MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier.weight(1f),
+                                )
+                                // Reset is per dish and only offered once something is checked.
+                                if (miseChecked.isNotEmpty()) {
+                                    TextButton(onClick = { milestoneViewModel?.clear(f.id) }) {
+                                        Text("پاک کردن", fontFamily = YekanBakh)
+                                    }
+                                }
+                            }
+                            com.erfanbagheri.tahdig.ui.components.MiseChecklist(
+                                rows = miseRows,
+                                checkedHashes = miseChecked,
+                                // No VM (call-site omitted it) => rows render but don't toggle.
+                                onToggle = if (milestoneViewModel != null)
+                                    { hash -> milestoneViewModel.toggle(f.id, hash) }
+                                else null,
+                                modifier = Modifier.fillMaxWidth(),
+                            )
+                        }
 
                         // ── What's missing vs the pantry ──────────────────────────
                         // Only meaningful once the user has a pantry; with none, every
@@ -424,27 +726,77 @@ fun FoodDetailScreen(
                         }
                         if (showConverter) {
                             val uc = com.erfanbagheri.tahdig.util.UnitConverter
-                            val rows = listOf(
-                                "۱ پیمانه آرد" to "${uc.cupsToGrams(1.0, "آرد").value.toInt()} گرم",
-                                "۱ پیمانه شکر" to "${uc.cupsToGrams(1.0, "شکر").value.toInt()} گرم",
-                                "۱ قاشق غذاخوری" to "${uc.tablespoonsToGrams(1.0).value.toInt()} گرم",
-                                "۱ پیمانه" to "${uc.cupsToTablespoons(1.0).value.toInt()} قاشق غذاخوری",
-                            )
-                            rows.forEach { (from, to) ->
-                                Text(
-                                    text = "$from = $to",
-                                    style = MaterialTheme.typography.bodySmall,
-                                    fontFamily = YekanBakh,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 2.dp),
-                                )
+                            // Metric ⇄ ایرانی display (#103); the toggle only flips
+                            // the same rows' direction, so numbers always agree.
+                            var persianUnits by remember { mutableStateOf(false) }
+                            val favKey by SettingsStore.convertFavorite
+                                .collectAsState(initial = null)
+                            val rows = if (persianUnits) uc.iranianRows() else uc.metricRows()
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                listOf("متریک" to false, "ایرانی" to true).forEach { (label, iranian) ->
+                                    val selected = persianUnits == iranian
+                                    Text(
+                                        text = label,
+                                        style = MaterialTheme.typography.labelMedium,
+                                        fontFamily = YekanBakh,
+                                        color = if (selected) MaterialTheme.colorScheme.onPrimary
+                                        else MaterialTheme.colorScheme.onSurfaceVariant,
+                                        modifier = Modifier
+                                            .background(
+                                                color = if (selected) MaterialTheme.colorScheme.primary
+                                                else MaterialTheme.colorScheme.surfaceVariant,
+                                                shape = RoundedCornerShape(8.dp),
+                                            )
+                                            .clickable { persianUnits = iranian }
+                                            .padding(horizontal = 10.dp, vertical = 4.dp),
+                                    )
+                                }
+                            }
+                            Spacer(Modifier.height(8.dp))
+                            rows.forEach { row ->
+                                val value = uc.valueOf(row) ?: return@forEach
+                                val label = "${com.erfanbagheri.tahdig.util.PersianText.toPersianDigits(row.amount)} " +
+                                    "${row.from} = ${com.erfanbagheri.tahdig.util.PersianText.toPersianDigits(value)} ${row.to}"
+                                val isFav = row.key == favKey
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.fillMaxWidth(),
+                                ) {
+                                    Text(
+                                        text = label,
+                                        style = MaterialTheme.typography.bodySmall,
+                                        fontFamily = YekanBakh,
+                                        color = if (isFav) MaterialTheme.colorScheme.primary
+                                        else MaterialTheme.colorScheme.onSurfaceVariant,
+                                        modifier = Modifier.weight(1f),
+                                    )
+                                    // One-tap favorite (#103): remembered across restart.
+                                    Text(
+                                        text = if (isFav) "★" else "☆",
+                                        fontFamily = YekanBakh,
+                                        color = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier
+                                            .clickable { SettingsStore.setConvertFavorite(row.key) }
+                                            .padding(horizontal = 6.dp, vertical = 2.dp),
+                                    )
+                                }
                             }
                             Spacer(Modifier.height(12.dp))
                         }
                         Button(
-                            onClick = { onAddToShoppingList(f.id, f.ingredients) },
+                            // Same mergeInto path as before (#103): the whole blob is
+                            // pre-scaled once, so dedupe sees the scaled quantities.
+                            onClick = {
+                                onAddToShoppingList(
+                                    f.id,
+                                    if (scaleFactor == 1.0) f.ingredients
+                                    else com.erfanbagheri.tahdig.util.ServingScaler
+                                        .scaleAll(f.ingredients, scaleFactor),
+                                )
+                            },
                             modifier = Modifier.fillMaxWidth(),
                         ) {
                             Icon(
@@ -477,8 +829,62 @@ fun FoodDetailScreen(
                     }
 
                     Spacer(Modifier.height(16.dp))
-                    Button(onClick = { onStartStepMode(f.id) }) {
+                    // ── Equipment (#100) ──────────────────────────────────────────
+                    // Baked seed list first, keyword inference as fallback; «آماده»
+                    // toggles are session-scoped (remember), deliberately not persisted.
+                    val tools = remember(f.equipment, f.ingredients, f.description) {
+                        com.erfanbagheri.tahdig.util.EquipmentInferrer.forDish(
+                            f.equipment, f.description, f.ingredients,
+                        )
+                    }
+                    var readyTools by remember(f.id) { mutableStateOf(emptySet<String>()) }
+                    if (tools.isNotEmpty()) {
+                        com.erfanbagheri.tahdig.ui.components.EquipmentRow(
+                            labels = tools,
+                            readyLabels = readyTools,
+                            onToggle = { label ->
+                                readyTools = if (label in readyTools) readyTools - label
+                                else readyTools + label
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                        Spacer(Modifier.height(12.dp))
+                    }
+
+                    // All-checked emphasis: a border color change on the cook entry,
+                    // not a nag — readiness should feel earned, not demanded.
+                    val cookBorder = when {
+                        miseRows.isEmpty() -> null
+                        miseReady -> androidx.compose.foundation.BorderStroke(
+                            2.dp, MaterialTheme.colorScheme.primary,
+                        )
+                        else -> androidx.compose.foundation.BorderStroke(
+                            1.dp, MaterialTheme.colorScheme.outlineVariant,
+                        )
+                    }
+                    Button(
+                        onClick = { onStartStepMode(f.id) },
+                        border = cookBorder,
+                    ) {
                         Text("حالت پخت مرحله‌به‌مرحله", fontFamily = YekanBakh)
+                    }
+
+                    // Resume offer (#93): an interrupted session jumps straight back
+                    // to its step + countdown. Renders above the fresh-start button.
+                    if (cookSession != null) {
+                        Spacer(Modifier.height(8.dp))
+                        Button(onClick = { onResumeStepMode(f.id) }) {
+                            Icon(
+                                imageVector = Icons.Filled.PlayArrow,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp),
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            Text(
+                                text = "ادامه بده",
+                                fontFamily = YekanBakh,
+                            )
+                        }
                     }
 
                     Spacer(Modifier.height(12.dp))
@@ -496,6 +902,18 @@ fun FoodDetailScreen(
                     }
 
                     Spacer(Modifier.height(48.dp))
+                }
+            }
+
+            // #80 tag sheet: renders at screen level so the overflow menu can open it without touching the scrolling column.
+            tagViewModel?.let { tvm ->
+                val sheetFoodId by tvm.sheetFoodId.collectAsState(initial = null)
+                sheetFoodId?.let { id ->
+                    com.erfanbagheri.tahdig.ui.components.TagSheet(
+                        viewModel = tvm,
+                        foodId = id,
+                        onDismiss = tvm::closeSheet,
+                    )
                 }
             }
         }

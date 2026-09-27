@@ -6,12 +6,35 @@ package com.erfanbagheri.tahdig.util
  * Result always shows a number followed by one space, e.g. "6 قاشق برنج".
  */
 object ServingScaler {
+
+    /** Batch multiplier presets (#103): halve up to triple a whole recipe. */
+    val BATCHES = listOf(0.5, 1.0, 1.5, 2.0, 3.0)
+
     private val GLYPHS = mapOf('¼' to 0.25, '½' to 0.5, '¾' to 0.75)
 
     private val NUMBER = Regex("""^([۰-۹]+|\d+(?:[.,/]\d+)?|[¼½¾])""")
 
     fun scale(ingredients: String, factor: Double): String =
         ingredients.lineSequence().joinToString("\n") { line -> scaleLine(line, factor) }
+
+    /**
+     * Servings × batch multiplier compose MULTIPLICATIVELY (#103 AC: 2× servings
+     * + 1.5× batch → 4.5×). Single source of truth for every scaled surface.
+     */
+    fun composed(servings: Int, batch: Double): Double = servings * batch
+
+    /**
+     * Scale every comma/«،»/newline-separated ingredient of a blob — seed rows
+     * are often one long comma line, where [scale] would only hit the first
+     * quantity. Output joins with «، » (the shopping split accepts it).
+     */
+    fun scaleAll(ingredients: String, factor: Double): String {
+        if (factor == 1.0) return ingredients
+        return ingredients.split(',', '،', '\n')
+            .map { scale(it.trim(), factor) }
+            .filter { it.isNotBlank() }
+            .joinToString("، ")
+    }
 
     private fun scaleLine(line: String, factor: Double): String {
         val trimmed = line.trimStart()

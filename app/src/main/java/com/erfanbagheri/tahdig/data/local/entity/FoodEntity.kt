@@ -63,6 +63,18 @@ data class FoodEntity(
     @ColumnInfo(name = "is_blocked")
     val isBlocked: Boolean = false,
 
+    /**
+     * Comma-separated equipment labels («قابلمه، فر»), baked into seed for known
+     * dishes; empty falls back to keyword inference at render time (#100).
+     */
+    val equipment: String = "",
+
+    /**
+     * Comma-separated taste-axis enum names («TURSH,CHORB»), baked into seed by
+     * scripts/bake_flavor.py; empty = the dish has no taste tags (#89).
+     */
+    val flavors: String = "",
+
     /** Sort priority (lower = more likely to be picked) */
     val priority: Int = 0,
 )

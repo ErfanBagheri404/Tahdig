@@ -2,12 +2,14 @@ package com.erfanbagheri.tahdig
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import android.app.Activity
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -25,10 +27,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
@@ -41,19 +48,33 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.lifecycleScope
 import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
 import com.erfanbagheri.tahdig.data.local.TahdigDatabase
+import com.erfanbagheri.tahdig.ui.screen.BarcodeScreen
 import com.erfanbagheri.tahdig.ui.screen.CategoryBrowseScreen
 import com.erfanbagheri.tahdig.ui.screen.CategoryDishesScreen
 import com.erfanbagheri.tahdig.ui.screen.FavoritesScreen
 import com.erfanbagheri.tahdig.ui.screen.FoodDetailScreen
 import com.erfanbagheri.tahdig.data.prefs.SettingsStore
 import com.erfanbagheri.tahdig.ui.screen.HomeScreen
+import com.erfanbagheri.tahdig.ui.screen.LeftoverScreen
+import androidx.compose.ui.Alignment
+import com.erfanbagheri.tahdig.ui.components.UndoSnackbarHost
 import com.erfanbagheri.tahdig.ui.screen.OnboardingPager
+import com.erfanbagheri.tahdig.ui.screen.ImportHubScreen
+import com.erfanbagheri.tahdig.ui.screen.RecipeImportScreen
+import com.erfanbagheri.tahdig.ui.screen.rememberOcrLauncher
 import com.erfanbagheri.tahdig.ui.screen.PantryScreen
 import com.erfanbagheri.tahdig.ui.screen.SearchScreen
 import com.erfanbagheri.tahdig.ui.screen.CookHeatmapScreen
+import com.erfanbagheri.tahdig.ui.screen.DiaryScreen
+import com.erfanbagheri.tahdig.ui.screen.BadgesScreen
 import com.erfanbagheri.tahdig.ui.screen.SettingsScreen
 import com.erfanbagheri.tahdig.ui.screen.StepModeScreen
 import com.erfanbagheri.tahdig.ui.screen.ShoppingListScreen
+import com.erfanbagheri.tahdig.ui.screen.OccasionsScreen
+import com.erfanbagheri.tahdig.ui.screen.CuisineMapScreen
+import com.erfanbagheri.tahdig.ui.screen.RegionDishesScreen
+import com.erfanbagheri.tahdig.ui.screen.TechniqueDetailScreen
+import com.erfanbagheri.tahdig.ui.screen.TechniquesScreen
 import com.erfanbagheri.tahdig.ui.theme.TahdigTheme
 import com.erfanbagheri.tahdig.ui.screen.MealPlanScreen
 import com.erfanbagheri.tahdig.ui.viewmodel.MealPlanViewModel
@@ -66,15 +87,128 @@ import com.erfanbagheri.tahdig.ui.viewmodel.RatingViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.SearchViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.SettingsViewModel
 import com.erfanbagheri.tahdig.util.BackupRestore
+import com.erfanbagheri.tahdig.ui.BundlePassphraseDialog
+import com.erfanbagheri.tahdig.ui.ShareLayoutDialog
+import com.erfanbagheri.tahdig.util.BundleCrypto
+import com.erfanbagheri.tahdig.util.LibraryBundle
+import com.erfanbagheri.tahdig.util.RecipeFile
+import com.erfanbagheri.tahdig.util.RecipeTransfer
 import com.erfanbagheri.tahdig.util.ShareCard
 import com.erfanbagheri.tahdig.ui.viewmodel.ShoppingViewModel
+import com.erfanbagheri.tahdig.ui.viewmodel.LeftoverViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.CookHeatmapViewModel
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
+
+    companion object {
+        /** Intent extra consumed by [onCreate]/[onNewIntent] to route into a screen. */
+        const val EXTRA_DESTINATION = "tahdig.destination"
+        const val DEST_JOURNAL_PHOTO = "journal_photo"
+
+        /** Widget tap (#131): open one dish's detail straight away. */
+        const val DEST_DETAIL = "detail"
+        const val EXTRA_FOOD_ID = "tahdig.food_id"
+        /** #75: share-sheet / pasted-text import lands on the review screen. */
+        const val DEST_IMPORT = "import"
+        const val EXTRA_IMPORT_TEXT = "tahdig.import_text"
+        const val EXTRA_IMPORT_URI = "tahdig.import_uri"
+    }
+
+    /** Set when a photo-prompt notification fires while the app is already alive. */
+    private var pendingJournalAttach = false
+
+    /** Set when the widget asks for one dish's detail (#131). */
+    private var pendingDetailId by mutableStateOf<Long?>(null)
+
+    /** #75: a shared blob waiting for the review screen. */
+    private var pendingImport by mutableStateOf<com.erfanbagheri.tahdig.util.RecipeDraft?>(null)
+
+    /** The dish whose `.tahdig.json` is being written, held across the SAF picker (#132). */
+    private var pendingExport: FoodEntity? = null
+
+    private fun consumeDestination(intent: Intent?) {
+        when (intent?.getStringExtra(EXTRA_DESTINATION)) {
+            DEST_JOURNAL_PHOTO -> pendingJournalAttach = true
+            DEST_DETAIL -> {
+                val id = intent.getLongExtra(EXTRA_FOOD_ID, -1L)
+                if (id > 0) pendingDetailId = id
+            }
+            DEST_IMPORT -> {
+                val text = intent.getStringExtra(EXTRA_IMPORT_TEXT)
+                if (!text.isNullOrBlank()) {
+                    pendingImport = com.erfanbagheri.tahdig.util.RecipeTextParser.parseAny(text)
+                }
+            }
+        }
+    }
+
+    /**
+     * #75: normalize the share sheet into one draft.
+     *
+     * ACTION_SEND carries EXTRA_TEXT (a Reels caption, a blob, or a bare URL);
+     * ACTION_SEND_MULTIPLE joins its texts in order. This is the whole entry
+     * point — parsing stays in [com.erfanbagheri.tahdig.util.RecipeTextParser].
+     */
+    private fun consumeShare(intent: Intent?) {
+        if (intent == null) return
+        if (intent.action != Intent.ACTION_SEND && intent.action != Intent.ACTION_SEND_MULTIPLE) return
+        val parts = if (intent.action == Intent.ACTION_SEND) {
+            listOfNotNull(intent.getStringExtra(Intent.EXTRA_TEXT))
+        } else {
+            intent.getStringArrayListExtra(Intent.EXTRA_TEXT).orEmpty()
+        }
+        val text = parts.joinToString("\n\n").trim()
+        if (text.isNotBlank()) {
+            pendingImport = com.erfanbagheri.tahdig.util.RecipeTextParser.parseAny(text)
+        }
+    }
+
+    /**
+     * #132 import. Lives here, not in a composable: it needs the DAO, and an
+     * import that parsed but never wrote would be a lie. Nothing is inserted
+     * until the whole file has parsed, so a corrupt file cannot leave a
+     * half-imported recipe behind.
+     */
+    fun importRecipeFrom(uri: android.net.Uri) {
+        val recipes = try {
+            RecipeTransfer.importFrom(this, uri)
+        } catch (e: RecipeFile.InvalidRecipeFile) {
+            toast(e.message ?: "فایل دستور معتبر نیست")
+            return
+        }
+        lifecycleScope.launch {
+            TahdigDatabase.getInstance(this@MainActivity).foodDao()
+                // id = 0 so Room assigns a fresh one: an import must never
+                // overwrite a dish the user already has.
+                .insertAll(recipes.map { RecipeFile.toFood(it, newId = 0) })
+            toast("${recipes.size} دستور اضافه شد")
+        }
+    }
+
+    /** #132 export — a failure must leave the dish list untouched. */
+    fun exportRecipeTo(uri: android.net.Uri) {
+        val food = pendingExport ?: return
+        pendingExport = null
+        runCatching { RecipeTransfer.exportTo(this, uri, listOf(RecipeFile.fromFood(food))) }
+            .onSuccess { toast("فایل دستور ذخیره شد") }
+            .onFailure { toast("ذخیرهٔ فایل ممکن نشد") }
+    }
+
+    private fun toast(msg: String) =
+        Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        consumeDestination(intent)
+        consumeShare(intent)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        consumeDestination(intent)
+        consumeShare(intent)
 
         lifecycleScope.launch {
             TahdigDatabase.populateIfEmpty(this@MainActivity)
@@ -84,7 +218,25 @@ class MainActivity : ComponentActivity() {
             // Farsi-only app: force RTL regardless of device locale.
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
                 TahdigTheme {
-                    TahdigApp()
+                    TahdigApp(
+                        startAttachPhoto = pendingJournalAttach,
+                        onAttachHandled = { pendingJournalAttach = false },
+                        initialDetailId = pendingDetailId,
+                        onDetailHandled = { pendingDetailId = null },
+                        importDraft = pendingImport,
+                        onImportHandled = { pendingImport = null },
+                        onSaveImport = { recipe ->
+                            lifecycleScope.launch {
+                                TahdigDatabase.getInstance(this@MainActivity).foodDao()
+                                    .insertAll(listOf(recipe.toFood(newId = 0)))
+                                toast("«${recipe.title}» اضافه شد")
+                            }
+                            pendingImport = null
+                        },
+                        onExportRecipe = ::exportRecipeTo,
+                        onImportRecipe = ::importRecipeFrom,
+                        onStageExport = { pendingExport = it },
+                    )
                 }
             }
         }
@@ -92,14 +244,132 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-private fun TahdigApp() {
-    var selectedTab by rememberSaveable { mutableIntStateOf(0) }
+private fun TahdigApp(
+    startAttachPhoto: Boolean = false,
+    onAttachHandled: () -> Unit = {},
+    initialDetailId: Long? = null,
+    onDetailHandled: () -> Unit = {},
+    /**
+     * #75: the draft shared in, if any. Reading it here rather than in a
+     * composable keeps the onboarding gate intact — a share on first launch
+     * waits for onboarding, then lands on review.
+     */
+    importDraft: com.erfanbagheri.tahdig.util.RecipeDraft? = null,
+    onImportHandled: () -> Unit = {},
+    onSaveImport: (com.erfanbagheri.tahdig.util.RecipeDraft) -> Unit = {},
+    /** #132: write/import a `.tahdig.json` through SAF. */
+    onExportRecipe: (android.net.Uri) -> Unit = {},
+    onImportRecipe: (android.net.Uri) -> Unit = {},
+    /** #132: hand the dish to the Activity, which holds it across the picker. */
+    onStageExport: (FoodEntity) -> Unit = {},
+) {
+    // Tab 2 is Favorites/History where the journal tab lives.
+    var selectedTab by rememberSaveable { mutableIntStateOf(if (startAttachPhoto) 2 else 0) }
+    // #75: the import hub is app-local state, not a hoisted param — it is a
+    // transient capture flow, and hoisting it would force the Activity to track
+    // a second import flag alongside `pendingImport`.
+    var importHubOpen by remember { mutableStateOf(false) }
+    // #75: hub-captured drafts live here, next to the hub flag — the hoisted
+    // `importDraft` param is owned by the Activity (share sheet) and is a val.
+    var hubDraft by remember { mutableStateOf<com.erfanbagheri.tahdig.util.RecipeDraft?>(null) }
+    // #76: OCR results ride alongside the draft — the flagged lines and the
+    // card photo belong to the review, not to the draft model.
+    var ocrLowConfidence by remember { mutableStateOf<List<String>>(emptyList()) }
+    var ocrPhotoUri by remember { mutableStateOf<String?>(null) }
+    // #76: gallery pick -> bundled ML Kit -> shared parser -> review.
+    val scanLauncher = rememberOcrLauncher { raw, flagged, uri ->
+        hubDraft = com.erfanbagheri.tahdig.util.RecipeTextParser.parse(raw)
+            .copy(photoUrl = uri.toString())
+        ocrLowConfidence = flagged
+        ocrPhotoUri = uri.toString()
+    }
+    androidx.compose.runtime.LaunchedEffect(startAttachPhoto) {
+        if (startAttachPhoto) {
+            selectedTab = 2
+            onAttachHandled()
+        }
+    }
     var detailFoodId by rememberSaveable { mutableLongStateOf(-1L) }
+
+    // #132: one dialog state, so the picker cannot outlive the food it is for.
+    var shareTarget by remember { mutableStateOf<FoodEntity?>(null) }
+    // Widget tap (#131) opens a dish straight from the home screen.
+    androidx.compose.runtime.LaunchedEffect(initialDetailId) {
+        if (initialDetailId != null && initialDetailId > 0) {
+            detailFoodId = initialDetailId
+            onDetailHandled()
+        }
+    }
     val context = LocalContext.current
+
+    // #133: which bundle action the passphrase is being asked for.
+    // null = no dialog. "export" / "import" = create one, or enter it.
+    var bundleAction by rememberSaveable { mutableStateOf<String?>(null) }
+
+    // The passphrase lives only between the dialog and the SAF result, and is
+    // wiped in both paths. Never stored, never written to disk.
+    var bundlePass by remember { mutableStateOf<CharArray?>(null) }
+
+    fun runBundleExport(uri: android.net.Uri) {
+        val pass = bundlePass?.also { bundlePass = null } ?: return
+        try {
+            LibraryBundle.exportTo(context, uri, pass)
+            Toast.makeText(context, "بستهٔ انتقال ساخته شد", Toast.LENGTH_SHORT).show()
+        } catch (e: BundleCrypto.BundleError) {
+            Toast.makeText(context, e.message ?: "ساخت بسته ممکن نشد", Toast.LENGTH_LONG).show()
+        } finally {
+            pass.fill('\u0000')
+        }
+    }
+
+    fun runBundleImport(uri: android.net.Uri) {
+        val pass = bundlePass?.also { bundlePass = null } ?: return
+        try {
+            LibraryBundle.importFrom(context, uri, pass)
+            Toast.makeText(context, "بسته بازیابی شد", Toast.LENGTH_SHORT).show()
+            // The DB was replaced under the app: restart so every open handle
+            // points at the new file.
+            context.startActivity(
+                context.packageManager.getLaunchIntentForPackage(context.packageName),
+            )
+            (context as? Activity)?.finish()
+        } catch (e: BundleCrypto.BundleError) {
+            Toast.makeText(context, e.message ?: "بازیابی ممکن نشد", Toast.LENGTH_LONG).show()
+        } catch (e: LibraryBundle.BundleFailure) {
+            Toast.makeText(context, e.message ?: "بسته معتبر نیست", Toast.LENGTH_LONG).show()
+        } finally {
+            pass.fill('\u0000')
+        }
+    }
+
+
     // Backup/restore SAF launchers
     val backupLauncher = androidx.activity.compose.rememberLauncherForActivityResult(
         androidx.activity.result.contract.ActivityResultContracts.CreateDocument("application/octet-stream"),
     ) { uri -> uri?.let { BackupRestore.backup(context, it) } }
+    // #132: write a .tahdig.json through SAF, so no storage permission is needed.
+    val recipeExportLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.CreateDocument(RecipeFile.MIME),
+    ) { uri -> uri?.let { onExportRecipe(it) } }
+    val recipeImportLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocument(),
+    ) { uri -> uri?.let { onImportRecipe(it) } }
+    // #133: the encrypted bundle goes through SAF like everything else.
+    val bundleExportLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.CreateDocument("application/octet-stream"),
+    ) { uri ->
+        // SAF returns null on cancel: wipe the passphrase, it has no job now.
+        if (uri == null) { bundlePass?.fill('\u0000'); bundlePass = null }
+        else runBundleExport(uri)
+    }
+
+    val bundleImportLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocument(),
+    ) { uri ->
+        // SAF returns null on cancel: wipe the passphrase, it has no job now.
+        if (uri == null) { bundlePass?.fill('\u0000'); bundlePass = null }
+        else runBundleImport(uri)
+    }
     val restoreLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.OpenDocument(),
     ) { uri -> uri?.let {
@@ -116,21 +386,46 @@ private fun TahdigApp() {
     // Onboarding gate — first launch only
     val onboarded by com.erfanbagheri.tahdig.data.prefs.SettingsStore.onboarded.collectAsState()
     if (!onboarded) {
-        OnboardingPager(onDone = { SettingsStore.setOnboarded() })
+        // #126: onboarding's last stop opens a real seeded dish, so the first
+        // run ends with a dish on screen instead of an empty home.
+        OnboardingPager(
+            onDone = { SettingsStore.setOnboarded() },
+            onOpenDish = { id ->
+                SettingsStore.setOnboarded()
+                SettingsStore.setSamplePick(id)
+                detailFoodId = id
+            },
+        )
         return
     }
     var stepModeFoodId by rememberSaveable { mutableLongStateOf(-1L) }
+    // Resume-vs-fresh for the mode above (#93); lives across config changes.
+    var stepModeResume by rememberSaveable { mutableStateOf(false) }
     var categoryRoute by rememberSaveable { mutableLongStateOf(-1L) }
     var browseCategories by rememberSaveable { mutableStateOf(false) }
     var showPantry by rememberSaveable { mutableStateOf(false) }
+    var showLeftover by rememberSaveable { mutableStateOf(false) }
+    var showScanner by rememberSaveable { mutableStateOf(false) }
     var showHeatmap by rememberSaveable { mutableStateOf(false) }
+    var showDiary by rememberSaveable { mutableStateOf(false) }
+    var showBadges by rememberSaveable { mutableStateOf(false) }
+    var showTags by rememberSaveable { mutableStateOf(false) }
+    var browseTechniques by rememberSaveable { mutableStateOf(false) }
+    var browseOccasions by rememberSaveable { mutableStateOf(false) }
+    var browseCuisineMap by rememberSaveable { mutableStateOf(false) }
+    /** Region opened from the map (#90) — "" = map list, else the region key. */
+    var regionRoute by rememberSaveable { mutableStateOf("") }
+    // Technique opened from a step: back must restore the exact step, so the step
+    // screen stays on the back stack and this only overlays the technique page.
+    var techniqueRoute by rememberSaveable { mutableStateOf("") }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         // One undo affordance for every destructive action, above all screens.
         snackbarHost = { com.erfanbagheri.tahdig.ui.components.UndoSnackbarHost() },
         bottomBar = {
-            if (detailFoodId < 0) {
+            // Fullscreen cook-along (#93): no bottom nav while the mode owns the screen.
+            if (detailFoodId < 0 && stepModeFoodId < 0) {
                 NavigationBar(
                     containerColor = MaterialTheme.colorScheme.surface,
                 ) {
@@ -174,27 +469,98 @@ private fun TahdigApp() {
             }
         },
     ) { padding ->
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding),
-            color = MaterialTheme.colorScheme.background,
-        ) {
-            when {
-                stepModeFoodId >= 0 -> {
+    Surface(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(padding),
+        color = MaterialTheme.colorScheme.background,
+    ) {
+        Box(Modifier.fillMaxSize()) {
+        // #127: one undo host for the whole app. Any ViewModel arms UndoHub
+        // and the snackbar appears here, above every screen.
+        UndoSnackbarHost(modifier = Modifier.align(Alignment.BottomCenter))
+        when {
+            // #75: the import hub (paste / source buttons) and the review screen
+            // are two states of ONE destination, so a shared draft swaps the
+            // hub for the review rather than pushing a second screen.
+            importHubOpen -> {
+                ImportHubScreen(
+                    onDraftReady = { draft -> hubDraft = draft },
+                    onBack = { importHubOpen = false },
+                    // #77: no callback — the row stays unrendered and the hub keeps
+                    // its single paste field, so «نشانی ویدیو» is only one tap away.
+                    onPasteVideoUrl = {
+                        importHubOpen = true
+                    },
+                    // #76: gallery pick -> bundled on-device ML Kit -> the
+                    // shared parser. No network, no API key.
+                    onScanPhoto = { scanLauncher() },
+                    modifier = Modifier.fillMaxSize(),
+                )
+            }
+            // Hub-captured drafts (#75) and share-sheet drafts (#75) share the
+            // one review screen, so validation and save cannot diverge.
+            hubDraft != null || importDraft != null -> {
+                val draft = hubDraft ?: importDraft!!
+                RecipeImportScreen(
+                    draft = draft,
+                    onSave = {
+                        onSaveImport(it)
+                        hubDraft = null
+                        importHubOpen = false
+                    },
+                    onBack = {
+                        hubDraft = null
+                        onImportHandled()
+                    },
+                    lowConfidenceLines = ocrLowConfidence,
+                    provenancePhotoUri = ocrPhotoUri,
+                    modifier = Modifier.fillMaxSize(),
+                )
+            }
+            stepModeFoodId >= 0 -> {
+                    // Captured at composition: onCooked runs outside composable context (#98).
+                    val homeVm: HomeViewModel = viewModel()
                     StepModeScreen(
                         foodId = stepModeFoodId,
-                        onBack = { stepModeFoodId = -1L },
+                        onBack = { stepModeFoodId = -1L; stepModeResume = false },
+                        resume = stepModeResume,
+                        // A technique overlay owns back while open (#101).
+                        backEnabled = techniqueRoute.isEmpty(),
+                        onTechnique = { techniqueRoute = it },
+                        // Done state (#98): rating lands on detail; «پختم» → leftovers + Home.
+                        onRate = {
+                            detailFoodId = stepModeFoodId
+                            stepModeFoodId = -1L
+                            stepModeResume = false
+                        },
+                        onCooked = { f ->
+                            homeVm.showLeftoversFor(f)
+                            // Journal stamp (#124) — same event as the history
+                            // and nutrition rows, and the prompt rides Home.
+                            homeVm.stampCook(f.id)
+                            // Streak line on the widget moved (#131).
+                            com.erfanbagheri.tahdig.widget.DishOfDayWidget.refreshAll(context)
+                            detailFoodId = -1L
+                            stepModeFoodId = -1L
+                            stepModeResume = false
+                            selectedTab = 0
+                        },
                     )
                 }
                 detailFoodId >= 0 -> {
                     val rvm: RatingViewModel = viewModel()
                     val svm: ShoppingViewModel = viewModel()
+                    val mvm: com.erfanbagheri.tahdig.ui.viewmodel.MilestoneViewModel = viewModel()
+                    val tagVm: com.erfanbagheri.tahdig.ui.viewmodel.TagViewModel = viewModel()
                     FoodDetailScreen(
                         foodId = detailFoodId,
                         onBack = { detailFoodId = -1L },
-                        onStartStepMode = { id -> detailFoodId = -1L; stepModeFoodId = id },
+                        onStartStepMode = { id -> detailFoodId = -1L; stepModeResume = false; stepModeFoodId = id },
+                        onResumeStepMode = { id -> detailFoodId = -1L; stepModeResume = true; stepModeFoodId = id },
                         ratingViewModel = rvm,
+                        milestoneViewModel = mvm,
+                        tagViewModel = tagVm,
                         onAddToShoppingList = { id, ingredients ->
                             svm.addIngredients(id, ingredients)
                             detailFoodId = -1L
@@ -204,8 +570,10 @@ private fun TahdigApp() {
                             svm.addIngredients(detailFoodId, missing)
                             detailFoodId = -1L
                         },
-                        onShare = { food ->
-                            ShareCard.share(context, food)
+                        onShare = { food -> shareTarget = food },
+                        onExportFile = { food ->
+                            onStageExport(food)
+                            recipeExportLauncher.launch(RecipeTransfer.fileName(food))
                         },
                     )
                 }
@@ -215,14 +583,45 @@ private fun TahdigApp() {
                         viewModel = cm,
                         onCategoryClick = { categoryRoute = it },
                         onBack = { browseCategories = false },
+                        onTechniques = { browseTechniques = true },
+                        onOccasions = { browseOccasions = true },
+                        onCuisineMap = { browseCuisineMap = true },
                     )
                 }
                 showPantry -> {
                     val vm: PantryViewModel = viewModel()
+                    val svm: ShoppingViewModel = viewModel()
                     PantryScreen(
                         viewModel = vm,
                         onFoodClick = { detailFoodId = it },
                         onBack = { showPantry = false },
+                        onOpenLeftover = { showPantry = false; showLeftover = true },
+                        // Swipe on an expiring row (#106): the replacement goes on
+                        // the shopping list, the stale row leaves the pantry.
+                        onAddToShopping = { item -> svm.addItems(item.item) },
+                    )
+                }
+                showLeftover -> {
+                    // #107: single-shot session — closing forgets it (VM has no persistence).
+                    val lvm: LeftoverViewModel = viewModel()
+                    LeftoverScreen(
+                        viewModel = lvm,
+                        onFoodClick = { detailFoodId = it },
+                        onBack = { showLeftover = false },
+                    )
+                }
+                showScanner -> {
+                    // #116: a scanned product is added by NAME — it is not one of
+                    // the seed dishes, so it has no foodId to add by.
+                    val bvm: com.erfanbagheri.tahdig.ui.viewmodel.BarcodeViewModel = viewModel()
+                    val svm: ShoppingViewModel = viewModel()
+                    val pvm: PantryViewModel = viewModel()
+                    BarcodeScreen(
+                        viewModel = bvm,
+                        onAddToShopping = { name -> svm.addItems(name) },
+                        onAddToPantry = { name -> pvm.addItem(name) },
+                        onBack = { showScanner = false },
+                        modifier = Modifier.fillMaxSize(),
                     )
                 }
                 showHeatmap -> {
@@ -231,6 +630,14 @@ private fun TahdigApp() {
                         viewModel = vm,
                         onBack = { showHeatmap = false },
                     )
+                }
+                showDiary -> {
+                    val vm: com.erfanbagheri.tahdig.ui.viewmodel.DiaryViewModel = viewModel()
+                    DiaryScreen(vm = vm, onBack = { showDiary = false })
+                }
+                showBadges -> {
+                    val bvm: com.erfanbagheri.tahdig.ui.viewmodel.BadgeViewModel = viewModel()
+                    BadgesScreen(vm = bvm, onBack = { showBadges = false })
                 }
                 categoryRoute >= 0 -> {
                     val cm = viewModel<CategoryViewModel>()
@@ -244,10 +651,18 @@ private fun TahdigApp() {
                 }
                 selectedTab == 0 -> {
                     val vm: HomeViewModel = viewModel()
+                    val wvm: com.erfanbagheri.tahdig.ui.viewmodel.WellnessViewModel = viewModel()
+                    val cvm: com.erfanbagheri.tahdig.ui.viewmodel.CaffeineViewModel = viewModel()
+                    val bvm: com.erfanbagheri.tahdig.ui.viewmodel.BadgeViewModel = viewModel()
                     HomeScreen(
                         viewModel = vm,
+                        wellness = wvm,
+                        caffeine = cvm,
+                        badges = bvm,
                         onBrowseCategories = { browseCategories = true },
                         onFoodClick = { detailFoodId = it },
+                        onOpenLeftover = { showLeftover = true },
+                        onOpenPantry = { showPantry = true },
                     )
                 }
                 selectedTab == 1 -> {
@@ -256,20 +671,31 @@ private fun TahdigApp() {
                         viewModel = vm,
                         onFoodClick = { detailFoodId = it },
                         onOpenPantry = { showPantry = true },
+                        onOpenScanner = { showScanner = true },
+                        // #75: the hub shares this tab instead of adding a 7th
+                        // nav item — 6 bottom items is already the practical cap.
+                        onOpenImportHub = { importHubOpen = true },
                     )
                 }
                 selectedTab == 2 -> {
                     val fvm: FavoritesViewModel = viewModel()
                     val hvm: HistoryViewModel = viewModel()
+                    val jvm: com.erfanbagheri.tahdig.ui.viewmodel.JournalViewModel = viewModel()
                     FavoritesScreen(
                         favoritesViewModel = fvm,
                         historyViewModel = hvm,
+                        journalViewModel = jvm,
                         onFoodClick = { detailFoodId = it },
+                        // #126: every ghost-row CTA needs a way out of the
+                        // empty list it was shown in.
+                        onGoHome = { selectedTab = 0 },
+                        startInJournal = startAttachPhoto,
+                        onAttachHandled = onAttachHandled,
                     )
                 }
                 selectedTab == 3 -> {
                     val vm: ShoppingViewModel = viewModel()
-                    ShoppingListScreen(viewModel = vm)
+                    ShoppingListScreen(viewModel = vm, onGoHome = { selectedTab = 0 })
                 }
                 selectedTab == 4 -> {
                     val vm: MealPlanViewModel = viewModel()
@@ -286,10 +712,128 @@ private fun TahdigApp() {
                         viewModel = vm,
                         onBackup = { backupLauncher.launch("tahdig-backup.db") },
                         onRestore = { restoreLauncher.launch(arrayOf("*/*")) },
+                        onTransfer = { bundleAction = "export" },
+                        onRestoreBundle = { bundleAction = "import" },
                         onOpenHeatmap = { showHeatmap = true },
+                        onOpenDiary = { showDiary = true },
+                        onOpenBadges = { showBadges = true },
+                        onOpenTags = { showTags = true },
+                    )
+                }
+                showTags -> {
+                    val tagVm: com.erfanbagheri.tahdig.ui.viewmodel.TagViewModel = viewModel()
+                    com.erfanbagheri.tahdig.ui.screen.TagsManagerScreen(
+                        viewModel = tagVm,
+                        onBack = { showTags = false },
                     )
                 }
             }
+            // Technique library overlays (#101) — stacked ABOVE the current screen:
+            // a technique opened from a step never disposes the step screen, so
+            // back lands on the exact step again (acceptance criterion).
+            // #129: the hand-rolled `when` nav ignores the system back key —
+            // without this, pressing back on a detail screen EXITS the app.
+            // This pops in reverse overlay order (mirrors the close buttons),
+            // and no-ops on tabs so the system still exits from Home.
+            val backOpen = detailFoodId >= 0 ||
+                (stepModeFoodId < 0 && (
+                techniqueRoute.isNotEmpty() || regionRoute.isNotEmpty()
+                    || browseOccasions || browseCuisineMap || browseTechniques
+                    || categoryRoute >= 0 || browseCategories || showPantry
+                    || showLeftover || showScanner || showHeatmap || showDiary
+                    || showBadges
+                    )
+                )
+            androidx.activity.compose.BackHandler(enabled = backOpen) {
+                when {
+                    techniqueRoute.isNotEmpty() -> techniqueRoute = ""
+                    regionRoute.isNotEmpty() -> regionRoute = ""
+                    browseOccasions -> browseOccasions = false
+                    browseCuisineMap -> browseCuisineMap = false
+                    browseTechniques -> browseTechniques = false
+                    categoryRoute >= 0 -> categoryRoute = -1L
+                    detailFoodId >= 0 -> detailFoodId = -1L
+                    browseCategories -> browseCategories = false
+                    showPantry -> showPantry = false
+                    showLeftover -> showLeftover = false
+                    showScanner -> showScanner = false
+                    showHeatmap -> showHeatmap = false
+                    showDiary -> showDiary = false
+                    showBadges -> showBadges = false
+                    showTags -> showTags = false
+                }
+            }
+            if (techniqueRoute.isNotEmpty()) {
+                TechniqueDetailScreen(
+                    techniqueId = techniqueRoute,
+                    onBack = { techniqueRoute = "" },
+                    onDishClick = { id ->
+                        techniqueRoute = ""
+                        browseTechniques = false
+                        detailFoodId = id
+                    },
+                )
+            }
+            if (browseOccasions) {
+                OccasionsScreen(
+                    onBack = { browseOccasions = false },
+                    onFoodClick = { id -> browseOccasions = false; detailFoodId = id },
+                )
+            }
+            // Cuisine map (#90): region detail overlays the map so back returns to it.
+            if (browseCuisineMap && regionRoute.isEmpty()) {
+                CuisineMapScreen(
+                    onBack = { browseCuisineMap = false },
+                    onRegionClick = { regionRoute = it },
+                )
+            }
+            if (browseCuisineMap && regionRoute.isNotEmpty()) {
+                RegionDishesScreen(
+                    cuisine = regionRoute,
+                    onFoodClick = { id -> regionRoute = ""; browseCuisineMap = false; detailFoodId = id },
+                    onBack = { regionRoute = "" },
+                )
+            }
+            if (browseTechniques && techniqueRoute.isEmpty()) {
+                TechniquesScreen(
+                    onBack = { browseTechniques = false },
+                    onOpen = { techniqueRoute = it },
+                )
+            }
+            } // Box (base screen + technique overlays)
+        }
+
+        // #132: pick the card, then share. Kept outside the Box so it survives
+        // the detail screen being popped underneath it.
+        bundleAction?.let { action ->
+            BundlePassphraseDialog(
+                creating = action == "export",
+                onConfirm = { pass ->
+                    val exporting = action == "export"
+                    bundleAction = null
+                    if (exporting) {
+                        // The key exists for this one call and is wiped after.
+                        bundleExportLauncher.launch(
+                            "tahdig-${System.currentTimeMillis()}.${BundleCrypto.EXTENSION}",
+                        )
+                        bundlePass = pass
+                    } else {
+                        bundlePass = pass
+                        bundleImportLauncher.launch(arrayOf("*/*"))
+                    }
+                },
+                onDismiss = { bundleAction = null },
+            )
+        }
+
+        shareTarget?.let { food ->
+            ShareLayoutDialog(
+                onPick = { layout ->
+                    shareTarget = null
+                    ShareCard.share(context, food, layout)
+                },
+                onDismiss = { shareTarget = null },
+            )
         }
     }
 }

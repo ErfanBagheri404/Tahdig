@@ -1,6 +1,10 @@
 package com.erfanbagheri.tahdig.ui.screen
 
 import androidx.compose.foundation.clickable
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.customActions
+import androidx.compose.ui.semantics.CustomAccessibilityAction
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,6 +33,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -36,23 +42,38 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
-import com.erfanbagheri.tahdig.ui.components.EmptyState
+import com.erfanbagheri.tahdig.ui.components.FirstRunTip
+import com.erfanbagheri.tahdig.ui.components.GhostRowsEmptyState
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
+import com.erfanbagheri.tahdig.util.FirstRun
 import com.erfanbagheri.tahdig.ui.viewmodel.FavoritesViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.HistoryViewModel
+import com.erfanbagheri.tahdig.ui.components.oneA11yStop
 
 @Composable
 fun FavoritesScreen(
     favoritesViewModel: FavoritesViewModel,
     historyViewModel: HistoryViewModel,
+    journalViewModel: com.erfanbagheri.tahdig.ui.viewmodel.JournalViewModel,
     onFoodClick: (Long) -> Unit = {},
+    // #126: ghost-row CTAs need a way out of an empty list.
+    onGoHome: () -> Unit = {},
+    // #125: a photo-prompt notification deep-links here, on the journal tab.
+    startInJournal: Boolean = false,
+    onAttachHandled: () -> Unit = {},
 ) {
     val favoritedFoods by favoritesViewModel.favoritedFoods.collectAsState()
     val blockedFoods by favoritesViewModel.blockedFoods.collectAsState()
     val historyItems by historyViewModel.historyItems.collectAsState()
-    var selectedTab by rememberSaveable { mutableIntStateOf(0) }
+    var selectedTab by rememberSaveable { mutableIntStateOf(if (startInJournal) 3 else 0) }
+    androidx.compose.runtime.LaunchedEffect(startInJournal) {
+        if (startInJournal) {
+            selectedTab = 3
+            onAttachHandled()
+        }
+    }
 
-    val tabs = listOf("علاقه‌مندی‌ها", "مسدود شده‌ها", "تاریخچه")
+    val tabs = listOf("علاقه‌مندی‌ها", "مسدود شده‌ها", "تاریخچه", "خاطرات پخت")
 
     Column(modifier = Modifier.fillMaxSize()) {
         Spacer(Modifier.height(48.dp))
@@ -82,10 +103,11 @@ fun FavoritesScreen(
 
         when (selectedTab) {
             0 -> {
-                if (favoritedFoods.isEmpty()) EmptyState(
-                    icon = Icons.Filled.FavoriteBorder,
+                if (favoritedFoods.isEmpty()) GhostRowsEmptyState(
                     title = "غذای مورد علاقه‌ای ثبت نشده",
                     subtitle = "روی قلب هر غذا بزن تا اینجا ذخیره بشه",
+                    cta = "برگرد به پیشنهاد امروز",
+                    onCta = onGoHome,
                 )
                 else FavoriteList(
                     foods = favoritedFoods,
@@ -95,10 +117,11 @@ fun FavoritesScreen(
                 )
             }
             1 -> {
-                if (blockedFoods.isEmpty()) EmptyState(
-                    icon = Icons.Filled.Block,
+                if (blockedFoods.isEmpty()) GhostRowsEmptyState(
                     title = "غذای مسدود شده‌ای نیست",
                     subtitle = "غذاها را می‌توانید از پیشنهادها مسدود کنید",
+                    cta = "برگرد به پیشنهاد امروز",
+                    onCta = onGoHome,
                 )
                 else FavoriteList(
                     foods = blockedFoods,
@@ -108,14 +131,45 @@ fun FavoritesScreen(
                 )
             }
             2 -> {
-                if (historyItems.isEmpty()) EmptyState(
-                    icon = Icons.Filled.History,
+                if (historyItems.isEmpty()) GhostRowsEmptyState(
                     title = "تاریخچه‌ای ثبت نشده",
                     subtitle = "غذاهای پیشنهادی قبلی اینجا می‌آیند",
+                    cta = "برگرد به پیشنهاد امروز",
+                    onCta = onGoHome,
                 )
                 else HistoryList(
                     items = historyItems,
                     onClick = onFoodClick,
+                )
+            }
+            // خاطرات پخت (#124) — the cook journal, reverse-chronological.
+            3 -> {
+                val entries by journalViewModel.entries.collectAsState()
+                // #126: one-line hint on first encounter with the journal.
+                FirstRunTip(
+                    id = FirstRun.Tip.JOURNAL,
+                    text = "هر پخت اینجا ثبت می‌شه؛ عکس و یادداشت رو بعداً هم می‌تونی اضافه کنی.",
+                )
+                // #125: the deep-linked picker, primed once on arrival.
+                // #125: deep-link consumes the single launch param; the launch
+                // code below re-arms per *entry id* so config changes don't
+                // drop the picker (and later entries can't re-trigger it).
+                var attachDone by androidx.compose.runtime.remember { mutableStateOf(false) }
+                val firstTodayId = entries.firstOrNull()?.id
+                val attachToId = if (startInJournal && !attachDone && firstTodayId != null)
+                    firstTodayId else null
+                JournalList(
+                    entries = entries,
+                    foodName = { id -> historyItems.firstOrNull { it.food.id == id }?.food?.name },
+                    onClick = onFoodClick,
+                    onGoHome = onGoHome,
+                    // #127: the delete action behind long-press.
+                    onDelete = { id -> journalViewModel.delete(id) },
+                    attachToId = attachToId,
+                    onAttach = { id, uri ->
+                        journalViewModel.setPhoto(id, uri)
+                        attachDone = true
+                    },
                 )
             }
         }
@@ -137,7 +191,14 @@ private fun HistoryList(
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { onClick(item.food.id) },
+                    .clickable { onClick(item.food.id) }
+                    // #129: dish + description + timestamp were three stops.
+                    .oneA11yStop(
+                        item.food.name +
+                            if (item.food.description.isNotBlank())
+                                "، ${item.food.description}"
+                            else ""
+                    ),
                 shape = RoundedCornerShape(10.dp),
                 color = MaterialTheme.colorScheme.surface,
             ) {
@@ -202,9 +263,20 @@ private fun FavoriteList(
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { onClick(food.id) },
-                shape = RoundedCornerShape(12.dp),
-                color = MaterialTheme.colorScheme.surface,
+                    .clickable { onClick(food.id) }
+                    // #129: name + description are ONE stop, but the remove
+                    // button inside stays its own. A blanket mergeDescendants
+                    // would fold it into the row and hide the action, so this
+                    // uses clearAndSetSemantics (no merge) plus an explicit
+                    // custom action for the state-dependent verb.
+                    .clearAndSetSemantics {
+                        contentDescription = food.name
+                        customActions = listOf(
+                            CustomAccessibilityAction(
+                                if (isBlocked) "رفع مسدود" else "حذف از علاقه‌مندی‌ها"
+                            ) { onRemove(food.id); true }
+                        )
+                    },
             ) {
                 Row(
                     modifier = Modifier.padding(16.dp),
@@ -229,6 +301,8 @@ private fun FavoriteList(
                         }
                     }
                     Spacer(Modifier.width(8.dp))
+                    // #129: labelled in the action, not only the glyph, so the
+                    // state ("blocked" vs "favorited") is spoken before the verb.
                     IconButton(onClick = { onRemove(food.id) }) {
                         Icon(
                             imageVector = if (isBlocked) Icons.Default.Block else Icons.Default.FavoriteBorder,

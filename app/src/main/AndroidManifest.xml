@@ -2,11 +2,33 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Streaming voice control in cook mode (#94). The intent-based dictation
+         (VoiceInput) needs none — the recognizer app owns the mic — but holding
+         our own SpeechRecognizer session records directly, so this is required. -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- Cook timers must fire at the right minute (#95). On API 31+ this can be
+         revoked by the user; TimerScheduler checks canScheduleExactAlarms() and
+         degrades to inexact rather than crashing. -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
+    <!-- Weekly meal plan → device calendar (#84). Requested at runtime only on
+         the first export, never on the first screen; the app works fine
+         without a calendar app, so nothing here is required hardware. -->
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
 
     <!-- Dish photos are fetched from Wikimedia. Without this, Coil's OkHttp
          dispatcher throws an uncaught SecurityException and the app crashes. -->
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Barcode scanner (#116). Optional: the scanner can be switched off in
+         settings and the rest of the app never touches the camera, so the
+         hardware feature is not declared required. -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
 
     <!-- Voice input launches the device's speech recogniser. On Android 11+ package
          visibility hides it from resolveActivity() without this, so the mic button
@@ -34,20 +56,42 @@
             android:exported="true"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|uiMode"
             android:windowSoftInputMode="adjustResize"
-            android:theme="@style/Theme.Tahdig">
+            android:theme="@style/Theme.Tahdig"
+            android:enableOnBackInvokedCallback="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <!-- #75: the share sheet is a first-class entry point. Text from a
+                 Reels caption, a Telegram message, or a browser URL all arrive
+                 here and land on the import review screen. -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
         </activity>
 
         <receiver android:name=".notify.DailyNotifyReceiver" android:exported="false" />
+        <receiver android:name=".notify.PhotoPromptReceiver" android:exported="false" />
+        <receiver android:name=".notify.TimerReceiver" android:exported="false" />
 
         <receiver
             android:name=".widget.DishOfDayWidget"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <intent-filter>
+                <!-- Shuffle button + external refresh (#131). Explicit, not exported:
+                     the widget's own PendingIntents are the only callers. -->
+                <action android:name="com.erfanbagheri.tahdig.widget.SHUFFLE" />
+                <action android:name="com.erfanbagheri.tahdig.widget.REFRESH" />
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"

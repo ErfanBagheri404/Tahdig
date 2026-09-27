@@ -132,6 +132,14 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
 
+    // Barcode scanner (#116): CameraX preview + ML Kit bundled model.
+    implementation(libs.camera.camera2)
+    implementation(libs.camera.lifecycle)
+    implementation(libs.camera.view)
+    implementation(libs.mlkit.barcode.scanning)
+    // #76 OCR: bundled on-device text recognition.
+    implementation("com.google.mlkit:text-recognition:16.0.0")
+
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)
     testImplementation(libs.kotlinx.coroutines.test)

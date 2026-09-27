@@ -4,8 +4,9 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.erfanbagheri.tahdig.data.local.TahdigDatabase
+import com.erfanbagheri.tahdig.data.local.entity.FavoriteEntity
 import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
-import com.erfanbagheri.tahdig.util.UndoHostState
+import com.erfanbagheri.tahdig.util.UndoHub
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -21,21 +22,49 @@ class FavoritesViewModel(app: Application) : AndroidViewModel(app) {
     val blockedFoods: StateFlow<List<FoodEntity>> = favoriteDao.observeBlockedFoods()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
+    /**
+     * Save one dish (#81). The batch bar loops this exact single-dish call —
+     * `upsert` is REPLACE, so re-favoriting is harmless and no bulk SQL exists.
+     */
+    fun addFavorite(foodId: Long) {
+        viewModelScope.launch {
+            favoriteDao.upsert(FavoriteEntity(foodId = foodId, isBlocked = false))
+        }
+    }
+
     fun removeFavorite(foodId: Long) {
         viewModelScope.launch {
             val row = favoriteDao.getByFoodId(foodId) ?: return@launch
             favoriteDao.deleteByFoodId(foodId)
-            UndoHostState.push("از علاقه‌مندی‌ها حذف شد") {
+            UndoHub.arm("از علاقه‌مندی‌ها حذف شد") {
                 viewModelScope.launch { favoriteDao.upsert(row) }
             }
         }
     }
 
     fun unblock(foodId: Long) {
-        viewModelScope.launch { favoriteDao.deleteByFoodId(foodId) }
+        viewModelScope.launch {
+            val row = favoriteDao.getByFoodId(foodId) ?: return@launch
+            favoriteDao.deleteByFoodId(foodId)
+            UndoHub.arm("مسدودی برداشته شد") {
+                viewModelScope.launch { favoriteDao.upsert(row) }
+            }
+        }
     }
 
+    /**
+     * Unblock everything, restorable for the undo window (#127). The inverse
+     * re-inserts the exact rows, so a mis-tap does not cost the user their
+     * whole block list.
+     */
     fun clearBlocked() {
-        viewModelScope.launch { favoriteDao.clearBlocked() }
+        viewModelScope.launch {
+            val rows = favoriteDao.blockedRows()
+            if (rows.isEmpty()) return@launch
+            favoriteDao.clearBlocked()
+            UndoHub.arm("${rows.size} مسدودی برداشته شد") {
+                viewModelScope.launch { rows.forEach { favoriteDao.upsert(it) } }
+            }
+        }
     }
 }

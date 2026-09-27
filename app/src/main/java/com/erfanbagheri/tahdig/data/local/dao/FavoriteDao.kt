@@ -22,6 +22,10 @@ interface FavoriteDao {
     @Query("DELETE FROM favorites WHERE food_id = :foodId")
     suspend fun deleteByFoodId(foodId: Long)
 
+    /** Every blocked row, for the clear-blocked undo (#127). */
+    @Query("SELECT * FROM favorites WHERE is_blocked = 1")
+    suspend fun blockedRows(): List<FavoriteEntity>
+
     @Query("SELECT COUNT(*) FROM favorites WHERE is_blocked = 1")
     fun observeBlockedCount(): Flow<Int>
 
@@ -52,4 +56,18 @@ interface FavoriteDao {
     /** Remove all blocked entries. */
     @Query("DELETE FROM favorites WHERE is_blocked = 1")
     suspend fun clearBlocked()
+
+    // -- #92 taste profile --------------------------------------------------
+
+    /** Favorited dish ids, for the scorer's weak favorite signal. */
+    @Query("SELECT food_id FROM favorites WHERE is_blocked = 0")
+    suspend fun favoritedIds(): List<Long>
+
+    /**
+     * Blocked (hidden) dish ids. Kept as ids and not joined dishes: the scorer
+     * only needs to know the dish is off-limits, and a hidden dish may well
+     * have been deleted from `foods` since.
+     */
+    @Query("SELECT food_id FROM favorites WHERE is_blocked = 1")
+    suspend fun blockedIds(): List<Long>
 }

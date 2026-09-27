@@ -24,4 +24,12 @@ data class PantryItemEntity(
 
     @ColumnInfo(name = "created_at")
     val createdAt: Long = System.currentTimeMillis(),
+
+    /** When this item was stocked — the fall-back anchor for default shelf life (#106). */
+    @ColumnInfo(name = "added_at")
+    val addedAt: Long = System.currentTimeMillis(),
+
+    /** Optional expiry epoch ms (#106); null = undated (most legacy rows). */
+    @ColumnInfo(name = "expires_at")
+    val expiresAt: Long? = null,
 )

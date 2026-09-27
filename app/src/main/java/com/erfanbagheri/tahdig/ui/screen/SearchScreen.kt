@@ -4,7 +4,10 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import android.app.Activity
 import androidx.compose.foundation.background
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.foundation.clickable
+import androidx.compose.material3.TextButton
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,8 +23,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -35,26 +41,35 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.erfanbagheri.tahdig.util.DietFilter
-import com.erfanbagheri.tahdig.util.DifficultyFilter
-import com.erfanbagheri.tahdig.util.SortOrder
-import com.erfanbagheri.tahdig.util.TimeBucket
+import com.erfanbagheri.tahdig.util.MicroNutrients
+import com.erfanbagheri.tahdig.util.Flavor
 import com.erfanbagheri.tahdig.util.VoiceInput
+import com.erfanbagheri.tahdig.ui.components.FirstRunTip
+import com.erfanbagheri.tahdig.ui.components.TagSheet
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
+import com.erfanbagheri.tahdig.util.FirstRun
 import com.erfanbagheri.tahdig.ui.viewmodel.SearchHistory
 import com.erfanbagheri.tahdig.ui.viewmodel.RecentlyViewedViewModel
 import com.erfanbagheri.tahdig.ui.viewmodel.SearchViewModel
+import androidx.compose.ui.semantics.semantics
+import com.erfanbagheri.tahdig.ui.components.oneA11yStop
 
 @Composable
 fun SearchScreen(
     viewModel: SearchViewModel,
     onFoodClick: (Long) -> Unit = {},
     onOpenPantry: () -> Unit = {},
+    onOpenScanner: () -> Unit = {},
+    // #75: entry to the import hub (paste / source capture / review).
+    onOpenImportHub: () -> Unit = {},
+    tagViewModel: com.erfanbagheri.tahdig.ui.viewmodel.TagViewModel = viewModel(),
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
     val query by viewModel.query.collectAsState()
@@ -62,9 +77,22 @@ fun SearchScreen(
     val diet by viewModel.diet.collectAsState()
     val ingredients by viewModel.ingredients.collectAsState()
     val excluded by viewModel.excluded.collectAsState()
+    val nutriAb by viewModel.nutriAb.collectAsState()
+    val withinCaps by viewModel.withinCaps.collectAsState()
+    val badge by viewModel.badge.collectAsState()
+    val flavors by viewModel.flavors.collectAsState()
+    val flavorCount by viewModel.flavorCount.collectAsState()
     val categories by viewModel.categories.collectAsState()
     val results by viewModel.results.collectAsState()
-    val cuisine by viewModel.cuisine.collectAsState()
+    // #126: dishes a relaxed query reaches when the strict one returns none.
+    val relaxedMatches by viewModel.relaxedMatches.collectAsState()
+    // #80 — user tags: collapsible chip row under the category chips.
+    // The flows live on SearchViewModel (they drive the AND-filter in SQL);
+    // TagViewModel owns the tag sheet from other entry points.
+    val allTags by viewModel.allTags.collectAsState()
+    val selectedTagIds by viewModel.tagIds.collectAsState()
+    val tagsExpanded by viewModel.tagsExpanded.collectAsState()
+    val sheetFoodId by tagViewModel.sheetFoodId.collectAsState()
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -77,13 +105,30 @@ fun SearchScreen(
         ) {
             Spacer(Modifier.height(48.dp))
 
-            // Title
-            Text(
-                text = "جستجو",
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onBackground,
+            // Title + scanner entry (#116). The button only exists while the
+            // scanner is enabled in Settings, so disabling it removes the
+            // camera from the app surface entirely, not just the settings row.
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-            )
+                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = "جستجو",
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.weight(1f),
+                )
+                val scannerEnabled by com.erfanbagheri.tahdig.data.prefs.SettingsStore
+                    .scannerEnabled.collectAsState()
+                if (scannerEnabled) {
+                    androidx.compose.material3.IconButton(onClick = onOpenScanner) {
+                        Icon(
+                            Icons.Default.QrCodeScanner,
+                            contentDescription = "اسکنر بارکد",
+                        )
+                    }
+                }
+            }
 
             Spacer(Modifier.height(16.dp))
 
@@ -136,7 +181,10 @@ fun SearchScreen(
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable(onClick = onOpenPantry),
+                    .clickable(onClick = onOpenPantry)
+                    // #129: the 🧺 glyph, the heading and the subcaption were
+                    // three stops for one tile; one sentence is enough.
+                    .oneA11yStop("چی دارم؟ بگو خونه چی داری، غذا پیشنهاد بده"),
                 shape = RoundedCornerShape(12.dp),
                 color = MaterialTheme.colorScheme.secondaryContainer,
             ) {
@@ -155,6 +203,40 @@ fun SearchScreen(
                         )
                         Text(
                             text = "بگو خونه چی داری، غذا پیشنهاد بده",
+                            style = MaterialTheme.typography.labelSmall,
+                            fontFamily = YekanBakh,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        )
+                    }
+                }
+            }
+
+            Spacer(Modifier.height(12.dp))
+
+            // #75: import-hub entry — one tile next to the pantry one, same flat style.
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable(onClick = onOpenImportHub)
+                    .oneA11yStop("افزودن دستور؛ بچسبان یا از کارت و ویدیو بگیر"),
+                shape = RoundedCornerShape(12.dp),
+                color = MaterialTheme.colorScheme.secondaryContainer,
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(text = "📝", fontSize = 20.sp)
+                    Spacer(Modifier.width(12.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "افزودن دستور",
+                            style = MaterialTheme.typography.titleSmall,
+                            fontFamily = YekanBakh,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        )
+                        Text(
+                            text = "بچسبان یا از کارت و ویدیو بگیر",
                             style = MaterialTheme.typography.labelSmall,
                             fontFamily = YekanBakh,
                             color = MaterialTheme.colorScheme.onSecondaryContainer,
@@ -223,6 +305,104 @@ fun SearchScreen(
                         selected = diet == d,
                         onClick = { viewModel.onDietSelect(d) },
                     )
+                }
+                // Nutri-Score A-B (#111). Kept in the diet row because it is
+                // the same kind of question — and it only ever keeps dishes
+                // whose grade came from real data.
+                item {
+                    CategoryChip(
+                        label = "نمره A-B",
+                        selected = nutriAb,
+                        onClick = { viewModel.onNutriAbToggle(!nutriAb) },
+                    )
+                }
+                // «در محدوده من» (#113). Only keeps dishes that pass the
+                // user's nutrient caps; estimates drop out because unknown
+                // amounts are not within a limit.
+                item {
+                    CategoryChip(
+                        label = "در محدوده من",
+                        selected = withinCaps,
+                        onClick = { viewModel.onWithinCapsToggle(!withinCaps) },
+                    )
+                }
+                // Threshold badges (#117). One at a time: the filters compose,
+                // but a single badge row keeps the chips readable and the
+                // empty-result case obvious.
+                items(MicroNutrients.Badge.entries.toList()) { b ->
+                    CategoryChip(
+                        label = b.label,
+                        selected = badge == b,
+                        onClick = { viewModel.onBadgeSelect(if (badge == b) null else b) },
+                    )
+                }
+            }
+
+            // Taste/mood chips (#89) — «امروز چه مزه‌ای؟».
+            // Hidden entirely when the library carries zero tags (acceptance),
+            // never rendered as an empty row.
+            if (flavorCount > 0) {
+                Spacer(Modifier.height(16.dp))
+                Text(
+                    text = "امروز چه مزه‌ای؟",
+                    style = MaterialTheme.typography.titleSmall,
+                    fontFamily = YekanBakh,
+                    color = MaterialTheme.colorScheme.onBackground,
+                )
+                Spacer(Modifier.height(8.dp))
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    items(Flavor.entries.toList()) { fl ->
+                        CategoryChip(
+                            label = fl.label,
+                            selected = fl in flavors,
+                            onClick = { viewModel.onFlavorToggle(fl) },
+                        )
+                    }
+                }
+            }
+
+            // #80 — user tags: collapsible chip row under the category chips.
+            // Collapsed keeps the selection; the row only hides the chips.
+            if (allTags.isNotEmpty()) {
+                Spacer(Modifier.height(8.dp))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable(
+                            role = androidx.compose.ui.semantics.Role.Button,
+                            onClickLabel = if (tagsExpanded) "بستن برچسب‌ها" else "نمایش برچسب‌ها",
+                        ) { viewModel.onTagsToggleRow() },
+                    verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = "برچسب‌های من",
+                        style = MaterialTheme.typography.titleSmall,
+                        fontFamily = YekanBakh,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.weight(1f),
+                    )
+                    Icon(
+                        imageVector = if (tagsExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                        contentDescription = if (tagsExpanded) "بستن" else "باز کردن",
+                    )
+                }
+                if (tagsExpanded) {
+                    Spacer(Modifier.height(8.dp))
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        items(allTags, key = { it.id }) { tag ->
+                            CategoryChip(
+                                label = tag.name,
+                                selected = tag.id in selectedTagIds,
+                                onClick = { viewModel.onTagToggle(tag.id) },
+                            )
+                        }
+                    }
                 }
             }
 
@@ -315,11 +495,19 @@ fun SearchScreen(
 
             Spacer(Modifier.height(16.dp))
 
+            // #126: one-line hint on first encounter with the chips row.
+            FirstRunTip(
+                id = FirstRun.Tip.SEARCH_CHIPS,
+                text = "اگه دنبال چیز خاصی هستی، تایپ کن؛ وگرنه از پیشنهادها یکی رو بزن.",
+            )
+
             // Search history (shown when query is empty)
             // Hoisted so the same instance is reused across recompositions.
             val history = remember { SearchHistory(context) }
             val historyQueries by history.queries.collectAsState()
-            if (query.isBlank() && historyQueries.isNotEmpty()) {
+            // #126: shown even with no history — the component falls back to
+            // bundled starter chips, so a fresh install has somewhere to start.
+            if (query.isBlank()) {
                 SearchHistoryChips(
                     history = historyQueries,
                     onSelect = { viewModel.onQueryChange(it) },
@@ -347,17 +535,58 @@ fun SearchScreen(
 
             // Results
             val filtering = query.isNotBlank() || selectedCategoryId != null || diet != null ||
-                ingredients.isNotBlank() || excluded.isNotBlank()
+                ingredients.isNotBlank() || excluded.isNotBlank() || selectedTagIds.isNotEmpty()
+            // Non-query filters only: the note must not nag someone whose
+            // plain query simply has no match.
+            val hasActiveFilters = selectedCategoryId != null || diet != null ||
+                ingredients.isNotBlank() || excluded.isNotBlank() || selectedTagIds.isNotEmpty()
             if (results.isEmpty() && filtering) {
-                Text(
-                    text = "نتیجه‌ای یافت نشد",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                // #126 no-match recovery: a dead sentence is a dead end. Offer
+                // the filter reset, plus up to 3 dishes a relaxed query did
+                // reach, so the user always has somewhere to go.
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 48.dp),
-                    textAlign = TextAlign.Center,
-                )
+                        .padding(top = 32.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text(
+                        text = "نتیجه‌ای یافت نشد",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                    )
+                    if (hasActiveFilters) {
+                        Spacer(Modifier.height(4.dp))
+                        Text(
+                            text = "فیلترها رو بردار",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
+                            textAlign = TextAlign.Center,
+                        )
+                        Spacer(Modifier.height(4.dp))
+                        TextButton(onClick = {
+                            viewModel.clearFilters()
+                            selectedTagIds.forEach { viewModel.onTagToggle(it) }
+                        }) {
+                            Text("برداشتن فیلترها", fontFamily = YekanBakh)
+                        }
+                    }
+                    if (relaxedMatches.isNotEmpty()) {
+                        Spacer(Modifier.height(12.dp))
+                        Text(
+                            text = "شاید این‌ها:",
+                            style = MaterialTheme.typography.titleSmall,
+                            fontFamily = YekanBakh,
+                            color = MaterialTheme.colorScheme.onBackground,
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        relaxedMatches.forEach { food ->
+                            SearchResultItem(food = food, onClick = { onFoodClick(food.id) })
+                            Spacer(Modifier.height(8.dp))
+                        }
+                    }
+                }
             } else {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
@@ -367,10 +596,21 @@ fun SearchScreen(
                         SearchResultItem(
                             food = food,
                             onClick = { onFoodClick(food.id) },
+                            // #80: long-press opens the tag sheet for this dish.
+                            onLongClick = { tagViewModel.openSheet(food.id) },
                         )
                     }
                 }
             }
+        }
+
+        // #80 — tag sheet for the long-pressed dish.
+        sheetFoodId?.let { foodId ->
+            TagSheet(
+                viewModel = tagViewModel,
+                foodId = foodId,
+                onDismiss = tagViewModel::closeSheet,
+            )
         }
     }
 }
@@ -387,11 +627,16 @@ private fun CategoryChip(
             MaterialTheme.colorScheme.primary
         else
             MaterialTheme.colorScheme.surfaceVariant,
-        modifier = Modifier.clickable(
-            onClick = onClick,
-            role = androidx.compose.ui.semantics.Role.Button,
-            onClickLabel = "انتخاب $label",
-        ),
+        modifier = Modifier
+            .clickable(
+                onClick = onClick,
+                role = androidx.compose.ui.semantics.Role.Button,
+                onClickLabel = "انتخاب $label",
+            )
+            // #129: a selected chip was only distinguished by colour.
+            .semantics {
+                stateDescription = if (selected) "انتخاب‌شده" else "انتخاب‌نشده"
+            },
     ) {
         Text(
             text = label,
@@ -406,19 +651,27 @@ private fun CategoryChip(
     }
 }
 
+// combinedClickable is still experimental; both entry rows need it, same as
+// the #81 selection card in CategoryBrowseScreen.
+@OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
 @Composable
 private fun SearchResultItem(
     food: com.erfanbagheri.tahdig.data.local.entity.FoodEntity,
     onClick: () -> Unit = {},
+    onLongClick: () -> Unit = {},
 ) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(
+            .combinedClickable(
                 onClick = onClick,
+                onLongClick = onLongClick,
                 role = androidx.compose.ui.semantics.Role.Button,
                 onClickLabel = "نمایش ${food.name}",
-            ),
+                onLongClickLabel = "برچسب‌های ${food.name}",
+            )
+            // #129: result rows were thumb + name + meta = three stops.
+            .oneA11yStop(food.name),
         shape = RoundedCornerShape(12.dp),
         color = MaterialTheme.colorScheme.surface,
     ) {

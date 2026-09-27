@@ -50,6 +50,9 @@ jobs:
             echo "no keystore secret — release APKs will be unsigned"
           fi
 
+      - name: Accessibility audit (#129)
+        run: python scripts/a11y_audit.py
+
       - name: Run unit tests
         run: ./gradlew testDebugUnitTest
 

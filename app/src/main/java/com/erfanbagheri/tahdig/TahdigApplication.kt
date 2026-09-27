@@ -2,16 +2,27 @@ package com.erfanbagheri.tahdig
 
 import android.app.Application
 import com.erfanbagheri.tahdig.data.prefs.SettingsStore
+import com.erfanbagheri.tahdig.data.prefs.TimerStore
 import com.erfanbagheri.tahdig.util.IngredientRegistry
 import com.erfanbagheri.tahdig.util.NutritionDB
 import com.erfanbagheri.tahdig.util.SubstitutionRegistry
+import com.erfanbagheri.tahdig.util.TechniqueRegistry
+import com.erfanbagheri.tahdig.util.OccasionRegistry
 
 class TahdigApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         SettingsStore.init(this)
+        TimerStore.init(this)
+        // Alarms do not survive force-stop on some OEMs — re-arm on launch (#95).
+        TimerStore.rearmAll(this)
         NutritionDB.load(assets)
         IngredientRegistry.load(this)
         SubstitutionRegistry.load(this)
+        TechniqueRegistry.load(this)
+        OccasionRegistry.load(
+            runCatching { assets.open("seed/occasions.json").bufferedReader().use { it.readText() } }
+                .getOrDefault("[]")
+        )
     }
 }

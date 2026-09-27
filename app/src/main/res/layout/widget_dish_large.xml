@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:contentDescription="ابزارک ته‌دیگ، لمس برای باز کردن برنامه"
+    android:background="#1F1B16">
+
+    <!-- Header: title + streak + shuffle -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="🌟 پیشنهادهای امروز"
+            android:textColor="#E8C07D"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/widget_streak_line"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:textColor="#C7C4BF"
+            android:textSize="11sp"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/widget_btn_shuffle"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:padding="6dp"
+            android:src="@drawable/ic_launcher_foreground"
+            android:contentDescription="چرخاندن و پیشنهادهای جدید"
+            android:background="#2A241C" />
+    </LinearLayout>
+
+    <!-- TextView, not View: RemoteViews only inflates a fixed allow-list of
+         classes and plain View is not on it (it throws in the host). -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="6dp"
+        android:background="#363028" />
+
+    <!-- Three dish rows, each separately clickable (#131) -->
+    <TextView
+        android:id="@+id/widget_dish_row_1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:contentDescription="غذای اول" />
+
+    <TextView
+        android:id="@+id/widget_dish_row_2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:contentDescription="غذای دوم" />
+
+    <TextView
+        android:id="@+id/widget_dish_row_3"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:contentDescription="غذای سوم" />
+
+</LinearLayout>

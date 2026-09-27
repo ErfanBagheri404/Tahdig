@@ -1,82 +1,76 @@
 package com.erfanbagheri.tahdig.util
 
 /**
- * One-shot undo for destructive actions.
+ * One-shot undo slot (#127).
  *
- * The app's destructive operations (delete recipe, clear shopping list, clear history,
- * end a cook session) were irreversible; the only safety net was a full backup. A short
- * window to take it back beats a confirm dialog for both speed and trust — the action
- * happens now, the user can reverse it, and after the window the undo path is gone.
+ * A destructive action is a closure that undoes it — a real inverse operation,
+ * not a snapshot of the UI. The buffer holds at most one entry: the last
+ * destructive action is the one a user would want to reverse, and holding a
+ * queue would promise an "undo history" that never ships.
  *
- * Single pending entry, not a stack: this is "undo the last destructive thing", not a
- * general history. A second destructive action replaces the first's undo, which matches
- * how a snackbar queue replaces one message with the next.
+ * [pending] stays set until [undo] or [clear] runs, so the UI can render a
+ * snackbar against a real window instead of a guessed timeout.
  *
- * ponytail: the undo is a closure ([undo]) the caller supplies, so the buffer owns no
- * domain knowledge — the screen captures whatever state it deleted and closes over
- * re-inserting it. [push] returns a handle whose [expired] flag the tests flip on
- * expiry, which is the only cross-window signal a caller ever needs.
+ * The window is deliberately LONGER than the snackbar it drives: Material's
+ * SnackbarDuration.Short is ~4s, so a matching 5s buffer would leave the final
+ * second looking undoable while the action button was already gone. 10s pairs
+ * with SnackbarDuration.Long, and the extra seconds cost nothing because the
+ * inverse only runs if the user actually taps it.
  */
-object UndoBuffer {
+class UndoBuffer(
+    private val windowMs: Long = DEFAULT_WINDOW_MS,
+    /** Injectable clock so the window is unit-tested without sleeping. */
+    private val clock: () -> Long = { System.currentTimeMillis() },
+) {
 
-    /** How long a destructive action stays undoable, in milliseconds. */
-    const val WINDOW_MS = 5_000L
+    private var action: (() -> Unit)? = null
+    private var expiresAt: Long = 0L
 
-    /** A pending undo. [expired] flips true when the window closes without it firing. */
-    class Entry(
-        val label: String,
-        val expiresAt: Long,
-        val undo: () -> Unit,
-    ) {
-        @Volatile var expired = false; private set
-        fun expire() { expired = true }
-    }
-
-    @Volatile
-    private var pending: Entry? = null
+    /** Label of the pending action, or null when there is nothing to undo. */
+    var pending: String? = null
+        private set
 
     /**
-     * Record a destructive action. Replaces any earlier pending undo: only the most
-     * recent destructive thing can be taken back.
-     *
-     * The clock is injectable so tests can step the window deterministically.
+     * Record a destructive action. Any previous entry is dropped — the newest
+     * action wins, matching how a snackbar queue of one behaves.
      */
-    fun push(
-        label: String,
-        undo: () -> Unit,
-        nowMs: Long = System.currentTimeMillis(),
-    ): Entry {
-        pending?.expire()
-        val e = Entry(label, nowMs + WINDOW_MS, undo)
-        pending = e
-        return e
+    fun arm(label: String, undo: () -> Unit) {
+        action = undo
+        pending = label
+        expiresAt = clock() + windowMs
     }
 
-    /** The pending undo, or null once the window has closed. */
-    fun current(nowMs: Long = System.currentTimeMillis()): Entry? {
-        val e = pending ?: return null
-        if (nowMs > e.expiresAt) {
-            e.expire()
-            pending = null
-            return null
+    /**
+     * Run the pending inverse if the window is still open. Returns true when it
+     * ran, so the caller can skip a follow-up action.
+     */
+    fun undo(): Boolean {
+        val current = action ?: return false
+        if (clock() > expiresAt) {
+            clear()
+            return false
         }
-        return e
-    }
-
-    /**
-     * Run the pending undo if one exists. Returns true when something was reversed.
-     * Pops the entry — an undo is single-use, like the action it undoes.
-     */
-    fun pop(nowMs: Long = System.currentTimeMillis()): Boolean {
-        val e = current(nowMs) ?: return false
-        pending = null
-        e.undo()
+        // Clear before running: a re-entrant arm from inside the inverse must
+        // survive, and a double-tap must not run the inverse twice.
+        clear()
+        current()
         return true
     }
 
-    /** Drop any pending undo without running it. */
+    /** True once the window has elapsed, for the snackbar timeout. */
+    fun isExpired(): Boolean = pending != null && clock() > expiresAt
+
+    /** Milliseconds left, never negative. */
+    fun remainingMs(): Long =
+        if (pending == null) 0L else (expiresAt - clock()).coerceAtLeast(0L)
+
     fun clear() {
-        pending?.expire()
+        action = null
         pending = null
+        expiresAt = 0L
+    }
+
+    companion object {
+        const val DEFAULT_WINDOW_MS = 10_000L
     }
 }

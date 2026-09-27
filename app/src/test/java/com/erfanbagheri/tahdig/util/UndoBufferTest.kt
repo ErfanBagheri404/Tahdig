@@ -2,75 +2,130 @@ package com.erfanbagheri.tahdig.util
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
-import org.junit.Before
 import org.junit.Test
 
-/**
- * Drives the buffer with an injected clock so the 5-second window is exact rather than
- * real-time-flaky.
- */
 class UndoBufferTest {
 
-    @Before
-    fun reset() = UndoBuffer.clear()
-
-    @Test
-    fun `undo runs within the window`() {
-        var undone = false
-        UndoBuffer.push("حذف شد", { undone = true }, nowMs = 1_000L)
-        val fired = UndoBuffer.pop(nowMs = 1_000L + UndoBuffer.WINDOW_MS - 1)
-        assertTrue(fired)
-        assertTrue(undone)
+    /** Hand-cranked clock — the window is tested without ever sleeping. */
+    private class FakeClock(var t: Long = 1_000L) {
+        fun advance(ms: Long) { t += ms }
+        fun read(): Long = t
     }
 
-    @Test
-    fun `nothing to undo after the window closes`() {
-        var undone = false
-        UndoBuffer.push("حذف شد", { undone = true }, nowMs = 1_000L)
-        assertNull(UndoBuffer.current(nowMs = 1_000L + UndoBuffer.WINDOW_MS + 1))
-        assertFalse(UndoBuffer.pop(nowMs = 1_000L + UndoBuffer.WINDOW_MS + 1))
-        assertFalse("expired undo must not fire", undone)
+    private fun buffer(clock: FakeClock) = UndoBuffer(clock = clock::read)
+
+    @Test fun `armed action is undoable inside the window`() {
+        val clock = FakeClock()
+        val buf = buffer(clock)
+        var restored = false
+        buf.arm("حذف") { restored = true }
+        assertEquals("حذف", buf.pending)
+        clock.advance(4_000)
+        assertTrue(buf.undo())
+        assertTrue(restored)
     }
 
-    @Test
-    fun `a newer push replaces the pending undo`() {
-        var first = false
-        var second = false
-        UndoBuffer.push("اول", { first = true }, nowMs = 1_000L)
-        UndoBuffer.push("دوم", { second = true }, nowMs = 2_000L)
-
-        assertTrue(UndoBuffer.pop(nowMs = 3_000L))
-        assertFalse("the first push is gone once replaced", first)
-        assertTrue(second)
-        // And it was single-use.
-        assertFalse(UndoBuffer.pop(nowMs = 3_000L))
+    @Test fun `expired action is not undone`() {
+        val clock = FakeClock()
+        val buf = buffer(clock)
+        var restored = false
+        buf.arm("حذف") { restored = true }
+        clock.advance(10_001)
+        assertFalse(buf.undo())
+        assertFalse(restored)
+        assertNull(buf.pending)
     }
 
-    @Test
-    fun `pop empties the buffer`() {
-        UndoBuffer.push("حذف شد", {}, nowMs = 0L)
-        assertNotNull(UndoBuffer.current(nowMs = 0L))
-        assertTrue(UndoBuffer.pop(nowMs = 0L))
-        assertNull(UndoBuffer.current(nowMs = 0L))
+    @Test fun `exactly at the boundary the window is still open`() {
+        // The full window must still undo: the snackbar is visible for that
+        // whole tick, so the last moment has to be actionable.
+        val clock = FakeClock()
+        val buf = buffer(clock)
+        var restored = false
+        buf.arm("حذف") { restored = true }
+        clock.advance(UndoBuffer.DEFAULT_WINDOW_MS)
+        assertTrue(buf.undo())
+        assertTrue(restored)
     }
 
-    @Test
-    fun `clear drops without firing`() {
-        var undone = false
-        UndoBuffer.push("حذف شد", { undone = true }, nowMs = 0L)
-        UndoBuffer.clear()
-        assertFalse(UndoBuffer.pop(nowMs = 0L))
-        assertFalse(undone)
+    @Test fun `undo runs once only`() {
+        val clock = FakeClock()
+        val buf = buffer(clock)
+        var runs = 0
+        buf.arm("حذف") { runs++ }
+        assertTrue(buf.undo())
+        // A second tap must be a no-op, not a second restore.
+        assertFalse(buf.undo())
+        assertEquals(1, runs)
     }
 
-    @Test
-    fun `expiry marks the entry so the UI can tell a dead undo`() {
-        val e = UndoBuffer.push("حذف شد", {}, nowMs = 0L)
-        assertFalse(e.expired)
-        UndoBuffer.current(nowMs = UndoBuffer.WINDOW_MS + 1)
-        assertTrue(e.expired)
+    @Test fun `undo with nothing armed is a no-op`() {
+        val buf = buffer(FakeClock())
+        assertFalse(buf.undo())
+        assertNull(buf.pending)
+    }
+
+    @Test fun `newest action replaces the previous one`() {
+        val clock = FakeClock()
+        val buf = buffer(clock)
+        var first = 0
+        var second = 0
+        buf.arm("اول") { first++ }
+        buf.arm("دوم") { second++ }
+        assertTrue(buf.undo())
+        // Only the latest action is undoable — the buffer promises one slot.
+        assertEquals(0, first)
+        assertEquals(1, second)
+    }
+
+    @Test fun `clear drops the pending action`() {
+        val clock = FakeClock()
+        val buf = buffer(clock)
+        var restored = false
+        buf.arm("حذف") { restored = true }
+        buf.clear()
+        assertNull(buf.pending)
+        assertFalse(buf.undo())
+        assertFalse(restored)
+    }
+
+    @Test fun `re-arming from inside the inverse survives`() {
+        // The inverse itself is destructive (e.g. undo of a merge re-arms).
+        val clock = FakeClock()
+        val buf = buffer(clock)
+        var outer = 0
+        var inner = 0
+        buf.arm("بیرونی") {
+            outer++
+            buf.arm("درونی") { inner++ }
+        }
+        assertTrue(buf.undo())
+        assertEquals(1, outer)
+        // The inner arm must not have been cleared by the outer clear().
+        assertEquals("درونی", buf.pending)
+        assertTrue(buf.undo())
+        assertEquals(1, inner)
+    }
+
+    @Test fun `remaining time counts down and floors at zero`() {
+        val clock = FakeClock()
+        val buf = buffer(clock)
+        assertEquals(0L, buf.remainingMs())
+        buf.arm("حذف") {}
+        assertEquals(UndoBuffer.DEFAULT_WINDOW_MS, buf.remainingMs())
+        clock.advance(2_000)
+        assertEquals(UndoBuffer.DEFAULT_WINDOW_MS - 2_000, buf.remainingMs())
+        clock.advance(60_000)
+        assertEquals(0L, buf.remainingMs())
+    }
+
+    @Test fun `isExpired is false while unarmed`() {
+        val clock = FakeClock()
+        val buf = buffer(clock)
+        clock.advance(60_000)
+        // No pending action is not the same as an expired one.
+        assertFalse(buf.isExpired())
     }
 }
