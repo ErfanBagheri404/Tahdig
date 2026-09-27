@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Streaming voice control in cook mode (#94). The intent-based dictation
+         (VoiceInput) needs none — the recognizer app owns the mic — but holding
+         our own SpeechRecognizer session records directly, so this is required. -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <!-- Dish photos are fetched from Wikimedia. Without this, Coil's OkHttp

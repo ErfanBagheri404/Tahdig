@@ -119,6 +119,55 @@ fun SettingsScreen(
 
         Spacer(Modifier.height(32.dp))
 
+        // Voice control in cook mode (#94)
+        Text(
+            text = "کنترل صوتی",
+            style = MaterialTheme.typography.titleMedium,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+
+        Spacer(Modifier.height(8.dp))
+
+        val voiceControl by viewModel.voiceControl.collectAsState()
+        val voiceReadAloud by viewModel.voiceReadAloud.collectAsState()
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+        ) {
+            Text(
+                text = "کنترل صوتی هنگام پخت",
+                style = MaterialTheme.typography.bodyLarge,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.weight(1f),
+            )
+            androidx.compose.material3.Switch(
+                checked = voiceControl,
+                onCheckedChange = { viewModel.setVoiceControl(it) },
+            )
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+        ) {
+            Text(
+                text = "خواندن مرحله با صدا",
+                style = MaterialTheme.typography.bodyLarge,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.weight(1f),
+            )
+            androidx.compose.material3.Switch(
+                checked = voiceReadAloud,
+                onCheckedChange = { viewModel.setVoiceReadAloud(it) },
+            )
+        }
+
+        Spacer(Modifier.height(32.dp))
+
         // About section
         Text(
             text = "درباره",

@@ -10,6 +10,8 @@ object SettingsStore {
     private const val KEY_THEME_MODE = "theme_mode" // 0=system, 1=light, 2=dark
     private const val KEY_ONBOARDED = "onboarded"
     private const val KEY_DAILY_NOTIFY = "daily_notify"
+    private const val KEY_VOICE_CONTROL = "voice_control"   // hands-free cook mode (#94)
+    private const val KEY_VOICE_READ = "voice_read_aloud"   // TTS of next step (#94)
 
     private lateinit var prefs: SharedPreferences
     private val _themeMode = MutableStateFlow(0)
@@ -21,6 +23,12 @@ object SettingsStore {
     private val _dailyNotify = MutableStateFlow(false)
     val dailyNotify: StateFlow<Boolean> = _dailyNotify
 
+    private val _voiceControl = MutableStateFlow(false)
+    val voiceControl: StateFlow<Boolean> = _voiceControl
+
+    private val _voiceReadAloud = MutableStateFlow(false)
+    val voiceReadAloud: StateFlow<Boolean> = _voiceReadAloud
+
     fun isInitialized(): Boolean = ::prefs.isInitialized
 
     fun init(context: Context) {
@@ -28,6 +36,20 @@ object SettingsStore {
         _themeMode.value = prefs.getInt(KEY_THEME_MODE, 0)
         _onboarded.value = prefs.getBoolean(KEY_ONBOARDED, false)
         _dailyNotify.value = prefs.getBoolean(KEY_DAILY_NOTIFY, false)
+        _voiceControl.value = prefs.getBoolean(KEY_VOICE_CONTROL, false)
+        _voiceReadAloud.value = prefs.getBoolean(KEY_VOICE_READ, false)
+    }
+
+    /** Hands-free cook-mode voice control master (#94); default off. */
+    fun setVoiceControl(enabled: Boolean) {
+        prefs.edit().putBoolean(KEY_VOICE_CONTROL, enabled).apply()
+        _voiceControl.value = enabled
+    }
+
+    /** Read the next step aloud via TTS (#94); separate switch, default off. */
+    fun setVoiceReadAloud(enabled: Boolean) {
+        prefs.edit().putBoolean(KEY_VOICE_READ, enabled).apply()
+        _voiceReadAloud.value = enabled
     }
 
     fun setThemeMode(mode: Int) {

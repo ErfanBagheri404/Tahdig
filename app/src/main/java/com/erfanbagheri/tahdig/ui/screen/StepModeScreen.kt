@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.view.WindowManager
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -56,11 +58,15 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.erfanbagheri.tahdig.data.local.entity.CookSessionEntity
+import com.erfanbagheri.tahdig.data.prefs.SettingsStore
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
 import com.erfanbagheri.tahdig.util.CookSessionMath
+import com.erfanbagheri.tahdig.util.CookVoiceCommands
+import com.erfanbagheri.tahdig.util.CookVoiceSession
 import com.erfanbagheri.tahdig.util.DurationParser
 import com.erfanbagheri.tahdig.util.Haptics
 import com.erfanbagheri.tahdig.util.PersianText
+import java.util.Locale
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -88,6 +94,18 @@ fun StepModeScreen(
     val appContext = LocalContext.current.applicationContext
     val view = LocalView.current
     val haptic = LocalHapticFeedback.current
+
+    // ── Hands-free voice control (#94) ─────────────────────────────
+    // State + helpers declared BEFORE `food`/`steps`/navigation so the session
+    // callback can reference them; the effect that starts/stops listening sits
+    // AFTER `goTo` exists (forward reference is illegal in Compose).
+    if (!SettingsStore.isInitialized()) SettingsStore.init(appContext)
+    val voiceMasterOn by SettingsStore.voiceControl.collectAsState(initial = false)
+    val voiceReadAloud by SettingsStore.voiceReadAloud.collectAsState(initial = false)
+    var micGranted by remember { mutableStateOf(false) }
+    var voiceEcho by remember { mutableStateOf<String?>(null) }
+    // Re-trigger for the REPEAT command (same text, needs its own launch).
+    var repeatTick by remember { mutableIntStateOf(0) }
 
     // ── Cook session state (#93) ───────────────────────────────────
     // Declared above the loader that writes them. Written on state changes only
@@ -223,6 +241,81 @@ fun StepModeScreen(
     // System/back-button inside the mode: previous step, exit confirm on step 1.
     // Gated so a technique overlay sitting on top owns back while it is open.
     BackHandler(enabled = backEnabled) { goBackInMode() }
+
+    // ── Voice control wiring (#94) ──────────────────────────────────
+    // Streaming recognition needs the runtime mic grant (unlike the one-shot
+    // VoiceInput dictation). Asked on toggle-on; a refusal leaves the toggle off.
+    val micLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { granted ->
+        micGranted = granted
+        // Grant lands → turn the master on; a refusal leaves it off.
+        if (granted) SettingsStore.setVoiceControl(true)
+    }
+    LaunchedEffect(Unit) {
+        micGranted = androidx.core.content.ContextCompat.checkSelfPermission(
+            appContext, android.Manifest.permission.RECORD_AUDIO,
+        ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+    }
+
+    // One session for the screen's lifetime; released whenever the toggle is off
+    // or the mode leaves, so no mic is held (AC).
+    val voiceSession = remember(appContext) {
+        CookVoiceSession(appContext) { transcript ->
+            val cmd = CookVoiceCommands.match(transcript)
+            voiceEcho = cmd?.let { CookVoiceCommands.echoOf(it) } ?: CookVoiceCommands.UNKNOWN_ECHO
+            Haptics.tap(view)
+            when (cmd) {
+                CookVoiceCommands.Command.NEXT -> goTo(current + 1)
+                // At step 1 «قبلی» only echoes — a hands-free confirm dialog
+                // would need the wet hands we are trying to spare.
+                CookVoiceCommands.Command.PREVIOUS -> if (current > 0) goTo(current - 1)
+                CookVoiceCommands.Command.REPEAT -> repeatTick++
+                CookVoiceCommands.Command.TIMER -> {
+                    if (stepDuration != null) { running = !running; persistSession() }
+                }
+                CookVoiceCommands.Command.STOP -> { running = false; persistSession() }
+                CookVoiceCommands.Command.DONE -> {
+                    // Finished cooking: clear the session so «ادامه بده» goes away.
+                    scope.launch { sessionDao.clear(foodId) }
+                    onBack()
+                }
+                null -> Unit
+            }
+        }
+    }
+
+    DisposableEffect(voiceSession) {
+        onDispose { voiceSession.release() }
+    }
+
+    LaunchedEffect(voiceMasterOn, micGranted) {
+        if (voiceMasterOn && micGranted) voiceSession.start()
+        else voiceSession.release()
+    }
+
+    // Read-aloud (#94): fa-IR TTS, gated on its own switch. Null-safe init — a
+    // `remember` initializer cannot reference the variable it assigns.
+    var tts by remember { mutableStateOf<android.speech.tts.TextToSpeech?>(null) }
+    var ttsReady by remember { mutableStateOf(false) }
+    DisposableEffect(appContext) {
+        val engine = android.speech.tts.TextToSpeech(appContext) { status ->
+            ttsReady = status == android.speech.tts.TextToSpeech.SUCCESS
+        }
+        engine.language = Locale("fa", "IR")
+        tts = engine
+        onDispose { engine.stop(); engine.shutdown() }
+    }
+    // Speak each new step once (and «تکرار» re-fires it), only while the switch is on.
+    LaunchedEffect(stepText, voiceReadAloud, ttsReady, repeatTick) {
+        if (!voiceReadAloud || !ttsReady || stepText.isBlank()) return@LaunchedEffect
+        tts?.speak(stepText, android.speech.tts.TextToSpeech.QUEUE_FLUSH, null, "tahdig-step")
+    }
+
+    // Transient echo of the last recognized command — big, fades on its own.
+    LaunchedEffect(voiceEcho) {
+        if (voiceEcho != null) { delay(1400); voiceEcho = null }
+    }
 
     LaunchedEffect(running, current) {
         if (!running) return@LaunchedEffect
@@ -554,6 +647,52 @@ fun StepModeScreen(
                         }
                     },
                 )
+            }
+
+            // Voice control row + command echo (#94): sits INSIDE the Surface so
+            // the echo overlays the screen without touching the page layout.
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.End,
+            ) {
+                Text(
+                    text = "کنترل صوتی",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontFamily = YekanBakh,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Spacer(Modifier.width(4.dp))
+                androidx.compose.material3.Switch(
+                    checked = voiceMasterOn,
+                    onCheckedChange = { on ->
+                        if (on && !micGranted) {
+                            micLauncher.launch(android.Manifest.permission.RECORD_AUDIO)
+                        } else {
+                            SettingsStore.setVoiceControl(on)
+                        }
+                    },
+                )
+            }
+
+            voiceEcho?.let { echo ->
+                Surface(
+                    color = MaterialTheme.colorScheme.surface,
+                    tonalElevation = 3.dp,
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier.padding(24.dp),
+                ) {
+                    Text(
+                        text = echo,
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontFamily = YekanBakh,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp),
+                    )
+                }
             }
         }
     }
