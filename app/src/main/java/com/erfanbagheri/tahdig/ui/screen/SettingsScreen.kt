@@ -380,6 +380,95 @@ fun SettingsScreen(
             )
         }
 
+        // Smart notifications (#122): the quiet-hours window and the user-picked
+        // reminder hour, plus the re-prime hint when the OS permission was
+        // denied. Timer copy states the override rule here, once.
+        val notifyHour by viewModel.notifyHour.collectAsState()
+        val quietOn by viewModel.quietOn.collectAsState()
+        val quietFrom by viewModel.quietFromMin.collectAsState()
+        val quietUntil by viewModel.quietUntilMin.collectAsState()
+        val notifDenied by viewModel.notifDenied.collectAsState()
+        val reprimeLauncher = androidx.activity.compose.rememberLauncherForActivityResult(
+            androidx.activity.result.contract.ActivityResultContracts.RequestPermission(),
+        ) { granted ->
+            viewModel.setNotifPermission(primed = true, granted = granted)
+            if (granted) viewModel.setDailyNotify(context, true)
+        }
+
+        Spacer(Modifier.height(16.dp))
+        Text(
+            text = "ساعت یادآوری: " +
+                (if (notifyHour in 1..23)
+                    PersianText.toPersianDigits(notifyHour.toString()) + ":۳۰"
+                else "۲۰:۳۰ (پیش‌فرض)"),
+            style = MaterialTheme.typography.bodyMedium,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        androidx.compose.material3.Slider(
+            value = if (notifyHour in 1..23) notifyHour.toFloat() else 20f,
+            onValueChange = { viewModel.setNotifyHour(context, it.toInt().coerceIn(1, 23)) },
+            valueRange = 7f..23f,
+            steps = 15,
+        )
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+        ) {
+            Text(
+                text = "ساعت سکوت (دست‌نخورده‌گی)",
+                style = MaterialTheme.typography.bodyLarge,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.weight(1f),
+            )
+            androidx.compose.material3.Switch(
+                checked = quietOn,
+                onCheckedChange = { viewModel.setQuietOn(it) },
+            )
+        }
+        if (quietOn) {
+            Spacer(Modifier.height(4.dp))
+            val fromH = (quietFrom / 60).coerceIn(19, 23)
+            val untilH = (quietUntil / 60).coerceIn(5, 9)
+            Text(
+                text = "از ساعت ${PersianText.toPersianDigits(fromH.toString())} تا " +
+                    "${PersianText.toPersianDigits(untilH.toString())} ساکت می‌مانیم. " +
+                    "تایمرهای آشپزی همیشه بوق می‌زنند.",
+                style = MaterialTheme.typography.bodySmall,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            androidx.compose.material3.Slider(
+                value = fromH.toFloat(),
+                onValueChange = {
+                    viewModel.setQuietWindow(it.toInt().coerceIn(19, 23) * 60, quietUntil)
+                },
+                valueRange = 19f..23f,
+                steps = 3,
+            )
+            androidx.compose.material3.Slider(
+                value = untilH.toFloat(),
+                onValueChange = {
+                    viewModel.setQuietWindow(quietFrom, it.toInt().coerceIn(5, 9) * 60)
+                },
+                valueRange = 5f..9f,
+                steps = 3,
+            )
+        }
+
+        if (notifDenied) {
+            Spacer(Modifier.height(8.dp))
+            TextButton(onClick = {
+                if (android.os.Build.VERSION.SDK_INT >= 33) {
+                    reprimeLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+                }
+            }) {
+                Text("اجازهٔ اعلان را نداده‌ای — دوباره بپرس", fontFamily = YekanBakh)
+            }
+        }
+
         Spacer(Modifier.height(32.dp))
 
         // Barcode scanner (#116) — off removes the camera entirely from the

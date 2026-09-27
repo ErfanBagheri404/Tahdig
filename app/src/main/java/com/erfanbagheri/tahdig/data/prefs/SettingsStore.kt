@@ -41,6 +41,13 @@ object SettingsStore {
     private const val KEY_CARRY_OVER = "calorie_carry_over"        // roll unspent into tomorrow (#114)
     private const val KEY_PREGNANCY = "pregnancy_mode"                 // pregnancy/breastfeeding mode (#119)
     private const val KEY_CAFFEINE_CAP = "caffeine_cap_mg"             // manual cap, 0 = default (#119)
+    private const val KEY_NOTIFY_HOUR = "notify_hour"             // 0 = unset, else 1..23 (#122)
+    private const val KEY_QUIET_ON = "quiet_hours_on"             // quiet window enabled (#122)
+    private const val KEY_QUIET_FROM = "quiet_from_min"           // minutes since midnight (#122)
+    private const val KEY_QUIET_UNTIL = "quiet_until_min"         // minutes since midnight (#122)
+    private const val KEY_IDLE_TIER = "notify_idle_tier"          // fired idle tier, hours (#122)
+    private const val KEY_NOTIF_PRIMED = "notif_primed"           // permission asked once (#122)
+    private const val KEY_NOTIF_DENIED = "notif_denied"           // denial remembered (#122)
 
     private lateinit var prefs: SharedPreferences
     private val _themeMode = MutableStateFlow(0)
@@ -94,6 +101,31 @@ object SettingsStore {
     /** Manual caffeine cap in mg; 0 = default (400, or 200 in the mode). */
     private val _caffeineCap = MutableStateFlow(0)
     val caffeineCap: StateFlow<Int> = _caffeineCap
+
+    // ── Smart notifications (#122) ──────────────────────────────
+    // The reminder hour is the user's pick or unset (0); quiet hours are a
+    // single [from, until) window in minutes-since-midnight; the idle stamp
+    // holds the highest tier already fired this period (NotifyMath units).
+    private val _notifyHour = MutableStateFlow(0)
+    val notifyHour: StateFlow<Int> = _notifyHour
+
+    private val _quietOn = MutableStateFlow(false)
+    val quietOn: StateFlow<Boolean> = _quietOn
+
+    private val _quietFromMin = MutableStateFlow(22 * 60)
+    val quietFromMin: StateFlow<Int> = _quietFromMin
+
+    private val _quietUntilMin = MutableStateFlow(7 * 60)
+    val quietUntilMin: StateFlow<Int> = _quietUntilMin
+
+    private val _idleTierHours = MutableStateFlow(0.0)
+    val idleTierHours: StateFlow<Double> = _idleTierHours
+
+    private val _notifPrimed = MutableStateFlow(false)
+    val notifPrimed: StateFlow<Boolean> = _notifPrimed
+
+    private val _notifDenied = MutableStateFlow(false)
+    val notifDenied: StateFlow<Boolean> = _notifDenied
 
     // ── Calorie carry-over (#114) ──────────────────────────────────
     // Off by default: rolling budget across days is a personal choice,
@@ -255,6 +287,13 @@ object SettingsStore {
         _carryOver.value = prefs.getBoolean(KEY_CARRY_OVER, false)
         _pregnancyMode.value = prefs.getBoolean(KEY_PREGNANCY, false)
         _caffeineCap.value = prefs.getInt(KEY_CAFFEINE_CAP, 0).coerceIn(0, 2000)
+        _notifyHour.value = prefs.getInt(KEY_NOTIFY_HOUR, 0).let { if (it in 1..23) it else 0 }
+        _quietOn.value = prefs.getBoolean(KEY_QUIET_ON, false)
+        _quietFromMin.value = prefs.getInt(KEY_QUIET_FROM, 22 * 60).coerceIn(0, 24 * 60)
+        _quietUntilMin.value = prefs.getInt(KEY_QUIET_UNTIL, 7 * 60).coerceIn(0, 24 * 60)
+        _idleTierHours.value = prefs.getFloat(KEY_IDLE_TIER, 0f).toDouble()
+        _notifPrimed.value = prefs.getBoolean(KEY_NOTIF_PRIMED, false)
+        _notifDenied.value = prefs.getBoolean(KEY_NOTIF_DENIED, false)
         _shakeSpin.value = prefs.getBoolean(KEY_SHAKE_SPIN, false)
         _scannerEnabled.value = prefs.getBoolean(KEY_SCANNER, true)
         _glassSizeMl.value = prefs.getInt(KEY_GLASS_ML, 200)
@@ -310,6 +349,48 @@ object SettingsStore {
             )
             .apply()
         _badgesSeen.value = set
+    }
+
+    /** User's reminder hour, 1..23; 0 clears it back to the evening default. */
+    fun setNotifyHour(hour: Int) {
+        val v = if (hour in 1..23) hour else 0
+        prefs.edit().putInt(KEY_NOTIFY_HOUR, v).apply()
+        _notifyHour.value = v
+    }
+
+    /** Quiet hours master switch. Timers are never affected by this (#122). */
+    fun setQuietOn(on: Boolean) {
+        prefs.edit().putBoolean(KEY_QUIET_ON, on).apply()
+        _quietOn.value = on
+    }
+
+    /** Quiet window edges, minutes since midnight; from==until disables the window. */
+    fun setQuietWindow(fromMin: Int, untilMin: Int) {
+        val f = fromMin.coerceIn(0, 24 * 60)
+        val u = untilMin.coerceIn(0, 24 * 60)
+        prefs.edit().putInt(KEY_QUIET_FROM, f).putInt(KEY_QUIET_UNTIL, u).apply()
+        _quietFromMin.value = f
+        _quietUntilMin.value = u
+    }
+
+    /**
+     * Highest idle tier already fired this period (#122). 0 re-arms both
+     * tiers — the receiver calls it after a cook so the next idle spell can
+     * nudge again.
+     */
+    fun setIdleTierHours(hours: Double) {
+        prefs.edit().putFloat(KEY_IDLE_TIER, hours.toFloat()).apply()
+        _idleTierHours.value = hours
+    }
+
+    /** Record the outcome of the one post-first-action permission ask (#122). */
+    fun setNotifPermission(primed: Boolean, granted: Boolean) {
+        prefs.edit()
+            .putBoolean(KEY_NOTIF_PRIMED, primed)
+            .putBoolean(KEY_NOTIF_DENIED, primed && !granted)
+            .apply()
+        _notifPrimed.value = primed
+        _notifDenied.value = primed && !granted
     }
 
     /** Allergen multi-select (#112); values come from the seed's own taxonomy. */

@@ -30,6 +30,10 @@ interface JournalDao {
     @Query("SELECT COUNT(*) FROM journal WHERE food_id = :foodId")
     fun observeCountForFood(foodId: Long): Flow<Int>
 
+    /** Total cooks ever — the #122 primer's "first action" gate. */
+    @Query("SELECT COUNT(*) FROM journal")
+    fun observeCount(): Flow<Int>
+
     /** Timestamps of cooks that carry a note — the «نویسنده» badge (#121). */
     @Query("SELECT timestamp FROM journal WHERE note != ''")
     suspend fun notedTimestamps(): List<Long>

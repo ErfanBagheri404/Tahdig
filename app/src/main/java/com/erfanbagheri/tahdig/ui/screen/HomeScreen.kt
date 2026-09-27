@@ -53,6 +53,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import com.erfanbagheri.tahdig.data.prefs.SettingsStore
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.getValue
@@ -226,6 +227,19 @@ fun HomeScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(Modifier.height(48.dp))
+
+            // Permission priming (#122): the primer lives here because this
+            // screen owns the cook event — it shows exactly once per session,
+            // only after the first cook and only when reminders are off. A
+            // dismissal hides it for the session; the prefs outcome persists.
+            val primeDismissed = remember { mutableStateOf(false) }
+            val primed by remember { SettingsStore.notifPrimed }.collectAsState()
+            val notifyOn by remember { SettingsStore.dailyNotify }.collectAsState()
+            val cookedAny by viewModel.everCooked.collectAsState()
+            if (!primed && !notifyOn && cookedAny && !primeDismissed.value) {
+                NotificationPrimingRow(onDismiss = { primeDismissed.value = true })
+                Spacer(Modifier.height(16.dp))
+            }
 
             // Meal label pill + streak number (#120). Streak renders only
             // when alive — a 0 would read as failure, not information.

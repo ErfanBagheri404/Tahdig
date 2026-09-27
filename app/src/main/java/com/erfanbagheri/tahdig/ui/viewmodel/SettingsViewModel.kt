@@ -52,6 +52,27 @@ class SettingsViewModel(app: Application) : AndroidViewModel(app) {
 
     fun setDailyNotify(context: android.content.Context, enabled: Boolean) =
         SettingsStore.setDailyNotify(context, enabled)
+
+    // Smart notifications (#122): user-picked hour, quiet hours, denial hint.
+    val notifyHour = SettingsStore.notifyHour
+    val quietOn = SettingsStore.quietOn
+    val quietFromMin = SettingsStore.quietFromMin
+    val quietUntilMin = SettingsStore.quietUntilMin
+    val notifDenied = SettingsStore.notifDenied
+
+    fun setNotifyHour(context: android.content.Context, hour: Int) {
+        SettingsStore.setNotifyHour(hour)
+        if (SettingsStore.dailyNotify.value) {
+            com.erfanbagheri.tahdig.notify.DailyNotifyScheduler.schedule(context)
+        }
+    }
+
+    fun setQuietOn(on: Boolean) = SettingsStore.setQuietOn(on)
+    fun setQuietWindow(fromMin: Int, untilMin: Int) = SettingsStore.setQuietWindow(fromMin, untilMin)
+
+    /** Re-record a granted permission (the Settings re-prime path). */
+    fun setNotifPermission(primed: Boolean, granted: Boolean) =
+        SettingsStore.setNotifPermission(primed, granted)
     fun setVoiceControl(enabled: Boolean) = SettingsStore.setVoiceControl(enabled)
     fun setVoiceReadAloud(enabled: Boolean) = SettingsStore.setVoiceReadAloud(enabled)
     fun setShakeAdvance(enabled: Boolean) = SettingsStore.setShakeAdvance(enabled)
