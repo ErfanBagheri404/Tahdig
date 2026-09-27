@@ -73,6 +73,28 @@ class SearchViewModel(app: Application) : AndroidViewModel(app) {
     private val _flavors = MutableStateFlow<Set<Flavor>>(emptySet())
     val flavors: StateFlow<Set<Flavor>> = _flavors.asStateFlow()
 
+    // -- #80 user tags -------------------------------------------------------
+    private val tagDao = db.tagDao()
+
+    /** All tags, for the collapsible chip row. */
+    val allTags: StateFlow<List<com.erfanbagheri.tahdig.data.local.entity.TagEntity>> =
+        tagDao.observeAll()
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    /** Selected tag ids — AND semantics: dish must carry every one. */
+    private val _tagIds = MutableStateFlow<Set<Long>>(emptySet())
+    val tagIds: StateFlow<Set<Long>> = _tagIds.asStateFlow()
+
+    /** Row is collapsible; collapsed = hidden but selection kept. */
+    private val _tagsExpanded = MutableStateFlow(false)
+    val tagsExpanded: StateFlow<Boolean> = _tagsExpanded.asStateFlow()
+    fun onTagsToggleRow() { _tagsExpanded.value = !_tagsExpanded.value }
+    fun onTagToggle(tagId: Long) {
+        _tagIds.value = _tagIds.value.toMutableSet().apply {
+            if (!remove(tagId)) add(tagId)
+        }
+    }
+
     /**
      * Dishes carrying at least one taste tag — the chip row hides itself at zero
      * instead of showing an empty filter (acceptance: «Zero flavor tags → hidden»).
@@ -103,6 +125,16 @@ class SearchViewModel(app: Application) : AndroidViewModel(app) {
             else foods.filter { food ->
                 val have = food.flavors.split(',').toSet()
                 selected.all { it.name in have }
+            }
+        }
+        // #80 user tags: AND-filter in SQL (HAVING COUNT = n); combining on the
+        // tag set re-runs it when a chip toggles or a tag is edited away.
+        .combine(_tagIds) { foods, ids ->
+            if (ids.isEmpty()) foods
+            else {
+                val keep = tagDao.foodsWithAllTagsOnce(ids.toList(), ids.size)
+                    .map { it.id }.toSet()
+                foods.filter { it.id in keep }
             }
         }
         // Allergen hide-filter (#112): last in the chain so it composes with

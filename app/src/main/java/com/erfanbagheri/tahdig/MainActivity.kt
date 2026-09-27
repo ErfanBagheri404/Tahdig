@@ -334,6 +334,7 @@ private fun TahdigApp(
     var showHeatmap by rememberSaveable { mutableStateOf(false) }
     var showDiary by rememberSaveable { mutableStateOf(false) }
     var showBadges by rememberSaveable { mutableStateOf(false) }
+    var showTags by rememberSaveable { mutableStateOf(false) }
     var browseTechniques by rememberSaveable { mutableStateOf(false) }
     var browseOccasions by rememberSaveable { mutableStateOf(false) }
     var browseCuisineMap by rememberSaveable { mutableStateOf(false) }
@@ -436,6 +437,7 @@ private fun TahdigApp(
                     val rvm: RatingViewModel = viewModel()
                     val svm: ShoppingViewModel = viewModel()
                     val mvm: com.erfanbagheri.tahdig.ui.viewmodel.MilestoneViewModel = viewModel()
+                    val tagVm: com.erfanbagheri.tahdig.ui.viewmodel.TagViewModel = viewModel()
                     FoodDetailScreen(
                         foodId = detailFoodId,
                         onBack = { detailFoodId = -1L },
@@ -443,6 +445,7 @@ private fun TahdigApp(
                         onResumeStepMode = { id -> detailFoodId = -1L; stepModeResume = true; stepModeFoodId = id },
                         ratingViewModel = rvm,
                         milestoneViewModel = mvm,
+                        tagViewModel = tagVm,
                         onAddToShoppingList = { id, ingredients ->
                             svm.addIngredients(id, ingredients)
                             detailFoodId = -1L
@@ -596,6 +599,14 @@ private fun TahdigApp(
                         onOpenHeatmap = { showHeatmap = true },
                         onOpenDiary = { showDiary = true },
                         onOpenBadges = { showBadges = true },
+                        onOpenTags = { showTags = true },
+                    )
+                }
+                showTags -> {
+                    val tagVm: com.erfanbagheri.tahdig.ui.viewmodel.TagViewModel = viewModel()
+                    com.erfanbagheri.tahdig.ui.screen.TagsManagerScreen(
+                        viewModel = tagVm,
+                        onBack = { showTags = false },
                     )
                 }
             }
@@ -631,6 +642,7 @@ private fun TahdigApp(
                     showHeatmap -> showHeatmap = false
                     showDiary -> showDiary = false
                     showBadges -> showBadges = false
+                    showTags -> showTags = false
                 }
             }
             if (techniqueRoute.isNotEmpty()) {

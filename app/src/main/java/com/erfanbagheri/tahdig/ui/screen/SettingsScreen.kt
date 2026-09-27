@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -57,6 +58,8 @@ fun SettingsScreen(
     onOpenHeatmap: () -> Unit = {},
     onOpenDiary: () -> Unit = {},
     onOpenBadges: () -> Unit = {},
+    /** #80: rename/delete the user's own tags. */
+    onOpenTags: () -> Unit = {},
 ) {
     val themeMode by viewModel.themeMode.collectAsState()
     val dynamicAvailable = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S
@@ -910,6 +913,35 @@ fun SettingsScreen(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
+        }
+
+        // #80 — Tags manager: the user renames or deletes their own vocabulary.
+        // Deleting a tag removes joins only; no dish is ever removed.
+        Spacer(Modifier.height(24.dp))
+        Text(
+            text = "برچسب‌های من",
+            style = MaterialTheme.typography.titleMedium,
+            fontFamily = YekanBakh,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Spacer(Modifier.height(8.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(onClick = onOpenTags),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = "ویرایش برچسب‌ها",
+                style = MaterialTheme.typography.bodyLarge,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.weight(1f),
+            )
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                contentDescription = null,
+            )
         }
 
         Spacer(Modifier.height(48.dp))

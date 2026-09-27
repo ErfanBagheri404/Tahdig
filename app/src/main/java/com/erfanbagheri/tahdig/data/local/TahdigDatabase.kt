@@ -17,6 +17,7 @@ import com.erfanbagheri.tahdig.data.local.dao.RatingDao
 import com.erfanbagheri.tahdig.data.local.dao.RecentViewDao
 import com.erfanbagheri.tahdig.data.local.dao.ShoppingDao
 import com.erfanbagheri.tahdig.data.local.dao.ShoppingTripDao
+import com.erfanbagheri.tahdig.data.local.dao.TagDao
 import com.erfanbagheri.tahdig.data.local.dao.WaterDao
 import com.erfanbagheri.tahdig.data.local.dao.WeightDao
 import com.erfanbagheri.tahdig.data.local.entity.CategoryEntity
@@ -40,6 +41,8 @@ import com.erfanbagheri.tahdig.data.local.entity.RatingEntity
 import com.erfanbagheri.tahdig.data.local.entity.RecentViewEntity
 import com.erfanbagheri.tahdig.data.local.entity.ShoppingItemEntity
 import com.erfanbagheri.tahdig.data.local.entity.ShoppingTripEntity
+import com.erfanbagheri.tahdig.data.local.entity.FoodTagJoin
+import com.erfanbagheri.tahdig.data.local.entity.TagEntity
 import com.erfanbagheri.tahdig.data.local.seed.SeedLoader
 
 @Database(
@@ -62,8 +65,10 @@ import com.erfanbagheri.tahdig.data.local.seed.SeedLoader
         WaterLogEntity::class,
         WeightLogEntity::class,
         CaffeineLogEntity::class,
+        TagEntity::class, // #80
+        FoodTagJoin::class, // #80
     ],
-    version = 20, // + ratings.updated_at (#92); destructive fallback
+    version = 21, // + user_tags/food_tags (#80); destructive fallback
     exportSchema = true,
 )
 abstract class TahdigDatabase : RoomDatabase() {
@@ -92,6 +97,9 @@ abstract class TahdigDatabase : RoomDatabase() {
 
     /** Caffeine log (#119). */
     abstract fun caffeineDao(): CaffeineDao
+
+    /** User tags (#80). */
+    abstract fun tagDao(): TagDao
 
     companion object {
         private const val DB_NAME = "tahdig.db"
