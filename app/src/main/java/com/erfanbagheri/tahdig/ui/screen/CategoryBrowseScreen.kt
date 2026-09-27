@@ -1,6 +1,9 @@
 package com.erfanbagheri.tahdig.ui.screen
 
 import androidx.compose.foundation.clickable
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import com.erfanbagheri.tahdig.ui.components.oneA11yStop
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -68,7 +71,8 @@ fun CategoryBrowseScreen(
                     Surface(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable(onClick = onTechniques),
+                            .clickable(onClick = onTechniques)
+                            .oneA11yStop("تکنیک‌ها"),
                         shape = RoundedCornerShape(14.dp),
                         color = MaterialTheme.colorScheme.surfaceVariant,
                     ) {
@@ -93,7 +97,8 @@ fun CategoryBrowseScreen(
                     Surface(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable(onClick = onOccasions),
+                            .clickable(onClick = onOccasions)
+                            .oneA11yStop("مناسبت‌ها"),
                         shape = RoundedCornerShape(14.dp),
                         color = MaterialTheme.colorScheme.surfaceVariant,
                     ) {
@@ -118,7 +123,8 @@ fun CategoryBrowseScreen(
                     Surface(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable(onClick = onCuisineMap),
+                            .clickable(onClick = onCuisineMap)
+                            .oneA11yStop("کاوش آشپزی"),
                         shape = RoundedCornerShape(14.dp),
                         color = MaterialTheme.colorScheme.surfaceVariant,
                     ) {
@@ -148,7 +154,9 @@ private fun CategoryTile(cat: CategoryEntity, onClick: () -> Unit) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick),
+            .clickable(onClick = onClick)
+            // #129: the 32sp emoji is decorative — say the category once.
+            .oneA11yStop(cat.name),
         shape = RoundedCornerShape(14.dp),
         color = MaterialTheme.colorScheme.surfaceVariant,
     ) {
@@ -156,7 +164,12 @@ private fun CategoryTile(cat: CategoryEntity, onClick: () -> Unit) {
             modifier = Modifier.padding(vertical = 20.dp, horizontal = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(text = cat.emoji.ifEmpty { "🍽" }, fontSize = 32.sp)
+            // Decorative; the row carries the spoken name.
+            Text(
+                text = cat.emoji.ifEmpty { "🍽" },
+                fontSize = 32.sp,
+                modifier = Modifier.clearAndSetSemantics { },
+            )
             Spacer(Modifier.height(8.dp))
             Text(
                 text = cat.name,
@@ -221,7 +234,16 @@ private fun DishCard(dish: FoodEntity, onClick: () -> Unit) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick),
+            .clickable(onClick = onClick)
+            // #129: name + the 60-char description line are two stops
+            // otherwise; the description is what decides "this is the one".
+            .oneA11yStop(
+                dish.name +
+                    if (dish.description.isNotBlank())
+                        "، ${dish.description.take(60)}" +
+                        if (dish.description.length > 60) "…" else ""
+                    else ""
+            ),
         shape = RoundedCornerShape(14.dp),
         color = MaterialTheme.colorScheme.surface,
     ) {

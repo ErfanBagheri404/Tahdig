@@ -1,6 +1,8 @@
 package com.erfanbagheri.tahdig.ui.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import com.erfanbagheri.tahdig.ui.components.oneA11yStop
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -98,12 +100,28 @@ private fun SectionHeader(title: String) {
 
 @Composable
 private fun RegionRow(region: Region, cov: Coverage, onClick: () -> Unit) {
-    Column(modifier = Modifier.fillMaxWidth().clickable(onClick = onClick)) {
+    // #129: emoji + name + coverage were three focus stops; one now, in
+    // reading order. The emoji is decorative so it is not spoken twice.
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .oneA11yStop(
+                region.label + "، " +
+                    PersianText.toPersianDigits(cov.cooked) + " از " +
+                    PersianText.toPersianDigits(cov.total) + " غذا را امتحان کردی"
+            ),
+    ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
         ) {
-            Text(text = region.emoji, style = MaterialTheme.typography.titleMedium)
+            Text(
+                text = region.emoji,
+                style = MaterialTheme.typography.titleMedium,
+                // Decorative: the row already speaks the region name.
+                modifier = Modifier.clearAndSetSemantics { },
+            )
             Spacer(Modifier.width(10.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(

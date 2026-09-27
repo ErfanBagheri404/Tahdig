@@ -1,6 +1,7 @@
 package com.erfanbagheri.tahdig.ui.screen
 
 import androidx.compose.foundation.clickable
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,6 +31,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
 import com.erfanbagheri.tahdig.ui.viewmodel.MealPlanViewModel
+import androidx.compose.ui.semantics.semantics
+import com.erfanbagheri.tahdig.ui.components.oneA11yStop
 
 private val DAYS = listOf("شنبه", "یکشنبه", "دوشنبه", "سه‌شنبه", "چهارشنبه", "پنجشنبه", "جمعه")
 private val MEALS = listOf("صبحانه", "ناهار", "شام")
@@ -88,6 +91,12 @@ fun MealPlanScreen(
                     else MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier
                         .clickable { viewModel.setDay(i) }
+                        // #129: the selected day said nothing about being
+                        // selected — colour was the only signal.
+                        .semantics(mergeDescendants = true) {
+                            contentDescription = day +
+                                if (i == currentDay) "، روز انتخاب‌شده" else ""
+                        }
                         .padding(horizontal = 6.dp, vertical = 4.dp),
                 )
             }
@@ -112,6 +121,9 @@ fun MealPlanScreen(
                                 if (foodName != null) onFoodClick(plan!!.foodId)
                                 else pickerSlotState.value = meal
                             }
+                            // #129: slot + chosen dish were two stops; the
+                            // pair is one decision.
+                            .oneA11yStop("$meal، ${foodName ?: "انتخاب کنید"}")
                             .padding(16.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {

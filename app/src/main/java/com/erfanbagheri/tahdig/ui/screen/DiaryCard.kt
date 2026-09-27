@@ -1,6 +1,7 @@
 package com.erfanbagheri.tahdig.ui.screen
 
 import androidx.compose.foundation.background
+import com.erfanbagheri.tahdig.ui.components.minTouchTarget
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,6 +28,7 @@ import com.erfanbagheri.tahdig.data.local.entity.NutritionLogEntity
 import com.erfanbagheri.tahdig.util.MealTimeHelper
 import com.erfanbagheri.tahdig.util.PersianText
 import com.erfanbagheri.tahdig.util.WeeklyReport
+import com.erfanbagheri.tahdig.ui.components.oneA11yStop
 
 /**
  * The diary slot list for today (#114). Flat rows with a hairline
@@ -108,9 +110,12 @@ private fun DiaryRow(
         // almost always "I logged this a bit late". The slot follows.
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(
+                // #129: 28dp visual, 48dp hit box. minTouchTarget grows only
+                // the tap bounds, so the stepper keeps its tight layout.
                 Modifier
                     .size(28.dp)
                     .clip(RoundedCornerShape(14.dp))
+                    .minTouchTarget()
                     .clickable { onSetTime(row.id, -15) },
                 contentAlignment = Alignment.Center,
             ) {
@@ -120,6 +125,7 @@ private fun DiaryRow(
                 Modifier
                     .size(28.dp)
                     .clip(RoundedCornerShape(14.dp))
+                    .minTouchTarget()
                     .clickable { onSetTime(row.id, 15) },
                 contentAlignment = Alignment.Center,
             ) {
@@ -133,6 +139,7 @@ private fun DiaryRow(
                 Modifier
                     .size(28.dp)
                     .clip(RoundedCornerShape(14.dp))
+                    .minTouchTarget()
                     .clickable { onRescale(row.id, row.servings + 0.5) },
                 contentAlignment = Alignment.Center,
             ) {
@@ -148,6 +155,7 @@ private fun DiaryRow(
                 Modifier
                     .size(28.dp)
                     .clip(RoundedCornerShape(14.dp))
+                    .minTouchTarget()
                     .clickable { onRescale(row.id, (row.servings - 0.5).coerceAtLeast(0.5)) },
                 contentAlignment = Alignment.Center,
             ) {
@@ -174,10 +182,12 @@ private fun DiaryRow(
         }
         Spacer(Modifier.width(4.dp))
         Box(
+            // #129: this is a delete control. 32dp visual, 48dp hit box.
             Modifier
-                .size(32.dp)
-                .clip(RoundedCornerShape(16.dp))
-                .clickable { onRemove(row.id) },
+            .size(32.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .minTouchTarget()
+            .clickable { onRemove(row.id) },
             contentAlignment = Alignment.Center,
         ) {
             Text("×", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.error)

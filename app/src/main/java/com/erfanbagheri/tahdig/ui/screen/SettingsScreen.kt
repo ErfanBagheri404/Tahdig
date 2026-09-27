@@ -33,6 +33,7 @@ import androidx.compose.foundation.layout.Arrangement
 import com.erfanbagheri.tahdig.util.NutrientCaps
 import com.erfanbagheri.tahdig.util.PersianText
 import com.erfanbagheri.tahdig.ui.viewmodel.SettingsViewModel
+import com.erfanbagheri.tahdig.ui.components.oneA11yStop
 
 @OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
 @Composable
@@ -885,7 +886,10 @@ private fun ThemeOption(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp)
-            .clickable(onClick = onClick),
+            .clickable(onClick = onClick)
+            // #129: label + selected state were two stops; the check Icon's
+            // "انتخاب‌شده" would be stripped by the merge, so it is folded in.
+            .oneA11yStop(label + if (selected) "، انتخاب‌شده" else ""),
         shape = RoundedCornerShape(10.dp),
         color = if (selected)
             MaterialTheme.colorScheme.primaryContainer

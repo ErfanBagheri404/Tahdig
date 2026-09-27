@@ -1,6 +1,8 @@
 package com.erfanbagheri.tahdig.ui.screen
 
 import androidx.compose.foundation.clickable
+import com.erfanbagheri.tahdig.ui.components.oneA11yStop
+import com.erfanbagheri.tahdig.ui.components.minTouchTarget
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -57,7 +59,7 @@ fun SearchHistoryChips(
             // No clear button for the bundled starters — there is nothing
             // user-owned to clear, and the button would be a lie.
             if (!showingStarters) {
-                IconButton(onClick = onClear, modifier = Modifier.size(24.dp)) {
+                IconButton(onClick = onClear, modifier = Modifier.size(24.dp).minTouchTarget()) {
                     Text(
                         text = "پاک کردن",
                         style = MaterialTheme.typography.labelSmall,
@@ -77,6 +79,8 @@ fun SearchHistoryChips(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { onSelect(q) }
+                    // #129: one stop per chip; the clear button stays separate.
+                    .oneA11yStop(q)
                     .padding(vertical = 6.dp),
             )
         }

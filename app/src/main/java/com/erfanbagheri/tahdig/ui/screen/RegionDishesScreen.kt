@@ -1,6 +1,7 @@
 package com.erfanbagheri.tahdig.ui.screen
 
 import androidx.compose.foundation.clickable
+import com.erfanbagheri.tahdig.ui.components.oneA11yStop
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -52,7 +53,12 @@ fun RegionDishesScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 6.dp)
-                            .clickable { onFoodClick(dish.id) },
+                            .clickable { onFoodClick(dish.id) }
+                            // #129: name and the cooked check in one stop.
+                            .oneA11yStop(
+                                dish.name +
+                                    if (dish.id in cookedSet) "، قبلاً درست کردی" else ""
+                            ),
                         shape = RoundedCornerShape(12.dp),
                         color = MaterialTheme.colorScheme.surface,
                     ) {
