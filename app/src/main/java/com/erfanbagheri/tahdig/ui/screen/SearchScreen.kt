@@ -3,9 +3,12 @@ package com.erfanbagheri.tahdig.ui.screen
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import android.app.Activity
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -22,6 +26,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -32,7 +39,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.key.onKeyEvent
@@ -42,6 +51,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.erfanbagheri.tahdig.util.DietFilter
 import com.erfanbagheri.tahdig.util.DifficultyFilter
+import com.erfanbagheri.tahdig.data.local.entity.FilterPresetEntity
 import com.erfanbagheri.tahdig.util.SortOrder
 import com.erfanbagheri.tahdig.util.TimeBucket
 import com.erfanbagheri.tahdig.util.VoiceInput
@@ -65,6 +75,11 @@ fun SearchScreen(
     val categories by viewModel.categories.collectAsState()
     val results by viewModel.results.collectAsState()
     val cuisine by viewModel.cuisine.collectAsState()
+    // ── filter presets (#87) ───────────────────────────────────────
+    val presets by viewModel.presets.collectAsState()
+    // Non-null = rename dialog open for that row; separate flag for the save dialog.
+    var renameTarget by remember { mutableStateOf<FilterPresetEntity?>(null) }
+    var saveDialogOpen by remember { mutableStateOf(false) }
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -228,6 +243,22 @@ fun SearchScreen(
 
             Spacer(Modifier.height(8.dp))
 
+            // ── Saved presets (#87): tap applies the full state, long-press
+            // renames/deletes. Hides itself at zero like every other chip row.
+            if (presets.isNotEmpty()) {
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    items(presets, key = { it.first.id }) { (row, payload) ->
+                        PresetChip(
+                            name = row.name,
+                            onClick = { viewModel.applyPreset(payload) },
+                            onRename = { renameTarget = row },
+                            onDelete = { viewModel.deletePreset(row.id) },
+                        )
+                    }
+                }
+                Spacer(Modifier.height(8.dp))
+            }
+
             // Advanced filters: time / difficulty / sort (collapse to one hairline row)
             val timeBucket by viewModel.timeBucket.collectAsState()
             val difficultyFilter by viewModel.difficultyFilter.collectAsState()
@@ -313,6 +344,34 @@ fun SearchScreen(
                 }
             }
 
+            // «ذخیره به عنوان فیلتر» (#87) — bottom of the filter block.
+            Text(
+                text = "＋ ذخیره به عنوان فیلتر",
+                style = MaterialTheme.typography.labelMedium,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { saveDialogOpen = true }
+                    .padding(vertical = 4.dp),
+                textAlign = TextAlign.Center,
+            )
+
+            // Save/rename prompts (#87): one dialog, seeded for whichever ran.
+            if (saveDialogOpen || renameTarget != null) {
+                PresetNameDialog(
+                    initial = renameTarget?.name.orEmpty(),
+                    title = if (renameTarget != null) "تغییر نام فیلتر" else "ذخیره فیلتر",
+                    onConfirm = { name ->
+                        renameTarget?.let { viewModel.renamePreset(it.id, name) }
+                            ?: viewModel.savePreset(name)
+                        renameTarget = null
+                        saveDialogOpen = false
+                    },
+                    onDismiss = { renameTarget = null; saveDialogOpen = false },
+                )
+            }
+
             Spacer(Modifier.height(16.dp))
 
             // Search history (shown when query is empty)
@@ -373,6 +432,94 @@ fun SearchScreen(
             }
         }
     }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun PresetChip(
+    name: String,
+    onClick: () -> Unit,
+    onRename: () -> Unit,
+    onDelete: () -> Unit,
+) {
+    var menuOpen by remember { mutableStateOf(false) }
+    Box {
+        Surface(
+            shape = RoundedCornerShape(20.dp),
+            color = MaterialTheme.colorScheme.secondaryContainer,
+            // combinedClickable is what carries long-press; plain clickable cannot.
+            modifier = Modifier.combinedClickable(
+                onClick = onClick,
+                onLongClick = { menuOpen = true },
+                role = androidx.compose.ui.semantics.Role.Button,
+                onClickLabel = "اعمال فیلتر $name",
+                onLongClickLabel = "گزینه‌های $name",
+            ),
+        ) {
+            Text(
+                text = "★ $name",
+                style = MaterialTheme.typography.labelMedium,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+            )
+        }
+        DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
+            DropdownMenuItem(
+                text = { Text("تغییر نام", fontFamily = YekanBakh) },
+                onClick = { menuOpen = false; onRename() },
+            )
+            DropdownMenuItem(
+                text = { Text("حذف", fontFamily = YekanBakh) },
+                onClick = { menuOpen = false; onDelete() },
+            )
+        }
+    }
+}
+
+/** Farsi name prompt shared by save and rename (#87). */
+@Composable
+private fun PresetNameDialog(
+    initial: String,
+    title: String,
+    onConfirm: (String) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    var text by remember(initial) { mutableStateOf(initial) }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(title, fontFamily = YekanBakh) },
+        text = {
+            OutlinedTextField(
+                value = text,
+                onValueChange = { text = it },
+                singleLine = true,
+                label = { Text("نام فیلتر", fontFamily = YekanBakh) },
+            )
+        },
+        confirmButton = {
+            Text(
+                text = "ذخیره",
+                style = MaterialTheme.typography.labelLarge,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .clickable(enabled = text.isNotBlank()) { onConfirm(text) }
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
+            )
+        },
+        dismissButton = {
+            Text(
+                text = "انصراف",
+                style = MaterialTheme.typography.labelLarge,
+                fontFamily = YekanBakh,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier
+                    .clickable(onClick = onDismiss)
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
+            )
+        },
+    )
 }
 
 @Composable

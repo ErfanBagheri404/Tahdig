@@ -5,9 +5,12 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.erfanbagheri.tahdig.data.local.TahdigDatabase
 import com.erfanbagheri.tahdig.data.local.entity.CategoryEntity
+import com.erfanbagheri.tahdig.data.local.entity.FilterPresetEntity
 import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
 import com.erfanbagheri.tahdig.util.DifficultyFilter
 import com.erfanbagheri.tahdig.util.DietFilter
+import com.erfanbagheri.tahdig.util.FilterPresetCodec
+import com.erfanbagheri.tahdig.util.FilterPresetPayload
 import com.erfanbagheri.tahdig.util.PersianText
 import com.erfanbagheri.tahdig.util.SearchFilters
 import com.erfanbagheri.tahdig.util.SortOrder
@@ -100,6 +103,12 @@ class SearchViewModel(app: Application) : AndroidViewModel(app) {
     val categories: StateFlow<List<CategoryEntity>> = categoryDao.observeAll()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
+    /** Saved filter presets (#87) — rows plus their decoded payloads, in save order. */
+    val presets: StateFlow<List<Pair<FilterPresetEntity, FilterPresetPayload>>> =
+        db.filterPresetDao().observeAll()
+            .map { rows -> rows.mapNotNull { r -> FilterPresetCodec.decode(r.payload)?.let { r to it } } }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
     /** Distinct cuisine codes present in the DB, for the cuisine chip row. */
     val cuisines: StateFlow<List<String>> = foodDao.observeAll()
         .map { foods -> foods.map { it.cuisine }.distinct().sorted() }
@@ -190,6 +199,58 @@ class SearchViewModel(app: Application) : AndroidViewModel(app) {
         _difficultyFilter.value = DifficultyFilter.ANY
         _cuisine.value = null
         filterPrefs.edit().remove("time").remove("difficulty").remove("cuisine").apply()
+    }
+
+    // ── filter presets (#87) ────────────────────────────────────────
+
+    /** Every non-query axis, so a preset restores the complete sheet state. */
+    private fun currentPayload() = FilterPresetPayload(
+        categoryId = _selectedCategoryId.value,
+        diet = _diet.value?.name,
+        ingredients = _ingredients.value,
+        excluded = _excluded.value,
+        time = _timeBucket.value.name,
+        difficulty = _difficultyFilter.value.name,
+        cuisine = _cuisine.value,
+        sort = _sortOrder.value.name,
+    )
+
+    /** Same-name save replaces (unique index) — the rename-free edit path. */
+    fun savePreset(name: String) {
+        val n = name.trim()
+        if (n.isEmpty()) return
+        viewModelScope.launch { db.filterPresetDao().save(n, FilterPresetCodec.encode(currentPayload())) }
+    }
+
+    /** Tap = apply the full snapshot (acceptance: original state restored). */
+    fun applyPreset(payload: FilterPresetPayload) {
+        val p = FilterPresetCodec.resolve(payload)
+        _selectedCategoryId.value = p.categoryId
+        _diet.value = p.diet
+        _ingredients.value = p.ingredients
+        _excluded.value = p.excluded
+        _timeBucket.value = p.time
+        _difficultyFilter.value = p.difficulty
+        _cuisine.value = p.cuisine
+        _sortOrder.value = p.sort
+        // Mirror the sheet's own persistence so a restart keeps the applied preset.
+        filterPrefs.edit()
+            .putString("time", p.time.name)
+            .putString("difficulty", p.difficulty.name)
+            .putString("cuisine", p.cuisine)
+            .putString("sort", p.sort.name)
+            .apply()
+    }
+
+    fun renamePreset(id: Long, name: String) {
+        val n = name.trim()
+        if (n.isEmpty()) return
+        viewModelScope.launch { db.filterPresetDao().rename(id, n) }
+    }
+
+    /** Deletes ONLY this row — dishes and sibling presets are untouched (acceptance). */
+    fun deletePreset(id: Long) {
+        viewModelScope.launch { db.filterPresetDao().delete(id) }
     }
 
     /**
