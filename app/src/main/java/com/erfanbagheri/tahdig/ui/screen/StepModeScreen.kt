@@ -10,6 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -23,6 +24,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -30,7 +32,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -43,6 +50,7 @@ import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -58,6 +66,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.erfanbagheri.tahdig.data.local.entity.CookSessionEntity
+import com.erfanbagheri.tahdig.data.local.entity.HistoryEntity
 import com.erfanbagheri.tahdig.data.prefs.SettingsStore
 import com.erfanbagheri.tahdig.ui.theme.YekanBakh
 import com.erfanbagheri.tahdig.util.CookSessionMath
@@ -65,7 +74,10 @@ import com.erfanbagheri.tahdig.util.CookVoiceCommands
 import com.erfanbagheri.tahdig.util.CookVoiceSession
 import com.erfanbagheri.tahdig.util.DurationParser
 import com.erfanbagheri.tahdig.util.Haptics
+import com.erfanbagheri.tahdig.util.KeepAwake
+import com.erfanbagheri.tahdig.util.MealTimeHelper
 import com.erfanbagheri.tahdig.util.PersianText
+import com.erfanbagheri.tahdig.util.ShareCard
 import java.util.Locale
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -90,8 +102,13 @@ fun StepModeScreen(
     backEnabled: Boolean = true,
     /** Opens a linked technique page (#101); back returns to this step. */
     onTechnique: (String) -> Unit = {},
+    /** Done-state «امتیاز بده» (#98): routes to the detail screen's rating row. */
+    onRate: () -> Unit = {},
+    /** Done-state «پختم» (#98): feeds heatmap via history + leftover prompt. */
+    onCooked: (com.erfanbagheri.tahdig.data.local.entity.FoodEntity) -> Unit = {},
 ) {
     val appContext = LocalContext.current.applicationContext
+    val uiContext = LocalContext.current
     val view = LocalView.current
     val haptic = LocalHapticFeedback.current
 
@@ -107,6 +124,17 @@ fun StepModeScreen(
     // Re-trigger for the REPEAT command (same text, needs its own launch).
     var repeatTick by remember { mutableIntStateOf(0) }
 
+    // ── Session polish (#98) ───────────────────────────────────────
+    // Undo: which step to restore (-1 = nothing pending) + a nonce that
+    // (re)starts the 5s snackbar — forward moves only.
+    var undoStep by remember { mutableIntStateOf(-1) }
+    var undoNonce by remember { mutableIntStateOf(0) }
+    val snackbarHostState = remember { SnackbarHostState() }
+    // Manual keep-awake override, per cook session (default off = battery rule).
+    var manualKeepAwake by remember { mutableStateOf(false) }
+    // Done state (#98): celebration covers the mode until a route is chosen.
+    var showDone by rememberSaveable { mutableStateOf(false) }
+
     // ── Cook session state (#93) ───────────────────────────────────
     // Declared above the loader that writes them. Written on state changes only
     // (step move, pause, resume) — never per timer tick; restore math is
@@ -119,6 +147,11 @@ fun StepModeScreen(
     val sessionDao = remember(appContext) {
         com.erfanbagheri.tahdig.data.local.TahdigDatabase
             .getInstance(appContext).cookSessionDao()
+    }
+    // Done-state «پختم» (#98) logs a history row here — heatmap + coverage read it.
+    val historyDao = remember(appContext) {
+        com.erfanbagheri.tahdig.data.local.TahdigDatabase
+            .getInstance(appContext).historyDao()
     }
     val scope = rememberCoroutineScope()
 
@@ -208,6 +241,12 @@ fun StepModeScreen(
     fun goTo(target: Int) {
         if (target == current || target !in steps.indices) return
         Haptics.tap(view)
+        // Undo window (#98): every forward move arms a 5s restore of the step
+        // we just left — goTo gives that step a full timer again (AC).
+        if (target > current) {
+            undoStep = current
+            undoNonce++
+        }
         current = target
         remaining = durationOf(target)?.seconds ?: 0L
         running = false
@@ -219,12 +258,30 @@ fun StepModeScreen(
         if (current > 0) goTo(current - 1) else showExitConfirm = true
     }
 
-    // Hold the display on while cooking — the user's hands are busy, and the
-    // screen sleeping between steps is the most annoying thing here.
-    DisposableEffect(view) {
-        val window = view.context.findActivity()?.window
-        window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        onDispose { window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) }
+    /** Done state (#98): celebration overlay, session cleared so no resume offer. */
+    fun enterDone() {
+        if (showDone) return
+        // Same haptic pair as the timer firing — this IS a "time's up" moment.
+        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+        Haptics.confirm(view)
+        showDone = true
+        scope.launch { sessionDao.clear(foodId) }
+    }
+
+    /** Done-state «پختم» (#98): history row → heatmap/coverage, leftovers on Home. */
+    fun cookIt() {
+        val f = food ?: return
+        Haptics.confirm(view)
+        scope.launch {
+            historyDao.insert(
+                HistoryEntity(
+                    foodId = f.id,
+                    timestamp = System.currentTimeMillis(),
+                    mealTime = MealTimeHelper.currentBucket(),
+                )
+            )
+        }
+        onCooked(f)
     }
 
     // ── Per-step timer ──────────────────────────────────────────────
@@ -238,9 +295,44 @@ fun StepModeScreen(
     val stepCues = remember(stepText) { com.erfanbagheri.tahdig.util.DonenessCues.of(stepText) }
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
 
-    // System/back-button inside the mode: previous step, exit confirm on step 1.
+    // ── Keep-screen-on (#98) ────────────────────────────────────────
+    // Replaces the old hold-the-screen-awake-for-the-whole-mode flag: awake only
+    // while a LONG step's timer actually runs, or while the session override is on.
+    val keepAwake = KeepAwake.shouldKeepAwake(stepDuration?.seconds, running, manualKeepAwake)
+    DisposableEffect(view, keepAwake) {
+        val window = view.context.findActivity()?.window
+        if (keepAwake) window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        onDispose { window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) }
+    }
+
+    // System/back-button inside the mode: previous step, exit confirm on step 1,
+    // plain exit once the done overlay owns the screen (#98).
     // Gated so a technique overlay sitting on top owns back while it is open.
-    BackHandler(enabled = backEnabled) { goBackInMode() }
+    BackHandler(enabled = backEnabled) {
+        if (showDone) onBack() else goBackInMode()
+    }
+
+    // ── Undo window (#98) ───────────────────────────────────────────
+    // 5s Farsi snackbar after a forward move; the action restores the step we
+    // left. Auto-dismiss is manual — Compose's duration enum has no 5s member.
+    LaunchedEffect(undoNonce) {
+        val restore = undoStep
+        if (restore < 0) return@LaunchedEffect
+        launch {
+            val res = snackbarHostState.showSnackbar(
+                message = "رفتی مرحلهٔ بعد",
+                actionLabel = "بازگردانی مرحله",
+                withDismissAction = false,
+                duration = SnackbarDuration.Indefinite,
+            )
+            if (res == SnackbarResult.ActionPerformed) {
+                undoStep = -1
+                goTo(restore)
+            }
+        }
+        delay(5000)
+        snackbarHostState.currentSnackbarData?.dismiss()
+    }
 
     // ── Voice control wiring (#94) ──────────────────────────────────
     // Streaming recognition needs the runtime mic grant (unlike the one-shot
@@ -262,6 +354,8 @@ fun StepModeScreen(
     // or the mode leaves, so no mic is held (AC).
     val voiceSession = remember(appContext) {
         CookVoiceSession(appContext) { transcript ->
+            // Done overlay owns the screen (#98): no commands behind it.
+            if (showDone) return@CookVoiceSession
             val cmd = CookVoiceCommands.match(transcript)
             voiceEcho = cmd?.let { CookVoiceCommands.echoOf(it) } ?: CookVoiceCommands.UNKNOWN_ECHO
             Haptics.tap(view)
@@ -275,11 +369,8 @@ fun StepModeScreen(
                     if (stepDuration != null) { running = !running; persistSession() }
                 }
                 CookVoiceCommands.Command.STOP -> { running = false; persistSession() }
-                CookVoiceCommands.Command.DONE -> {
-                    // Finished cooking: clear the session so «ادامه بده» goes away.
-                    scope.launch { sessionDao.clear(foodId) }
-                    onBack()
-                }
+                // Finished cooking → celebration (#98), which clears the session.
+                CookVoiceCommands.Command.DONE -> enterDone()
                 null -> Unit
             }
         }
@@ -337,6 +428,7 @@ fun StepModeScreen(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background,
     ) {
+        Box(Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -371,6 +463,18 @@ fun StepModeScreen(
                             .padding(8.dp),
                     )
                 }
+                // Keep-awake override (#98): session-scoped switch in the top bar.
+                Spacer(Modifier.width(8.dp))
+                Text(
+                    text = "بیدار",
+                    style = MaterialTheme.typography.labelMedium,
+                    fontFamily = YekanBakh,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Switch(
+                    checked = manualKeepAwake,
+                    onCheckedChange = { manualKeepAwake = it },
+                )
             }
 
             // Tools overlay: same chips as the detail screen, session-scoped toggles.
@@ -598,16 +702,22 @@ fun StepModeScreen(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Button(
-                    onClick = { goTo(current + 1) },
-                    enabled = current < steps.lastIndex,
+                    // Last step finishes (#98) instead of a dead disabled button.
+                    onClick = {
+                        if (current >= steps.lastIndex) enterDone() else goTo(current + 1)
+                    },
                 ) {
                     Icon(
-                        Icons.Default.ArrowForward,
+                        if (current >= steps.lastIndex) Icons.Default.Check
+                        else Icons.Default.ArrowForward,
                         contentDescription = null,
                         modifier = Modifier.size(20.dp),
                     )
                     Spacer(Modifier.width(8.dp))
-                    Text("مرحله بعد", fontFamily = YekanBakh)
+                    Text(
+                        text = if (current >= steps.lastIndex) "پایان پخت" else "مرحله بعد",
+                        fontFamily = YekanBakh,
+                    )
                 }
                 Button(
                     onClick = { goTo(current - 1) },
@@ -695,6 +805,61 @@ fun StepModeScreen(
                 }
             }
         }
+
+            // Done state (#98): covers the whole mode until a route is chosen.
+            if (showDone) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background,
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                    ) {
+                        Text(
+                            text = "نوش جان!",
+                            style = MaterialTheme.typography.headlineLarge,
+                            fontFamily = YekanBakh,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        Text(
+                            text = foodName,
+                            style = MaterialTheme.typography.titleLarge,
+                            fontFamily = YekanBakh,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Spacer(Modifier.height(32.dp))
+                        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                            Button(onClick = { Haptics.tap(view); onRate() }) {
+                                Text("امتیاز بده", fontFamily = YekanBakh)
+                            }
+                            Button(onClick = { cookIt() }) {
+                                Text("پختم", fontFamily = YekanBakh)
+                            }
+                        }
+                        TextButton(onClick = {
+                            Haptics.tap(view)
+                            food?.let { ShareCard.share(uiContext, it) }
+                        }) {
+                            Text("اشتراک‌گذاری", fontFamily = YekanBakh)
+                        }
+                    }
+                }
+            }
+
+            // Undo snackbar (#98): bottom of the Box, overlays whatever is behind.
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(16.dp),
+            )
+    }
     }
 }
 
