@@ -43,6 +43,8 @@ fun CategoryBrowseScreen(
     onBack: () -> Unit,
     /** Standalone «تکنیک‌ها» browse entry (#101). */
     onTechniques: () -> Unit = {},
+    /** Standalone «مناسبت‌ها» browse entry (#88). */
+    onOccasions: () -> Unit = {},
 ) {
     val categories by viewModel.categories.collectAsState()
 
@@ -76,6 +78,31 @@ fun CategoryBrowseScreen(
                             Spacer(Modifier.height(8.dp))
                             Text(
                                 text = "تکنیک‌ها",
+                                style = MaterialTheme.typography.labelLarge,
+                                fontFamily = YekanBakh,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                textAlign = TextAlign.Center,
+                            )
+                        }
+                    }
+                }
+                // Occasion browse entry (#88) — same tile shape as تکنیک‌ها.
+                item(key = "occasions") {
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable(onClick = onOccasions),
+                        shape = RoundedCornerShape(14.dp),
+                        color = MaterialTheme.colorScheme.surfaceVariant,
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(vertical = 20.dp, horizontal = 8.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            Text(text = "🎉", fontSize = 32.sp)
+                            Spacer(Modifier.height(8.dp))
+                            Text(
+                                text = "مناسبت‌ها",
                                 style = MaterialTheme.typography.labelLarge,
                                 fontFamily = YekanBakh,
                                 color = MaterialTheme.colorScheme.onSurface,

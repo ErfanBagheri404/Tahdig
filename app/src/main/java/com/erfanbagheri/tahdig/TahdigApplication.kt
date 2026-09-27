@@ -6,6 +6,7 @@ import com.erfanbagheri.tahdig.util.IngredientRegistry
 import com.erfanbagheri.tahdig.util.NutritionDB
 import com.erfanbagheri.tahdig.util.SubstitutionRegistry
 import com.erfanbagheri.tahdig.util.TechniqueRegistry
+import com.erfanbagheri.tahdig.util.OccasionRegistry
 
 class TahdigApplication : Application() {
     override fun onCreate() {
@@ -15,5 +16,9 @@ class TahdigApplication : Application() {
         IngredientRegistry.load(this)
         SubstitutionRegistry.load(this)
         TechniqueRegistry.load(this)
+        OccasionRegistry.load(
+            runCatching { assets.open("seed/occasions.json").bufferedReader().use { it.readText() } }
+                .getOrDefault("[]")
+        )
     }
 }

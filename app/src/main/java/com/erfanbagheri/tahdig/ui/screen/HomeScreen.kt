@@ -65,6 +65,8 @@ fun HomeScreen(
     val view = LocalView.current
     val dishOfDay by viewModel.dishOfDay.collectAsState()
     val leftoverSuggestions by viewModel.leftoverSuggestions.collectAsState()
+    val occasion by viewModel.occasion.collectAsState()
+    val occasionDishes by viewModel.occasionDishes.collectAsState()
     // Refresh day-dependent state when app returns to foreground (midnight-safe).
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
@@ -132,7 +134,66 @@ fun HomeScreen(
                 Text("مرور دسته‌بندی‌ها", fontFamily = YekanBakh)
             }
             Spacer(Modifier.height(24.dp))
-            // Leftover prompt, after cooking — dismissible, above the suggestion.
+
+            // ── Occasion shelf (#88) ───────────────────────────────────────
+            // Renders only while an occasion window is active — outside every
+            // window this emits nothing at all, so no empty row can appear (AC).
+            occasion?.let { occ ->
+                if (occasionDishes.isNotEmpty()) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text(
+                            text = occ.shelf,
+                            style = MaterialTheme.typography.titleSmall,
+                            fontFamily = YekanBakh,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            modifier = Modifier.weight(1f),
+                        )
+                        Text(
+                            text = "مناسبت‌ها",
+                            style = MaterialTheme.typography.labelMedium,
+                            fontFamily = YekanBakh,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                    }
+                    Spacer(Modifier.height(10.dp))
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        items(occasionDishes, key = { it.id }) { food ->
+                            Surface(
+                                shape = RoundedCornerShape(10.dp),
+                                color = MaterialTheme.colorScheme.surface,
+                                border = androidx.compose.foundation.BorderStroke(
+                                    1.dp,
+                                    MaterialTheme.colorScheme.outlineVariant,
+                                ),
+                                modifier = Modifier.clickable { onFoodClick(food.id) },
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                                ) {
+                                    Text(
+                                        text = food.name,
+                                        style = MaterialTheme.typography.labelLarge,
+                                        fontFamily = YekanBakh,
+                                    )
+                                }
+                            }
+                        }
+                    }
+                    Spacer(Modifier.height(12.dp))
+                    androidx.compose.foundation.layout.Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(1.dp)
+                            .background(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)),
+                    )
+                    Spacer(Modifier.height(20.dp))
+                }
+            }
+
             leftoverSuggestions.takeIf { it.isNotEmpty() }?.let { leftovers ->
                 Surface(
                     color = MaterialTheme.colorScheme.secondaryContainer,

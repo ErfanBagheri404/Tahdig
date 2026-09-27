@@ -9,6 +9,7 @@ import com.erfanbagheri.tahdig.data.local.entity.FoodEntity
 import com.erfanbagheri.tahdig.data.local.entity.HistoryEntity
 import com.erfanbagheri.tahdig.util.LeftoverMatcher
 import com.erfanbagheri.tahdig.util.MealTimeHelper
+import com.erfanbagheri.tahdig.util.OccasionRegistry
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -48,11 +49,22 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
     private val _dishOfDay = MutableStateFlow<FoodEntity?>(null)
     val dishOfDay: StateFlow<FoodEntity?> = _dishOfDay.asStateFlow()
 
+    // ── occasion shelf (#88) ────────────────────────────────────────
+    /** Active occasion today, or null — null hides the shelf entirely (AC). */
+    private val _occasion = MutableStateFlow(
+        OccasionRegistry.activeOn(LocalDate.now())
+    )
+    val occasion: StateFlow<com.erfanbagheri.tahdig.util.Occasion?> = _occasion.asStateFlow()
+
+    private val _occasionDishes = MutableStateFlow<List<FoodEntity>>(emptyList())
+    val occasionDishes: StateFlow<List<FoodEntity>> = _occasionDishes.asStateFlow()
+
     init {
         refreshMealLabel()
         loadHistory()
         roll()
         loadDishOfDay()
+        loadOccasion()
     }
 
     /** Pick today's dish from the day-of-year index — no DB change, no extra screen. */
@@ -69,6 +81,16 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
     fun refreshDay() {
         refreshMealLabel()
         loadDishOfDay()
+        loadOccasion()
+    }
+
+    /** Re-evaluate today's occasion and load its curated dish strip (#88). */
+    fun loadOccasion() {
+        _occasion.value = OccasionRegistry.activeOn(LocalDate.now())
+        val occ = _occasion.value ?: run { _occasionDishes.value = emptyList(); return }
+        viewModelScope.launch {
+            _occasionDishes.value = foodDao.byIds(occ.dishes)
+        }
     }
 
     /** Re-read meal bucket (call from a timer or recomposition). */
